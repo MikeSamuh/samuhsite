@@ -47,3 +47,18 @@ Things that need an answer and do not have one yet.
 - Mike has a separate prototype site he built with Claude. Agreed position:
   reference only, not the codebase. Confirm this is settled
 - Logo SVGs need optimising or redrawing before launch
+
+## Scope doc cleanup
+
+The Drive scope document was partly edited on 23 Sep. Phase language still
+appears in these places and should come out:
+
+- Section 1, the "Phase 1: the website" heading and "This is the first half
+  of it"
+- Section 1, "no login, no payment and no account in Phase 1"
+- Section 4, "TeamQ is Phase 2"
+- Section 13, the entire "Phase 2: The Platform" section and "Phase 1 is
+  built to extend"
+
+The content of section 13 is worth keeping as an "Out of scope" list. Only
+the framing needs to change.

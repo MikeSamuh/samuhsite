@@ -1,0 +1,191 @@
+/* Background treatments.
+   Every layer is fixed, pointer-events none, and sits behind the content.
+   All colour comes from --accent and --base. */
+
+.bd {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.bd-vignette {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 120% 80% at 50% 40%,
+    transparent 40%,
+    rgba(0, 0, 0, 0.55) 100%
+  );
+}
+
+/* ---------- 2. Ascent: black falling into charcoal, breathing ---------- */
+
+.bd-ascent-wash {
+  position: absolute;
+  inset: -20%;
+  background:
+    linear-gradient(180deg, #000 0%, #101216 55%, #171A20 100%),
+    radial-gradient(ellipse 90% 50% at 50% 0%,
+      color-mix(in srgb, var(--accent) 10%, transparent) 0%,
+      transparent 70%);
+  animation: breathe 18s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%, 100% { opacity: 0.85; transform: translateY(0); }
+  50%      { opacity: 1;    transform: translateY(-1.5%); }
+}
+
+/* ---------- 3. Aurora: slow colour movement, FTFC style ---------- */
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.5;
+  will-change: transform;
+}
+
+.blob-a {
+  width: 46vw;
+  height: 46vw;
+  min-width: 380px;
+  min-height: 380px;
+  left: -8vw;
+  top: -6vw;
+  background: var(--accent);
+  animation: drift-a 42s ease-in-out infinite;
+}
+
+.blob-b {
+  width: 40vw;
+  height: 40vw;
+  min-width: 320px;
+  min-height: 320px;
+  right: -6vw;
+  top: 18vh;
+  background: color-mix(in srgb, var(--accent) 55%, #6C3BFF);
+  opacity: 0.42;
+  animation: drift-b 55s ease-in-out infinite;
+}
+
+.blob-c {
+  width: 52vw;
+  height: 52vw;
+  min-width: 420px;
+  min-height: 420px;
+  left: 22vw;
+  bottom: -18vw;
+  background: color-mix(in srgb, var(--accent) 35%, #00C2A8);
+  opacity: 0.34;
+  animation: drift-c 64s ease-in-out infinite;
+}
+
+@keyframes drift-a {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  33%      { transform: translate3d(14vw, 8vh, 0) scale(1.18); }
+  66%      { transform: translate3d(4vw, 20vh, 0) scale(0.92); }
+}
+
+@keyframes drift-b {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1.05); }
+  40%      { transform: translate3d(-16vw, 14vh, 0) scale(0.88); }
+  70%      { transform: translate3d(-6vw, -8vh, 0) scale(1.22); }
+}
+
+@keyframes drift-c {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+  50%      { transform: translate3d(-12vw, -16vh, 0) scale(1.15); }
+}
+
+/* fine grain over the blobs so the gradient never bands */
+.bd-grain {
+  position: absolute;
+  inset: 0;
+  opacity: 0.16;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ---------- 4. Chalk: blackboard ---------- */
+
+.bd-chalk {
+  background:
+    radial-gradient(ellipse 100% 70% at 30% 20%, #10150F 0%, transparent 60%),
+    radial-gradient(ellipse 90% 60% at 75% 70%, #0D1210 0%, transparent 55%);
+}
+
+.bd-chalk-grain {
+  position: absolute;
+  inset: 0;
+  opacity: 0.22;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='c'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='4'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23c)' opacity='0.55'/%3E%3C/svg%3E");
+}
+
+/* the smear a board keeps after it is wiped */
+.bd-chalk-dust {
+  position: absolute;
+  inset: 0;
+  opacity: 0.07;
+  background:
+    radial-gradient(ellipse 60% 22% at 22% 32%, #fff 0%, transparent 70%),
+    radial-gradient(ellipse 48% 16% at 72% 58%, #fff 0%, transparent 70%),
+    radial-gradient(ellipse 70% 14% at 45% 82%, #fff 0%, transparent 72%);
+  filter: blur(14px);
+}
+
+/* ---------- 5. Orbit: concentric rings, one rotating arc ---------- */
+
+.bd-rings {
+  position: absolute;
+  left: 50%;
+  top: 42%;
+  width: 190vmax;
+  height: 190vmax;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: repeating-radial-gradient(
+    circle at center,
+    transparent 0 7.4vmax,
+    rgba(255, 255, 255, 0.05) 7.4vmax 7.45vmax
+  );
+  opacity: 0.85;
+}
+
+.bd-arc {
+  position: absolute;
+  left: 50%;
+  top: 42%;
+  width: 104vmax;
+  height: 104vmax;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    transparent 292deg,
+    color-mix(in srgb, var(--accent) 60%, transparent) 334deg,
+    color-mix(in srgb, var(--accent) 12%, transparent) 352deg,
+    transparent 360deg
+  );
+  mask: radial-gradient(circle at center, transparent 43%, #000 44%, #000 46%, transparent 47%);
+  -webkit-mask: radial-gradient(circle at center, transparent 43%, #000 44%, #000 46%, transparent 47%);
+  animation: spin 90s linear infinite;
+  opacity: 0.9;
+}
+
+@keyframes spin {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* ---------- reduced motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .bd-ascent-wash,
+  .blob,
+  .bd-arc {
+    animation: none !important;
+  }
+}

@@ -9,11 +9,13 @@ npm install
 npm run dev
 ```
 
-http://localhost:3000 — placeholder home
-http://localhost:3000/design — the five design directions
+http://localhost:3000 - placeholder home
+http://localhost:3000/design - the direction configurator
 
-Switch directions with the tabs or the number keys 1 to 5. Each deep-links:
-`/design#noir`, `#signal`, `#ember`, `#kinetic`, `#institute`.
+Three independent dials: background (5), accent (9), type pairing (5). Number
+keys 1 to 5 switch the background, q/w/e/r/t switch the type. The URL records
+the exact combination, for example `/design#aurora.yellow-amber.syne`, so a
+combination can be shared as a link.
 
 ## Layout
 
@@ -24,9 +26,10 @@ src/
   app/
     layout.tsx          font loading
     page.tsx            home
-    design/             direction preview, deleted after selection
+    design/             the configurator, deleted after selection
+      Backdrop.tsx      the five background treatments
   lib/
-    directions.ts       the design system
+    tokens.ts           the design system
 ```
 
 ## Before you write code
@@ -35,7 +38,8 @@ Read `CLAUDE.md`. It carries seven hard rules that exist because breaking them
 causes real problems with the client, not because they are tidy.
 
 The short version: never invent a statistic, never recreate the logo
-lettering, and never type a hex code outside `src/lib/directions.ts`.
+lettering, never type a hex code outside `src/lib/tokens.ts`, and never call
+the intake assessment TeamQ.
 
 ## Deployment
 

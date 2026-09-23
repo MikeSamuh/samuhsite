@@ -43,7 +43,7 @@ export default function Home() {
             fontWeight: 500,
           }}
         >
-          View the five directions &rarr;
+          Open the direction configurator &rarr;
         </Link>
       </div>
     </main>

@@ -29,28 +29,46 @@ that reaches a client deck is unrecoverable.
 
 Confirmed in writing or in meetings:
 
-- The six process stages: Prepare, Launch, Discover, Awareness, Belonging, Action
-- The three tiers: Self-guided, Supported, Guided
-- The content spine: performance equation, teams as the central point of
-  impact, evidence, rituals as the vehicle for change
+- The three tiers: Self-guided, Supported, Guided, and their conversions
+  (Self-guided is "price to confirm, or talk to us"; the other two are
+  "talk to us")
+- Sapien Labs is the primary partner, credited as "in partnership with
+  Sapien Labs"
+- The Sapien Labs Work Culture Report is the research source
 - Two case studies exist (a Fortune 10 leadership team, and one in a very
   different setting). Details are in Rahul's emails, not yet cleared for
-  publication
+  publication. The likely homepage reference is an anonymised Sankora
 
 ## What we cannot state yet
 
 - Any sample size or research figure
+- The research claim itself. Section 6 of the homepage needs one
+  research-backed statement and the wording has not landed. SAMUH owns it
+- The final hero wording. It has to match Daniel's hero video script
 - "Two decades of research" or any specific number of years
-- Named clients
+- Named clients. Sankora needs a contract check before the logo or the case
+  study is published. Chanel, through the past Mentora relationship,
+  prohibited logo use, which is the precedent for why this matters
 - Testimonial attributions
-- The number of team practices
+- The Self-guided price
 
-The sample copy on `/design` uses the confirmed items only. Do not copy the
-placeholder caption `FIG. 01 · SAPIEN CAPACITY FACTORS · N = 407,000` into
-production. It exists to show the mono face and the number is not verified.
+The sample copy on `/design` uses confirmed items only, and the one data
+caption reads `TODO(content)` on purpose rather than showing an invented
+figure.
+
+The hero line on `/design`, "high performance without the cost to people", is
+the working value proposition from the scope document. It is not approved copy.
 
 ## Voice
 
 Plain, declarative, unhurried. The argument is strong enough that it does not
 need selling language. No exclamation marks, no "unlock", no "transform your
 organisation". No em dashes.
+
+Two specific traps, named in the scope document. Copy that skews to performance
+metrics reads cold. Copy that skews to wellbeing reads soft. Both have to hold
+at once, which is harder than it sounds and is the main reason positioning is
+still open.
+
+Say "a multi-team organization", never "an enterprise". Teams stay the subject
+of the sentence.

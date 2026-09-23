@@ -52,3 +52,19 @@ Light alternatives were offered and declined. — Client
 SAMUH's brand book has no colour codes in it; the hex fields are unfilled
 placeholders. Whatever direction is chosen defines the brand's digital
 palette. — Discovered during build
+
+**2026-09-23 — The direction preview is a configurator, not five fixed looks.**
+Background, accent and type move independently. The client was not going to
+find one of five whole looks they liked completely, and splitting the axes
+turns "none of these" into "that background with that yellow". — Wilfred
+
+**2026-09-23 — Art direction is playful and organic, not corporate.**
+The client's own framing: an onboarding process for new clients, but on
+mushrooms. Constraint on it: they sell to Fortune 500 companies, so looseness
+goes in the background, motion and line weights, and discipline stays in the
+typography and spacing. — Client and Wilfred
+
+**2026-09-23 — Sapien Labs is a credited partner throughout, not a footer
+logo.** Named near the header logo, beside the data sections, and in the body
+of the About page. It is also the research source the whole education layer
+leans on. — Scope document

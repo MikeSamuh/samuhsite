@@ -5,24 +5,46 @@ Read this first, every session. It is the operating brief for this repo.
 ## What this is
 
 The website for SAMUH (samuh.work), an organisational and high-performance
-consulting firm. Built and maintained by Wilfred Hirst (Vynfred LLC) on a
-monthly retainer.
+consulting firm working in partnership with Sapien Labs. Built and maintained
+by Wilfred Hirst (Vynfred LLC) on a monthly retainer.
 
-The site has two jobs, in this order:
+Two jobs, in this order:
 
-1. **Educate.** Teach the SAMUH model to people who have never heard of it,
-   using SAMUH's own research as the proof.
-2. **Generate leads.** Move the ones who are ready into a conversation with
-   the sales team.
+1. **Educate.** Teach the SAMUH model to people who have never heard it, using
+   SAMUH's own research as the proof.
+2. **Generate leads.** Move the ones who are ready into a conversation with the
+   sales team.
 
 Everything on the site serves one of those two.
+
+## Art direction
+
+The client does not want to look corporate. Their words, agreed in
+conversation: an onboarding process for new clients, but on mushrooms.
+
+Playful, organic, slightly psychedelic. Never childish. They sell to Fortune
+500 companies, so it has to survive a boardroom.
+
+The working split:
+
+- **Looseness** in the background, the motion, the illustration, and the
+  contrast between hairline and heavy stroke
+- **Discipline** in the typography, the spacing, and using one loud colour at a
+  time
+
+If a change makes the page more playful by making it less legible or less
+credible, it is the wrong change.
 
 ## Stack
 
 - Next.js 15, App Router, TypeScript
-- Tailwind v4 (utilities only; design values come from tokens, see below)
-- `next/font/google`, self-hosted at build time
-- Deployed on Vercel. `main` is production, every branch gets a preview URL
+- Tailwind v4 for layout and spacing. Design values come from tokens
+- GSAP with ScrollTrigger for scroll sequences, Framer Motion for component
+  transitions. Neither is installed yet; wait for the direction decision
+- `next/font/google`, self-hosted at build
+- Headless CMS for foundations, insights, case studies, team, testimonials and
+  solutions
+- Vercel. `main` is production, every branch gets a preview URL
 
 ## Commands
 
@@ -39,66 +61,82 @@ src/
   app/
     layout.tsx           font loading
     page.tsx             home
-    design/              the five-direction preview (delete after selection)
+    design/              the direction configurator. delete after selection
+      page.tsx
+      Backdrop.tsx       the five background treatments
+      backdrops.css
+      design.css
   lib/
-    directions.ts        THE DESIGN SYSTEM. all tokens live here
-docs/                    project context, read these before big changes
+    tokens.ts            THE DESIGN SYSTEM. backgrounds, accents, type pairings
+docs/                    project context, read before big changes
 ```
 
 ## Hard rules
 
-These are not style preferences. Breaking them creates real problems with the
-client.
+Not style preferences. Each one exists because breaking it causes a real
+problem with the client.
 
-**1. Never invent facts.** No statistics, sample sizes, client names, years of
-research, percentages or case study outcomes unless they came from SAMUH in
+**1. Never invent facts.** No statistics, sample sizes, percentages, client
+names, years of research or case study outcomes unless SAMUH supplied them in
 writing. If a number is needed and we do not have it, write `TODO(content)`
-and leave it visible. A plausible-looking fake number that ships to a client
-who then quotes it is the worst failure mode in this project.
+and leave it visible. A plausible fake number that ships and gets quoted back
+is the worst failure mode in this project.
 
 **2. The logo is untouchable.** The lettering is custom and handmade. SAMUH's
-brand book explicitly forbids recreating, redrawing or modifying it. Always
-place the supplied SVG. Never set "SAMUH" in a web font as a substitute for
-the wordmark.
+brand book forbids recreating, redrawing or modifying it. Place the supplied
+SVG. Never set "SAMUH" in a web font as a substitute.
 
-**3. No design values outside `directions.ts`.** No hex codes, font stacks,
-radii or transition durations typed into a component or a CSS file. Everything
-reads a CSS custom property. This is what makes the direction switchable and
-what makes the eventual design system real rather than decorative.
+**3. No design values outside `src/lib/tokens.ts`.** No hex codes, font stacks,
+radii, line weights or durations typed into a component or a stylesheet.
+Everything reads a CSS custom property.
 
-**4. No "Phase 1" or "Phase 2" language.** Anywhere. Not in code, comments,
-copy or docs. The client agreed to remove it. There is one scope.
+**4. The intake assessment is not TeamQ.** SAMUH has a validated instrument
+called TeamQ. Ours is a separate intake tool with its own logic. It must not
+share the TeamQ algorithm, must never be labelled validated or scientific, and
+must never be presented as diagnostic.
 
-**5. This is not a SaaS build.** No accounts, no login, no payments, no Stripe,
-no user dashboard, no assessment result storage. Leads go to the sales team.
-If a request implies any of the above, it is out of scope and needs a
-conversation, not an implementation.
+**5. No accounts, payments or dashboard.** Not in this build. Lead records, not
+user records. If a request implies authentication, Stripe, gated content or
+stored assessment history, it needs a conversation, not an implementation.
 
-**6. The qualification quiz is not TeamQ.** SAMUH has a scientifically
-validated instrument. Ours is a short qualification and routing quiz. Never
-label ours as validated, scientific, or as TeamQ, and never imply the results
-are diagnostic.
+Note the one subtlety: assessment results do get a shareable URL. Encode the
+result in the URL or store the minimum needed for that one link. That is not
+the same as building accounts, and it is not licence to start storing user
+data generally.
 
-**7. No em dashes in any copy.** Use commas, colons or full stops. This applies
-to site copy, docs and client-facing text.
+**6. Language.** "A multi-team organization", never "an enterprise". Teams stay
+the subject. Sapien Labs is credited as a partner, not cited as a footnote.
+
+**7. No em dashes.** Commas, colons or full stops. Site copy, docs, and
+anything client-facing.
+
+## Quality bar
+
+From the signed scope. These are contractual, not aspirational.
+
+- LCP under 2.5s. Lighthouse performance 90 or better on throttled mobile
+- WCAG 2.1 AA. Keyboard navigation, visible focus, semantic structure, and
+  contrast that holds across the dark palette
+- Chrome, Safari, Firefox, Edge. Desktop and mobile
+- Reduced motion support throughout, not retrofitted
 
 ## Working style
 
-- Prefer editing an existing file to creating a new one.
-- Ship behind a branch, review on the Vercel preview URL, then merge.
-- If a change touches scope, pricing or the launch date, stop and flag it
-  rather than building it.
-- When the client asks for something that contradicts a doc in `docs/`,
-  update the doc in the same commit. Docs that drift are worse than no docs.
+- Prefer editing an existing file to creating a new one
+- Branch, review on the Vercel preview URL, then merge
+- If a change touches scope, pricing or the launch date, flag it rather than
+  building it
+- When the client contradicts a doc in `docs/`, update the doc in the same
+  commit. Docs that drift are worse than no docs
 
 ## Context files
 
 | File | Read it when |
 |---|---|
-| `docs/brief.md` | You need the positioning or the audience |
-| `docs/scope.md` | You are adding or arguing about a page or section |
-| `docs/design-system.md` | You are touching tokens, type, colour or motion |
-| `docs/content.md` | You need to know who owns a piece of copy |
+| `docs/brief.md` | You need positioning, audience, tone or the Sapien Labs relationship |
+| `docs/scope.md` | You are adding or arguing about a page, section or feature |
+| `docs/design-system.md` | You are touching tokens, type, colour, line weight or motion |
+| `docs/content.md` | You need to know who owns a piece of copy, or what we may claim |
 | `docs/assets.md` | You need a logo, font, photo or video |
 | `docs/conventions.md` | You are writing new components |
 | `docs/roadmap.md` | You need to know what week we are in |
