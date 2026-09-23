@@ -315,6 +315,29 @@ export const DEFAULT_COMBO: Combo = {
   hover: HOVERS[0],
 };
 
+// Wilfred's recommendation. Presented as its own section at the top of the
+// configurator, before the client is invited to mix and match.
+// TODO(wilfred): set the six ids and the reasoning once you have chosen.
+export const RECOMMENDED = {
+  bg: "aurora" as BackdropId,
+  accent: "yellow-amber",
+  accent2: "blue-sky",
+  type: "bricolage",
+  entrance: "unblur" as EntranceId,
+  hover: "glow" as HoverId,
+  why: "TODO(wilfred): why this combination. Two or three sentences on what it says about SAMUH, and why it survives a boardroom.",
+};
+
+export function recommendedCombo(): Combo {
+  return parseComboHash(
+    [RECOMMENDED.bg, RECOMMENDED.accent, RECOMMENDED.accent2, RECOMMENDED.type, RECOMMENDED.entrance, RECOMMENDED.hover].join(".")
+  );
+}
+
+export function sameCombo(a: Combo, b: Combo): boolean {
+  return comboHash(a) === comboHash(b);
+}
+
 /** The shareable form: #background.accent1.accent2.type.entrance.hover */
 export function comboHash(c: Combo): string {
   return `#${c.bg.id}.${c.accent.id}.${c.accent2.id}.${c.type.id}.${c.entrance.id}.${c.hover.id}`;

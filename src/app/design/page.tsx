@@ -8,10 +8,14 @@ import {
   ENTRANCES,
   HOVERS,
   DEFAULT_COMBO,
+  RECOMMENDED,
   cssVars,
   comboHash,
   parseComboHash,
+  recommendedCombo,
+  sameCombo,
   type Combo,
+  type Accent,
 } from "@/lib/tokens";
 import Backdrop from "./Backdrop";
 import "./backdrops.css";
@@ -34,8 +38,9 @@ const TIERS = [
 
 export default function DesignDirections() {
   const [combo, setCombo] = useState<Combo>(DEFAULT_COMBO);
-  const [pickerOpen, setPickerOpen] = useState(true);
-  const [notesOpen, setNotesOpen] = useState(false);
+  const [railOpen, setRailOpen] = useState(true);
+  const recommended = recommendedCombo();
+  const onRecommended = sameCombo(combo, recommended);
   const { bg, accent, accent2, type, entrance, hover } = combo;
   const set = (patch: Partial<Combo>) => setCombo((c) => ({ ...c, ...patch }));
 
@@ -115,158 +120,126 @@ export default function DesignDirections() {
     >
       <Backdrop id={bg.id} />
 
-      <div className="content">
-        {/* configurator */}
-        <div className="chrome" data-open={pickerOpen}>
-          <button
-            className="chrome-toggle"
-            onClick={() => setPickerOpen((o) => !o)}
-            aria-expanded={pickerOpen}
-            aria-controls="picker"
-          >
-            {pickerOpen ? "Hide picker" : "Show picker"}
-          </button>
-          {!pickerOpen && (
-            <p className="chrome-summary">
-              {bg.name} · {accent.name} + {accent2.name} · {type.name} ·{" "}
-              {entrance.name} · {hover.name}
-            </p>
-          )}
-          <div className="chrome-inner" id="picker" hidden={!pickerOpen}>
-            <div className="ctrl">
-              <span className="ctrl-label">Background</span>
-              {BACKGROUNDS.map((x) => (
-                <button
-                  key={x.id}
-                  className="opt"
-                  aria-pressed={x.id === bg.id}
-                  onClick={() => set({ bg: x })}
-                >
-                  <span className="opt-n">{x.n}</span>
-                  {x.name}
-                </button>
-              ))}
-            </div>
-
-            <div className="ctrl">
-              <span className="ctrl-label">Type</span>
-              {TYPE_PAIRS.map((x) => (
-                <button
-                  key={x.id}
-                  className="opt"
-                  aria-pressed={x.id === type.id}
-                  onClick={() => set({ type: x })}
-                >
-                  {x.name}
-                </button>
-              ))}
-            </div>
-
-            {(
-              [
-                ["Accent 1", accent, (x: (typeof ACCENTS)[number]) => set({ accent: x })],
-                ["Accent 2", accent2, (x: (typeof ACCENTS)[number]) => set({ accent2: x })],
-              ] as const
-            ).map(([label, current, pick]) => (
-              <div className="ctrl" key={label}>
-                <span className="ctrl-label">{label}</span>
-                {ACCENTS.map((x, i) => (
-                  <span key={x.id} style={{ display: "contents" }}>
-                    {i === 3 || i === 6 ? <span className="sw-gap" /> : null}
-                    <button
-                      className="sw"
-                      aria-pressed={x.id === current.id}
-                      onClick={() => pick(x)}
-                      style={{ background: x.hex }}
-                      title={`${x.family} ${x.name} · ${x.hex}`}
-                      aria-label={`${label}: ${x.family} ${x.name}`}
-                    />
-                  </span>
-                ))}
-                <span className="ctrl-value">
-                  {current.family} {current.name} · {current.hex}
-                </span>
-              </div>
-            ))}
-
-            <div className="ctrl">
-              <span className="ctrl-label">Entrance</span>
-              {ENTRANCES.map((x) => (
-                <button
-                  key={x.id}
-                  className="opt"
-                  aria-pressed={x.id === entrance.id}
-                  onClick={() => set({ entrance: x })}
-                >
-                  {x.name}
-                </button>
-              ))}
-            </div>
-
-            <div className="ctrl">
-              <span className="ctrl-label">Hover</span>
-              {HOVERS.map((x) => (
-                <button
-                  key={x.id}
-                  className="opt"
-                  aria-pressed={x.id === hover.id}
-                  onClick={() => set({ hover: x })}
-                >
-                  {x.name}
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* the argument */}
-        <section className="brief" aria-labelledby="design-notes">
-          <div className="brief-inner" data-open={notesOpen}>
-            <div className="brief-head">
-              <h3 id="design-notes" className="brief-title">Design notes</h3>
+      {/* the menu bar: a left rail with every dial, minimisable to a strip */}
+      <aside className="rail" data-open={railOpen} aria-label="Style picker">
+        {railOpen ? (
+          <>
+            <div className="rail-head">
+              <span className="rail-title">Style picker</span>
               <button
-                className="chrome-toggle brief-toggle"
-                onClick={() => setNotesOpen((o) => !o)}
-                aria-expanded={notesOpen}
-                aria-controls="notes"
+                className="tbtn"
+                onClick={() => setRailOpen(false)}
+                aria-expanded="true"
+                aria-controls="rail-dials"
               >
-                {notesOpen ? "Hide notes" : "Show notes"}
+                Minimise
               </button>
             </div>
-            <div className="brief-grid" id="notes" hidden={!notesOpen}>
-            <div>
-              <h4>The bet · {bg.name}</h4>
-              <p>{bg.bet}</p>
+            <div id="rail-dials">
+              <Dials combo={combo} set={set} />
             </div>
-            <div className="is-risk">
-              <h4>The risk</h4>
-              <p>{bg.risk}</p>
-            </div>
-            <div>
-              <h4>{type.displayName}</h4>
-              <p>{type.note}</p>
-            </div>
-            <div>
-              <h4>Accents · {accent.name} with {accent2.name}</h4>
-              <p>
-                Accent 1 is the loud one: buttons, the Team circle, the arc.
-                Accent 2 is the quiet one: eyebrows, links, tags, the second
-                blob. One loud colour per screen, never both at full volume.
-              </p>
-            </div>
-            <div>
-              <h4>Entrance · {entrance.name}</h4>
-              <p>{entrance.note}</p>
-            </div>
-            <div>
-              <h4>Hover · {hover.name}</h4>
-              <p>{hover.note}</p>
-            </div>
-            </div>
-          </div>
-        </section>
+            <p className="rail-hash">{comboHash(combo)}</p>
+          </>
+        ) : (
+          <button
+            className="rail-expand"
+            onClick={() => setRailOpen(true)}
+            aria-expanded="false"
+            aria-controls="rail-dials"
+          >
+            <span>Style picker</span>
+          </button>
+        )}
+      </aside>
 
+      <div className="content">
         <div className="wrap">
+          {/* 01 recommendation */}
+          <section className="band band-first reveal" id="recommendation">
+            <div className="sec-head">
+              <span className="sec-n">01</span>
+              <div>
+                <p className="kicker">Wilfred&apos;s pick</p>
+                <h2 className="sec">Recommendation</h2>
+              </div>
+            </div>
+            <div className="rec">
+              <p className="rec-why">{RECOMMENDED.why}</p>
+              <ul className="rec-list">
+                <li><span>Background</span>{recommended.bg.name}</li>
+                <li><span>Accent 1</span>{recommended.accent.family} {recommended.accent.name}</li>
+                <li><span>Accent 2</span>{recommended.accent2.family} {recommended.accent2.name}</li>
+                <li><span>Type</span>{recommended.type.name}</li>
+                <li><span>Entrance</span>{recommended.entrance.name}</li>
+                <li><span>Hover</span>{recommended.hover.name}</li>
+              </ul>
+              <div className="cta-row">
+                <button
+                  className="btn"
+                  onClick={() => setCombo(recommended)}
+                  disabled={onRecommended}
+                >
+                  {onRecommended ? "You are looking at it" : "View the recommendation"}
+                  {!onRecommended && <span className="arrow">&rarr;</span>}
+                </button>
+              </div>
+            </div>
+          </section>
+
+          {/* 02 choose your own adventure */}
+          <section className="band reveal" id="adventure">
+            <div className="sec-head">
+              <span className="sec-n">02</span>
+              <div>
+                <p className="kicker">Choose your own adventure</p>
+                <h2 className="sec">Mix and match</h2>
+              </div>
+            </div>
+            <p className="lede">
+              Six dials, all independent. Change any one and everything below
+              updates. The address bar records the exact combination, so copy
+              the link and send it back when you land on something you like.
+              The picker on the left is the same set of dials, so you can keep
+              adjusting from anywhere on the page.
+            </p>
+            <div className="dials-inline">
+              <Dials combo={combo} set={set} />
+            </div>
+
+            <h3 className="notes-title">Design notes</h3>
+            <div className="notes-grid">
+              <div>
+                <h4>The bet · {bg.name}</h4>
+                <p>{bg.bet}</p>
+              </div>
+              <div className="is-risk">
+                <h4>The risk</h4>
+                <p>{bg.risk}</p>
+              </div>
+              <div>
+                <h4>{type.displayName}</h4>
+                <p>{type.note}</p>
+              </div>
+              <div>
+                <h4>Accents · {accent.name} with {accent2.name}</h4>
+                <p>
+                  Accent 1 is the loud one: buttons, the Team circle, the
+                  synapse nodes. Accent 2 is the quiet one: eyebrows, links,
+                  tags, the second blob. One loud colour per screen, never
+                  both at full volume.
+                </p>
+              </div>
+              <div>
+                <h4>Entrance · {entrance.name}</h4>
+                <p>{entrance.note}</p>
+              </div>
+              <div>
+                <h4>Hover · {hover.name}</h4>
+                <p>{hover.note}</p>
+              </div>
+            </div>
+          </section>
+
           {/* hero */}
           <header className="hero reveal">
             <p className="eyebrow">In partnership with Sapien Labs</p>
@@ -299,17 +272,14 @@ export default function DesignDirections() {
               <div className="orb orb-org">
                 <span className="orb-label">
                   Organization
-                  <small>many teams</small>
                 </span>
                 <div className="orb orb-team">
                   <span className="orb-label">
                     Team
-                    <small>the unit of change</small>
                   </span>
                   <div className="orb orb-ind">
                     <span className="orb-label">
                       Individual
-                      <small>inside the team</small>
                     </span>
                   </div>
                 </div>
@@ -566,7 +536,8 @@ export default function DesignDirections() {
               are not stuck picking a whole look you only half like. Find the
               background first, then the accents, then the type, then the
               effects. The URL updates as you go, so you can send a colleague
-              the exact combination you landed on.
+              the exact combination you landed on. The picker on the left
+              minimises out of the way when you want to look at the page.
             </p>
             <p>
               <strong>What we are going for.</strong> Playful and a bit organic,
@@ -583,6 +554,84 @@ export default function DesignDirections() {
               recreated.
             </p>
           </footer>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** Every dial. Rendered twice: in the rail and inline in the adventure section. */
+function Dials({ combo, set }: { combo: Combo; set: (patch: Partial<Combo>) => void }) {
+  const { bg, accent, accent2, type, entrance, hover } = combo;
+  const swatches = (label: string, current: Accent, pick: (x: Accent) => void) => (
+    <div className="ctrl">
+      <span className="ctrl-label">{label}</span>
+      <div className="ctrl-opts">
+        {ACCENTS.map((x, i) => (
+          <span key={x.id} style={{ display: "contents" }}>
+            {i === 3 || i === 6 ? <span className="sw-gap" /> : null}
+            <button
+              className="sw"
+              aria-pressed={x.id === current.id}
+              onClick={() => pick(x)}
+              style={{ background: x.hex }}
+              title={`${x.family} ${x.name} · ${x.hex}`}
+              aria-label={`${label}: ${x.family} ${x.name}`}
+            />
+          </span>
+        ))}
+        <span className="ctrl-value">{current.family} {current.name}</span>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="dials">
+      <div className="ctrl">
+        <span className="ctrl-label">Background</span>
+        <div className="ctrl-opts">
+          {BACKGROUNDS.map((x) => (
+            <button key={x.id} className="opt" aria-pressed={x.id === bg.id} onClick={() => set({ bg: x })}>
+              <span className="opt-n">{x.n}</span>
+              {x.name}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {swatches("Accent 1", accent, (x) => set({ accent: x }))}
+      {swatches("Accent 2", accent2, (x) => set({ accent2: x }))}
+
+      <div className="ctrl">
+        <span className="ctrl-label">Type</span>
+        <div className="ctrl-opts">
+          {TYPE_PAIRS.map((x) => (
+            <button key={x.id} className="opt" aria-pressed={x.id === type.id} onClick={() => set({ type: x })}>
+              {x.name}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="ctrl">
+        <span className="ctrl-label">Entrance</span>
+        <div className="ctrl-opts">
+          {ENTRANCES.map((x) => (
+            <button key={x.id} className="opt" aria-pressed={x.id === entrance.id} onClick={() => set({ entrance: x })}>
+              {x.name}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="ctrl">
+        <span className="ctrl-label">Hover</span>
+        <div className="ctrl-opts">
+          {HOVERS.map((x) => (
+            <button key={x.id} className="opt" aria-pressed={x.id === hover.id} onClick={() => set({ hover: x })}>
+              {x.name}
+            </button>
+          ))}
         </div>
       </div>
     </div>

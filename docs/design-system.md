@@ -10,6 +10,12 @@ records the exact combination.
 `/design#aurora.yellow-amber.blue-sky.syne.unblur.glow` is a real, shareable
 state. Order does not matter and the older three-part links still resolve.
 
+The page opens with Wilfred's recommendation as its own section, then a
+choose-your-own-adventure section with every dial inline, then the preview.
+The dials also live in a left rail that minimises. The recommendation is the
+`RECOMMENDED` constant in `tokens.ts`, six ids and a reason, marked TODO until
+it is chosen.
+
 After selection:
 
 1. Cut `tokens.ts` down to the chosen background, accents, pairing and effects
