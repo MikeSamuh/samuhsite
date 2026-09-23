@@ -240,7 +240,7 @@
   font-family: var(--font-display);
   font-weight: var(--display-weight);
   letter-spacing: var(--display-tracking);
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .rec-list {

@@ -8,7 +8,6 @@ import {
   ENTRANCES,
   HOVERS,
   DEFAULT_COMBO,
-  RECOMMENDED,
   cssVars,
   comboHash,
   parseComboHash,
@@ -143,14 +142,14 @@ export default function DesignDirections() {
             </div>
 
             <div className="rail-block">
-              <p className="rail-kicker">01 · Recommendation</p>
+              <p className="rail-kicker">01 · Wilfred&apos;s recommendation</p>
               <button
                 className="rec"
                 aria-pressed={onRecommended}
                 onClick={() => setCombo(recommended)}
               >
                 <span className="rec-title">
-                  {onRecommended ? "Showing the recommendation" : "Show the recommendation"}
+                  {onRecommended ? "Showing Wilfred\u2019s recommendation" : "Show Wilfred\u2019s recommendation"}
                 </span>
                 <span className="rec-list">
                   <span>{recommended.bg.name}</span>
@@ -159,7 +158,6 @@ export default function DesignDirections() {
                   <span>{recommended.entrance.name} · {recommended.hover.name}</span>
                 </span>
               </button>
-              <p className="rail-note">{RECOMMENDED.why}</p>
             </div>
 
             <div className="rail-block" id="rail-dials">
