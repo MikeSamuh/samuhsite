@@ -162,11 +162,6 @@ export default function DesignDirections() {
 
             <div className="rail-block" id="rail-dials">
               <p className="rail-kicker">02 · Choose your own adventure</p>
-              <p className="rail-note">
-                Not sold on it? Every dial is independent. Change any one and
-                the page updates. The address bar records the combination, so
-                copy the link and send it back.
-              </p>
               <Dials combo={combo} set={set} />
             </div>
 
