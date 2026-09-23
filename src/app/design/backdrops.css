@@ -37,42 +37,54 @@
    not a colour on top of it. They rise, squash, and sink. Nothing crosses
    the screen sideways. */
 
+.blob-wrap {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
+}
+
+/* scroll pulls each layer a different way, so the field rearranges as the
+   page moves rather than only cycling on its own */
+.blob-wrap-a { transform: translate3d(0, calc(var(--scroll-p, 0) * -70vh), 0); }
+.blob-wrap-b { transform: translate3d(calc(var(--scroll-p, 0) * -8vw), calc(var(--scroll-p, 0) * 45vh), 0); }
+.blob-wrap-c { transform: translate3d(calc(var(--scroll-p, 0) * 10vw), calc(var(--scroll-p, 0) * -110vh), 0); }
+
 .blob {
   position: absolute;
   bottom: -18vw;
-  filter: blur(80px);
+  filter: blur(70px);
   will-change: transform, border-radius;
   border-radius: 48% 52% 46% 54% / 55% 45% 55% 45%;
 }
 
 .blob-a {
-  width: 32vw;
-  height: 44vw;
-  min-width: 280px;
-  min-height: 380px;
+  width: 24vw;
+  height: 33vw;
+  min-width: 210px;
+  min-height: 285px;
   left: 4vw;
   background: color-mix(in srgb, var(--accent) 48%, var(--base));
   opacity: 0.7;
-  animation: lava-a 24s ease-in-out infinite;
+  animation: lava-a 18s ease-in-out infinite;
 }
 
 .blob-b {
-  width: 26vw;
-  height: 38vw;
-  min-width: 240px;
-  min-height: 340px;
+  width: 19.5vw;
+  height: 28.5vw;
+  min-width: 180px;
+  min-height: 255px;
   right: 6vw;
   background: color-mix(in srgb, var(--accent-2) 44%, var(--base));
   opacity: 0.65;
-  animation: lava-b 30s ease-in-out infinite;
-  animation-delay: -12s;
+  animation: lava-b 23s ease-in-out infinite;
+  animation-delay: -9s;
 }
 
 .blob-c {
-  width: 20vw;
-  height: 28vw;
-  min-width: 200px;
-  min-height: 280px;
+  width: 15vw;
+  height: 21vw;
+  min-width: 150px;
+  min-height: 210px;
   left: 44vw;
   background: color-mix(
     in srgb,
@@ -80,8 +92,8 @@
     var(--base)
   );
   opacity: 0.6;
-  animation: lava-c 27s ease-in-out infinite;
-  animation-delay: -19s;
+  animation: lava-c 21s ease-in-out infinite;
+  animation-delay: -15s;
 }
 
 @keyframes lava-a {
@@ -169,9 +181,10 @@
   filter: blur(0.4px);
 }
 
-/* ---------- 5. Synapse: a faint network with travelling signals ----------
-   Lines are hairlines, nodes pulse on their own cycles, and a short dash
-   runs along each line as a signal. Everything is low opacity on purpose. */
+/* ---------- 5. Synapse: a faint network that is never still ----------
+   Geometry is driven per frame by Synapse.tsx: every node drifts on its own
+   orbit and the field parallaxes with scroll. Pulses and signals are here.
+   Everything is low opacity on purpose. */
 
 .bd-synapse {
   background: radial-gradient(
@@ -186,7 +199,6 @@
   inset: -4%;
   width: 108%;
   height: 108%;
-  animation: net-drift 120s ease-in-out infinite;
   transform-origin: center;
 }
 
@@ -231,17 +243,10 @@
   50%      { opacity: var(--peak, 0.4); transform: scale(1.4); }
 }
 
-@keyframes net-drift {
-  0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
-  33%      { transform: translate(-1.2%, 0.8%) rotate(0.4deg) scale(1.01); }
-  66%      { transform: translate(0.6%, -1%) rotate(-0.3deg) scale(0.995); }
-}
-
 /* ---------- reduced motion ---------- */
 
 @media (prefers-reduced-motion: reduce) {
   .blob,
-  .bd-net,
   .net-signal,
   .net-node {
     animation: none !important;

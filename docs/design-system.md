@@ -46,9 +46,9 @@ the background choice also sets how the whole thing behaves.
 |---|---|---|---|
 | 1 | `void` | Void | Pure black, nothing behind the content |
 | 2 | `slate` | Slate | Dark slate, not black. Lighter at the top, darker as you scroll |
-| 3 | `aurora` | Aurora | Toned-down colour rising and sinking under grain, lava lamp style, 24 to 30 second cycles |
+| 3 | `aurora` | Aurora | Toned-down colour rising and sinking under grain, lava lamp style, 18 to 23 second cycles. Each blob also parallaxes with scroll |
 | 4 | `chalk` | Chalk | Blackboard. Changes with scroll: the board cools, the wiped dust drifts past, a chalk line along the bottom fills with progress |
-| 5 | `synapse` | Synapse | A faint network of nodes and hairline connections with signals travelling along them |
+| 5 | `synapse` | Synapse | A faint network of drifting nodes and curved connections with signals travelling along them. Nodes parallax with scroll at their own depth |
 
 Synapse replaced Orbit after the client rejected the rings. It is the
 creative-freedom slot: teams as a nervous system, where the connections are the
