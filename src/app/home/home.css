@@ -1,0 +1,101 @@
+/* Home shell. Structure only: every value reads a token from
+   src/lib/tokens.ts through HomeStage. Nothing here is a design decision. */
+
+.home-stage {
+  background: var(--base);
+  color: var(--text);
+  font-family: var(--font-body);
+  min-height: 100vh;
+}
+
+.home-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border-bottom: var(--rule-thin) solid var(--border);
+}
+
+.home-bar--footer {
+  border-bottom: 0;
+  border-top: var(--rule-thin) solid var(--border);
+}
+
+/* Sections 1 and 2 share one screen per the scope. The stop is the
+   viewport-height block that holds them both. */
+.home-stop {
+  min-height: 100svh;
+  display: grid;
+  grid-template-rows: 1fr auto;
+}
+
+.home-section {
+  border-top: var(--rule-thin) solid var(--border);
+  scroll-margin-top: 1rem;
+}
+
+.home-section--hero {
+  border-top: 0;
+}
+
+.home-section__meta {
+  font-family: var(--font-mono);
+  color: var(--muted);
+}
+
+.home-section__number {
+  color: var(--accent);
+}
+
+.home-section__title {
+  font-family: var(--font-display);
+  font-weight: var(--display-weight);
+  letter-spacing: var(--display-tracking);
+  line-height: var(--display-leading);
+  margin: 0;
+}
+
+.home-section__intent {
+  color: var(--muted);
+  max-width: 60ch;
+}
+
+/* The placeholder is deliberately visible. It is the TODO(content) marker
+   from CLAUDE.md, made into a block so the shape reads at a scroll. */
+.home-placeholder {
+  border: var(--rule-thin) dashed var(--border);
+  border-radius: var(--radius);
+  color: var(--muted);
+  font-family: var(--font-mono);
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+
+.home-placeholder--tall {
+  min-height: 50vh;
+}
+
+.home-placeholder--short {
+  min-height: 20vh;
+}
+
+.home-link {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.home-link:focus-visible {
+  outline: var(--rule-fat) solid var(--accent);
+  outline-offset: 0.2em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-stage *,
+  .home-stage *::before,
+  .home-stage *::after {
+    transition-duration: 1ms !important;
+    animation-duration: 1ms !important;
+  }
+}
