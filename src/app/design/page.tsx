@@ -45,8 +45,14 @@ export default function DesignDirections() {
   const set = (patch: Partial<Combo>) => setCombo((c) => ({ ...c, ...patch }));
 
   // deep link: /design#aurora.yellow-amber.blue-sky.syne.rise.lift
+  // No hash means the client has just arrived, so they see the recommendation.
   useEffect(() => {
-    const read = () => setCombo(parseComboHash(window.location.hash));
+    const read = () =>
+      setCombo(
+        window.location.hash.length > 1
+          ? parseComboHash(window.location.hash)
+          : recommendedCombo()
+      );
     read();
     window.addEventListener("hashchange", read);
     return () => window.removeEventListener("hashchange", read);
@@ -135,10 +141,59 @@ export default function DesignDirections() {
                 Minimise
               </button>
             </div>
-            <div id="rail-dials">
+
+            <div className="rail-block">
+              <p className="rail-kicker">01 · Recommendation</p>
+              <button
+                className="rec"
+                aria-pressed={onRecommended}
+                onClick={() => setCombo(recommended)}
+              >
+                <span className="rec-title">
+                  {onRecommended ? "Showing the recommendation" : "Show the recommendation"}
+                </span>
+                <span className="rec-list">
+                  <span>{recommended.bg.name}</span>
+                  <span>{recommended.accent.name} + {recommended.accent2.name}</span>
+                  <span>{recommended.type.name}</span>
+                  <span>{recommended.entrance.name} · {recommended.hover.name}</span>
+                </span>
+              </button>
+              <p className="rail-note">{RECOMMENDED.why}</p>
+            </div>
+
+            <div className="rail-block" id="rail-dials">
+              <p className="rail-kicker">02 · Choose your own adventure</p>
+              <p className="rail-note">
+                Not sold on it? Every dial is independent. Change any one and
+                the page updates. The address bar records the combination, so
+                copy the link and send it back.
+              </p>
               <Dials combo={combo} set={set} />
             </div>
-            <p className="rail-hash">{comboHash(combo)}</p>
+
+            <div className="rail-block">
+              <p className="rail-kicker">Notes on this combination</p>
+              <div className="notes">
+                <h4>The bet · {bg.name}</h4>
+                <p>{bg.bet}</p>
+                <h4 className="is-risk">The risk</h4>
+                <p>{bg.risk}</p>
+                <h4>{type.displayName}</h4>
+                <p>{type.note}</p>
+                <h4>Accents · {accent.name} with {accent2.name}</h4>
+                <p>
+                  Accent 1 is the loud one: buttons, the Team circle, the
+                  synapse nodes. Accent 2 is the quiet one: eyebrows, links,
+                  tags, the second blob.
+                </p>
+                <h4>Entrance · {entrance.name}</h4>
+                <p>{entrance.note}</p>
+                <h4>Hover · {hover.name}</h4>
+                <p>{hover.note}</p>
+              </div>
+              <p className="rail-hash">{comboHash(combo)}</p>
+            </div>
           </>
         ) : (
           <button
@@ -154,92 +209,6 @@ export default function DesignDirections() {
 
       <div className="content">
         <div className="wrap">
-          {/* 01 recommendation */}
-          <section className="band band-first reveal" id="recommendation">
-            <div className="sec-head">
-              <span className="sec-n">01</span>
-              <div>
-                <p className="kicker">Wilfred&apos;s pick</p>
-                <h2 className="sec">Recommendation</h2>
-              </div>
-            </div>
-            <div className="rec">
-              <p className="rec-why">{RECOMMENDED.why}</p>
-              <ul className="rec-list">
-                <li><span>Background</span>{recommended.bg.name}</li>
-                <li><span>Accent 1</span>{recommended.accent.family} {recommended.accent.name}</li>
-                <li><span>Accent 2</span>{recommended.accent2.family} {recommended.accent2.name}</li>
-                <li><span>Type</span>{recommended.type.name}</li>
-                <li><span>Entrance</span>{recommended.entrance.name}</li>
-                <li><span>Hover</span>{recommended.hover.name}</li>
-              </ul>
-              <div className="cta-row">
-                <button
-                  className="btn"
-                  onClick={() => setCombo(recommended)}
-                  disabled={onRecommended}
-                >
-                  {onRecommended ? "You are looking at it" : "View the recommendation"}
-                  {!onRecommended && <span className="arrow">&rarr;</span>}
-                </button>
-              </div>
-            </div>
-          </section>
-
-          {/* 02 choose your own adventure */}
-          <section className="band reveal" id="adventure">
-            <div className="sec-head">
-              <span className="sec-n">02</span>
-              <div>
-                <p className="kicker">Choose your own adventure</p>
-                <h2 className="sec">Mix and match</h2>
-              </div>
-            </div>
-            <p className="lede">
-              Six dials, all independent. Change any one and everything below
-              updates. The address bar records the exact combination, so copy
-              the link and send it back when you land on something you like.
-              The picker on the left is the same set of dials, so you can keep
-              adjusting from anywhere on the page.
-            </p>
-            <div className="dials-inline">
-              <Dials combo={combo} set={set} />
-            </div>
-
-            <h3 className="notes-title">Design notes</h3>
-            <div className="notes-grid">
-              <div>
-                <h4>The bet · {bg.name}</h4>
-                <p>{bg.bet}</p>
-              </div>
-              <div className="is-risk">
-                <h4>The risk</h4>
-                <p>{bg.risk}</p>
-              </div>
-              <div>
-                <h4>{type.displayName}</h4>
-                <p>{type.note}</p>
-              </div>
-              <div>
-                <h4>Accents · {accent.name} with {accent2.name}</h4>
-                <p>
-                  Accent 1 is the loud one: buttons, the Team circle, the
-                  synapse nodes. Accent 2 is the quiet one: eyebrows, links,
-                  tags, the second blob. One loud colour per screen, never
-                  both at full volume.
-                </p>
-              </div>
-              <div>
-                <h4>Entrance · {entrance.name}</h4>
-                <p>{entrance.note}</p>
-              </div>
-              <div>
-                <h4>Hover · {hover.name}</h4>
-                <p>{hover.note}</p>
-              </div>
-            </div>
-          </section>
-
           {/* hero */}
           <header className="hero reveal">
             <p className="eyebrow">In partnership with Sapien Labs</p>

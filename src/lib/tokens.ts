@@ -315,9 +315,9 @@ export const DEFAULT_COMBO: Combo = {
   hover: HOVERS[0],
 };
 
-// Wilfred's recommendation. Presented as its own section at the top of the
-// configurator, before the client is invited to mix and match.
-// TODO(wilfred): set the six ids and the reasoning once you have chosen.
+// The recommendation. Shown at the top of the picker, before the client is
+// invited to mix and match. Provisional pick and reasoning below; Wilfred
+// replaces both with his own before it goes to the client.
 export const RECOMMENDED = {
   bg: "aurora" as BackdropId,
   accent: "yellow-amber",
@@ -325,7 +325,7 @@ export const RECOMMENDED = {
   type: "bricolage",
   entrance: "unblur" as EntranceId,
   hover: "glow" as HoverId,
-  why: "TODO(wilfred): why this combination. Two or three sentences on what it says about SAMUH, and why it survives a boardroom.",
+  why: "Aurora is the most direct answer to the brief: colour moving slowly under black, organic and a little strange, never a graphic you are being shown. Amber reads as warmth and energy rather than caution, and Sky is the blue that sits best over the drift. Bricolage Grotesque is irregular on purpose without a single rounded corner, which keeps it playful and credible at once. Unblur and Glow are the quiet motion choices, so the looseness stays in the background where the boardroom will forgive it.",
 };
 
 export function recommendedCombo(): Combo {

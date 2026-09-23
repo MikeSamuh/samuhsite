@@ -24,7 +24,7 @@
   left: 0;
   bottom: 0;
   z-index: 60;
-  width: 300px;
+  width: 320px;
   overflow-y: auto;
   background: color-mix(in srgb, var(--base) 88%, transparent);
   backdrop-filter: blur(16px) saturate(140%);
@@ -89,7 +89,7 @@
 .content {
   position: relative;
   z-index: 1;
-  padding-left: 300px;
+  padding-left: 320px;
   transition: padding-left var(--dur) var(--ease);
 }
 
@@ -190,108 +190,88 @@
 
 .sw-gap { width: 8px; }
 
-/* the inline copy in the adventure section runs wider */
-.dials-inline {
-  margin: 8px 0 40px;
-  padding: 22px 24px;
-  background: var(--surface);
-  border: var(--rule-thin) solid var(--border);
-  border-radius: min(var(--radius), 22px);
+/* ---------- rail blocks ---------- */
+
+.rail-block {
+  padding: 16px 0;
+  border-top: var(--rule-thin) solid var(--border);
 }
 
-.dials-inline .dials { gap: 16px; }
-
-.dials-inline .ctrl {
-  grid-template-columns: 96px 1fr;
-  align-items: center;
-}
-
-/* ---------- recommendation ---------- */
-
-.band-first { border-top: 0; padding-top: 44px; }
-
-.rec {
-  display: grid;
-  gap: 24px;
-  max-width: 720px;
-}
-
-.rec-why {
-  margin: 0;
-  font-size: clamp(16px, 1.6vw, 19.5px);
-  line-height: 1.6;
-  color: var(--muted);
-}
-
-.rec-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px 20px;
-}
-
-.rec-list li {
-  display: grid;
-  gap: 3px;
-  padding: 12px 14px;
-  border: var(--rule-thin) solid var(--border);
-  border-radius: min(var(--radius), 14px);
-  background: var(--surface);
-  font-size: 14px;
-}
-
-.rec-list li span {
+.rail-kicker {
   font-family: var(--font-mono);
-  font-size: 9.5px;
+  font-size: 10px;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--accent);
+  margin: 0 0 10px;
 }
 
-.btn:disabled {
-  cursor: default;
-  opacity: 0.7;
-  transform: none !important;
-  box-shadow: none !important;
-}
-
-/* ---------- design notes ---------- */
-
-.notes-title {
-  font-family: var(--font-display);
-  font-weight: var(--display-weight);
-  letter-spacing: var(--display-tracking);
-  font-size: 19px;
-  margin: 0 0 14px;
-  padding-bottom: 10px;
-  border-bottom: var(--rule-thin) solid var(--border);
-}
-
-.notes-grid {
-  display: grid;
-  gap: 18px 28px;
-  grid-template-columns: repeat(3, 1fr);
-}
-
-.notes-grid h4 {
-  font-family: var(--font-mono);
-  font-size: 9.5px;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin: 0 0 7px;
-}
-
-.notes-grid p {
-  margin: 0;
-  font-size: 13.5px;
+.rail-note {
+  margin: 10px 0 12px;
+  font-size: 12.5px;
   line-height: 1.55;
   color: var(--muted);
 }
 
-.notes-grid .is-risk h4 { color: var(--muted); }
+/* the recommendation, a single pressable card */
+.rec {
+  width: 100%;
+  text-align: left;
+  display: grid;
+  gap: 8px;
+  padding: 12px 14px;
+  border: var(--rule-thin) solid var(--border);
+  border-radius: min(var(--radius), 14px);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  transition: all var(--dur) var(--ease);
+}
+
+.rec:hover { border-color: var(--accent); }
+
+.rec[aria-pressed="true"] {
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+}
+
+.rec-title {
+  font-family: var(--font-display);
+  font-weight: var(--display-weight);
+  letter-spacing: var(--display-tracking);
+  font-size: 14px;
+}
+
+.rec-list {
+  display: grid;
+  gap: 2px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.rec[aria-pressed="true"] .rec-list { color: var(--text); }
+
+/* compact notes at the bottom of the rail */
+.notes h4 {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 12px 0 4px;
+}
+
+.notes h4.is-risk { color: var(--muted); }
+
+.notes p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--muted);
+}
 
 /* ---------- hero ---------- */
 
@@ -802,9 +782,7 @@ a.inline-link:hover { color: var(--accent-2); background-size: 100% var(--rule-f
   .rail-expand { width: 100%; height: 40px; }
   .rail-expand span { writing-mode: horizontal-tb; transform: none; }
   .content, .rail[data-open="false"] + .content { padding-left: 0; }
-  .dials-inline .ctrl { grid-template-columns: 1fr; }
-  .rec-list { grid-template-columns: 1fr 1fr; }
-  .notes-grid { grid-template-columns: 1fr; gap: 15px; }
+
   .orb { --d: 300px; }
   .orb-team { --d: 206px; }
   .orb-ind { --d: 112px; }
