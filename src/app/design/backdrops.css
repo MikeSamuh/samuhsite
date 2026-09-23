@@ -202,11 +202,17 @@
   transform-origin: center;
 }
 
+/* depth of field: --depth runs 0.2 far to 1 near. Far elements blur and
+   fade, near ones stay exactly as crisp as before, never crisper.
+   Blur lengths here are SVG user units: the viewBox is 100 wide, so 0.1
+   is roughly a pixel and a half on a laptop. */
 .net-line {
   fill: none;
   stroke: rgba(255, 255, 255, 0.06);
   stroke-width: 1;
   vector-effect: non-scaling-stroke;
+  opacity: calc(0.5 + 0.5 * var(--depth, 1));
+  filter: blur(calc((1 - var(--depth, 1)) * 0.1px));
 }
 
 .net-signal {
@@ -217,29 +223,31 @@
   vector-effect: non-scaling-stroke;
   stroke-dasharray: 3 97;
   stroke-dashoffset: 100;
-  opacity: 0.28;
+  opacity: 0.24;
+  filter: blur(calc((1 - var(--depth, 1)) * 0.1px));
   animation: net-signal var(--dur-s) ease-in-out infinite;
   animation-delay: var(--delay-s);
 }
 
 .net-node {
   fill: var(--accent);
-  opacity: 0.15;
+  opacity: 0.13;
   transform-box: fill-box;
   transform-origin: center;
+  filter: blur(calc((1 - var(--depth, 1)) * 0.16px));
   animation: net-pulse var(--dur-n) ease-in-out infinite;
   animation-delay: var(--delay-n);
 }
 
 @keyframes net-signal {
   0%   { stroke-dashoffset: 100; opacity: 0; }
-  15%  { opacity: 0.28; }
-  85%  { opacity: 0.28; }
+  15%  { opacity: calc(0.24 * (0.4 + 0.6 * var(--depth, 1))); }
+  85%  { opacity: calc(0.24 * (0.4 + 0.6 * var(--depth, 1))); }
   100% { stroke-dashoffset: 0; opacity: 0; }
 }
 
 @keyframes net-pulse {
-  0%, 100% { opacity: 0.12; transform: scale(0.8); }
+  0%, 100% { opacity: calc(0.1 * (0.4 + 0.6 * var(--depth, 1))); transform: scale(0.8); }
   50%      { opacity: var(--peak, 0.4); transform: scale(1.4); }
 }
 
