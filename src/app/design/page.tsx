@@ -1,7 +1,18 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { BACKGROUNDS, ACCENTS, TYPE_PAIRS, cssVars } from "@/lib/tokens";
+import {
+  BACKGROUNDS,
+  ACCENTS,
+  TYPE_PAIRS,
+  ENTRANCES,
+  HOVERS,
+  DEFAULT_COMBO,
+  cssVars,
+  comboHash,
+  parseComboHash,
+  type Combo,
+} from "@/lib/tokens";
 import Backdrop from "./Backdrop";
 import "./backdrops.css";
 import "./design.css";
@@ -22,52 +33,62 @@ const TIERS = [
 ];
 
 export default function DesignDirections() {
-  const [b, setB] = useState(0);
-  const [a, setA] = useState(0);
-  const [t, setT] = useState(0);
+  const [combo, setCombo] = useState<Combo>(DEFAULT_COMBO);
+  const { bg, accent, accent2, type, entrance, hover } = combo;
+  const set = (patch: Partial<Combo>) => setCombo((c) => ({ ...c, ...patch }));
 
-  const combo = { bg: BACKGROUNDS[b], accent: ACCENTS[a], type: TYPE_PAIRS[t] };
-  const { bg, accent, type } = combo;
-
-  // deep link: /design#aurora.yellow-amber.syne
+  // deep link: /design#aurora.yellow-amber.blue-sky.syne.rise.lift
   useEffect(() => {
-    const read = () => {
-      const [bi, ai, ti] = window.location.hash.replace("#", "").split(".");
-      const nb = BACKGROUNDS.findIndex((x) => x.id === bi);
-      const na = ACCENTS.findIndex((x) => x.id === ai);
-      const nt = TYPE_PAIRS.findIndex((x) => x.id === ti);
-      if (nb >= 0) setB(nb);
-      if (na >= 0) setA(na);
-      if (nt >= 0) setT(nt);
-    };
+    const read = () => setCombo(parseComboHash(window.location.hash));
     read();
     window.addEventListener("hashchange", read);
     return () => window.removeEventListener("hashchange", read);
   }, []);
 
   useEffect(() => {
-    window.history.replaceState(
-      null,
-      "",
-      `#${bg.id}.${accent.id}.${type.id}`
-    );
-  }, [bg.id, accent.id, type.id]);
+    window.history.replaceState(null, "", comboHash(combo));
+  }, [combo]);
 
   // 1-5 background, q-w-e-r-t type
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement) return;
       const n = parseInt(e.key, 10);
-      if (n >= 1 && n <= BACKGROUNDS.length) setB(n - 1);
+      if (n >= 1 && n <= BACKGROUNDS.length) set({ bg: BACKGROUNDS[n - 1] });
       const ti = ["q", "w", "e", "r", "t"].indexOf(e.key.toLowerCase());
-      if (ti >= 0 && ti < TYPE_PAIRS.length) setT(ti);
+      if (ti >= 0 && ti < TYPE_PAIRS.length) set({ type: TYPE_PAIRS[ti] });
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
+  // Entrance: mark each .reveal as it scrolls into view. Re-runs when the
+  // entrance option changes so the client sees the new one play immediately.
+  useEffect(() => {
+    const nodes = Array.from(document.querySelectorAll<HTMLElement>(".reveal"));
+    nodes.forEach((n) => n.classList.remove("is-in"));
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((en) => {
+          if (en.isIntersecting) {
+            en.target.classList.add("is-in");
+            io.unobserve(en.target);
+          }
+        });
+      },
+      { rootMargin: "0px 0px -8% 0px" }
+    );
+    nodes.forEach((n) => io.observe(n));
+    return () => io.disconnect();
+  }, [entrance.id]);
+
   return (
-    <div className="stage" style={cssVars(combo)}>
+    <div
+      className="stage"
+      style={cssVars(combo)}
+      data-entrance={entrance.id}
+      data-hover={hover.id}
+    >
       <Backdrop id={bg.id} />
 
       <div className="content">
@@ -76,12 +97,12 @@ export default function DesignDirections() {
           <div className="chrome-inner">
             <div className="ctrl">
               <span className="ctrl-label">Background</span>
-              {BACKGROUNDS.map((x, i) => (
+              {BACKGROUNDS.map((x) => (
                 <button
                   key={x.id}
                   className="opt"
-                  aria-pressed={i === b}
-                  onClick={() => setB(i)}
+                  aria-pressed={x.id === bg.id}
+                  onClick={() => set({ bg: x })}
                 >
                   <span className="opt-n">{x.n}</span>
                   {x.name}
@@ -89,41 +110,69 @@ export default function DesignDirections() {
               ))}
             </div>
 
-            <div className="ctrl">
-              <span className="ctrl-label">Accent</span>
-              {ACCENTS.map((x, i) => (
-                <span key={x.id} style={{ display: "contents" }}>
-                  {i === 3 || i === 6 ? <span className="sw-gap" /> : null}
-                  <button
-                    className="sw"
-                    aria-pressed={i === a}
-                    onClick={() => setA(i)}
-                    style={{ background: x.hex }}
-                    title={`${x.family} ${x.name} · ${x.hex}`}
-                    aria-label={`${x.family} ${x.name}`}
-                  />
+            {(
+              [
+                ["Accent 1", accent, (x: (typeof ACCENTS)[number]) => set({ accent: x })],
+                ["Accent 2", accent2, (x: (typeof ACCENTS)[number]) => set({ accent2: x })],
+              ] as const
+            ).map(([label, current, pick]) => (
+              <div className="ctrl" key={label}>
+                <span className="ctrl-label">{label}</span>
+                {ACCENTS.map((x, i) => (
+                  <span key={x.id} style={{ display: "contents" }}>
+                    {i === 3 || i === 6 ? <span className="sw-gap" /> : null}
+                    <button
+                      className="sw"
+                      aria-pressed={x.id === current.id}
+                      onClick={() => pick(x)}
+                      style={{ background: x.hex }}
+                      title={`${x.family} ${x.name} · ${x.hex}`}
+                      aria-label={`${label}: ${x.family} ${x.name}`}
+                    />
+                  </span>
+                ))}
+                <span className="ctrl-value">
+                  {current.family} {current.name} · {current.hex}
                 </span>
-              ))}
-              <span
-                style={{
-                  fontFamily: "var(--font-mono)",
-                  fontSize: 11,
-                  color: "var(--muted)",
-                  marginLeft: 8,
-                }}
-              >
-                {accent.family} {accent.name} · {accent.hex}
-              </span>
-            </div>
+              </div>
+            ))}
 
             <div className="ctrl">
               <span className="ctrl-label">Type</span>
-              {TYPE_PAIRS.map((x, i) => (
+              {TYPE_PAIRS.map((x) => (
                 <button
                   key={x.id}
                   className="opt"
-                  aria-pressed={i === t}
-                  onClick={() => setT(i)}
+                  aria-pressed={x.id === type.id}
+                  onClick={() => set({ type: x })}
+                >
+                  {x.name}
+                </button>
+              ))}
+            </div>
+
+            <div className="ctrl">
+              <span className="ctrl-label">Entrance</span>
+              {ENTRANCES.map((x) => (
+                <button
+                  key={x.id}
+                  className="opt"
+                  aria-pressed={x.id === entrance.id}
+                  onClick={() => set({ entrance: x })}
+                >
+                  {x.name}
+                </button>
+              ))}
+            </div>
+
+            <div className="ctrl">
+              <span className="ctrl-label">Hover</span>
+              {HOVERS.map((x) => (
+                <button
+                  key={x.id}
+                  className="opt"
+                  aria-pressed={x.id === hover.id}
+                  onClick={() => set({ hover: x })}
                 >
                   {x.name}
                 </button>
@@ -133,8 +182,9 @@ export default function DesignDirections() {
         </div>
 
         {/* the argument */}
-        <div className="brief">
+        <section className="brief" aria-labelledby="design-notes">
           <div className="brief-inner">
+            <h3 id="design-notes" className="brief-title">Design notes</h3>
             <div>
               <h4>The bet · {bg.name}</h4>
               <p>{bg.bet}</p>
@@ -147,12 +197,28 @@ export default function DesignDirections() {
               <h4>{type.displayName}</h4>
               <p>{type.note}</p>
             </div>
+            <div>
+              <h4>Accents · {accent.name} with {accent2.name}</h4>
+              <p>
+                Accent 1 is the loud one: buttons, the Team circle, the arc.
+                Accent 2 is the quiet one: eyebrows, links, tags, the second
+                blob. One loud colour per screen, never both at full volume.
+              </p>
+            </div>
+            <div>
+              <h4>Entrance · {entrance.name}</h4>
+              <p>{entrance.note}</p>
+            </div>
+            <div>
+              <h4>Hover · {hover.name}</h4>
+              <p>{hover.note}</p>
+            </div>
           </div>
-        </div>
+        </section>
 
         <div className="wrap">
           {/* hero */}
-          <header className="hero">
+          <header className="hero reveal">
             <p className="eyebrow">In partnership with Sapien Labs</p>
             <h1 className="display">
               High performance <em>without</em> the cost to people.
@@ -171,38 +237,38 @@ export default function DesignDirections() {
           </header>
 
           {/* three circles */}
-          <section className="band">
+          <section className="band reveal">
             <div className="sec-head">
               <span className="sec-n">04</span>
               <div>
-                <p className="kicker">Motion &middot; bespoke sequence</p>
+                <p className="kicker">Motion &middot; bespoke sequence &middot; the organization houses the team, the team houses the individual</p>
                 <h2 className="sec">Three circles</h2>
               </div>
             </div>
-            <div className="rings">
-              <div className="ring">
-                <div>
-                  <span>Team</span>
-                  <small>the unit of change</small>
-                </div>
-              </div>
-              <div className="ring">
-                <div>
-                  <span>Individual</span>
-                  <small>inside the team</small>
-                </div>
-              </div>
-              <div className="ring">
-                <div>
-                  <span>Organization</span>
+            <div className="nest">
+              <div className="orb orb-org">
+                <span className="orb-label">
+                  Organization
                   <small>many teams</small>
+                </span>
+                <div className="orb orb-team">
+                  <span className="orb-label">
+                    Team
+                    <small>the unit of change</small>
+                  </span>
+                  <div className="orb orb-ind">
+                    <span className="orb-label">
+                      Individual
+                      <small>inside the team</small>
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
           </section>
 
           {/* process */}
-          <section className="band">
+          <section className="band reveal">
             <div className="sec-head">
               <span className="sec-n">05</span>
               <div>
@@ -212,7 +278,7 @@ export default function DesignDirections() {
             </div>
             <div className="process">
               {PROCESS.map(([name, note], n) => (
-                <div className="step" key={name}>
+                <div className="step reveal-item" key={name} style={{ "--i": n } as React.CSSProperties}>
                   <span className="step-n">0{n + 1}</span>
                   <span className="step-name">{name}</span>
                   <span className="step-note">{note}</span>
@@ -222,7 +288,7 @@ export default function DesignDirections() {
           </section>
 
           {/* tiers */}
-          <section className="band">
+          <section className="band reveal">
             <div className="sec-head">
               <span className="sec-n">06</span>
               <div>
@@ -231,8 +297,8 @@ export default function DesignDirections() {
               </div>
             </div>
             <div className="cards">
-              {TIERS.map(([tag, title, body, cta]) => (
-                <article className="card" key={title}>
+              {TIERS.map(([tag, title, body, cta], n) => (
+                <article className="card reveal-item" key={title} style={{ "--i": n } as React.CSSProperties}>
                   <span className="card-tag">{tag}</span>
                   <h3>{title}</h3>
                   <p>{body}</p>
@@ -245,7 +311,7 @@ export default function DesignDirections() {
           </section>
 
           {/* bench */}
-          <section className="band">
+          <section className="band reveal">
             <div className="sec-head">
               <span className="sec-n">07</span>
               <div>
@@ -318,7 +384,7 @@ export default function DesignDirections() {
           </section>
 
           {/* type */}
-          <section className="band">
+          <section className="band reveal">
             <div className="sec-head">
               <span className="sec-n">08</span>
               <div>
@@ -380,7 +446,7 @@ export default function DesignDirections() {
           </section>
 
           {/* tokens */}
-          <section className="band">
+          <section className="band reveal">
             <div className="sec-head">
               <span className="sec-n">09</span>
               <div>
@@ -398,8 +464,12 @@ export default function DesignDirections() {
                 <dd>{bg.base.toUpperCase()}</dd>
               </div>
               <div>
-                <dt>Accent</dt>
+                <dt>Accent 1</dt>
                 <dd>{accent.family} {accent.name} &middot; {accent.hex} &middot; {accent.note}</dd>
+              </div>
+              <div>
+                <dt>Accent 2</dt>
+                <dd>{accent2.family} {accent2.name} &middot; {accent2.hex} &middot; {accent2.note}</dd>
               </div>
               <div>
                 <dt>Display</dt>
@@ -425,19 +495,28 @@ export default function DesignDirections() {
                 <dd>{bg.motionDur} {bg.motionEase}</dd>
               </div>
               <div>
+                <dt>Entrance</dt>
+                <dd>{entrance.name}</dd>
+              </div>
+              <div>
+                <dt>Hover</dt>
+                <dd>{hover.name}</dd>
+              </div>
+              <div>
                 <dt>Share this exact combination</dt>
-                <dd>/design#{bg.id}.{accent.id}.{type.id}</dd>
+                <dd>/design{comboHash(combo)}</dd>
               </div>
             </dl>
           </section>
 
           <footer className="foot">
             <p>
-              <strong>Three dials, not five fixed options.</strong> Background,
-              accent and type move independently, so you are not stuck picking a
-              whole look you only half like. Find the background first, then the
-              accent, then the type. The URL updates as you go, so you can send
-              a colleague the exact combination you landed on.
+              <strong>Six dials, not five fixed options.</strong> Background,
+              two accents, type, entrance and hover move independently, so you
+              are not stuck picking a whole look you only half like. Find the
+              background first, then the accents, then the type, then the
+              effects. The URL updates as you go, so you can send a colleague
+              the exact combination you landed on.
             </p>
             <p>
               <strong>What we are going for.</strong> Playful and a bit organic,

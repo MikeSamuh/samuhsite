@@ -1,6 +1,6 @@
 /* Background treatments.
-   Every layer is fixed, pointer-events none, and sits behind the content.
-   All colour comes from --accent and --base. */
+   Every layer is pointer-events none and sits behind the content.
+   All colour comes from --accent, --accent-2 and --base. */
 
 .bd {
   position: fixed;
@@ -20,84 +20,87 @@
   );
 }
 
-/* ---------- 2. Ascent: black falling into charcoal, breathing ---------- */
+/* ---------- 2. Slate: lighter at the top, darker as you scroll ---------- */
 
-.bd-ascent-wash {
+.bd.bd-slate {
   position: absolute;
-  inset: -20%;
-  background:
-    linear-gradient(180deg, #000 0%, #101216 55%, #171A20 100%),
-    radial-gradient(ellipse 90% 50% at 50% 0%,
-      color-mix(in srgb, var(--accent) 10%, transparent) 0%,
-      transparent 70%);
-  animation: breathe 18s ease-in-out infinite;
+  background: linear-gradient(
+    180deg,
+    var(--surface-alt) 0%,
+    var(--base) 40%,
+    color-mix(in srgb, var(--base) 45%, black) 100%
+  );
 }
 
-@keyframes breathe {
-  0%, 100% { opacity: 0.85; transform: translateY(0); }
-  50%      { opacity: 1;    transform: translateY(-1.5%); }
-}
-
-/* ---------- 3. Aurora: slow colour movement, FTFC style ---------- */
+/* ---------- 3. Aurora: lava lamp ----------
+   Blobs are mixed well into the base so they read as a glow under the page,
+   not a colour on top of it. They rise, squash, and sink. Nothing crosses
+   the screen sideways. */
 
 .blob {
   position: absolute;
-  border-radius: 50%;
-  filter: blur(90px);
-  opacity: 0.5;
-  will-change: transform;
+  bottom: -18vw;
+  filter: blur(80px);
+  will-change: transform, border-radius;
+  border-radius: 48% 52% 46% 54% / 55% 45% 55% 45%;
 }
 
 .blob-a {
-  width: 46vw;
-  height: 46vw;
-  min-width: 380px;
+  width: 32vw;
+  height: 44vw;
+  min-width: 280px;
   min-height: 380px;
-  left: -8vw;
-  top: -6vw;
-  background: var(--accent);
-  animation: drift-a 42s ease-in-out infinite;
+  left: 4vw;
+  background: color-mix(in srgb, var(--accent) 48%, var(--base));
+  opacity: 0.6;
+  animation: lava-a 44s ease-in-out infinite;
 }
 
 .blob-b {
-  width: 40vw;
-  height: 40vw;
-  min-width: 320px;
-  min-height: 320px;
-  right: -6vw;
-  top: 18vh;
-  background: color-mix(in srgb, var(--accent) 55%, #6C3BFF);
-  opacity: 0.42;
-  animation: drift-b 55s ease-in-out infinite;
+  width: 26vw;
+  height: 38vw;
+  min-width: 240px;
+  min-height: 340px;
+  right: 6vw;
+  background: color-mix(in srgb, var(--accent-2) 44%, var(--base));
+  opacity: 0.55;
+  animation: lava-b 58s ease-in-out infinite;
+  animation-delay: -20s;
 }
 
 .blob-c {
-  width: 52vw;
-  height: 52vw;
-  min-width: 420px;
-  min-height: 420px;
-  left: 22vw;
-  bottom: -18vw;
-  background: color-mix(in srgb, var(--accent) 35%, #00C2A8);
-  opacity: 0.34;
-  animation: drift-c 64s ease-in-out infinite;
+  width: 20vw;
+  height: 28vw;
+  min-width: 200px;
+  min-height: 280px;
+  left: 44vw;
+  background: color-mix(
+    in srgb,
+    color-mix(in srgb, var(--accent) 50%, var(--accent-2)) 36%,
+    var(--base)
+  );
+  opacity: 0.5;
+  animation: lava-c 50s ease-in-out infinite;
+  animation-delay: -35s;
 }
 
-@keyframes drift-a {
-  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
-  33%      { transform: translate3d(14vw, 8vh, 0) scale(1.18); }
-  66%      { transform: translate3d(4vw, 20vh, 0) scale(0.92); }
+@keyframes lava-a {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1, 1);            border-radius: 48% 52% 46% 54% / 55% 45% 55% 45%; }
+  28%      { transform: translate3d(2vw, -46vh, 0) scale(0.9, 1.14);  border-radius: 56% 44% 50% 50% / 44% 56% 46% 54%; }
+  52%      { transform: translate3d(-2vw, -72vh, 0) scale(1.1, 0.92); border-radius: 50% 50% 58% 42% / 52% 48% 54% 46%; }
+  78%      { transform: translate3d(1vw, -28vh, 0) scale(0.96, 1.06); border-radius: 44% 56% 48% 52% / 58% 42% 50% 50%; }
 }
 
-@keyframes drift-b {
-  0%, 100% { transform: translate3d(0, 0, 0) scale(1.05); }
-  40%      { transform: translate3d(-16vw, 14vh, 0) scale(0.88); }
-  70%      { transform: translate3d(-6vw, -8vh, 0) scale(1.22); }
+@keyframes lava-b {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1.04, 1);          border-radius: 52% 48% 54% 46% / 46% 54% 44% 56%; }
+  35%      { transform: translate3d(-3vw, -58vh, 0) scale(0.88, 1.18); border-radius: 46% 54% 44% 56% / 56% 44% 58% 42%; }
+  62%      { transform: translate3d(2vw, -40vh, 0) scale(1.12, 0.9);   border-radius: 58% 42% 50% 50% / 50% 50% 46% 54%; }
 }
 
-@keyframes drift-c {
-  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
-  50%      { transform: translate3d(-12vw, -16vh, 0) scale(1.15); }
+@keyframes lava-c {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1, 1);              border-radius: 50% 50% 46% 54% / 54% 46% 56% 44%; }
+  45%      { transform: translate3d(-4vw, -84vh, 0) scale(0.86, 1.2);   border-radius: 54% 46% 56% 44% / 44% 56% 42% 58%; }
+  70%      { transform: translate3d(3vw, -52vh, 0) scale(1.14, 0.9);    border-radius: 44% 56% 50% 50% / 56% 44% 52% 48%; }
 }
 
 /* fine grain over the blobs so the gradient never bands */
@@ -136,7 +139,24 @@
   filter: blur(14px);
 }
 
-/* ---------- 5. Orbit: concentric rings, one rotating arc ---------- */
+/* ---------- 5. Orbit: concentric rings, two counter-rotating arcs ----------
+   Rings are 1px lines on a fixed pitch so they stay crisp at any size, and
+   they are strong enough to be seen next to Void. */
+
+.bd-glow {
+  position: absolute;
+  left: 50%;
+  top: 42%;
+  width: 90vmax;
+  height: 90vmax;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at center,
+    color-mix(in srgb, var(--accent) 9%, transparent) 0%,
+    transparent 60%
+  );
+}
 
 .bd-rings {
   position: absolute;
@@ -148,10 +168,13 @@
   border-radius: 50%;
   background: repeating-radial-gradient(
     circle at center,
-    transparent 0 7.4vmax,
-    rgba(255, 255, 255, 0.05) 7.4vmax 7.45vmax
+    transparent 0,
+    transparent calc(6.5vmax - 1px),
+    rgba(255, 255, 255, 0.14) calc(6.5vmax - 1px),
+    rgba(255, 255, 255, 0.14) 6.5vmax
   );
-  opacity: 0.85;
+  mask: radial-gradient(circle at center, #000 0%, #000 30%, transparent 62%);
+  -webkit-mask: radial-gradient(circle at center, #000 0%, #000 30%, transparent 62%);
 }
 
 .bd-arc {
@@ -166,24 +189,40 @@
     from 0deg,
     transparent 0deg,
     transparent 292deg,
-    color-mix(in srgb, var(--accent) 60%, transparent) 334deg,
-    color-mix(in srgb, var(--accent) 12%, transparent) 352deg,
+    color-mix(in srgb, var(--accent) 85%, transparent) 334deg,
+    color-mix(in srgb, var(--accent) 18%, transparent) 352deg,
     transparent 360deg
   );
   mask: radial-gradient(circle at center, transparent 43%, #000 44%, #000 46%, transparent 47%);
   -webkit-mask: radial-gradient(circle at center, transparent 43%, #000 44%, #000 46%, transparent 47%);
   animation: spin 90s linear infinite;
-  opacity: 0.9;
+}
+
+.bd-arc-2 {
+  width: 66vmax;
+  height: 66vmax;
+  background: conic-gradient(
+    from 180deg,
+    transparent 0deg,
+    transparent 310deg,
+    color-mix(in srgb, var(--accent-2) 70%, transparent) 344deg,
+    color-mix(in srgb, var(--accent-2) 12%, transparent) 356deg,
+    transparent 360deg
+  );
+  animation: spin-back 70s linear infinite;
 }
 
 @keyframes spin {
   to { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
+@keyframes spin-back {
+  to { transform: translate(-50%, -50%) rotate(-360deg); }
+}
+
 /* ---------- reduced motion ---------- */
 
 @media (prefers-reduced-motion: reduce) {
-  .bd-ascent-wash,
   .blob,
   .bd-arc {
     animation: none !important;

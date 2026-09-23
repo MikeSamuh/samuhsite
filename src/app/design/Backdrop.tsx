@@ -4,17 +4,15 @@ import type { BackdropId } from "@/lib/tokens";
 
 /**
  * The five background treatments. Pure CSS and inline SVG, no image assets.
- * Each reads --accent so the stage and the accent always agree.
+ * Each reads --accent and --accent-2 so the stage and the accents always agree.
  */
 export default function Backdrop({ id }: { id: BackdropId }) {
   if (id === "void") return null;
 
-  if (id === "ascent") {
-    return (
-      <div className="bd bd-ascent" aria-hidden>
-        <div className="bd-ascent-wash" />
-      </div>
-    );
+  if (id === "slate") {
+    // Absolute rather than fixed, so the gradient spans the whole document
+    // and the page darkens as you scroll rather than on screen.
+    return <div className="bd bd-slate" aria-hidden />;
   }
 
   if (id === "aurora") {
@@ -41,9 +39,10 @@ export default function Backdrop({ id }: { id: BackdropId }) {
   // orbit
   return (
     <div className="bd bd-orbit" aria-hidden>
+      <div className="bd-glow" />
       <div className="bd-rings" />
       <div className="bd-arc" />
-      <div className="bd-vignette" />
+      <div className="bd-arc bd-arc-2" />
     </div>
   );
 }

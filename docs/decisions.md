@@ -68,3 +68,27 @@ typography and spacing. — Client and Wilfred
 logo.** Named near the header logo, beside the data sections, and in the body
 of the About page. It is also the research source the whole education layer
 leans on. — Scope document
+
+**2026-09-23 — Two accents, not one.**
+The configurator picks Accent 1 (loud: buttons, Team circle, arc) and Accent 2
+(quiet: eyebrows, links, tags). The client wants two colours to pick and choose
+from rather than a single accent. — Client
+
+**2026-09-23 — Ascent becomes Slate.**
+Dark slate instead of black-to-charcoal, lighter at the top and darker as you
+scroll. Void and Orbit were also indistinguishable, so Orbit's rings and arcs
+were strengthened until they read. — Client
+
+**2026-09-23 — Aurora is a lava lamp.**
+Colours toned down and mixed into the base, movement is vertical rise and
+sink rather than sideways drift. — Client
+
+**2026-09-23 — The three circles are nested.**
+The organization houses the team, the team houses the individual. Team is the
+only accented circle because the team is the subject. Each circle has its own
+slight movement. The client's sketch is the shape, not the look. — Client
+
+**2026-09-23 — Effects are a dial too.**
+Entrance and hover behaviour are chosen in the configurator alongside
+background, accents and type. The style guide is choose-your-own-adventure
+across every axis, not a fixed set of looks. — Client
