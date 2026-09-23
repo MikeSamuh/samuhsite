@@ -10,11 +10,12 @@ records the exact combination.
 `/design#aurora.yellow-amber.blue-sky.syne.unblur.glow` is a real, shareable
 state. Order does not matter and the older three-part links still resolve.
 
-The page opens with Wilfred's recommendation as its own section, then a
-choose-your-own-adventure section with every dial inline, then the preview.
-The dials also live in a left rail that minimises. The recommendation is the
-`RECOMMENDED` constant in `tokens.ts`, six ids and a reason, marked TODO until
-it is chosen.
+The dials live in a left rail that minimises. It opens with Wilfred's
+recommendation, a single card that applies it, then the choose-your-own-
+adventure dials. The page to the right is the preview, with a top nav example
+and the logo at the top. The recommendation is the `RECOMMENDED` constant in
+`tokens.ts`: Aurora, Hot with Periwinkle, Syne / Inter, Unblur, Glow. Arriving
+without a hash shows it.
 
 After selection:
 

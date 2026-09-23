@@ -316,13 +316,12 @@ export const DEFAULT_COMBO: Combo = {
 };
 
 // The recommendation. Shown at the top of the picker, before the client is
-// invited to mix and match. Provisional pick; Wilfred replaces it with his
-// own before it goes to the client.
+// invited to mix and match. Chosen by Wilfred, 23 September 2026.
 export const RECOMMENDED = {
   bg: "aurora" as BackdropId,
-  accent: "yellow-amber",
-  accent2: "blue-sky",
-  type: "bricolage",
+  accent: "pink-hot",
+  accent2: "blue-peri",
+  type: "syne",
   entrance: "unblur" as EntranceId,
   hover: "glow" as HoverId,
 };

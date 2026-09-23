@@ -273,6 +273,64 @@
   color: var(--muted);
 }
 
+/* ---------- top nav example ----------
+   The logo is the supplied artwork, cropped and scaled, never redrawn. It is
+   dark lettering on transparent, so it is turned white here with a filter
+   rather than by editing the file. */
+
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  padding: 22px 0;
+  border-bottom: var(--rule-thin) solid var(--border);
+}
+
+.nav-logo {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.nav-logo img {
+  height: 30px;
+  width: auto;
+  filter: brightness(0) invert(1);
+}
+
+.nav-partner {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding-left: 20px;
+  border-left: var(--rule-thin) solid var(--border);
+  white-space: nowrap;
+}
+
+.nav-links {
+  display: flex;
+  gap: 26px;
+  margin-left: auto;
+}
+
+.nav-links a {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--muted);
+  text-decoration: none;
+  padding-bottom: 3px;
+  background-image: linear-gradient(var(--accent-2), var(--accent-2));
+  background-size: 0% var(--rule-thin);
+  background-repeat: no-repeat;
+  background-position: left 100%;
+  transition: background-size var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+
+.nav-links a:hover { color: var(--text); background-size: 100% var(--rule-thin); }
+
+.btn-small { padding: 10px 18px; font-size: 14px; }
+
 /* ---------- hero ---------- */
 
 .hero { padding: 100px 0 80px; }
@@ -769,6 +827,9 @@ a.inline-link:hover { color: var(--accent-2); background-size: 100% var(--rule-f
   .specimen > div { grid-template-columns: 1fr; gap: 7px; }
   .tokens div { grid-template-columns: 1fr; gap: 3px; }
   .hero { padding: 56px 0 52px; }
+  .site-nav { flex-wrap: wrap; gap: 14px 20px; }
+  .nav-partner { border-left: 0; padding-left: 0; }
+  .nav-links { margin-left: 0; width: 100%; gap: 18px; flex-wrap: wrap; }
   section.band { padding: 52px 0; }
   .rail {
     position: sticky;

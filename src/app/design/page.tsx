@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import {
   BACKGROUNDS,
   ACCENTS,
@@ -19,6 +20,11 @@ import {
 import Backdrop from "./Backdrop";
 import "./backdrops.css";
 import "./design.css";
+
+const NAV = ["Solutions", "Process", "Insights", "About", "Contact"];
+const stay = (e: React.MouseEvent) => e.preventDefault();
+// set from the cropped file in public/, 960 wide
+const LOGO_H = 285;
 
 const PROCESS = [
   ["Prepare", "Baseline the team before anything changes."],
@@ -163,30 +169,9 @@ export default function DesignDirections() {
             <div className="rail-block" id="rail-dials">
               <p className="rail-kicker">02 · Choose your own adventure</p>
               <Dials combo={combo} set={set} />
-            </div>
-
-            <div className="rail-block">
-              <p className="rail-kicker">Notes on this combination</p>
-              <div className="notes">
-                <h4>The bet · {bg.name}</h4>
-                <p>{bg.bet}</p>
-                <h4 className="is-risk">The risk</h4>
-                <p>{bg.risk}</p>
-                <h4>{type.displayName}</h4>
-                <p>{type.note}</p>
-                <h4>Accents · {accent.name} with {accent2.name}</h4>
-                <p>
-                  Accent 1 is the loud one: buttons, the Team circle, the
-                  synapse nodes. Accent 2 is the quiet one: eyebrows, links,
-                  tags, the second blob.
-                </p>
-                <h4>Entrance · {entrance.name}</h4>
-                <p>{entrance.note}</p>
-                <h4>Hover · {hover.name}</h4>
-                <p>{hover.note}</p>
-              </div>
               <p className="rail-hash">{comboHash(combo)}</p>
             </div>
+
           </>
         ) : (
           <button
@@ -202,9 +187,26 @@ export default function DesignDirections() {
 
       <div className="content">
         <div className="wrap">
+          {/* top nav example. Nothing here navigates: the page is a style
+              reference, so every link stays put. */}
+          <header className="site-nav">
+            <a href="#" className="nav-logo" onClick={stay} aria-label="SAMUH home">
+              <Image src="/samuh-logo.png" alt="SAMUH" width={960} height={LOGO_H} priority />
+            </a>
+            <span className="nav-partner">in partnership with Sapien Labs</span>
+            <nav className="nav-links" aria-label="Primary">
+              {NAV.map((item) => (
+                <a key={item} href="#" onClick={stay}>{item}</a>
+              ))}
+            </nav>
+            <button className="btn btn-small">
+              Get started <span className="arrow">&rarr;</span>
+            </button>
+          </header>
+
           {/* hero */}
           <header className="hero reveal">
-            <p className="eyebrow">In partnership with Sapien Labs</p>
+            <p className="eyebrow">Organizational and high-performance consulting</p>
             <h1 className="display">
               High performance <em>without</em> the cost to people.
             </h1>
@@ -433,7 +435,7 @@ export default function DesignDirections() {
               <span className="sec-n">09</span>
               <div>
                 <p className="kicker">The combination you are looking at</p>
-                <h2 className="sec">Tokens</h2>
+                <h2 className="sec">Design specs</h2>
               </div>
             </div>
             <dl className="tokens">
