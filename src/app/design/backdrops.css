@@ -1,6 +1,6 @@
 /* Background treatments.
-   Every layer is fixed, pointer-events none, and sits behind the content.
-   All colour comes from --accent and --base. */
+   Every layer is pointer-events none and sits behind the content.
+   All colour comes from --accent, --accent-2 and --base. */
 
 .bd {
   position: fixed;
@@ -20,84 +20,99 @@
   );
 }
 
-/* ---------- 2. Ascent: black falling into charcoal, breathing ---------- */
+/* ---------- 2. Slate: lighter at the top, darker as you scroll ---------- */
 
-.bd-ascent-wash {
+.bd.bd-slate {
   position: absolute;
-  inset: -20%;
-  background:
-    linear-gradient(180deg, #000 0%, #101216 55%, #171A20 100%),
-    radial-gradient(ellipse 90% 50% at 50% 0%,
-      color-mix(in srgb, var(--accent) 10%, transparent) 0%,
-      transparent 70%);
-  animation: breathe 18s ease-in-out infinite;
+  background: linear-gradient(
+    180deg,
+    var(--surface-alt) 0%,
+    var(--base) 40%,
+    color-mix(in srgb, var(--base) 45%, black) 100%
+  );
 }
 
-@keyframes breathe {
-  0%, 100% { opacity: 0.85; transform: translateY(0); }
-  50%      { opacity: 1;    transform: translateY(-1.5%); }
-}
+/* ---------- 3. Aurora: lava lamp ----------
+   Blobs are mixed well into the base so they read as a glow under the page,
+   not a colour on top of it. They rise, squash, and sink. Nothing crosses
+   the screen sideways. */
 
-/* ---------- 3. Aurora: slow colour movement, FTFC style ---------- */
-
-.blob {
+.blob-wrap {
   position: absolute;
-  border-radius: 50%;
-  filter: blur(90px);
-  opacity: 0.5;
+  inset: 0;
   will-change: transform;
 }
 
+/* scroll pulls each layer a different way, so the field rearranges as the
+   page moves rather than only cycling on its own */
+.blob-wrap-a { transform: translate3d(0, calc(var(--scroll-p, 0) * -70vh), 0); }
+.blob-wrap-b { transform: translate3d(calc(var(--scroll-p, 0) * -8vw), calc(var(--scroll-p, 0) * 45vh), 0); }
+.blob-wrap-c { transform: translate3d(calc(var(--scroll-p, 0) * 10vw), calc(var(--scroll-p, 0) * -110vh), 0); }
+
+.blob {
+  position: absolute;
+  bottom: -18vw;
+  filter: blur(70px);
+  will-change: transform, border-radius;
+  border-radius: 48% 52% 46% 54% / 55% 45% 55% 45%;
+}
+
 .blob-a {
-  width: 46vw;
-  height: 46vw;
-  min-width: 380px;
-  min-height: 380px;
-  left: -8vw;
-  top: -6vw;
-  background: var(--accent);
-  animation: drift-a 42s ease-in-out infinite;
+  width: 24vw;
+  height: 33vw;
+  min-width: 210px;
+  min-height: 285px;
+  left: 4vw;
+  background: color-mix(in srgb, var(--accent) 48%, var(--base));
+  opacity: 0.7;
+  animation: lava-a 18s ease-in-out infinite;
 }
 
 .blob-b {
-  width: 40vw;
-  height: 40vw;
-  min-width: 320px;
-  min-height: 320px;
-  right: -6vw;
-  top: 18vh;
-  background: color-mix(in srgb, var(--accent) 55%, #6C3BFF);
-  opacity: 0.42;
-  animation: drift-b 55s ease-in-out infinite;
+  width: 19.5vw;
+  height: 28.5vw;
+  min-width: 180px;
+  min-height: 255px;
+  right: 6vw;
+  background: color-mix(in srgb, var(--accent-2) 44%, var(--base));
+  opacity: 0.65;
+  animation: lava-b 23s ease-in-out infinite;
+  animation-delay: -9s;
 }
 
 .blob-c {
-  width: 52vw;
-  height: 52vw;
-  min-width: 420px;
-  min-height: 420px;
-  left: 22vw;
-  bottom: -18vw;
-  background: color-mix(in srgb, var(--accent) 35%, #00C2A8);
-  opacity: 0.34;
-  animation: drift-c 64s ease-in-out infinite;
+  width: 15vw;
+  height: 21vw;
+  min-width: 150px;
+  min-height: 210px;
+  left: 44vw;
+  background: color-mix(
+    in srgb,
+    color-mix(in srgb, var(--accent) 50%, var(--accent-2)) 36%,
+    var(--base)
+  );
+  opacity: 0.6;
+  animation: lava-c 21s ease-in-out infinite;
+  animation-delay: -15s;
 }
 
-@keyframes drift-a {
-  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
-  33%      { transform: translate3d(14vw, 8vh, 0) scale(1.18); }
-  66%      { transform: translate3d(4vw, 20vh, 0) scale(0.92); }
+@keyframes lava-a {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1, 1);              border-radius: 48% 52% 46% 54% / 55% 45% 55% 45%; }
+  30%      { transform: translate3d(4vw, -60vh, 0) scale(0.86, 1.2);    border-radius: 56% 44% 50% 50% / 44% 56% 46% 54%; }
+  55%      { transform: translate3d(-3vw, -100vh, 0) scale(1.14, 0.9);  border-radius: 50% 50% 58% 42% / 52% 48% 54% 46%; }
+  80%      { transform: translate3d(2vw, -38vh, 0) scale(0.94, 1.08);   border-radius: 44% 56% 48% 52% / 58% 42% 50% 50%; }
 }
 
-@keyframes drift-b {
-  0%, 100% { transform: translate3d(0, 0, 0) scale(1.05); }
-  40%      { transform: translate3d(-16vw, 14vh, 0) scale(0.88); }
-  70%      { transform: translate3d(-6vw, -8vh, 0) scale(1.22); }
+@keyframes lava-b {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1.04, 1);            border-radius: 52% 48% 54% 46% / 46% 54% 44% 56%; }
+  38%      { transform: translate3d(-5vw, -84vh, 0) scale(0.84, 1.24);  border-radius: 46% 54% 44% 56% / 56% 44% 58% 42%; }
+  66%      { transform: translate3d(3vw, -50vh, 0) scale(1.16, 0.88);   border-radius: 58% 42% 50% 50% / 50% 50% 46% 54%; }
 }
 
-@keyframes drift-c {
-  0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
-  50%      { transform: translate3d(-12vw, -16vh, 0) scale(1.15); }
+@keyframes lava-c {
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1, 1);                border-radius: 50% 50% 46% 54% / 54% 46% 56% 44%; }
+  48%      { transform: translate3d(-6vw, -110vh, 0) scale(0.82, 1.26);  border-radius: 54% 46% 56% 44% / 44% 56% 42% 58%; }
+  74%      { transform: translate3d(4vw, -62vh, 0) scale(1.18, 0.88);    border-radius: 44% 56% 50% 50% / 56% 44% 52% 48%; }
 }
 
 /* fine grain over the blobs so the gradient never bands */
@@ -109,12 +124,17 @@
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-/* ---------- 4. Chalk: blackboard ---------- */
+/* ---------- 4. Chalk: blackboard that changes as you scroll ----------
+   --scroll-p is the page's scroll progress, 0 at the top and 1 at the end,
+   set on the root by the preview. The board cools from green-black toward
+   blue-black, the wiped dust drifts past at a different rate from the
+   content, the grain shifts, and a chalk line along the bottom edge fills. */
 
 .bd-chalk {
   background:
     radial-gradient(ellipse 100% 70% at 30% 20%, #10150F 0%, transparent 60%),
-    radial-gradient(ellipse 90% 60% at 75% 70%, #0D1210 0%, transparent 55%);
+    radial-gradient(ellipse 90% 60% at 75% 70%, #0D1210 0%, transparent 55%),
+    color-mix(in srgb, transparent, #0B1220 calc(var(--scroll-p, 0) * 55%));
 }
 
 .bd-chalk-grain {
@@ -122,70 +142,121 @@
   inset: 0;
   opacity: 0.22;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='c'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='4'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23c)' opacity='0.55'/%3E%3C/svg%3E");
+  background-position: 0 calc(var(--scroll-p, 0) * -600px);
 }
 
-/* the smear a board keeps after it is wiped */
+/* the smears a board keeps after it is wiped, laid down a tall strip that
+   slides past as the page scrolls */
 .bd-chalk-dust {
   position: absolute;
-  inset: 0;
-  opacity: 0.07;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 260vh;
+  opacity: 0.08;
   background:
-    radial-gradient(ellipse 60% 22% at 22% 32%, #fff 0%, transparent 70%),
-    radial-gradient(ellipse 48% 16% at 72% 58%, #fff 0%, transparent 70%),
-    radial-gradient(ellipse 70% 14% at 45% 82%, #fff 0%, transparent 72%);
+    radial-gradient(ellipse 60% 9% at 22% 12%, #fff 0%, transparent 70%),
+    radial-gradient(ellipse 48% 7% at 72% 22%, #fff 0%, transparent 70%),
+    radial-gradient(ellipse 70% 6% at 45% 33%, #fff 0%, transparent 72%),
+    radial-gradient(ellipse 55% 8% at 30% 48%, #fff 0%, transparent 70%),
+    radial-gradient(ellipse 64% 6% at 68% 58%, #fff 0%, transparent 70%),
+    radial-gradient(ellipse 50% 9% at 18% 71%, #fff 0%, transparent 70%),
+    radial-gradient(ellipse 72% 6% at 60% 84%, #fff 0%, transparent 72%),
+    radial-gradient(ellipse 46% 8% at 80% 94%, #fff 0%, transparent 70%);
   filter: blur(14px);
+  transform: translateY(calc(var(--scroll-p, 0) * -160vh));
+  will-change: transform;
 }
 
-/* ---------- 5. Orbit: concentric rings, one rotating arc ---------- */
-
-.bd-rings {
+/* progress drawn as one chalk stroke along the bottom edge */
+.bd-chalk-mark {
   position: absolute;
-  left: 50%;
-  top: 42%;
-  width: 190vmax;
-  height: 190vmax;
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
-  background: repeating-radial-gradient(
-    circle at center,
-    transparent 0 7.4vmax,
-    rgba(255, 255, 255, 0.05) 7.4vmax 7.45vmax
-  );
-  opacity: 0.85;
+  left: 0;
+  bottom: 0;
+  height: var(--rule-fat);
+  width: calc(var(--scroll-p, 0) * 100%);
+  background: var(--accent);
+  opacity: 0.75;
+  border-radius: 0 99px 99px 0;
+  filter: blur(0.4px);
 }
 
-.bd-arc {
+/* ---------- 5. Synapse: a faint network that is never still ----------
+   Geometry is driven per frame by Synapse.tsx: every node drifts on its own
+   orbit and the field parallaxes with scroll. Pulses and signals are here.
+   Everything is low opacity on purpose. */
+
+.bd-synapse {
+  background: radial-gradient(
+    ellipse 80% 60% at 50% 30%,
+    color-mix(in srgb, var(--accent) 3%, transparent) 0%,
+    transparent 70%
+  );
+}
+
+.bd-net {
   position: absolute;
-  left: 50%;
-  top: 42%;
-  width: 104vmax;
-  height: 104vmax;
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
-  background: conic-gradient(
-    from 0deg,
-    transparent 0deg,
-    transparent 292deg,
-    color-mix(in srgb, var(--accent) 60%, transparent) 334deg,
-    color-mix(in srgb, var(--accent) 12%, transparent) 352deg,
-    transparent 360deg
-  );
-  mask: radial-gradient(circle at center, transparent 43%, #000 44%, #000 46%, transparent 47%);
-  -webkit-mask: radial-gradient(circle at center, transparent 43%, #000 44%, #000 46%, transparent 47%);
-  animation: spin 90s linear infinite;
-  opacity: 0.9;
+  inset: -4%;
+  width: 108%;
+  height: 108%;
+  transform-origin: center;
 }
 
-@keyframes spin {
-  to { transform: translate(-50%, -50%) rotate(360deg); }
+/* depth of field: --depth runs 0.2 far to 1 near. Far elements blur and
+   fade, near ones stay exactly as crisp as before, never crisper.
+   Blur lengths here are SVG user units: the viewBox is 100 wide, so 0.1
+   is roughly a pixel and a half on a laptop. */
+.net-line {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.06);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  opacity: calc(0.5 + 0.5 * var(--depth, 1));
+  filter: blur(calc((1 - var(--depth, 1)) * 0.1px));
+}
+
+.net-signal {
+  fill: none;
+  stroke: var(--accent-2);
+  stroke-width: 1;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 3 97;
+  stroke-dashoffset: 100;
+  opacity: 0.24;
+  filter: blur(calc((1 - var(--depth, 1)) * 0.1px));
+  animation: net-signal var(--dur-s) ease-in-out infinite;
+  animation-delay: var(--delay-s);
+}
+
+.net-node {
+  fill: var(--accent);
+  opacity: 0.13;
+  transform-box: fill-box;
+  transform-origin: center;
+  filter: blur(calc((1 - var(--depth, 1)) * 0.16px));
+  animation: net-pulse var(--dur-n) ease-in-out infinite;
+  animation-delay: var(--delay-n);
+}
+
+@keyframes net-signal {
+  0%   { stroke-dashoffset: 100; opacity: 0; }
+  15%  { opacity: calc(0.24 * (0.4 + 0.6 * var(--depth, 1))); }
+  85%  { opacity: calc(0.24 * (0.4 + 0.6 * var(--depth, 1))); }
+  100% { stroke-dashoffset: 0; opacity: 0; }
+}
+
+@keyframes net-pulse {
+  0%, 100% { opacity: calc(0.1 * (0.4 + 0.6 * var(--depth, 1))); transform: scale(0.8); }
+  50%      { opacity: var(--peak, 0.4); transform: scale(1.4); }
 }
 
 /* ---------- reduced motion ---------- */
 
 @media (prefers-reduced-motion: reduce) {
-  .bd-ascent-wash,
   .blob,
-  .bd-arc {
+  .net-signal,
+  .net-node {
     animation: none !important;
   }
 }

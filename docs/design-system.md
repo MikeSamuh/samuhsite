@@ -2,15 +2,24 @@
 
 ## Status
 
-**Nothing selected yet.** `/design` is a configurator with three independent
-dials. The client picks a background, an accent and a type pairing, and the URL
+**Nothing selected yet.** `/design` is a configurator with six independent
+dials, a choose-your-own-adventure style guide. The client picks a background,
+two accents, a type pairing, an entrance and a hover behaviour, and the URL
 records the exact combination.
 
-`/design#aurora.yellow-amber.syne` is a real, shareable state.
+`/design#aurora.yellow-amber.blue-sky.syne.unblur.glow` is a real, shareable
+state. Order does not matter and the older three-part links still resolve.
+
+The dials live in a left rail that minimises. It opens with Wilfred's
+recommendation, a single card that applies it, then the choose-your-own-
+adventure dials. The page to the right is the preview, with a top nav example
+and the logo at the top. The recommendation is the `RECOMMENDED` constant in
+`tokens.ts`: Aurora, Hot with Periwinkle, Syne / Inter, Unblur, Glow. Arriving
+without a hash shows it.
 
 After selection:
 
-1. Cut `tokens.ts` down to the chosen background, accent and pairing
+1. Cut `tokens.ts` down to the chosen background, accents, pairing and effects
 2. Trim `layout.tsx` to the two or three faces that pairing uses. Nine families
    load right now purely so the preview can switch without a flash. That is not
    a production font budget
@@ -37,14 +46,14 @@ the background choice also sets how the whole thing behaves.
 | # | id | Name | Treatment |
 |---|---|---|---|
 | 1 | `void` | Void | Pure black, nothing behind the content |
-| 2 | `ascent` | Ascent | Black falling into charcoal, slow breathing wash |
-| 3 | `aurora` | Aurora | Drifting colour blobs under grain, 42 to 64 second cycles. The FTFC-style colour movement |
-| 4 | `chalk` | Chalk | Blackboard. Green-black base, fine grain, wiped dust, vignette |
-| 5 | `orbit` | Orbit | Concentric hairline rings with one rotating arc of accent, 90 second cycle |
+| 2 | `slate` | Slate | Dark slate, not black. Lighter at the top, darker as you scroll |
+| 3 | `aurora` | Aurora | Toned-down colour rising and sinking under grain, lava lamp style, 18 to 23 second cycles. Each blob also parallaxes with scroll |
+| 4 | `chalk` | Chalk | Blackboard. Changes with scroll: the board cools, the wiped dust drifts past, a chalk line along the bottom fills with progress |
+| 5 | `synapse` | Synapse | A faint network of drifting nodes and curved connections with signals travelling along them. Nodes parallax with scroll at their own depth |
 
-Orbit is the creative-freedom slot. The reasoning: the homepage already has a
-three-circles section as its structural idea, so a background built from
-concentric rings foreshadows it instead of decorating around it.
+Synapse replaced Orbit after the client rejected the rings. It is the
+creative-freedom slot: teams as a nervous system, where the connections are the
+point. It has to stay quiet or it becomes a tech-company node graph.
 
 Aurora is the most direct answer to "on mushrooms" and also the highest craft
 cost. Watch legibility on it above everything else.
@@ -66,9 +75,11 @@ nine are safe for text and not only decoration.
 | Blue | Sky | `#5BC8FF` | Lighter and more open, pairs best with Aurora |
 | Blue | Periwinkle | `#8B8BFF` | Drifting into violet. The strangest blue |
 
-One loud colour at a time. The scope calls for pink, blue and yellow together,
-but they work as a system across sections rather than all at once on one
-screen.
+Two accents are chosen, from any family. Accent 1 is the loud one: buttons,
+the Team circle, the synapse nodes, the first aurora blob. Accent 2 is the quiet
+one: eyebrows, inline links, tags, the second blob. One loud colour per screen.
+The scope calls for pink, blue and yellow together, and this is how they work
+as a system rather than all at once.
 
 ## Axis 3: typography
 
@@ -79,11 +90,40 @@ face. The pairing is what keeps it playful without becoming childish.
 |---|---|---|
 | `fraunces` | Fraunces / Inter | Serif with deliberate wonk. Warm up close, serious at a glance |
 | `bricolage` | Bricolage Grotesque / Inter | Irregular by design. Playful without a rounded corner |
-| `instrument` | Instrument Serif / Instrument Sans | High contrast, theatrical, most expensive-looking |
+| `unbounded` | Unbounded / Instrument Sans | Wide and geometric, almost a wordmark. The most contemporary |
 | `syne` | Syne / Inter | Architectural and genuinely strange. The boldest swing |
 | `space` | Space Grotesk / Figtree | Geometric with quirks in the details |
 
 IBM Plex Mono carries captions and data in every pairing.
+
+## Axis 4 and 5: effects
+
+Entrance is how a section arrives as it scrolls into view. Hover is how
+buttons, cards and steps react to a pointer. Both are applied as data
+attributes on the stage and always run at the direction's `--dur` and `--ease`.
+
+| Entrance | Behaviour |
+|---|---|
+| `rise` | Lifts from a few pixels below while fading in |
+| `fade` | Opacity only |
+| `unblur` | Soft focus to sharp |
+| `wipe` | Revealed left to right, as if drawn |
+| `still` | No entrance |
+
+| Hover | Behaviour |
+|---|---|
+| `lift` | Rises with a soft accent shadow |
+| `glow` | No movement, a ring of accent light |
+| `fill` | Colour floods in, buttons invert |
+| `scale` | Grows slightly |
+| `quiet` | Colour and border only, no motion |
+
+## Three circles
+
+Nested, not overlapping. The organization houses the team, the team houses the
+individual. Only the team circle carries the accent, because the team is the
+subject. Each circle floats on its own slow cycle. The client's reference
+sketch is the shape, not the look.
 
 ## Token contract
 
@@ -97,6 +137,7 @@ Nothing outside `src/lib/tokens.ts` carries a design value.
 | `--text`, `--muted` | Primary and secondary text |
 | `--rule-thin`, `--rule-fat` | The two line weights |
 | `--accent`, `--on-accent` | The loud colour and text sitting on it |
+| `--accent-2`, `--on-accent-2` | The quiet colour and text sitting on it |
 | `--radius` | Every corner |
 | `--dur`, `--ease` | Every transition |
 | `--font-display`, `--font-body`, `--font-mono` | Type |
@@ -109,7 +150,8 @@ a fat rule, and the gap between them is deliberate. Uniform 1px everywhere is
 what makes a site feel corporate. A hairline grid with a few confident heavy
 strokes is what makes it feel drawn.
 
-Chalk runs the widest gap, 1px against 5px. Void and Orbit run 1px against 3px.
+Chalk runs the widest gap, 1px against 5px. Void and Synapse run 1px against 3px.
+Slate runs 1px against 4px.
 
 ## Motion
 

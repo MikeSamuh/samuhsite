@@ -55,11 +55,17 @@ Two things matter:
 **The lettering is custom and handmade.** The brand book forbids recreating,
 redrawing or modifying it. Place the supplied file. Never set it in a web font.
 
-**The SVGs are heavy.** Between roughly 550KB and 1.9MB each, because they are
-traced outlines rather than drawn vectors. Fine for print, not acceptable in a
-hero or a sticky header. Before launch, either run SVGO over them or have the
-simplified mark redrawn as clean paths. Track this as a real task, not a nice
-to have.
+**The SVGs are not vectors.** Each one is an SVG wrapper around an embedded
+JPEG with a solid background rectangle, between roughly 550KB and 1.9MB. They
+cannot be recoloured, scaled cleanly, or placed on a dark stage. SVGO will not
+help. Before launch, get a real vector from whoever drew the lettering, or have
+the mark redrawn as clean paths with the client's sign-off. Track this as a
+real task, not a nice to have.
+
+**What is in use now.** `public/samuh-logo.png` is the supplied transparent PNG,
+cropped to the lettering and scaled to 960px wide. It is dark lettering, so on
+the dark stage it is turned white with a CSS filter rather than by editing the
+file. Good enough for the style picker, not for launch.
 
 ## Received but out of scope
 

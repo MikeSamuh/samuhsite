@@ -10,41 +10,118 @@
   transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
 }
 
-.content {
-  position: relative;
-  z-index: 1;
-}
-
 .wrap {
   max-width: 1120px;
   margin: 0 auto;
   padding: 0 24px;
 }
 
-/* ---------- configurator chrome ---------- */
+/* ---------- the rail: every dial, left aligned, minimisable ---------- */
 
-.chrome {
-  position: sticky;
+.rail {
+  position: fixed;
   top: 0;
+  left: 0;
+  bottom: 0;
   z-index: 60;
-  background: color-mix(in srgb, var(--base) 82%, transparent);
+  width: 320px;
+  overflow-y: auto;
+  background: color-mix(in srgb, var(--base) 88%, transparent);
   backdrop-filter: blur(16px) saturate(140%);
-  border-bottom: var(--rule-thin) solid var(--border);
+  border-right: var(--rule-thin) solid var(--border);
+  padding: 14px 18px 20px;
+  transition: width var(--dur) var(--ease), padding var(--dur) var(--ease);
 }
 
-.chrome-inner {
-  max-width: 1120px;
-  margin: 0 auto;
-  padding: 12px 24px 14px;
+.rail[data-open="false"] {
+  width: 48px;
+  padding: 0;
+  overflow: hidden;
+}
+
+.rail-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.rail-title {
+  font-family: var(--font-display);
+  font-weight: var(--display-weight);
+  letter-spacing: var(--display-tracking);
+  font-size: 15px;
+}
+
+.rail-hash {
+  margin: 16px 0 0;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--muted);
+  word-break: break-all;
+  line-height: 1.5;
+}
+
+.rail-expand {
+  width: 48px;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
   display: grid;
-  gap: 9px;
+  place-items: center;
+  transition: color var(--dur) var(--ease), background var(--dur) var(--ease);
+}
+
+.rail-expand span {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.rail-expand:hover { color: var(--text); background: var(--surface); }
+
+.content {
+  position: relative;
+  z-index: 1;
+  padding-left: 320px;
+  transition: padding-left var(--dur) var(--ease);
+}
+
+.rail[data-open="false"] + .content { padding-left: 48px; }
+
+/* small toggle button, shared */
+.tbtn {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 5px 10px;
+  border: var(--rule-thin) solid var(--border);
+  border-radius: min(var(--radius), 999px);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all var(--dur) var(--ease);
+}
+
+.tbtn:hover { color: var(--text); border-color: var(--accent); }
+
+/* ---------- dials ---------- */
+
+.dials {
+  display: grid;
+  gap: 14px;
 }
 
 .ctrl {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
+  display: grid;
+  gap: 6px;
 }
 
 .ctrl-label {
@@ -53,15 +130,27 @@
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--muted);
-  width: 74px;
-  flex-shrink: 0;
+}
+
+.ctrl-opts {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.ctrl-value {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--muted);
+  margin-left: 4px;
 }
 
 .opt {
   font-family: var(--font-mono);
-  font-size: 11.5px;
+  font-size: 11px;
   letter-spacing: 0.03em;
-  padding: 6px 12px;
+  padding: 5px 10px;
   border: var(--rule-thin) solid var(--border);
   border-radius: min(var(--radius), 999px);
   background: transparent;
@@ -81,10 +170,9 @@
 
 .opt-n { opacity: 0.5; margin-right: 6px; }
 
-/* accent swatch buttons */
 .sw {
-  width: 26px;
-  height: 26px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   border: 2px solid transparent;
   cursor: pointer;
@@ -100,42 +188,148 @@
   transform: scale(1.15);
 }
 
-.sw-gap { width: 10px; }
+.sw-gap { width: 8px; }
 
-/* ---------- briefing ---------- */
+/* ---------- rail blocks ---------- */
 
-.brief {
-  border-bottom: var(--rule-thin) solid var(--border);
-  background: var(--surface);
-  backdrop-filter: blur(10px);
+.rail-block {
+  padding: 16px 0;
+  border-top: var(--rule-thin) solid var(--border);
 }
 
-.brief-inner {
-  max-width: 1120px;
-  margin: 0 auto;
-  padding: 24px 24px 28px;
+.rail-kicker {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin: 0 0 10px;
+}
+
+.rail-note {
+  margin: 10px 0 12px;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+/* the recommendation, a single pressable card */
+.rec {
+  width: 100%;
+  text-align: left;
   display: grid;
-  gap: 18px;
-  grid-template-columns: 2fr 1fr 1fr;
+  gap: 8px;
+  padding: 12px 14px;
+  border: var(--rule-thin) solid var(--border);
+  border-radius: min(var(--radius), 14px);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  transition: all var(--dur) var(--ease);
 }
 
-.brief h4 {
+.rec:hover { border-color: var(--accent); }
+
+.rec[aria-pressed="true"] {
+  border-color: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+}
+
+.rec-title {
+  font-family: var(--font-display);
+  font-weight: var(--display-weight);
+  letter-spacing: var(--display-tracking);
+  font-size: 16px;
+}
+
+.rec-list {
+  display: grid;
+  gap: 2px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.rec[aria-pressed="true"] .rec-list { color: var(--text); }
+
+/* compact notes at the bottom of the rail */
+.notes h4 {
   font-family: var(--font-mono);
   font-size: 9.5px;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--accent);
-  margin: 0 0 7px;
+  margin: 12px 0 4px;
 }
 
-.brief p {
+.notes h4.is-risk { color: var(--muted); }
+
+.notes p {
   margin: 0;
-  font-size: 13.5px;
-  line-height: 1.55;
+  font-size: 12px;
+  line-height: 1.5;
   color: var(--muted);
 }
 
-.brief .is-risk h4 { color: var(--muted); }
+/* ---------- top nav example ----------
+   The logo is the supplied artwork, cropped and scaled, never redrawn. It is
+   dark lettering on transparent, so it is turned white here with a filter
+   rather than by editing the file. */
+
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  padding: 22px 0;
+  border-bottom: var(--rule-thin) solid var(--border);
+}
+
+.nav-logo {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.nav-logo img {
+  height: 30px;
+  width: auto;
+  filter: brightness(0) invert(1);
+}
+
+.nav-partner {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding-left: 20px;
+  border-left: var(--rule-thin) solid var(--border);
+  white-space: nowrap;
+}
+
+.nav-links {
+  display: flex;
+  gap: 26px;
+  margin-left: auto;
+}
+
+.nav-links a {
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--muted);
+  text-decoration: none;
+  padding-bottom: 3px;
+  background-image: linear-gradient(var(--accent-2), var(--accent-2));
+  background-size: 0% var(--rule-thin);
+  background-repeat: no-repeat;
+  background-position: left 100%;
+  transition: background-size var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+
+.nav-links a:hover { color: var(--text); background-size: 100% var(--rule-thin); }
+
+.btn-small { padding: 10px 18px; font-size: 14px; }
 
 /* ---------- hero ---------- */
 
@@ -146,7 +340,7 @@
   font-size: 11px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--accent);
+  color: var(--accent-2);
   margin: 0 0 26px;
   display: flex;
   align-items: center;
@@ -159,7 +353,7 @@
   height: var(--rule-fat);
   flex: 1;
   max-width: 96px;
-  background: var(--accent);
+  background: var(--accent-2);
   border-radius: 99px;
 }
 
@@ -272,57 +466,91 @@ h2.sec {
   max-width: 21ch;
 }
 
-/* ---------- three circles ---------- */
+/* ---------- three circles ----------
+   Nested, not overlapping. The organization houses the team, the team houses
+   the individual. Only the team circle carries the accent, because the team
+   is the subject. Each circle floats on its own slow cycle. */
 
-.rings {
+.nest {
   display: flex;
-  align-items: center;
   justify-content: center;
-  gap: 0;
-  padding: 30px 0 14px;
-  min-height: 250px;
+  padding: 26px 0 10px;
 }
 
-.ring {
-  width: 178px;
-  height: 178px;
+.orb {
+  --d: 380px;
+  width: var(--d);
+  height: var(--d);
   border-radius: 50%;
+  border: var(--rule-thin) solid var(--border);
+  position: relative;
+  transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease);
+  /* each circle gets its own compositing layer so the label inside moves as
+     one rasterised piece instead of being redrawn on every sub-pixel step,
+     which is what made the text shimmer */
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+.orb-org {
+  animation: float-a 18s ease-in-out infinite;
+}
+
+.orb-team {
+  --d: 262px;
+  position: absolute;
+  left: calc(50% - var(--d) / 2);
+  bottom: 14px;
   border: var(--rule-fat) solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 9%, transparent);
+  animation: float-b 14s ease-in-out infinite;
+}
+
+.orb-ind {
+  --d: 140px;
+  position: absolute;
+  left: calc(50% - var(--d) / 2);
+  top: 16px;
   display: grid;
   place-items: center;
+  border-color: var(--muted);
+  animation: float-c 12s ease-in-out infinite;
+}
+
+.orb-label {
+  position: absolute;
+  left: 0;
+  right: 0;
   text-align: center;
-  margin-left: -22px;
-  transition: all var(--dur) var(--ease);
-  cursor: default;
-  position: relative;
-}
-
-.ring:first-child { margin-left: 0; }
-.ring:nth-child(2) { opacity: 0.68; }
-.ring:nth-child(3) { opacity: 0.4; }
-
-.ring:hover {
-  opacity: 1;
-  transform: scale(1.09);
-  background: color-mix(in srgb, var(--accent) 12%, transparent);
-  z-index: 2;
-}
-
-.ring span {
   font-family: var(--font-display);
   font-weight: var(--display-weight);
   letter-spacing: var(--display-tracking);
   font-size: 17px;
+  line-height: 1.1;
 }
 
-.ring small {
-  display: block;
-  font-family: var(--font-mono);
-  font-size: 9.5px;
-  letter-spacing: 0.13em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-top: 5px;
+.orb-org > .orb-label { top: 22px; }
+.orb-team > .orb-label { bottom: 18px; color: var(--accent); }
+.orb-ind > .orb-label { position: static; font-size: 15px; }
+
+
+.orb-team:hover {
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+}
+
+@keyframes float-a {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50%      { transform: translate3d(3px, -5px, 0); }
+}
+
+@keyframes float-b {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50%      { transform: translate3d(-4px, 4px, 0); }
+}
+
+@keyframes float-c {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50%      { transform: translate3d(3px, 3px, 0); }
 }
 
 /* ---------- process ---------- */
@@ -474,7 +702,7 @@ h2.sec {
 a.inline-link {
   color: var(--text);
   text-decoration: none;
-  background-image: linear-gradient(var(--accent), var(--accent));
+  background-image: linear-gradient(var(--accent-2), var(--accent-2));
   background-size: 0% var(--rule-fat);
   background-repeat: no-repeat;
   background-position: left 92%;
@@ -482,7 +710,7 @@ a.inline-link {
   transition: background-size var(--dur) var(--ease), color var(--dur) var(--ease);
 }
 
-a.inline-link:hover { color: var(--accent); background-size: 100% var(--rule-fat); }
+a.inline-link:hover { color: var(--accent-2); background-size: 100% var(--rule-fat); }
 
 .pill {
   font-family: var(--font-mono);
@@ -498,9 +726,9 @@ a.inline-link:hover { color: var(--accent); background-size: 100% var(--rule-fat
 .pill:hover { border-color: var(--accent); color: var(--accent); }
 
 .pill.is-accent {
-  background: color-mix(in srgb, var(--accent) 16%, transparent);
-  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
-  color: var(--accent);
+  background: color-mix(in srgb, var(--accent-2) 16%, transparent);
+  border-color: color-mix(in srgb, var(--accent-2) 45%, transparent);
+  color: var(--accent-2);
 }
 
 .field { display: flex; gap: 10px; width: 100%; max-width: 420px; }
@@ -593,19 +821,114 @@ a.inline-link:hover { color: var(--accent); background-size: 100% var(--rule-fat
 /* ---------- responsive ---------- */
 
 @media (max-width: 960px) {
-  .brief-inner { grid-template-columns: 1fr; gap: 15px; }
   .process { grid-template-columns: repeat(2, 1fr); }
   .cards { grid-template-columns: 1fr; }
   .bench { grid-template-columns: 1fr; gap: 26px; }
   .specimen > div { grid-template-columns: 1fr; gap: 7px; }
   .tokens div { grid-template-columns: 1fr; gap: 3px; }
   .hero { padding: 56px 0 52px; }
+  .site-nav { flex-wrap: wrap; gap: 14px 20px; }
+  .nav-partner { border-left: 0; padding-left: 0; }
+  .nav-links { margin-left: 0; width: 100%; gap: 18px; flex-wrap: wrap; }
   section.band { padding: 52px 0; }
-  .ctrl-label { width: 100%; }
-  .rings { flex-direction: column; gap: 14px; }
-  .ring { margin-left: 0; width: 160px; height: 160px; }
-  .ring:nth-child(2), .ring:nth-child(3) { opacity: 1; }
+  .rail {
+    position: sticky;
+    width: auto;
+    bottom: auto;
+    max-height: 60vh;
+    border-right: 0;
+    border-bottom: var(--rule-thin) solid var(--border);
+  }
+  .rail[data-open="false"] { width: auto; height: 40px; padding: 0; }
+  .rail-expand { width: 100%; height: 40px; }
+  .rail-expand span { writing-mode: horizontal-tb; transform: none; }
+  .content, .rail[data-open="false"] + .content { padding-left: 0; }
+
+  .orb { --d: 300px; }
+  .orb-team { --d: 206px; }
+  .orb-ind { --d: 112px; }
+  .orb-label { font-size: 15px; }
 }
+
+/* ---------- effects: entrance ----------
+   Read from data-entrance on the stage. Hidden until .is-in, then a keyframe
+   plays once with backwards fill so hover transforms are untouched after.
+   Speed is always the direction's own --dur. */
+
+.stage[data-entrance="rise"] .reveal:not(.is-in),
+.stage[data-entrance="fade"] .reveal:not(.is-in),
+.stage[data-entrance="unblur"] .reveal:not(.is-in),
+.stage[data-entrance="wipe"] .reveal:not(.is-in) { opacity: 0; }
+
+.stage[data-entrance="rise"] .reveal.is-in   { animation: in-rise   calc(var(--dur) * 2) var(--ease) backwards; }
+.stage[data-entrance="fade"] .reveal.is-in   { animation: in-fade   calc(var(--dur) * 2.4) var(--ease) backwards; }
+.stage[data-entrance="unblur"] .reveal.is-in { animation: in-unblur calc(var(--dur) * 2.6) var(--ease) backwards; }
+.stage[data-entrance="wipe"] .reveal.is-in   { animation: in-wipe   calc(var(--dur) * 2.2) var(--ease) backwards; }
+
+.stage[data-entrance="rise"] .reveal.is-in .reveal-item   { animation: in-rise   calc(var(--dur) * 2) var(--ease) backwards; }
+.stage[data-entrance="fade"] .reveal.is-in .reveal-item   { animation: in-fade   calc(var(--dur) * 2.4) var(--ease) backwards; }
+.stage[data-entrance="unblur"] .reveal.is-in .reveal-item { animation: in-unblur calc(var(--dur) * 2.6) var(--ease) backwards; }
+.stage[data-entrance="wipe"] .reveal.is-in .reveal-item   { animation: in-wipe   calc(var(--dur) * 2.2) var(--ease) backwards; }
+
+.stage[data-entrance] .reveal.is-in .reveal-item {
+  animation-delay: calc(var(--dur) * 0.3 * (var(--i) + 1));
+}
+
+@keyframes in-rise   { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes in-fade   { from { opacity: 0; } to { opacity: 1; } }
+@keyframes in-unblur { from { opacity: 0; filter: blur(14px); } to { opacity: 1; filter: blur(0); } }
+@keyframes in-wipe   { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+
+/* ---------- effects: hover ----------
+   Read from data-hover on the stage. "lift" is the baseline written on the
+   elements themselves; the rest override it. */
+
+.stage[data-hover="glow"] .btn:hover {
+  transform: none;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 35%, transparent),
+              0 0 44px color-mix(in srgb, var(--accent) 45%, transparent);
+}
+.stage[data-hover="glow"] :is(.card, .step):hover {
+  transform: none;
+  box-shadow: 0 0 0 1px var(--accent),
+              0 0 40px color-mix(in srgb, var(--accent) 24%, transparent);
+}
+
+.stage[data-hover="fill"] .btn:hover {
+  transform: none;
+  box-shadow: none;
+  background: var(--text);
+  color: var(--base);
+}
+.stage[data-hover="fill"] .btn-secondary:hover {
+  background: var(--accent);
+  color: var(--on-accent);
+  border-color: var(--accent);
+}
+.stage[data-hover="fill"] :is(.card, .step):hover {
+  transform: none;
+  background: color-mix(in srgb, var(--accent) 16%, var(--surface));
+}
+
+.stage[data-hover="scale"] .btn:hover {
+  transform: scale(1.05);
+  box-shadow: none;
+}
+.stage[data-hover="scale"] :is(.card, .step):hover {
+  transform: scale(1.03);
+}
+
+.stage[data-hover="quiet"] :is(.btn, .card, .step):hover {
+  transform: none;
+  box-shadow: none;
+}
+.stage[data-hover="quiet"] .btn:hover {
+  background: color-mix(in srgb, var(--accent) 86%, var(--text));
+}
+.stage[data-hover="quiet"] :is(.card, .step):hover {
+  background: var(--surface);
+}
+.stage[data-hover="quiet"] .btn:hover .arrow { transform: none; }
 
 @media (prefers-reduced-motion: reduce) {
   .stage *, .stage *::before, .stage *::after {

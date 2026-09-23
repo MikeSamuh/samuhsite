@@ -1,10 +1,30 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { BACKGROUNDS, ACCENTS, TYPE_PAIRS, cssVars } from "@/lib/tokens";
+import Image from "next/image";
+import {
+  BACKGROUNDS,
+  ACCENTS,
+  TYPE_PAIRS,
+  ENTRANCES,
+  HOVERS,
+  DEFAULT_COMBO,
+  cssVars,
+  comboHash,
+  parseComboHash,
+  recommendedCombo,
+  sameCombo,
+  type Combo,
+  type Accent,
+} from "@/lib/tokens";
 import Backdrop from "./Backdrop";
 import "./backdrops.css";
 import "./design.css";
+
+const NAV = ["Solutions", "Process", "Insights", "About", "Contact"];
+const stay = (e: React.MouseEvent) => e.preventDefault();
+// set from the cropped file in public/, 960 wide
+const LOGO_H = 285;
 
 const PROCESS = [
   ["Prepare", "Baseline the team before anything changes."],
@@ -22,138 +42,171 @@ const TIERS = [
 ];
 
 export default function DesignDirections() {
-  const [b, setB] = useState(0);
-  const [a, setA] = useState(0);
-  const [t, setT] = useState(0);
+  const [combo, setCombo] = useState<Combo>(DEFAULT_COMBO);
+  const [railOpen, setRailOpen] = useState(true);
+  const recommended = recommendedCombo();
+  const onRecommended = sameCombo(combo, recommended);
+  const { bg, accent, accent2, type, entrance, hover } = combo;
+  const set = (patch: Partial<Combo>) => setCombo((c) => ({ ...c, ...patch }));
 
-  const combo = { bg: BACKGROUNDS[b], accent: ACCENTS[a], type: TYPE_PAIRS[t] };
-  const { bg, accent, type } = combo;
-
-  // deep link: /design#aurora.yellow-amber.syne
+  // deep link: /design#aurora.yellow-amber.blue-sky.syne.rise.lift
+  // No hash means the client has just arrived, so they see the recommendation.
   useEffect(() => {
-    const read = () => {
-      const [bi, ai, ti] = window.location.hash.replace("#", "").split(".");
-      const nb = BACKGROUNDS.findIndex((x) => x.id === bi);
-      const na = ACCENTS.findIndex((x) => x.id === ai);
-      const nt = TYPE_PAIRS.findIndex((x) => x.id === ti);
-      if (nb >= 0) setB(nb);
-      if (na >= 0) setA(na);
-      if (nt >= 0) setT(nt);
-    };
+    const read = () =>
+      setCombo(
+        window.location.hash.length > 1
+          ? parseComboHash(window.location.hash)
+          : recommendedCombo()
+      );
     read();
     window.addEventListener("hashchange", read);
     return () => window.removeEventListener("hashchange", read);
   }, []);
 
   useEffect(() => {
-    window.history.replaceState(
-      null,
-      "",
-      `#${bg.id}.${accent.id}.${type.id}`
-    );
-  }, [bg.id, accent.id, type.id]);
+    window.history.replaceState(null, "", comboHash(combo));
+  }, [combo]);
 
   // 1-5 background, q-w-e-r-t type
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement) return;
       const n = parseInt(e.key, 10);
-      if (n >= 1 && n <= BACKGROUNDS.length) setB(n - 1);
+      if (n >= 1 && n <= BACKGROUNDS.length) set({ bg: BACKGROUNDS[n - 1] });
       const ti = ["q", "w", "e", "r", "t"].indexOf(e.key.toLowerCase());
-      if (ti >= 0 && ti < TYPE_PAIRS.length) setT(ti);
+      if (ti >= 0 && ti < TYPE_PAIRS.length) set({ type: TYPE_PAIRS[ti] });
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
+  // Scroll progress, 0 to 1, for backgrounds that change with the scroll.
+  useEffect(() => {
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+      document.documentElement.style.setProperty("--scroll-p", p.toFixed(4));
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
+
+  // Entrance: mark each .reveal as it scrolls into view. Re-runs when the
+  // entrance option changes so the client sees the new one play immediately.
+  useEffect(() => {
+    const nodes = Array.from(document.querySelectorAll<HTMLElement>(".reveal"));
+    nodes.forEach((n) => n.classList.remove("is-in"));
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((en) => {
+          if (en.isIntersecting) {
+            en.target.classList.add("is-in");
+            io.unobserve(en.target);
+          }
+        });
+      },
+      { rootMargin: "0px 0px -8% 0px" }
+    );
+    nodes.forEach((n) => io.observe(n));
+    return () => io.disconnect();
+  }, [entrance.id]);
+
   return (
-    <div className="stage" style={cssVars(combo)}>
+    <div
+      className="stage"
+      style={cssVars(combo)}
+      data-entrance={entrance.id}
+      data-hover={hover.id}
+    >
       <Backdrop id={bg.id} />
 
-      <div className="content">
-        {/* configurator */}
-        <div className="chrome">
-          <div className="chrome-inner">
-            <div className="ctrl">
-              <span className="ctrl-label">Background</span>
-              {BACKGROUNDS.map((x, i) => (
-                <button
-                  key={x.id}
-                  className="opt"
-                  aria-pressed={i === b}
-                  onClick={() => setB(i)}
-                >
-                  <span className="opt-n">{x.n}</span>
-                  {x.name}
-                </button>
-              ))}
-            </div>
-
-            <div className="ctrl">
-              <span className="ctrl-label">Accent</span>
-              {ACCENTS.map((x, i) => (
-                <span key={x.id} style={{ display: "contents" }}>
-                  {i === 3 || i === 6 ? <span className="sw-gap" /> : null}
-                  <button
-                    className="sw"
-                    aria-pressed={i === a}
-                    onClick={() => setA(i)}
-                    style={{ background: x.hex }}
-                    title={`${x.family} ${x.name} · ${x.hex}`}
-                    aria-label={`${x.family} ${x.name}`}
-                  />
-                </span>
-              ))}
-              <span
-                style={{
-                  fontFamily: "var(--font-mono)",
-                  fontSize: 11,
-                  color: "var(--muted)",
-                  marginLeft: 8,
-                }}
+      {/* the menu bar: a left rail with every dial, minimisable to a strip */}
+      <aside className="rail" data-open={railOpen} aria-label="Style picker">
+        {railOpen ? (
+          <>
+            <div className="rail-head">
+              <span className="rail-title">Style picker</span>
+              <button
+                className="tbtn"
+                onClick={() => setRailOpen(false)}
+                aria-expanded="true"
+                aria-controls="rail-dials"
               >
-                {accent.family} {accent.name} · {accent.hex}
-              </span>
+                Minimise
+              </button>
             </div>
 
-            <div className="ctrl">
-              <span className="ctrl-label">Type</span>
-              {TYPE_PAIRS.map((x, i) => (
-                <button
-                  key={x.id}
-                  className="opt"
-                  aria-pressed={i === t}
-                  onClick={() => setT(i)}
-                >
-                  {x.name}
-                </button>
-              ))}
+            <div className="rail-block">
+              <p className="rail-kicker">01 · Wilfred&apos;s recommendation</p>
+              <button
+                className="rec"
+                aria-pressed={onRecommended}
+                onClick={() => setCombo(recommended)}
+              >
+                <span className="rec-title">
+                  {onRecommended ? "Showing Wilfred\u2019s recommendation" : "Show Wilfred\u2019s recommendation"}
+                </span>
+                <span className="rec-list">
+                  <span>{recommended.bg.name}</span>
+                  <span>{recommended.accent.name} + {recommended.accent2.name}</span>
+                  <span>{recommended.type.name}</span>
+                  <span>{recommended.entrance.name} · {recommended.hover.name}</span>
+                </span>
+              </button>
             </div>
-          </div>
-        </div>
 
-        {/* the argument */}
-        <div className="brief">
-          <div className="brief-inner">
-            <div>
-              <h4>The bet · {bg.name}</h4>
-              <p>{bg.bet}</p>
+            <div className="rail-block" id="rail-dials">
+              <p className="rail-kicker">02 · Choose your own adventure</p>
+              <Dials combo={combo} set={set} />
+              <p className="rail-hash">{comboHash(combo)}</p>
             </div>
-            <div className="is-risk">
-              <h4>The risk</h4>
-              <p>{bg.risk}</p>
-            </div>
-            <div>
-              <h4>{type.displayName}</h4>
-              <p>{type.note}</p>
-            </div>
-          </div>
-        </div>
 
+          </>
+        ) : (
+          <button
+            className="rail-expand"
+            onClick={() => setRailOpen(true)}
+            aria-expanded="false"
+            aria-controls="rail-dials"
+          >
+            <span>Style picker</span>
+          </button>
+        )}
+      </aside>
+
+      <div className="content">
         <div className="wrap">
+          {/* top nav example. Nothing here navigates: the page is a style
+              reference, so every link stays put. */}
+          <header className="site-nav">
+            <a href="#" className="nav-logo" onClick={stay} aria-label="SAMUH home">
+              <Image src="/samuh-logo.png" alt="SAMUH" width={960} height={LOGO_H} priority />
+            </a>
+            <span className="nav-partner">in partnership with Sapien Labs</span>
+            <nav className="nav-links" aria-label="Primary">
+              {NAV.map((item) => (
+                <a key={item} href="#" onClick={stay}>{item}</a>
+              ))}
+            </nav>
+            <button className="btn btn-small">
+              Get started <span className="arrow">&rarr;</span>
+            </button>
+          </header>
+
           {/* hero */}
-          <header className="hero">
-            <p className="eyebrow">In partnership with Sapien Labs</p>
+          <header className="hero reveal">
+            <p className="eyebrow">Organizational and high-performance consulting</p>
             <h1 className="display">
               High performance <em>without</em> the cost to people.
             </h1>
@@ -171,38 +224,35 @@ export default function DesignDirections() {
           </header>
 
           {/* three circles */}
-          <section className="band">
+          <section className="band reveal">
             <div className="sec-head">
               <span className="sec-n">04</span>
               <div>
-                <p className="kicker">Motion &middot; bespoke sequence</p>
+                <p className="kicker">Motion &middot; bespoke sequence &middot; the organization houses the team, the team houses the individual</p>
                 <h2 className="sec">Three circles</h2>
               </div>
             </div>
-            <div className="rings">
-              <div className="ring">
-                <div>
-                  <span>Team</span>
-                  <small>the unit of change</small>
-                </div>
-              </div>
-              <div className="ring">
-                <div>
-                  <span>Individual</span>
-                  <small>inside the team</small>
-                </div>
-              </div>
-              <div className="ring">
-                <div>
-                  <span>Organization</span>
-                  <small>many teams</small>
+            <div className="nest">
+              <div className="orb orb-org">
+                <span className="orb-label">
+                  Organization
+                </span>
+                <div className="orb orb-team">
+                  <span className="orb-label">
+                    Team
+                  </span>
+                  <div className="orb orb-ind">
+                    <span className="orb-label">
+                      Individual
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
           </section>
 
           {/* process */}
-          <section className="band">
+          <section className="band reveal">
             <div className="sec-head">
               <span className="sec-n">05</span>
               <div>
@@ -212,7 +262,7 @@ export default function DesignDirections() {
             </div>
             <div className="process">
               {PROCESS.map(([name, note], n) => (
-                <div className="step" key={name}>
+                <div className="step reveal-item" key={name} style={{ "--i": n } as React.CSSProperties}>
                   <span className="step-n">0{n + 1}</span>
                   <span className="step-name">{name}</span>
                   <span className="step-note">{note}</span>
@@ -222,7 +272,7 @@ export default function DesignDirections() {
           </section>
 
           {/* tiers */}
-          <section className="band">
+          <section className="band reveal">
             <div className="sec-head">
               <span className="sec-n">06</span>
               <div>
@@ -231,8 +281,8 @@ export default function DesignDirections() {
               </div>
             </div>
             <div className="cards">
-              {TIERS.map(([tag, title, body, cta]) => (
-                <article className="card" key={title}>
+              {TIERS.map(([tag, title, body, cta], n) => (
+                <article className="card reveal-item" key={title} style={{ "--i": n } as React.CSSProperties}>
                   <span className="card-tag">{tag}</span>
                   <h3>{title}</h3>
                   <p>{body}</p>
@@ -245,7 +295,7 @@ export default function DesignDirections() {
           </section>
 
           {/* bench */}
-          <section className="band">
+          <section className="band reveal">
             <div className="sec-head">
               <span className="sec-n">07</span>
               <div>
@@ -318,7 +368,7 @@ export default function DesignDirections() {
           </section>
 
           {/* type */}
-          <section className="band">
+          <section className="band reveal">
             <div className="sec-head">
               <span className="sec-n">08</span>
               <div>
@@ -380,12 +430,12 @@ export default function DesignDirections() {
           </section>
 
           {/* tokens */}
-          <section className="band">
+          <section className="band reveal">
             <div className="sec-head">
               <span className="sec-n">09</span>
               <div>
                 <p className="kicker">The combination you are looking at</p>
-                <h2 className="sec">Tokens</h2>
+                <h2 className="sec">Design specs</h2>
               </div>
             </div>
             <dl className="tokens">
@@ -398,8 +448,12 @@ export default function DesignDirections() {
                 <dd>{bg.base.toUpperCase()}</dd>
               </div>
               <div>
-                <dt>Accent</dt>
+                <dt>Accent 1</dt>
                 <dd>{accent.family} {accent.name} &middot; {accent.hex} &middot; {accent.note}</dd>
+              </div>
+              <div>
+                <dt>Accent 2</dt>
+                <dd>{accent2.family} {accent2.name} &middot; {accent2.hex} &middot; {accent2.note}</dd>
               </div>
               <div>
                 <dt>Display</dt>
@@ -425,19 +479,29 @@ export default function DesignDirections() {
                 <dd>{bg.motionDur} {bg.motionEase}</dd>
               </div>
               <div>
+                <dt>Entrance</dt>
+                <dd>{entrance.name}</dd>
+              </div>
+              <div>
+                <dt>Hover</dt>
+                <dd>{hover.name}</dd>
+              </div>
+              <div>
                 <dt>Share this exact combination</dt>
-                <dd>/design#{bg.id}.{accent.id}.{type.id}</dd>
+                <dd>/design{comboHash(combo)}</dd>
               </div>
             </dl>
           </section>
 
           <footer className="foot">
             <p>
-              <strong>Three dials, not five fixed options.</strong> Background,
-              accent and type move independently, so you are not stuck picking a
-              whole look you only half like. Find the background first, then the
-              accent, then the type. The URL updates as you go, so you can send
-              a colleague the exact combination you landed on.
+              <strong>Six dials, not five fixed options.</strong> Background,
+              two accents, type, entrance and hover move independently, so you
+              are not stuck picking a whole look you only half like. Find the
+              background first, then the accents, then the type, then the
+              effects. The URL updates as you go, so you can send a colleague
+              the exact combination you landed on. The picker on the left
+              minimises out of the way when you want to look at the page.
             </p>
             <p>
               <strong>What we are going for.</strong> Playful and a bit organic,
@@ -454,6 +518,84 @@ export default function DesignDirections() {
               recreated.
             </p>
           </footer>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** Every dial. Rendered twice: in the rail and inline in the adventure section. */
+function Dials({ combo, set }: { combo: Combo; set: (patch: Partial<Combo>) => void }) {
+  const { bg, accent, accent2, type, entrance, hover } = combo;
+  const swatches = (label: string, current: Accent, pick: (x: Accent) => void) => (
+    <div className="ctrl">
+      <span className="ctrl-label">{label}</span>
+      <div className="ctrl-opts">
+        {ACCENTS.map((x, i) => (
+          <span key={x.id} style={{ display: "contents" }}>
+            {i === 3 || i === 6 ? <span className="sw-gap" /> : null}
+            <button
+              className="sw"
+              aria-pressed={x.id === current.id}
+              onClick={() => pick(x)}
+              style={{ background: x.hex }}
+              title={`${x.family} ${x.name} · ${x.hex}`}
+              aria-label={`${label}: ${x.family} ${x.name}`}
+            />
+          </span>
+        ))}
+        <span className="ctrl-value">{current.family} {current.name}</span>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="dials">
+      <div className="ctrl">
+        <span className="ctrl-label">Background</span>
+        <div className="ctrl-opts">
+          {BACKGROUNDS.map((x) => (
+            <button key={x.id} className="opt" aria-pressed={x.id === bg.id} onClick={() => set({ bg: x })}>
+              <span className="opt-n">{x.n}</span>
+              {x.name}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {swatches("Accent 1", accent, (x) => set({ accent: x }))}
+      {swatches("Accent 2", accent2, (x) => set({ accent2: x }))}
+
+      <div className="ctrl">
+        <span className="ctrl-label">Type</span>
+        <div className="ctrl-opts">
+          {TYPE_PAIRS.map((x) => (
+            <button key={x.id} className="opt" aria-pressed={x.id === type.id} onClick={() => set({ type: x })}>
+              {x.name}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="ctrl">
+        <span className="ctrl-label">Entrance</span>
+        <div className="ctrl-opts">
+          {ENTRANCES.map((x) => (
+            <button key={x.id} className="opt" aria-pressed={x.id === entrance.id} onClick={() => set({ entrance: x })}>
+              {x.name}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="ctrl">
+        <span className="ctrl-label">Hover</span>
+        <div className="ctrl-opts">
+          {HOVERS.map((x) => (
+            <button key={x.id} className="opt" aria-pressed={x.id === hover.id} onClick={() => set({ hover: x })}>
+              {x.name}
+            </button>
+          ))}
         </div>
       </div>
     </div>

@@ -1,9 +1,12 @@
 // SAMUH design tokens.
 //
-// Three independent axes the client can mix:
+// Independent axes the client can mix, choose-your-own-adventure style:
 //   BACKGROUNDS  the stage and its motion character
-//   ACCENTS      pink / yellow / blue, three hues each
+//   ACCENTS      pink / yellow / blue, three hues each. Picked twice: a loud
+//                primary and a quieter secondary
 //   TYPE_PAIRS   display and body pairings
+//   ENTRANCES    how content arrives as you scroll
+//   HOVERS       how interactive things react to a pointer
 //
 // Nothing outside this file carries a design value. Every component reads a
 // CSS custom property. That is what makes the preview switchable and what
@@ -19,7 +22,7 @@
 /* Backgrounds                                                         */
 /* ------------------------------------------------------------------ */
 
-export type BackdropId = "void" | "ascent" | "aurora" | "chalk" | "orbit";
+export type BackdropId = "void" | "slate" | "aurora" | "chalk" | "synapse";
 
 export interface Background {
   id: BackdropId;
@@ -64,17 +67,17 @@ export const BACKGROUNDS: Background[] = [
     motionNote: "Clean entrances, no drift. The stage is still so the content moves.",
   },
   {
-    id: "ascent",
+    id: "slate",
     n: 2,
-    name: "Ascent",
-    bet: "Black falling into charcoal, breathing slowly. Gives depth and a sense of rising through the argument without introducing colour noise.",
-    risk: "The safest of the five. Reads considered, but nobody will remember the background.",
-    base: "#060606",
-    surface: "#131417",
-    surfaceAlt: "#1B1D21",
-    border: "#2A2D33",
-    text: "#F0F1F3",
-    muted: "#8E939B",
+    name: "Slate",
+    bet: "Dark slate rather than black. The page starts lighter at the top and falls into near-black as you scroll, so the argument literally deepens. Warmer and less severe than a pure black stage.",
+    risk: "The safest of the five. Reads considered, and the gradient only lands if the sections are long enough to travel through it.",
+    base: "#141922",
+    surface: "#1D2430",
+    surfaceAlt: "#273040",
+    border: "#364050",
+    text: "#F0F2F5",
+    muted: "#9AA3B2",
     ruleThin: "1px",
     ruleFat: "4px",
     radius: "6px",
@@ -86,7 +89,7 @@ export const BACKGROUNDS: Background[] = [
     id: "aurora",
     n: 3,
     name: "Aurora",
-    bet: "Black with slow colour movement underneath, in the FTFC manner. This is the mushrooms one. The drift is 40 seconds a cycle so it reads as atmosphere, never as an animation you are being shown.",
+    bet: "Black with toned-down colour rising and falling underneath, lava lamp style. This is the mushrooms one. Each blob takes 20 to 30 seconds to travel the screen, slow enough to be atmosphere, fast enough that you notice it moving.",
     risk: "Highest craft cost and the one that goes wrong fastest if the blur or the speed is off. Also the hardest to keep text legible on.",
     base: "#000000",
     surface: "rgba(20, 20, 24, 0.72)",
@@ -105,7 +108,7 @@ export const BACKGROUNDS: Background[] = [
     id: "chalk",
     n: 4,
     name: "Chalk",
-    bet: "A blackboard. Slightly green-black, fine grain, hand-drawn underlines and a dusty vignette. Teaching is literally the first job of this site, so the surface says so before a word is read.",
+    bet: "A blackboard. Slightly green-black, fine grain, wiped chalk dust that travels as you scroll, and a chalk line along the bottom that fills with your progress through the page. Teaching is literally the first job of this site, so the surface says so before a word is read.",
     risk: "Skews academic. Push it too far and it reads as a school, not a firm that charges six figures.",
     base: "#0A0D0B",
     surface: "#121613",
@@ -121,23 +124,23 @@ export const BACKGROUNDS: Background[] = [
     motionNote: "Marks appear the way chalk lands: quick stroke, then settle.",
   },
   {
-    id: "orbit",
+    id: "synapse",
     n: 5,
-    name: "Orbit",
-    bet: "My pick. Concentric hairline rings with one slow rotating arc of colour, so the background is already the three-circles diagram before the visitor scrolls to it. Instrumentation and planetary motion at the same time.",
-    risk: "The rings have to stay faint. At the wrong opacity it stops being atmosphere and starts being a graphic the content is sitting on top of.",
-    base: "#020203",
-    surface: "#0D0E12",
-    surfaceAlt: "#15171C",
-    border: "#23262E",
+    name: "Synapse",
+    bet: "A faint network of nodes and connections, with signals travelling slowly along the lines. Teams as a nervous system: the connections are the point, not the nodes. Subtle enough to sit under body text.",
+    risk: "Network diagrams are a cliché in consulting. It only works if it stays quiet and organic, never a tech-company node graph.",
+    base: "#04060A",
+    surface: "#0D1016",
+    surfaceAlt: "#151920",
+    border: "#242A34",
     text: "#F4F5F7",
-    muted: "#888F9B",
+    muted: "#8B939F",
     ruleThin: "1px",
     ruleFat: "3px",
-    radius: "999px",
+    radius: "14px",
     motionDur: "480ms",
     motionEase: "cubic-bezier(0.16, 1, 0.3, 1)",
-    motionNote: "Everything eases on a long curve. One element on screen is always rotating.",
+    motionNote: "Everything eases on a long curve. Something on screen is always faintly pulsing.",
   },
 ];
 
@@ -217,16 +220,16 @@ export const TYPE_PAIRS: TypePair[] = [
     note: "Irregular by design, letters that do not quite match. Playful without a single rounded corner.",
   },
   {
-    id: "instrument",
-    name: "Instrument Serif / Instrument Sans",
-    displayVar: "var(--f-instrument-serif)",
-    displayName: "Instrument Serif",
+    id: "unbounded",
+    name: "Unbounded / Instrument Sans",
+    displayVar: "var(--f-unbounded)",
+    displayName: "Unbounded",
     bodyVar: "var(--f-instrument-sans)",
     bodyName: "Instrument Sans",
-    displayWeight: 400,
-    displayTracking: "-0.015em",
-    displayLeading: "1.0",
-    note: "High contrast and a little theatrical. The most expensive-looking of the five.",
+    displayWeight: 500,
+    displayTracking: "-0.02em",
+    displayLeading: "1.02",
+    note: "Wide and geometric, almost a wordmark. The most contemporary of the five and the one that takes up the most room.",
   },
   {
     id: "syne",
@@ -255,14 +258,124 @@ export const TYPE_PAIRS: TypePair[] = [
 ];
 
 /* ------------------------------------------------------------------ */
+/* Effects                                                             */
+/* ------------------------------------------------------------------ */
+
+// Entrance: how a section arrives when it scrolls into view.
+// Hover: how buttons, cards and steps react to a pointer.
+// Both are applied as data attributes on the stage. The CSS that reads them
+// lives next to the preview, and the speed always comes from --dur and --ease.
+
+export type EntranceId = "rise" | "fade" | "unblur" | "wipe" | "still";
+export type HoverId = "lift" | "glow" | "fill" | "scale" | "quiet";
+
+export interface Effect<Id extends string> {
+  id: Id;
+  name: string;
+  note: string;
+}
+
+export const ENTRANCES: Effect<EntranceId>[] = [
+  { id: "rise", name: "Rise", note: "Sections lift into place from a few pixels below while fading in. The default web move, done at the direction's own speed." },
+  { id: "fade", name: "Fade", note: "Opacity only. Nothing moves. The quietest option and the one least likely to feel like a template." },
+  { id: "unblur", name: "Unblur", note: "Content resolves from soft focus to sharp. Reads organic and slightly dreamlike, which suits the brief." },
+  { id: "wipe", name: "Wipe", note: "Revealed left to right as if drawn. Pairs naturally with the hairline and heavy stroke idea." },
+  { id: "still", name: "Still", note: "No entrance at all. Everything is simply there. The boardroom control." },
+];
+
+export const HOVERS: Effect<HoverId>[] = [
+  { id: "lift", name: "Lift", note: "Element rises a few pixels and gains a soft shadow in the accent. Tactile, familiar." },
+  { id: "glow", name: "Glow", note: "No movement. A ring of accent light around the element. Calm and a little sci-fi." },
+  { id: "fill", name: "Fill", note: "Colour floods in. Buttons invert, cards tint toward the accent. The loudest option." },
+  { id: "scale", name: "Scale", note: "Element grows slightly toward the pointer. Playful, and easy to overdo." },
+  { id: "quiet", name: "Quiet", note: "Colour and border change only. No motion. Safest for a Fortune 500 buyer." },
+];
+
+/* ------------------------------------------------------------------ */
 
 export interface Combo {
   bg: Background;
+  /** the loud one: buttons, the Team circle, the arc */
   accent: Accent;
+  /** the quiet one: eyebrows, links, tags, the second blob */
+  accent2: Accent;
   type: TypePair;
+  entrance: Effect<EntranceId>;
+  hover: Effect<HoverId>;
 }
 
-export function cssVars({ bg, accent, type }: Combo): React.CSSProperties {
+// Default is the first entry on each axis. Accent 2 defaults to the first
+// entry of a different family so the pair is visibly a pair.
+export const DEFAULT_COMBO: Combo = {
+  bg: BACKGROUNDS[0],
+  accent: ACCENTS[0],
+  accent2: ACCENTS.find((a) => a.family !== ACCENTS[0].family) ?? ACCENTS[1],
+  type: TYPE_PAIRS[0],
+  entrance: ENTRANCES[0],
+  hover: HOVERS[0],
+};
+
+// The recommendation. Shown at the top of the picker, before the client is
+// invited to mix and match. Chosen by Wilfred, 23 September 2026.
+export const RECOMMENDED = {
+  bg: "aurora" as BackdropId,
+  accent: "pink-hot",
+  accent2: "blue-peri",
+  type: "syne",
+  entrance: "unblur" as EntranceId,
+  hover: "glow" as HoverId,
+};
+
+export function recommendedCombo(): Combo {
+  return parseComboHash(
+    [RECOMMENDED.bg, RECOMMENDED.accent, RECOMMENDED.accent2, RECOMMENDED.type, RECOMMENDED.entrance, RECOMMENDED.hover].join(".")
+  );
+}
+
+export function sameCombo(a: Combo, b: Combo): boolean {
+  return comboHash(a) === comboHash(b);
+}
+
+/** The shareable form: #background.accent1.accent2.type.entrance.hover */
+export function comboHash(c: Combo): string {
+  return `#${c.bg.id}.${c.accent.id}.${c.accent2.id}.${c.type.id}.${c.entrance.id}.${c.hover.id}`;
+}
+
+// Ids that were renamed after links went out.
+const LEGACY_IDS: Record<string, string> = {
+  ascent: "slate",
+  orbit: "synapse",
+  instrument: "unbounded",
+};
+
+/**
+ * Reads a hash back into a combo. Order does not matter, every id is unique
+ * across the axes, and anything unrecognised falls back to the default. The
+ * older three-part links (#background.accent.type) still resolve.
+ */
+export function parseComboHash(hash: string): Combo {
+  const parts = hash.replace(/^#/, "").split(".").filter(Boolean);
+  const c: Combo = { ...DEFAULT_COMBO };
+  const accents: Accent[] = [];
+  for (const raw of parts) {
+    const id = LEGACY_IDS[raw] ?? raw;
+    const bg = BACKGROUNDS.find((x) => x.id === id);
+    if (bg) { c.bg = bg; continue; }
+    const ac = ACCENTS.find((x) => x.id === id);
+    if (ac) { accents.push(ac); continue; }
+    const tp = TYPE_PAIRS.find((x) => x.id === id);
+    if (tp) { c.type = tp; continue; }
+    const en = ENTRANCES.find((x) => x.id === id);
+    if (en) { c.entrance = en; continue; }
+    const hv = HOVERS.find((x) => x.id === id);
+    if (hv) { c.hover = hv; continue; }
+  }
+  if (accents[0]) c.accent = accents[0];
+  if (accents[1]) c.accent2 = accents[1];
+  return c;
+}
+
+export function cssVars({ bg, accent, accent2, type }: Combo): React.CSSProperties {
   return {
     "--base": bg.base,
     "--surface": bg.surface,
@@ -277,6 +390,8 @@ export function cssVars({ bg, accent, type }: Combo): React.CSSProperties {
     "--ease": bg.motionEase,
     "--accent": accent.hex,
     "--on-accent": accent.on,
+    "--accent-2": accent2.hex,
+    "--on-accent-2": accent2.on,
     "--font-display": type.displayVar,
     "--font-body": type.bodyVar,
     "--font-mono": "var(--f-plex-mono)",
