@@ -34,6 +34,8 @@ const TIERS = [
 
 export default function DesignDirections() {
   const [combo, setCombo] = useState<Combo>(DEFAULT_COMBO);
+  const [pickerOpen, setPickerOpen] = useState(true);
+  const [notesOpen, setNotesOpen] = useState(false);
   const { bg, accent, accent2, type, entrance, hover } = combo;
   const set = (patch: Partial<Combo>) => setCombo((c) => ({ ...c, ...patch }));
 
@@ -60,6 +62,28 @@ export default function DesignDirections() {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
+  }, []);
+
+  // Scroll progress, 0 to 1, for backgrounds that change with the scroll.
+  useEffect(() => {
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+      document.documentElement.style.setProperty("--scroll-p", p.toFixed(4));
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
   }, []);
 
   // Entrance: mark each .reveal as it scrolls into view. Re-runs when the
@@ -93,8 +117,22 @@ export default function DesignDirections() {
 
       <div className="content">
         {/* configurator */}
-        <div className="chrome">
-          <div className="chrome-inner">
+        <div className="chrome" data-open={pickerOpen}>
+          <button
+            className="chrome-toggle"
+            onClick={() => setPickerOpen((o) => !o)}
+            aria-expanded={pickerOpen}
+            aria-controls="picker"
+          >
+            {pickerOpen ? "Hide picker" : "Show picker"}
+          </button>
+          {!pickerOpen && (
+            <p className="chrome-summary">
+              {bg.name} · {accent.name} + {accent2.name} · {type.name} ·{" "}
+              {entrance.name} · {hover.name}
+            </p>
+          )}
+          <div className="chrome-inner" id="picker" hidden={!pickerOpen}>
             <div className="ctrl">
               <span className="ctrl-label">Background</span>
               {BACKGROUNDS.map((x) => (
@@ -105,6 +143,20 @@ export default function DesignDirections() {
                   onClick={() => set({ bg: x })}
                 >
                   <span className="opt-n">{x.n}</span>
+                  {x.name}
+                </button>
+              ))}
+            </div>
+
+            <div className="ctrl">
+              <span className="ctrl-label">Type</span>
+              {TYPE_PAIRS.map((x) => (
+                <button
+                  key={x.id}
+                  className="opt"
+                  aria-pressed={x.id === type.id}
+                  onClick={() => set({ type: x })}
+                >
                   {x.name}
                 </button>
               ))}
@@ -138,20 +190,6 @@ export default function DesignDirections() {
             ))}
 
             <div className="ctrl">
-              <span className="ctrl-label">Type</span>
-              {TYPE_PAIRS.map((x) => (
-                <button
-                  key={x.id}
-                  className="opt"
-                  aria-pressed={x.id === type.id}
-                  onClick={() => set({ type: x })}
-                >
-                  {x.name}
-                </button>
-              ))}
-            </div>
-
-            <div className="ctrl">
               <span className="ctrl-label">Entrance</span>
               {ENTRANCES.map((x) => (
                 <button
@@ -183,8 +221,19 @@ export default function DesignDirections() {
 
         {/* the argument */}
         <section className="brief" aria-labelledby="design-notes">
-          <div className="brief-inner">
-            <h3 id="design-notes" className="brief-title">Design notes</h3>
+          <div className="brief-inner" data-open={notesOpen}>
+            <div className="brief-head">
+              <h3 id="design-notes" className="brief-title">Design notes</h3>
+              <button
+                className="chrome-toggle brief-toggle"
+                onClick={() => setNotesOpen((o) => !o)}
+                aria-expanded={notesOpen}
+                aria-controls="notes"
+              >
+                {notesOpen ? "Hide notes" : "Show notes"}
+              </button>
+            </div>
+            <div className="brief-grid" id="notes" hidden={!notesOpen}>
             <div>
               <h4>The bet · {bg.name}</h4>
               <p>{bg.bet}</p>
@@ -212,6 +261,7 @@ export default function DesignDirections() {
             <div>
               <h4>Hover · {hover.name}</h4>
               <p>{hover.note}</p>
+            </div>
             </div>
           </div>
         </section>

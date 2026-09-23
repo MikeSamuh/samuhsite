@@ -3,7 +3,7 @@ import {
   Fraunces,
   Inter,
   Bricolage_Grotesque,
-  Instrument_Serif,
+  Unbounded,
   Instrument_Sans,
   Syne,
   Space_Grotesk,
@@ -17,10 +17,10 @@ import "./globals.css";
 const fraunces = Fraunces({ subsets: ["latin"], variable: "--f-fraunces" });
 const inter = Inter({ subsets: ["latin"], variable: "--f-inter" });
 const bricolage = Bricolage_Grotesque({ subsets: ["latin"], variable: "--f-bricolage" });
-const instrumentSerif = Instrument_Serif({
+const unbounded = Unbounded({
   subsets: ["latin"],
-  weight: "400",
-  variable: "--f-instrument-serif",
+  weight: ["400", "500", "600"],
+  variable: "--f-unbounded",
 });
 const instrumentSans = Instrument_Sans({ subsets: ["latin"], variable: "--f-instrument-sans" });
 const syne = Syne({ subsets: ["latin"], variable: "--f-syne" });
@@ -36,7 +36,7 @@ const fontVars = [
   fraunces,
   inter,
   bricolage,
-  instrumentSerif,
+  unbounded,
   instrumentSans,
   syne,
   spaceGrotesk,

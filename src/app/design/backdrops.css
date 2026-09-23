@@ -52,8 +52,8 @@
   min-height: 380px;
   left: 4vw;
   background: color-mix(in srgb, var(--accent) 48%, var(--base));
-  opacity: 0.6;
-  animation: lava-a 44s ease-in-out infinite;
+  opacity: 0.7;
+  animation: lava-a 24s ease-in-out infinite;
 }
 
 .blob-b {
@@ -63,9 +63,9 @@
   min-height: 340px;
   right: 6vw;
   background: color-mix(in srgb, var(--accent-2) 44%, var(--base));
-  opacity: 0.55;
-  animation: lava-b 58s ease-in-out infinite;
-  animation-delay: -20s;
+  opacity: 0.65;
+  animation: lava-b 30s ease-in-out infinite;
+  animation-delay: -12s;
 }
 
 .blob-c {
@@ -79,28 +79,28 @@
     color-mix(in srgb, var(--accent) 50%, var(--accent-2)) 36%,
     var(--base)
   );
-  opacity: 0.5;
-  animation: lava-c 50s ease-in-out infinite;
-  animation-delay: -35s;
+  opacity: 0.6;
+  animation: lava-c 27s ease-in-out infinite;
+  animation-delay: -19s;
 }
 
 @keyframes lava-a {
-  0%, 100% { transform: translate3d(0, 0, 0) scale(1, 1);            border-radius: 48% 52% 46% 54% / 55% 45% 55% 45%; }
-  28%      { transform: translate3d(2vw, -46vh, 0) scale(0.9, 1.14);  border-radius: 56% 44% 50% 50% / 44% 56% 46% 54%; }
-  52%      { transform: translate3d(-2vw, -72vh, 0) scale(1.1, 0.92); border-radius: 50% 50% 58% 42% / 52% 48% 54% 46%; }
-  78%      { transform: translate3d(1vw, -28vh, 0) scale(0.96, 1.06); border-radius: 44% 56% 48% 52% / 58% 42% 50% 50%; }
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1, 1);              border-radius: 48% 52% 46% 54% / 55% 45% 55% 45%; }
+  30%      { transform: translate3d(4vw, -60vh, 0) scale(0.86, 1.2);    border-radius: 56% 44% 50% 50% / 44% 56% 46% 54%; }
+  55%      { transform: translate3d(-3vw, -100vh, 0) scale(1.14, 0.9);  border-radius: 50% 50% 58% 42% / 52% 48% 54% 46%; }
+  80%      { transform: translate3d(2vw, -38vh, 0) scale(0.94, 1.08);   border-radius: 44% 56% 48% 52% / 58% 42% 50% 50%; }
 }
 
 @keyframes lava-b {
-  0%, 100% { transform: translate3d(0, 0, 0) scale(1.04, 1);          border-radius: 52% 48% 54% 46% / 46% 54% 44% 56%; }
-  35%      { transform: translate3d(-3vw, -58vh, 0) scale(0.88, 1.18); border-radius: 46% 54% 44% 56% / 56% 44% 58% 42%; }
-  62%      { transform: translate3d(2vw, -40vh, 0) scale(1.12, 0.9);   border-radius: 58% 42% 50% 50% / 50% 50% 46% 54%; }
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1.04, 1);            border-radius: 52% 48% 54% 46% / 46% 54% 44% 56%; }
+  38%      { transform: translate3d(-5vw, -84vh, 0) scale(0.84, 1.24);  border-radius: 46% 54% 44% 56% / 56% 44% 58% 42%; }
+  66%      { transform: translate3d(3vw, -50vh, 0) scale(1.16, 0.88);   border-radius: 58% 42% 50% 50% / 50% 50% 46% 54%; }
 }
 
 @keyframes lava-c {
-  0%, 100% { transform: translate3d(0, 0, 0) scale(1, 1);              border-radius: 50% 50% 46% 54% / 54% 46% 56% 44%; }
-  45%      { transform: translate3d(-4vw, -84vh, 0) scale(0.86, 1.2);   border-radius: 54% 46% 56% 44% / 44% 56% 42% 58%; }
-  70%      { transform: translate3d(3vw, -52vh, 0) scale(1.14, 0.9);    border-radius: 44% 56% 50% 50% / 56% 44% 52% 48%; }
+  0%, 100% { transform: translate3d(0, 0, 0) scale(1, 1);                border-radius: 50% 50% 46% 54% / 54% 46% 56% 44%; }
+  48%      { transform: translate3d(-6vw, -110vh, 0) scale(0.82, 1.26);  border-radius: 54% 46% 56% 44% / 44% 56% 42% 58%; }
+  74%      { transform: translate3d(4vw, -62vh, 0) scale(1.18, 0.88);    border-radius: 44% 56% 50% 50% / 56% 44% 52% 48%; }
 }
 
 /* fine grain over the blobs so the gradient never bands */
@@ -112,12 +112,17 @@
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-/* ---------- 4. Chalk: blackboard ---------- */
+/* ---------- 4. Chalk: blackboard that changes as you scroll ----------
+   --scroll-p is the page's scroll progress, 0 at the top and 1 at the end,
+   set on the root by the preview. The board cools from green-black toward
+   blue-black, the wiped dust drifts past at a different rate from the
+   content, the grain shifts, and a chalk line along the bottom edge fills. */
 
 .bd-chalk {
   background:
     radial-gradient(ellipse 100% 70% at 30% 20%, #10150F 0%, transparent 60%),
-    radial-gradient(ellipse 90% 60% at 75% 70%, #0D1210 0%, transparent 55%);
+    radial-gradient(ellipse 90% 60% at 75% 70%, #0D1210 0%, transparent 55%),
+    color-mix(in srgb, transparent, #0B1220 calc(var(--scroll-p, 0) * 55%));
 }
 
 .bd-chalk-grain {
@@ -125,106 +130,113 @@
   inset: 0;
   opacity: 0.22;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='c'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='4'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23c)' opacity='0.55'/%3E%3C/svg%3E");
+  background-position: 0 calc(var(--scroll-p, 0) * -600px);
 }
 
-/* the smear a board keeps after it is wiped */
+/* the smears a board keeps after it is wiped, laid down a tall strip that
+   slides past as the page scrolls */
 .bd-chalk-dust {
   position: absolute;
-  inset: 0;
-  opacity: 0.07;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 260vh;
+  opacity: 0.08;
   background:
-    radial-gradient(ellipse 60% 22% at 22% 32%, #fff 0%, transparent 70%),
-    radial-gradient(ellipse 48% 16% at 72% 58%, #fff 0%, transparent 70%),
-    radial-gradient(ellipse 70% 14% at 45% 82%, #fff 0%, transparent 72%);
+    radial-gradient(ellipse 60% 9% at 22% 12%, #fff 0%, transparent 70%),
+    radial-gradient(ellipse 48% 7% at 72% 22%, #fff 0%, transparent 70%),
+    radial-gradient(ellipse 70% 6% at 45% 33%, #fff 0%, transparent 72%),
+    radial-gradient(ellipse 55% 8% at 30% 48%, #fff 0%, transparent 70%),
+    radial-gradient(ellipse 64% 6% at 68% 58%, #fff 0%, transparent 70%),
+    radial-gradient(ellipse 50% 9% at 18% 71%, #fff 0%, transparent 70%),
+    radial-gradient(ellipse 72% 6% at 60% 84%, #fff 0%, transparent 72%),
+    radial-gradient(ellipse 46% 8% at 80% 94%, #fff 0%, transparent 70%);
   filter: blur(14px);
+  transform: translateY(calc(var(--scroll-p, 0) * -160vh));
+  will-change: transform;
 }
 
-/* ---------- 5. Orbit: concentric rings, two counter-rotating arcs ----------
-   Rings are 1px lines on a fixed pitch so they stay crisp at any size, and
-   they are strong enough to be seen next to Void. */
-
-.bd-glow {
+/* progress drawn as one chalk stroke along the bottom edge */
+.bd-chalk-mark {
   position: absolute;
-  left: 50%;
-  top: 42%;
-  width: 90vmax;
-  height: 90vmax;
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
+  left: 0;
+  bottom: 0;
+  height: var(--rule-fat);
+  width: calc(var(--scroll-p, 0) * 100%);
+  background: var(--accent);
+  opacity: 0.75;
+  border-radius: 0 99px 99px 0;
+  filter: blur(0.4px);
+}
+
+/* ---------- 5. Synapse: a faint network with travelling signals ----------
+   Lines are hairlines, nodes pulse on their own cycles, and a short dash
+   runs along each line as a signal. Everything is low opacity on purpose. */
+
+.bd-synapse {
   background: radial-gradient(
-    circle at center,
-    color-mix(in srgb, var(--accent) 9%, transparent) 0%,
-    transparent 60%
+    ellipse 80% 60% at 50% 30%,
+    color-mix(in srgb, var(--accent) 5%, transparent) 0%,
+    transparent 70%
   );
 }
 
-.bd-rings {
+.bd-net {
   position: absolute;
-  left: 50%;
-  top: 42%;
-  width: 190vmax;
-  height: 190vmax;
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
-  background: repeating-radial-gradient(
-    circle at center,
-    transparent 0,
-    transparent calc(6.5vmax - 1px),
-    rgba(255, 255, 255, 0.14) calc(6.5vmax - 1px),
-    rgba(255, 255, 255, 0.14) 6.5vmax
-  );
-  mask: radial-gradient(circle at center, #000 0%, #000 30%, transparent 62%);
-  -webkit-mask: radial-gradient(circle at center, #000 0%, #000 30%, transparent 62%);
+  inset: -4%;
+  width: 108%;
+  height: 108%;
+  animation: net-drift 70s ease-in-out infinite;
 }
 
-.bd-arc {
-  position: absolute;
-  left: 50%;
-  top: 42%;
-  width: 104vmax;
-  height: 104vmax;
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
-  background: conic-gradient(
-    from 0deg,
-    transparent 0deg,
-    transparent 292deg,
-    color-mix(in srgb, var(--accent) 85%, transparent) 334deg,
-    color-mix(in srgb, var(--accent) 18%, transparent) 352deg,
-    transparent 360deg
-  );
-  mask: radial-gradient(circle at center, transparent 43%, #000 44%, #000 46%, transparent 47%);
-  -webkit-mask: radial-gradient(circle at center, transparent 43%, #000 44%, #000 46%, transparent 47%);
-  animation: spin 90s linear infinite;
+.net-line {
+  stroke: rgba(255, 255, 255, 0.11);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
 }
 
-.bd-arc-2 {
-  width: 66vmax;
-  height: 66vmax;
-  background: conic-gradient(
-    from 180deg,
-    transparent 0deg,
-    transparent 310deg,
-    color-mix(in srgb, var(--accent-2) 70%, transparent) 344deg,
-    color-mix(in srgb, var(--accent-2) 12%, transparent) 356deg,
-    transparent 360deg
-  );
-  animation: spin-back 70s linear infinite;
+.net-signal {
+  stroke: var(--accent-2);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 5 95;
+  stroke-dashoffset: 100;
+  opacity: 0.4;
+  animation: net-signal 9s linear infinite;
+  animation-delay: calc(var(--i) * -1.7s);
 }
 
-@keyframes spin {
-  to { transform: translate(-50%, -50%) rotate(360deg); }
+.net-node {
+  fill: var(--accent);
+  opacity: 0.25;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: net-pulse 6s ease-in-out infinite;
+  animation-delay: calc(var(--i) * -0.9s);
 }
 
-@keyframes spin-back {
-  to { transform: translate(-50%, -50%) rotate(-360deg); }
+@keyframes net-signal {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes net-pulse {
+  0%, 100% { opacity: 0.18; transform: scale(0.85); }
+  50%      { opacity: 0.5;  transform: scale(1.3); }
+}
+
+@keyframes net-drift {
+  0%, 100% { transform: translate(0, 0); }
+  50%      { transform: translate(-1.5%, 1%); }
 }
 
 /* ---------- reduced motion ---------- */
 
 @media (prefers-reduced-motion: reduce) {
   .blob,
-  .bd-arc {
+  .bd-net,
+  .net-signal,
+  .net-node {
     animation: none !important;
   }
 }

@@ -92,3 +92,17 @@ slight movement. The client's sketch is the shape, not the look. — Client
 Entrance and hover behaviour are chosen in the configurator alongside
 background, accents and type. The style guide is choose-your-own-adventure
 across every axis, not a fixed set of looks. — Client
+
+**2026-09-23 — Orbit is out, Synapse is in.**
+The client did not like the rings. Replaced with a faint network of nodes and
+connections with travelling signals, kept subtle. Old orbit links resolve to
+synapse. — Client
+
+**2026-09-23 — Instrument Serif is out, Unbounded is in.**
+Client rejected the serif. Replaced with a wide geometric display face, the
+opposite kind of type, so the five pairings still cover the range. — Client
+
+**2026-09-23 — Backgrounds should respond to scroll where they can.**
+Chalk now changes as you scroll rather than sitting still. Aurora's lava lamp
+motion was sped up from 44 to 58 second cycles to 24 to 30 so it is visibly
+moving. — Client

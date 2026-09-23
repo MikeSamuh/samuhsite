@@ -22,7 +22,7 @@
 /* Backgrounds                                                         */
 /* ------------------------------------------------------------------ */
 
-export type BackdropId = "void" | "slate" | "aurora" | "chalk" | "orbit";
+export type BackdropId = "void" | "slate" | "aurora" | "chalk" | "synapse";
 
 export interface Background {
   id: BackdropId;
@@ -89,7 +89,7 @@ export const BACKGROUNDS: Background[] = [
     id: "aurora",
     n: 3,
     name: "Aurora",
-    bet: "Black with toned-down colour rising and falling underneath, lava lamp style. This is the mushrooms one. Each blob takes 40 to 60 seconds to travel, so it reads as atmosphere, never as an animation you are being shown.",
+    bet: "Black with toned-down colour rising and falling underneath, lava lamp style. This is the mushrooms one. Each blob takes 20 to 30 seconds to travel the screen, slow enough to be atmosphere, fast enough that you notice it moving.",
     risk: "Highest craft cost and the one that goes wrong fastest if the blur or the speed is off. Also the hardest to keep text legible on.",
     base: "#000000",
     surface: "rgba(20, 20, 24, 0.72)",
@@ -108,7 +108,7 @@ export const BACKGROUNDS: Background[] = [
     id: "chalk",
     n: 4,
     name: "Chalk",
-    bet: "A blackboard. Slightly green-black, fine grain, hand-drawn underlines and a dusty vignette. Teaching is literally the first job of this site, so the surface says so before a word is read.",
+    bet: "A blackboard. Slightly green-black, fine grain, wiped chalk dust that travels as you scroll, and a chalk line along the bottom that fills with your progress through the page. Teaching is literally the first job of this site, so the surface says so before a word is read.",
     risk: "Skews academic. Push it too far and it reads as a school, not a firm that charges six figures.",
     base: "#0A0D0B",
     surface: "#121613",
@@ -124,23 +124,23 @@ export const BACKGROUNDS: Background[] = [
     motionNote: "Marks appear the way chalk lands: quick stroke, then settle.",
   },
   {
-    id: "orbit",
+    id: "synapse",
     n: 5,
-    name: "Orbit",
-    bet: "My pick. Concentric hairline rings with two slow counter-rotating arcs of colour, so the background is already the three-circles diagram before the visitor scrolls to it. Instrumentation and planetary motion at the same time.",
-    risk: "The rings have to stay quiet. Too strong and it stops being atmosphere and starts being a graphic the content is sitting on top of.",
-    base: "#050609",
-    surface: "#0D0E12",
-    surfaceAlt: "#15171C",
-    border: "#23262E",
+    name: "Synapse",
+    bet: "A faint network of nodes and connections, with signals travelling slowly along the lines. Teams as a nervous system: the connections are the point, not the nodes. Subtle enough to sit under body text.",
+    risk: "Network diagrams are a cliché in consulting. It only works if it stays quiet and organic, never a tech-company node graph.",
+    base: "#04060A",
+    surface: "#0D1016",
+    surfaceAlt: "#151920",
+    border: "#242A34",
     text: "#F4F5F7",
-    muted: "#888F9B",
+    muted: "#8B939F",
     ruleThin: "1px",
     ruleFat: "3px",
-    radius: "999px",
+    radius: "14px",
     motionDur: "480ms",
     motionEase: "cubic-bezier(0.16, 1, 0.3, 1)",
-    motionNote: "Everything eases on a long curve. One element on screen is always rotating.",
+    motionNote: "Everything eases on a long curve. Something on screen is always faintly pulsing.",
   },
 ];
 
@@ -220,16 +220,16 @@ export const TYPE_PAIRS: TypePair[] = [
     note: "Irregular by design, letters that do not quite match. Playful without a single rounded corner.",
   },
   {
-    id: "instrument",
-    name: "Instrument Serif / Instrument Sans",
-    displayVar: "var(--f-instrument-serif)",
-    displayName: "Instrument Serif",
+    id: "unbounded",
+    name: "Unbounded / Instrument Sans",
+    displayVar: "var(--f-unbounded)",
+    displayName: "Unbounded",
     bodyVar: "var(--f-instrument-sans)",
     bodyName: "Instrument Sans",
-    displayWeight: 400,
-    displayTracking: "-0.015em",
-    displayLeading: "1.0",
-    note: "High contrast and a little theatrical. The most expensive-looking of the five.",
+    displayWeight: 500,
+    displayTracking: "-0.02em",
+    displayLeading: "1.02",
+    note: "Wide and geometric, almost a wordmark. The most contemporary of the five and the one that takes up the most room.",
   },
   {
     id: "syne",
@@ -320,6 +320,13 @@ export function comboHash(c: Combo): string {
   return `#${c.bg.id}.${c.accent.id}.${c.accent2.id}.${c.type.id}.${c.entrance.id}.${c.hover.id}`;
 }
 
+// Ids that were renamed after links went out.
+const LEGACY_IDS: Record<string, string> = {
+  ascent: "slate",
+  orbit: "synapse",
+  instrument: "unbounded",
+};
+
 /**
  * Reads a hash back into a combo. Order does not matter, every id is unique
  * across the axes, and anything unrecognised falls back to the default. The
@@ -330,7 +337,7 @@ export function parseComboHash(hash: string): Combo {
   const c: Combo = { ...DEFAULT_COMBO };
   const accents: Accent[] = [];
   for (const raw of parts) {
-    const id = raw === "ascent" ? "slate" : raw;
+    const id = LEGACY_IDS[raw] ?? raw;
     const bg = BACKGROUNDS.find((x) => x.id === id);
     if (bg) { c.bg = bg; continue; }
     const ac = ACCENTS.find((x) => x.id === id);

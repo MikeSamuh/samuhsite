@@ -40,13 +40,13 @@ the background choice also sets how the whole thing behaves.
 |---|---|---|---|
 | 1 | `void` | Void | Pure black, nothing behind the content |
 | 2 | `slate` | Slate | Dark slate, not black. Lighter at the top, darker as you scroll |
-| 3 | `aurora` | Aurora | Toned-down colour rising and sinking under grain, lava lamp style, 44 to 58 second cycles |
-| 4 | `chalk` | Chalk | Blackboard. Green-black base, fine grain, wiped dust, vignette |
-| 5 | `orbit` | Orbit | Concentric 1px rings with two counter-rotating arcs, one per accent |
+| 3 | `aurora` | Aurora | Toned-down colour rising and sinking under grain, lava lamp style, 24 to 30 second cycles |
+| 4 | `chalk` | Chalk | Blackboard. Changes with scroll: the board cools, the wiped dust drifts past, a chalk line along the bottom fills with progress |
+| 5 | `synapse` | Synapse | A faint network of nodes and hairline connections with signals travelling along them |
 
-Orbit is the creative-freedom slot. The reasoning: the homepage already has a
-three-circles section as its structural idea, so a background built from
-concentric rings foreshadows it instead of decorating around it.
+Synapse replaced Orbit after the client rejected the rings. It is the
+creative-freedom slot: teams as a nervous system, where the connections are the
+point. It has to stay quiet or it becomes a tech-company node graph.
 
 Aurora is the most direct answer to "on mushrooms" and also the highest craft
 cost. Watch legibility on it above everything else.
@@ -69,7 +69,7 @@ nine are safe for text and not only decoration.
 | Blue | Periwinkle | `#8B8BFF` | Drifting into violet. The strangest blue |
 
 Two accents are chosen, from any family. Accent 1 is the loud one: buttons,
-the Team circle, the orbit arc, the first aurora blob. Accent 2 is the quiet
+the Team circle, the synapse nodes, the first aurora blob. Accent 2 is the quiet
 one: eyebrows, inline links, tags, the second blob. One loud colour per screen.
 The scope calls for pink, blue and yellow together, and this is how they work
 as a system rather than all at once.
@@ -83,7 +83,7 @@ face. The pairing is what keeps it playful without becoming childish.
 |---|---|---|
 | `fraunces` | Fraunces / Inter | Serif with deliberate wonk. Warm up close, serious at a glance |
 | `bricolage` | Bricolage Grotesque / Inter | Irregular by design. Playful without a rounded corner |
-| `instrument` | Instrument Serif / Instrument Sans | High contrast, theatrical, most expensive-looking |
+| `unbounded` | Unbounded / Instrument Sans | Wide and geometric, almost a wordmark. The most contemporary |
 | `syne` | Syne / Inter | Architectural and genuinely strange. The boldest swing |
 | `space` | Space Grotesk / Figtree | Geometric with quirks in the details |
 
@@ -143,7 +143,7 @@ a fat rule, and the gap between them is deliberate. Uniform 1px everywhere is
 what makes a site feel corporate. A hairline grid with a few confident heavy
 strokes is what makes it feel drawn.
 
-Chalk runs the widest gap, 1px against 5px. Void and Orbit run 1px against 3px.
+Chalk runs the widest gap, 1px against 5px. Void and Synapse run 1px against 3px.
 Slate runs 1px against 4px.
 
 ## Motion
