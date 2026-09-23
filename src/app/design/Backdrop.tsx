@@ -46,36 +46,26 @@ export default function Backdrop({ id }: { id: BackdropId }) {
         viewBox="0 0 100 100"
         preserveAspectRatio="xMidYMid slice"
       >
-        {LINKS.map(([a, b], i) => (
-          <line
-            key={`l${i}`}
-            className="net-line"
-            x1={NODES[a][0]}
-            y1={NODES[a][1]}
-            x2={NODES[b][0]}
-            y2={NODES[b][1]}
-          />
+        {LINKS.map((l, i) => (
+          <path key={`l${i}`} className="net-line" d={l.d} />
         ))}
-        {LINKS.map(([a, b], i) => (
-          <line
+        {LINKS.map((l, i) => (
+          <path
             key={`s${i}`}
             className="net-signal"
-            style={{ "--i": i } as React.CSSProperties}
+            style={{ "--dur-s": `${l.dur}s`, "--delay-s": `${l.delay}s` } as React.CSSProperties}
             pathLength={100}
-            x1={NODES[a][0]}
-            y1={NODES[a][1]}
-            x2={NODES[b][0]}
-            y2={NODES[b][1]}
+            d={l.d}
           />
         ))}
-        {NODES.map(([x, y], i) => (
+        {NODES.map((n, i) => (
           <circle
             key={`n${i}`}
             className="net-node"
-            style={{ "--i": i } as React.CSSProperties}
-            cx={x}
-            cy={y}
-            r={0.28}
+            style={{ "--dur-n": `${n.dur}s`, "--delay-n": `${n.delay}s`, "--peak": n.peak } as React.CSSProperties}
+            cx={n.x}
+            cy={n.y}
+            r={n.r}
           />
         ))}
       </svg>
@@ -83,31 +73,75 @@ export default function Backdrop({ id }: { id: BackdropId }) {
   );
 }
 
-// A fixed constellation. Hand-placed so it reads as loose and organic rather
-// than a grid, and so the same picture shows on every load.
-const NODES: [number, number][] = [
-  [8, 14], [21, 9], [34, 18], [47, 7], [62, 13], [77, 9], [91, 17],
-  [12, 33], [28, 30], [43, 36], [58, 28], [72, 34], [88, 31],
-  [6, 52], [19, 58], [36, 50], [52, 56], [67, 49], [83, 55], [95, 47],
-  [14, 74], [30, 80], [46, 72], [61, 78], [76, 71], [90, 77],
-  [9, 93], [25, 96], [41, 91], [57, 95], [73, 90], [88, 94],
-];
+// A seeded random constellation, so it looks scattered rather than gridded
+// and still draws the same picture on every load. Nodes keep a minimum
+// distance from each other, links curve, and every timing is its own.
 
-// Each node links to its two nearest neighbours. Computed once.
-const LINKS: [number, number][] = (() => {
+function mulberry32(seed: number) {
+  let a = seed >>> 0;
+  return () => {
+    a = (a + 0x6d2b79f5) >>> 0;
+    let t = a;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+interface Node { x: number; y: number; r: number; dur: number; delay: number; peak: number }
+interface Link { d: string; dur: number; delay: number }
+
+const rand = mulberry32(20260923);
+
+const NODES: Node[] = (() => {
+  const out: Node[] = [];
+  let tries = 0;
+  while (out.length < 44 && tries < 4000) {
+    tries++;
+    const x = -4 + rand() * 108;
+    const y = -4 + rand() * 108;
+    if (out.some((n) => (n.x - x) ** 2 + (n.y - y) ** 2 < 8 ** 2)) continue;
+    out.push({
+      x: +x.toFixed(2),
+      y: +y.toFixed(2),
+      r: +(0.14 + rand() * 0.24).toFixed(2),
+      dur: +(5 + rand() * 7).toFixed(1),
+      delay: +(-rand() * 12).toFixed(1),
+      peak: +(0.25 + rand() * 0.3).toFixed(2),
+    });
+  }
+  return out;
+})();
+
+const LINKS: Link[] = (() => {
   const seen = new Set<string>();
-  const out: [number, number][] = [];
-  NODES.forEach(([x, y], i) => {
-    NODES.map(([nx, ny], j) => [j, (nx - x) ** 2 + (ny - y) ** 2] as const)
+  const out: Link[] = [];
+  NODES.forEach((n, i) => {
+    NODES.map((m, j) => [j, (m.x - n.x) ** 2 + (m.y - n.y) ** 2] as const)
       .filter(([j]) => j !== i)
       .sort((p, q) => p[1] - q[1])
       .slice(0, 2)
       .forEach(([j]) => {
         const key = i < j ? `${i}-${j}` : `${j}-${i}`;
-        if (!seen.has(key)) {
-          seen.add(key);
-          out.push(i < j ? [i, j] : [j, i]);
-        }
+        if (seen.has(key)) return;
+        seen.add(key);
+        const a = NODES[i];
+        const b = NODES[j];
+        // control point off the midpoint, perpendicular, so each link bows
+        // a little in its own direction
+        const mx = (a.x + b.x) / 2;
+        const my = (a.y + b.y) / 2;
+        const dx = b.x - a.x;
+        const dy = b.y - a.y;
+        const len = Math.hypot(dx, dy) || 1;
+        const bow = (rand() - 0.5) * 0.5 * len;
+        const cx = mx + (-dy / len) * bow;
+        const cy = my + (dx / len) * bow;
+        out.push({
+          d: `M ${a.x} ${a.y} Q ${cx.toFixed(2)} ${cy.toFixed(2)} ${b.x} ${b.y}`,
+          dur: +(10 + rand() * 12).toFixed(1),
+          delay: +(-rand() * 20).toFixed(1),
+        });
       });
   });
   return out;
