@@ -18,7 +18,24 @@
 
 /* ---------- the rail: every dial, left aligned, minimisable ---------- */
 
+.stage {
+  /* the real display face, kept for the specimen inside the rail */
+  --specimen-display: var(--font-display);
+  --specimen-weight: var(--display-weight);
+  --specimen-tracking: var(--display-tracking);
+}
+
 .rail {
+  /* the rail is a tool, not the design: it stays in Inter and Plex Mono
+     whatever the page is set to. Only the Aa specimen and the font option
+     buttons show the chosen faces. */
+  --font-display: var(--f-inter);
+  --display-weight: 600;
+  --display-tracking: -0.01em;
+  --font-body: var(--f-inter);
+  --font-ui: var(--f-inter);
+  --font-eyebrow: var(--f-plex-mono);
+  --font-caption: var(--f-plex-mono);
   position: fixed;
   top: 0;
   left: 0;
@@ -519,9 +536,9 @@
 }
 
 .guide-aa {
-  font-family: var(--font-display);
-  font-weight: var(--display-weight);
-  letter-spacing: var(--display-tracking);
+  font-family: var(--specimen-display);
+  font-weight: var(--specimen-weight);
+  letter-spacing: var(--specimen-tracking);
   font-size: 38px;
   line-height: 1;
   color: var(--text);
