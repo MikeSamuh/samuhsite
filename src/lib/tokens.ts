@@ -429,6 +429,29 @@ export const TYPE_PAIRS: TypePair[] = [
   },
 ];
 
+// Paragraph font, chosen on its own. Every pairing above carries a default
+// body face; this overrides it. Null means "use the pairing's own".
+
+export interface BodyFont {
+  id: string;
+  name: string;
+  var: string;
+  note: string;
+}
+
+export const BODY_FONTS: BodyFont[] = [
+  { id: "body-inter", name: "Inter", var: "var(--f-inter)", note: "The neutral default. Disappears behind the content." },
+  { id: "body-dm-sans", name: "DM Sans", var: "var(--f-dm-sans)", note: "Geometric and low contrast. Slightly friendlier than Inter." },
+  { id: "body-hanken", name: "Hanken Grotesk", var: "var(--f-hanken)", note: "Grotesk with a Swiss edge. Crisp at small sizes." },
+  { id: "body-instrument", name: "Instrument Sans", var: "var(--f-instrument-sans)", note: "Narrower, a touch more character in the letterforms." },
+  { id: "body-figtree", name: "Figtree", var: "var(--f-figtree)", note: "Rounded and warm. Reads casual." },
+  { id: "body-source", name: "Source Sans 3", var: "var(--f-source-sans)", note: "Humanist, the most bookish of the sans faces." },
+  { id: "body-franklin", name: "Libre Franklin", var: "var(--f-franklin)", note: "American gothic. Sturdy, a little formal." },
+  { id: "body-manrope", name: "Manrope", var: "var(--f-manrope)", note: "Wide and soft. Premium product-company feel." },
+  { id: "body-newsreader", name: "Newsreader", var: "var(--f-newsreader)", note: "A serif for body. Editorial, slower to read on screen." },
+  { id: "body-garamond", name: "EB Garamond", var: "var(--f-garamond)", note: "A serif for body. Formal, runs small so it needs a size up." },
+];
+
 /* ------------------------------------------------------------------ */
 /* Line weights                                                        */
 /* ------------------------------------------------------------------ */
@@ -543,6 +566,8 @@ export interface Combo {
   /** optional, wash: tints only, never text. Bands, blobs, hover tints. Falls back to accent 1 */
   accent4: Accent | null;
   type: TypePair;
+  /** paragraph face override; null uses the pairing's own body face */
+  body: BodyFont | null;
   weight: Weight;
   scale: LineScale;
   approach: Approach;
@@ -561,6 +586,7 @@ export const DEFAULT_COMBO: Combo = {
   accent3: null,
   accent4: null,
   type: TYPE_PAIRS[0],
+  body: null,
   weight: WEIGHTS.find((w) => w.id === "balanced") ?? WEIGHTS[0],
   scale: LINE_SCALES.find((x) => x.factor === 1) ?? LINE_SCALES[0],
   approach: APPROACHES[0],
@@ -604,6 +630,11 @@ export function pickCombo(p: Pick): Combo {
   return parseComboHash(p.hash);
 }
 
+/** the paragraph face in use: the override, else the pairing's own */
+export function bodyName(c: Combo): string {
+  return c.body ? c.body.name : c.type.bodyName;
+}
+
 /** kept for the home shell and older callers */
 export function recommendedCombo(): Combo {
   return pickCombo(PICKS[0]);
@@ -623,7 +654,8 @@ export function comboHash(c: Combo): string {
   const accents = [c.accent.id, c.accent2.id];
   if (c.accent4) accents.push(c.accent3?.id ?? NO_ACCENT, c.accent4.id);
   else if (c.accent3) accents.push(c.accent3.id);
-  return `#${c.approach.id}.${c.bg.id}.${accents.join(".")}.${c.type.id}.${c.weight.id}.${c.scale.id}.${c.entrance.id}.${c.hover.id}`;
+  const body = c.body ? `.${c.body.id}` : "";
+  return `#${c.approach.id}.${c.bg.id}.${accents.join(".")}.${c.type.id}${body}.${c.weight.id}.${c.scale.id}.${c.entrance.id}.${c.hover.id}`;
 }
 
 // Ids that were renamed or retired after links went out.
@@ -656,6 +688,8 @@ export function parseComboHash(hash: string): Combo {
     if (ac) { accents.push(ac); continue; }
     const tp = TYPE_PAIRS.find((x) => x.id === id);
     if (tp) { c.type = tp; continue; }
+    const bf = BODY_FONTS.find((x) => x.id === id);
+    if (bf) { c.body = bf; continue; }
     const wt = WEIGHTS.find((x) => x.id === id);
     if (wt) { c.weight = wt; continue; }
     const sc = LINE_SCALES.find((x) => x.id === id);
@@ -671,6 +705,7 @@ export function parseComboHash(hash: string): Combo {
   if (accents[1]) c.accent2 = accents[1];
   c.accent3 = accents[2] ?? null;
   c.accent4 = accents[3] ?? null;
+  if (!parts.some((raw) => BODY_FONTS.some((b) => b.id === raw))) c.body = null;
   return c;
 }
 
@@ -681,7 +716,7 @@ export function ruleWidths({ weight, scale }: { weight: Weight; scale: LineScale
 }
 
 export function cssVars(combo: Combo): React.CSSProperties {
-  const { bg, accent, accent2, accent3, accent4, type } = combo;
+  const { bg, accent, accent2, accent3, accent4, type, body } = combo;
   const rule = ruleWidths(combo);
   const data = accent3 ?? accent2;
   const wash = accent4 ?? accent;
@@ -707,7 +742,7 @@ export function cssVars(combo: Combo): React.CSSProperties {
     /* how strongly a wash tints large areas: nothing unless accent 4 is set */
     "--wash-mix": accent4 ? "10%" : "0%",
     "--font-display": type.displayVar,
-    "--font-body": type.bodyVar,
+    "--font-body": body?.var ?? type.bodyVar,
     "--font-mono": "var(--f-plex-mono)",
     "--display-weight": String(type.displayWeight),
     "--display-tracking": type.displayTracking,

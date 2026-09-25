@@ -6,6 +6,7 @@ import {
   BACKGROUNDS,
   ACCENTS,
   TYPE_PAIRS,
+  BODY_FONTS,
   WEIGHTS,
   LINE_SCALES,
   APPROACHES,
@@ -18,6 +19,7 @@ import {
   parseComboHash,
   pickCombo,
   ruleWidths,
+  bodyName,
   sameCombo,
   type Combo,
   type Accent,
@@ -210,7 +212,7 @@ export default function DesignDirections() {
                 <span className="guide-aa">Aa</span>
                 <span>
                   <span className="guide-v">{type.displayName} {type.displayWeight}</span>
-                  <span className="guide-sub">{type.bodyName} for body · {type.group}</span>
+                  <span className="guide-sub">{bodyName(combo)} for body{combo.body ? "" : " (paired)"} · {type.group}</span>
                 </span>
               </div>
               <div className="guide-row">
@@ -465,7 +467,7 @@ export default function DesignDirections() {
                 <span className="spec-meta">
                   Body
                   <br />
-                  {type.bodyName} 400 &middot; 17/1.65
+                  {bodyName(combo)} 400 &middot; 17/1.65
                 </span>
                 <span style={{ fontSize: 17, lineHeight: 1.65 }}>
                   The practices only hold if they survive contact with a normal
@@ -540,7 +542,7 @@ export default function DesignDirections() {
               </div>
               <div>
                 <dt>Body</dt>
-                <dd>{type.bodyName}</dd>
+                <dd>{bodyName(combo)}{combo.body ? ` · ${combo.body.note}` : " · the pairing's own"}</dd>
               </div>
               <div>
                 <dt>Line weights</dt>
@@ -680,7 +682,13 @@ function Dials({ combo, set }: { combo: Combo; set: (patch: Partial<Combo>) => v
       {swatches("Accent 4 · wash, optional", accent4, (x) => set({ accent4: x }), true)}
 
       <div className="ctrl">
-        <span className="ctrl-label">Type</span>
+        <span className="ctrl-label ctrl-label-row">
+          Type · headings
+          <span className="stepper">
+            <button className="tbtn" onClick={() => set({ type: TYPE_PAIRS[(TYPE_PAIRS.indexOf(type) - 1 + TYPE_PAIRS.length) % TYPE_PAIRS.length] })} aria-label="Previous type pairing">&larr; prev</button>
+            <button className="tbtn" onClick={() => set({ type: TYPE_PAIRS[(TYPE_PAIRS.indexOf(type) + 1) % TYPE_PAIRS.length] })} aria-label="Next type pairing">next &rarr;</button>
+          </span>
+        </span>
         {(["expressive", "refined", "formal"] as TypeGroup[]).map((g) => (
           <div className="ctrl-group" key={g}>
             <span className="ctrl-sub">{g}</span>
@@ -693,6 +701,26 @@ function Dials({ combo, set }: { combo: Combo; set: (patch: Partial<Combo>) => v
             </div>
           </div>
         ))}
+      </div>
+
+      <div className="ctrl">
+        <span className="ctrl-label ctrl-label-row">
+          Paragraph font
+          <span className="stepper">
+            <button className="tbtn" onClick={() => set({ body: combo.body ? (BODY_FONTS.indexOf(combo.body) === 0 ? null : BODY_FONTS[BODY_FONTS.indexOf(combo.body) - 1]) : BODY_FONTS[BODY_FONTS.length - 1] })} aria-label="Previous paragraph font">&larr; prev</button>
+            <button className="tbtn" onClick={() => set({ body: combo.body ? (BODY_FONTS[BODY_FONTS.indexOf(combo.body) + 1] ?? null) : BODY_FONTS[0] })} aria-label="Next paragraph font">next &rarr;</button>
+          </span>
+        </span>
+        <div className="ctrl-opts">
+          <button className="opt" aria-pressed={combo.body === null} onClick={() => set({ body: null })} title="Use the pairing's own body face">
+            Paired · {type.bodyName}
+          </button>
+          {BODY_FONTS.map((x) => (
+            <button key={x.id} className="opt" aria-pressed={x.id === combo.body?.id} onClick={() => set({ body: x })} title={x.note} style={{ fontFamily: x.var }}>
+              {x.name}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="ctrl">

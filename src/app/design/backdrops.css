@@ -132,16 +132,20 @@
    content, the grain shifts, and a chalk line along the bottom edge fills. */
 
 .bd-chalk {
+  /* the board is a photograph (public/chalk-board.jpg, supplied by Wilfred
+     25 Sept). The scroll-driven cooling sits on top of it as a tint. */
   background:
-    radial-gradient(ellipse 100% 70% at 30% 20%, #10150F 0%, transparent 60%),
-    radial-gradient(ellipse 90% 60% at 75% 70%, #0D1210 0%, transparent 55%),
-    color-mix(in srgb, transparent, #0B1220 calc(var(--scroll-p, 0) * 55%));
+    linear-gradient(
+      color-mix(in srgb, transparent, #0B1220 calc(var(--scroll-p, 0) * 45%)),
+      color-mix(in srgb, transparent, #0B1220 calc(var(--scroll-p, 0) * 45%))
+    ),
+    url("/chalk-board.jpg") center / cover no-repeat #1C1C1C;
 }
 
 .bd-chalk-grain {
   position: absolute;
   inset: 0;
-  opacity: 0.22;
+  opacity: 0.1;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='c'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='4'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23c)' opacity='0.55'/%3E%3C/svg%3E");
   background-position: 0 calc(var(--scroll-p, 0) * -600px);
 }

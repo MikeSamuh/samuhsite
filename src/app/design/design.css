@@ -132,6 +132,16 @@
   color: var(--muted);
 }
 
+.ctrl-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.stepper { display: inline-flex; gap: 4px; }
+.stepper .tbtn { padding: 3px 7px; font-size: 9px; }
+
 .ctrl-opts {
   display: flex;
   align-items: center;
