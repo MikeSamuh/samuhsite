@@ -643,7 +643,7 @@ export const PICKS: Pick[] = [
   {
     id: "client",
     kicker: "02 · Your pick, 24 September",
-    title: "your pick",
+    title: "Your pick",
     // The link Mike sent, with the cyan the team said they used in place of
     // the doubled magenta.
     hash: "#synapse.pink-magenta.cyan-samuh.syne.unblur.glow.balanced",
@@ -652,6 +652,24 @@ export const PICKS: Pick[] = [
 
 export function pickCombo(p: Pick): Combo {
   return parseComboHash(p.hash);
+}
+
+/**
+ * A name for the combination, so people can talk about it without reading
+ * a hash. Background becomes a word, accent 1 supplies the colour, approach
+ * prefixes when it is not the default. "Neural Magenta", "Formal Lava Amber".
+ */
+const BG_WORD: Record<BackdropId, string> = {
+  void: "Midnight",
+  slate: "Graphite",
+  aurora: "Lava",
+  chalk: "Blackboard",
+  synapse: "Neural",
+};
+
+export function comboName(c: Combo): string {
+  const prefix = c.approach.id === "modern" ? "" : c.approach.name.replace(/ #\d+$/, "") + " ";
+  return `${prefix}${BG_WORD[c.bg.id]} ${c.accent.name}`;
 }
 
 /** the paragraph face in use: the override, else the pairing's own */

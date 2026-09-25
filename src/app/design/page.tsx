@@ -21,6 +21,7 @@ import {
   pickCombo,
   ruleWidths,
   bodyName,
+  comboName,
   sameCombo,
   type Combo,
   type Accent,
@@ -53,6 +54,14 @@ const TIERS = [
 export default function DesignDirections() {
   const [combo, setCombo] = useState<Combo>(DEFAULT_COMBO);
   const [railOpen, setRailOpen] = useState(true);
+  const [copied, setCopied] = useState(false);
+  const copyLink = () => {
+    const url = `${window.location.origin}/design${comboHash(combo)}`;
+    navigator.clipboard?.writeText(url).then(() => {
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1600);
+    });
+  };
   const { bg, accent, accent2, accent3, accent4, type, weight, scale, approach, entrance, hover } = combo;
   const rule = ruleWidths(combo);
   const set = (patch: Partial<Combo>) => setCombo((c) => ({ ...c, ...patch }));
@@ -146,40 +155,43 @@ export default function DesignDirections() {
         {railOpen ? (
           <>
             <div className="rail-head">
-              <span className="rail-title">Style picker</span>
-              <button
-                className="tbtn"
-                onClick={() => setRailOpen(false)}
-                aria-expanded="true"
-                aria-controls="rail-dials"
-              >
-                Minimise
-              </button>
+              <span className="rail-title">
+                <span className="rail-now">Now showing</span>
+                {comboName(combo)}
+              </span>
+              <span className="rail-actions">
+                <button className="tbtn tbtn-accent" onClick={copyLink}>
+                  {copied ? "Copied" : "Copy link"}
+                </button>
+                <button
+                  className="tbtn"
+                  onClick={() => setRailOpen(false)}
+                  aria-expanded="true"
+                  aria-controls="rail-dials"
+                >
+                  Minimise
+                </button>
+              </span>
             </div>
 
-            {PICKS.map((p) => {
-              const c = pickCombo(p);
-              const on = sameCombo(combo, c);
-              return (
-                <div className="rail-block" key={p.id}>
-                  <p className="rail-kicker">{p.kicker}</p>
-                  <button className="rec" aria-pressed={on} onClick={() => setCombo(c)}>
-                    <span className="rec-title">
-                      {on ? `Showing ${p.title}` : `Show ${p.title}`}
-                    </span>
-                    <span className="rec-list">
-                      <span>{c.bg.name}</span>
-                      <span>{c.accent.family} {c.accent.name} + {c.accent2.family} {c.accent2.name}</span>
-                      <span>{c.type.name}</span>
-                      <span>{c.weight.name} lines · {c.entrance.name} · {c.hover.name}</span>
-                    </span>
+            <div className="rail-block picks">
+              <p className="rail-kicker">01 · Saved picks</p>
+              {PICKS.map((p) => {
+                const c = pickCombo(p);
+                const on = sameCombo(combo, c);
+                return (
+                  <button className="pick" key={p.id} aria-pressed={on} onClick={() => setCombo(c)} title={c.type.name}>
+                    <span className="pick-dot" style={{ background: c.accent.hex }} />
+                    <span className="pick-title">{p.title}</span>
+                    <span className="pick-name">{comboName(c)}</span>
                   </button>
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
 
-            <div className="rail-block guide" aria-label="Current style">
-              <p className="rail-kicker">03 · Style guide, what you are looking at</p>
+            <div className="rail-block guide" aria-label="Current selection">
+              <p className="rail-kicker">02 · Current selection, updates as you go</p>
+              <p className="guide-name">{comboName(combo)}</p>
               <div className="guide-row">
                 <span className="guide-k">Approach</span>
                 <span className="guide-v">{approach.name} <span className="guide-sub">on {bg.name}</span></span>
@@ -232,7 +244,7 @@ export default function DesignDirections() {
             </div>
 
             <div className="rail-block" id="rail-dials">
-              <p className="rail-kicker">04 · Choose your own adventure</p>
+              <p className="rail-kicker">03 · Choose your own adventure</p>
               <Dials combo={combo} set={set} />
               <p className="rail-hash">{comboHash(combo)}</p>
             </div>
@@ -245,7 +257,7 @@ export default function DesignDirections() {
             aria-expanded="false"
             aria-controls="rail-dials"
           >
-            <span>Style picker</span>
+            <span>{comboName(combo)} · style picker</span>
           </button>
         )}
       </aside>
@@ -254,6 +266,14 @@ export default function DesignDirections() {
         <div className="wrap">
           {/* top nav example. Nothing here navigates: the page is a style
               reference, so every link stays put. */}
+          <div className="style-bar" aria-label="Current style">
+            <span className="style-bar-name">{comboName(combo)}</span>
+            <span className="style-bar-spec">
+              {bg.name} · {accent.name} + {accent2.name} · {type.displayName} · {weight.name} {scale.name} · {entrance.name} · {hover.name}
+            </span>
+            <button className="tbtn tbtn-accent" onClick={copyLink}>{copied ? "Copied" : "Copy link"}</button>
+          </div>
+
           <header className="site-nav">
             <a href="#" className="nav-logo" onClick={stay} aria-label="SAMUH home">
               <Image src="/samuh-logo.png" alt="SAMUH" width={960} height={LOGO_H} priority />
