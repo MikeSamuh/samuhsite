@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import {
   BACKGROUNDS,
@@ -60,6 +60,17 @@ export default function DesignDirections() {
   const [combo, setCombo] = useState<Combo>(DEFAULT_COMBO);
   const [railOpen, setRailOpen] = useState(true);
   const [copied, setCopied] = useState(false);
+  const railRef = useRef<HTMLElement>(null);
+  const topRef = useRef<HTMLDivElement>(null);
+  // the sticky head's height, so section headers stack under it not behind it
+  useEffect(() => {
+    const rail = railRef.current;
+    const top = topRef.current;
+    if (!rail || !top) return;
+    const ro = new ResizeObserver(() => rail.style.setProperty("--rail-top", `${top.offsetHeight}px`));
+    ro.observe(top);
+    return () => ro.disconnect();
+  }, [railOpen]);
   const copyLink = () => {
     const url = `${window.location.origin}/design${comboHash(combo)}`;
     navigator.clipboard?.writeText(url).then(() => {
@@ -156,9 +167,10 @@ export default function DesignDirections() {
       <Backdrop id={bg.id} pointer={combo.pointer.id} />
 
       {/* the menu bar: a left rail with every dial, minimisable to a strip */}
-      <aside className="rail" data-open={railOpen} aria-label="Style picker">
+      <aside className="rail" data-open={railOpen} aria-label="Style picker" ref={railRef}>
         {railOpen ? (
           <>
+            <div className="rail-top" ref={topRef}>
             <div className="rail-head">
               <span className="rail-title">
                 <span className="rail-now">Now showing</span>
@@ -177,6 +189,20 @@ export default function DesignDirections() {
                   Minimise
                 </button>
               </span>
+            </div>
+            <div className="rail-sum" aria-label="Current selection, short form">
+              <span className="rail-sum-dots" aria-hidden="true">
+                {[accent, accent2, accent3, accent4].map((a, i) =>
+                  a ? <span key={i} className="rail-sum-dot" style={{ background: a.hex }} /> : <span key={i} className="rail-sum-dot rail-sum-none" />,
+                )}
+              </span>
+              <span className="rail-sum-line">
+                {type.displayName} · {bodyName(combo)} · {approach.name} on {bg.name}
+              </span>
+              <span className="rail-sum-line">
+                {weight.name} {scale.name} · {entrance.name} in · {hover.name} on hover
+              </span>
+            </div>
             </div>
 
             {(["picks", "feedback"] as const).map((section, i) => (
