@@ -27,10 +27,19 @@
   container-name: page;
 }
 
-/* backgrounds are fixed on /design; inside the frame they stay put */
-.L-page .bd { position: absolute; inset: 0; }
+/* backgrounds are fixed to the viewport on /design. Inside the frame they
+   sit in a sticky, viewport-tall layer that the body scrolls over, which is
+   the same thing without leaving the frame */
+.L-bd {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
+}
+.L-bd .bd { position: absolute; inset: 0; }
 
-.L-body { position: relative; z-index: 1; }
+.L-body { position: relative; z-index: 1; margin-top: -100vh; }
 
 .L-wrap {
   max-width: var(--width-px, 1120px);

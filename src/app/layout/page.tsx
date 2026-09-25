@@ -237,7 +237,9 @@ export default function LayoutTool() {
             data-rule={layout.divider.id}
             data-numbers={layout.numbers.id}
           >
-            <Backdrop id={layout.bg} pointer="well" />
+            <div className="L-bd" aria-hidden>
+              <Backdrop id={layout.bg} pointer="well" />
+            </div>
             <div className="L-body">
               <Nav />
               {SECTIONS.map((s) => {
