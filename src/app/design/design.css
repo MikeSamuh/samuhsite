@@ -1098,6 +1098,40 @@ a.inline-link:hover { color: var(--accent-2); background-size: 100% var(--rule-f
 }
 .stage[data-hover="quiet"] .btn:hover .arrow { transform: none; }
 
+/* ---------- fill: gradient ----------
+   Accent surfaces run accent 1 into accent 2 (and 3). Read from data-fill. */
+
+.stage[data-fill="gradient"] .btn:not(.btn-secondary),
+.stage[data-fill="gradient"] .eyebrow::after,
+.stage[data-fill="gradient"] .step::after,
+.stage[data-fill="gradient"] .card::before,
+.stage[data-fill="gradient"] .rule-fat,
+.stage[data-fill="gradient"] .sec-head::after,
+.stage[data-fill="gradient"] .bd-chalk-mark,
+.stage[data-fill="gradient"] .opt[aria-pressed="true"] {
+  background: var(--accent-grad);
+}
+
+.stage[data-fill="gradient"] h1.display em {
+  background: var(--accent-grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.stage[data-fill="gradient"] .orb-team {
+  border-color: transparent;
+  background:
+    linear-gradient(color-mix(in srgb, var(--accent-4) 9%, var(--base)), color-mix(in srgb, var(--accent-4) 9%, var(--base))) padding-box,
+    var(--accent-grad) border-box;
+}
+
+.stage[data-fill="gradient"][data-approach="formal"] :is(.step, .card) {
+  border-image: var(--accent-grad) 1;
+}
+
+.stage[data-fill="gradient"] .hero { border-image: var(--accent-grad) 1; }
+
 /* ---------- approaches ----------
    Same tokens, different amount of chrome. Read from data-approach on the
    stage and scoped to .content so the rail is untouched. */

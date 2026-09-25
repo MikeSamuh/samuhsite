@@ -9,6 +9,7 @@ import {
   BODY_FONTS,
   WEIGHTS,
   LINE_SCALES,
+  FILLS,
   APPROACHES,
   ENTRANCES,
   HOVERS,
@@ -134,6 +135,7 @@ export default function DesignDirections() {
       className="stage"
       style={cssVars(combo)}
       data-approach={approach.id}
+      data-fill={combo.fill.id}
       data-entrance={entrance.id}
       data-hover={hover.id}
     >
@@ -183,8 +185,8 @@ export default function DesignDirections() {
                 <span className="guide-v">{approach.name} <span className="guide-sub">on {bg.name}</span></span>
               </div>
               <div className="guide-chips">
-                <div className="chip" style={{ background: accent.hex, color: accent.on }}>
-                  <span className="chip-k">Accent 1 · loud</span>
+                <div className="chip" style={{ background: combo.fill.id === "gradient" ? "var(--accent-grad)" : accent.hex, color: accent.on }}>
+                  <span className="chip-k">Accent 1 · loud{combo.fill.id === "gradient" ? " · gradient" : ""}</span>
                   <span className="chip-v">{accent.family} {accent.name}</span>
                   <span className="chip-hex">{accent.hex}</span>
                 </div>
@@ -526,6 +528,10 @@ export default function DesignDirections() {
                 <dd>{accent2.family} {accent2.name} &middot; {accent2.hex} &middot; {accent2.note}</dd>
               </div>
               <div>
+                <dt>Accent fill</dt>
+                <dd>{combo.fill.name} &middot; {combo.fill.note}</dd>
+              </div>
+              <div>
                 <dt>Accent 3 &middot; data</dt>
                 <dd>{accent3 ? `${accent3.family} ${accent3.name} · ${accent3.hex}` : "none, data elements use accent 2"}</dd>
               </div>
@@ -678,8 +684,19 @@ function Dials({ combo, set }: { combo: Combo; set: (patch: Partial<Combo>) => v
 
       {swatches("Accent 1 · loud", accent, (x) => set({ accent: x ?? accent }))}
       {swatches("Accent 2 · quiet", accent2, (x) => set({ accent2: x ?? accent2 }))}
-      {swatches("Accent 3 · data, optional", accent3, (x) => set({ accent3: x }), true)}
-      {swatches("Accent 4 · wash, optional", accent4, (x) => set({ accent4: x }), true)}
+      {swatches("Accent 3 · data", accent3, (x) => set({ accent3: x }), true)}
+      {swatches("Accent 4 · wash", accent4, (x) => set({ accent4: x }), true)}
+
+      <div className="ctrl">
+        <span className="ctrl-label">Accent fill</span>
+        <div className="ctrl-opts">
+          {FILLS.map((x) => (
+            <button key={x.id} className="opt" aria-pressed={x.id === combo.fill.id} onClick={() => set({ fill: x })} title={x.note}>
+              {x.name}
+            </button>
+          ))}
+        </div>
+      </div>
 
       <div className="ctrl">
         <span className="ctrl-label ctrl-label-row">

@@ -68,10 +68,10 @@ export const BACKGROUNDS: Background[] = [
     name: "Slate",
     bet: "Dark slate rather than black. The page starts lighter at the top and falls into near-black as you scroll, so the argument literally deepens. Warmer and less severe than a pure black stage.",
     risk: "The safest of the five. Reads considered, and the gradient only lands if the sections are long enough to travel through it.",
-    base: "#141922",
-    surface: "#1D2430",
-    surfaceAlt: "#273040",
-    border: "#364050",
+    base: "#10141B",
+    surface: "#171D26",
+    surfaceAlt: "#1F2633",
+    border: "#2B3340",
     text: "#F0F2F5",
     muted: "#9AA3B2",
     radius: "6px",
@@ -496,6 +496,28 @@ export const LINE_SCALES: LineScale[] = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2].map((
 }));
 
 /* ------------------------------------------------------------------ */
+/* Fill                                                                */
+/* ------------------------------------------------------------------ */
+
+// How accent surfaces are painted. Solid uses accent 1 flat. Gradient runs
+// accent 1 into accent 2, and on to accent 3 when one is set, across
+// buttons, fat rules, card strokes, the highlighted word in the hero and
+// the chips in the rail.
+
+export type FillId = "solid" | "gradient";
+
+export interface Fill {
+  id: FillId;
+  name: string;
+  note: string;
+}
+
+export const FILLS: Fill[] = [
+  { id: "solid", name: "Solid", note: "Accent 1 flat on every accent surface." },
+  { id: "gradient", name: "Gradient", note: "Accent 1 into accent 2, and into accent 3 when set, at 135 degrees." },
+];
+
+/* ------------------------------------------------------------------ */
 /* Approaches                                                          */
 /* ------------------------------------------------------------------ */
 
@@ -570,6 +592,7 @@ export interface Combo {
   body: BodyFont | null;
   weight: Weight;
   scale: LineScale;
+  fill: Fill;
   approach: Approach;
   entrance: Effect<EntranceId>;
   hover: Effect<HoverId>;
@@ -589,6 +612,7 @@ export const DEFAULT_COMBO: Combo = {
   body: null,
   weight: WEIGHTS.find((w) => w.id === "balanced") ?? WEIGHTS[0],
   scale: LINE_SCALES.find((x) => x.factor === 1) ?? LINE_SCALES[0],
+  fill: FILLS[0],
   approach: APPROACHES[0],
   entrance: ENTRANCES[0],
   hover: HOVERS[0],
@@ -655,7 +679,8 @@ export function comboHash(c: Combo): string {
   if (c.accent4) accents.push(c.accent3?.id ?? NO_ACCENT, c.accent4.id);
   else if (c.accent3) accents.push(c.accent3.id);
   const body = c.body ? `.${c.body.id}` : "";
-  return `#${c.approach.id}.${c.bg.id}.${accents.join(".")}.${c.type.id}${body}.${c.weight.id}.${c.scale.id}.${c.entrance.id}.${c.hover.id}`;
+  const fill = c.fill.id === "solid" ? "" : `.${c.fill.id}`;
+  return `#${c.approach.id}.${c.bg.id}.${accents.join(".")}${fill}.${c.type.id}${body}.${c.weight.id}.${c.scale.id}.${c.entrance.id}.${c.hover.id}`;
 }
 
 // Ids that were renamed or retired after links went out.
@@ -696,6 +721,8 @@ export function parseComboHash(hash: string): Combo {
     if (sc) { c.scale = sc; continue; }
     const ap = APPROACHES.find((x) => x.id === id);
     if (ap) { c.approach = ap; continue; }
+    const fl = FILLS.find((x) => x.id === id);
+    if (fl) { c.fill = fl; continue; }
     const en = ENTRANCES.find((x) => x.id === id);
     if (en) { c.entrance = en; continue; }
     const hv = HOVERS.find((x) => x.id === id);
@@ -706,6 +733,7 @@ export function parseComboHash(hash: string): Combo {
   c.accent3 = accents[2] ?? null;
   c.accent4 = accents[3] ?? null;
   if (!parts.some((raw) => BODY_FONTS.some((b) => b.id === raw))) c.body = null;
+  if (!parts.includes("gradient")) c.fill = FILLS[0];
   return c;
 }
 
@@ -739,6 +767,9 @@ export function cssVars(combo: Combo): React.CSSProperties {
     "--accent-3": data.hex,
     "--on-accent-3": data.on,
     "--accent-4": wash.hex,
+    "--accent-grad": accent3
+      ? `linear-gradient(135deg, ${accent.hex}, ${accent2.hex}, ${accent3.hex})`
+      : `linear-gradient(135deg, ${accent.hex}, ${accent2.hex})`,
     /* how strongly a wash tints large areas: nothing unless accent 4 is set */
     "--wash-mix": accent4 ? "10%" : "0%",
     "--font-display": type.displayVar,
