@@ -255,7 +255,7 @@ export default function LayoutTool() {
               <Backdrop id={layout.bg} pointer="well" />
             </div>
             <div className="L-body">
-              <Nav page={layout.page} go={go} />
+              <Nav page={layout.page} go={go} menu={layout.nav.id === "nav-menu"} />
               {layout.page === "home"
                 ? SECTIONS.map((s) => {
                     const v = layout.sections[s.id];
@@ -287,20 +287,48 @@ export default function LayoutTool() {
 /* Nav                                                                 */
 /* ------------------------------------------------------------------ */
 
-function Nav({ page, go }: { page: PageId; go: (p: PageId) => void }) {
+function Nav({ page, go, menu }: { page: PageId; go: (p: PageId) => void; menu: boolean }) {
+  const [open, setOpen] = useState(false);
+  const links = PAGES.filter((x) => x.nav && x.id !== "home");
+  const jump = (p: PageId) => { setOpen(false); go(p); };
   return (
-    <header className="L-nav L-wrap">
-      <a href="#" className="nav-logo" onClick={(e) => { stay(e); go("home"); }} aria-label="SAMUH home">
-        <Image src="/samuh-logo.png" alt="SAMUH" width={960} height={LOGO_H} priority />
-      </a>
-      <nav className="nav-links L-links" aria-label="Primary">
-        {PAGES.filter((x) => x.nav && x.id !== "home").map((x) => (
-          <a key={x.id} href="#" onClick={(e) => { stay(e); go(x.id); }} aria-current={x.id === page ? "page" : undefined}>{x.name}</a>
-        ))}
-      </nav>
-      <span className="L-menu tbtn">Menu</span>
-      <button className="btn btn-small" onClick={() => go("start")}>Get started <span className="arrow">&rarr;</span></button>
-    </header>
+    <>
+      <header className="L-nav L-wrap">
+        {menu ? (
+          <button className="L-burger" onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-controls="L-overlay" aria-label="Menu">
+            <span /><span /><span />
+          </button>
+        ) : null}
+        <a href="#" className="nav-logo" onClick={(e) => { stay(e); jump("home"); }} aria-label="SAMUH home">
+          <Image src="/samuh-logo.png" alt="SAMUH" width={960} height={LOGO_H} priority />
+        </a>
+        <nav className="nav-links L-links" aria-label="Primary">
+          {links.map((x) => (
+            <a key={x.id} href="#" onClick={(e) => { stay(e); jump(x.id); }} aria-current={x.id === page ? "page" : undefined}>{x.name}</a>
+          ))}
+        </nav>
+        <span className="L-menu tbtn" onClick={() => setOpen(true)}>Menu</span>
+        <button className="btn btn-small" onClick={() => jump("start")}>Get started <span className="arrow">&rarr;</span></button>
+      </header>
+      {menu && open ? (
+        <div className="L-overlay" id="L-overlay" role="dialog" aria-label="Site menu">
+          <div className="L-overlay-head L-wrap">
+            <button className="L-burger is-x" onClick={() => setOpen(false)} aria-label="Close menu"><span /><span /><span /></button>
+            <span className="L-cap">Menu</span>
+          </div>
+          <nav className="L-overlay-links L-wrap" aria-label="Full menu">
+            <a href="#" onClick={(e) => { stay(e); jump("home"); }} aria-current={page === "home" ? "page" : undefined}>Home</a>
+            {links.map((x, i) => (
+              <a key={x.id} href="#" onClick={(e) => { stay(e); jump(x.id); }} aria-current={x.id === page ? "page" : undefined} style={{ "--i": i + 1 } as React.CSSProperties}>{x.name}</a>
+            ))}
+          </nav>
+          <div className="L-overlay-foot L-wrap">
+            <button className="btn" onClick={() => jump("start")}>Get started <span className="arrow">&rarr;</span></button>
+            <span className="L-cap">In partnership with Sapien Labs</span>
+          </div>
+        </div>
+      ) : null}
+    </>
   );
 }
 

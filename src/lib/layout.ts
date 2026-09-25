@@ -44,7 +44,7 @@ export interface Opt<Id extends string = string> {
 export type AlignId = "align-left" | "align-center";
 export type WidthId = "width-narrow" | "width-standard" | "width-wide";
 export type SpacingId = "space-tight" | "space-regular" | "space-airy";
-export type NavId = "nav-bar" | "nav-centered" | "nav-minimal";
+export type NavId = "nav-bar" | "nav-centered" | "nav-minimal" | "nav-menu";
 export type DividerId = "rule-hairline" | "rule-none" | "rule-heavy";
 export type NumbersId = "numbers-on" | "numbers-off";
 export type ViewId = "desktop" | "tablet" | "phone";
@@ -70,6 +70,7 @@ export const NAVS: Opt<NavId>[] = [
   { id: "nav-bar", name: "Bar", note: "Logo left, links and the button right, a hairline under." },
   { id: "nav-centered", name: "Centered", note: "Logo in the middle, links either side." },
   { id: "nav-minimal", name: "Minimal", note: "Logo and one button. Links live in a menu." },
+  { id: "nav-menu", name: "Menu", note: "Logo centered, hamburger on the left, a full-screen menu drops down. Bold links." },
 ];
 
 export const DIVIDERS: Opt<DividerId>[] = [
@@ -139,7 +140,8 @@ export const SECTIONS: SectionDef[] = [
     intent: "Muted looping preview, full video on click. Supplied by SAMUH.",
     variants: [
       { id: "hero-split", name: "Split", note: "Copy left, video right." },
-      { id: "hero-centered", name: "Centered", note: "Copy centred, video below." },
+      { id: "hero-centered", name: "Copy first", note: "Copy centred, video below." },
+      { id: "hero-video", name: "Video first", note: "Video full width on top, copy below." },
       { id: "hero-cinema", name: "Cinema", note: "Video behind the copy, full width." },
     ],
   },
@@ -285,7 +287,7 @@ export const PRESETS: Preset[] = [
     letter: "B",
     name: "Keynote",
     note: "Centred, narrow, airy, no rules. One idea per screen, like a talk.",
-    hash: "#void.align-center.width-narrow.space-airy.nav-centered.rule-none.numbers-off.hero-centered.thesis-band.meaning-line.circles-row.aspire-statement.research-quote.voices-single.case-inline.tool-card.cards-strip.equation-centered.start-split",
+    hash: "#void.align-center.width-narrow.space-airy.nav-menu.rule-none.numbers-off.hero-centered.thesis-band.meaning-line.circles-row.aspire-statement.research-quote.voices-single.case-inline.tool-card.cards-strip.equation-centered.start-split",
   },
   {
     id: "c",
