@@ -912,9 +912,9 @@ export const PICKS: Pick[] = [
     section: "picks",
     kicker: "Wilfred's second recommendation",
     title: "Wilfred\u2019s second recommendation",
-    // Formal Bold on the darker Slate, the deck pink with the deck teal,
-    // Playfair for headings, heavier lines, unblur in and a quiet hover.
-    hash: "#formal.slate.pink-samuh.cyan-teal.playfair.heavy.scale-100.unblur.quiet",
+    // Set by Wilfred, 25 September: Synapse, Magenta with Samuh cyan,
+    // Tenor Sans headings, Libre Franklin eyebrows, heavy lines at x1.25.
+    hash: "#modern.synapse.pink-magenta.cyan-samuh.tenor.eyebrow-franklin.heavy.scale-125.unblur.glow",
   },
   {
     id: "client",
