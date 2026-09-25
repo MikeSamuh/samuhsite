@@ -912,9 +912,9 @@ export const PICKS: Pick[] = [
     section: "picks",
     kicker: "25 September",
     title: "Wilfred\u2019s second recommendation",
-    // Synapse, Magenta with Samuh cyan, Tenor Sans headings, Libre Franklin
-    // eyebrows, heavy lines at x1.25.
-    hash: "#modern.synapse.pink-magenta.cyan-samuh.tenor.eyebrow-franklin.heavy.scale-125.unblur.glow",
+    // Synapse, Magenta with Samuh cyan, Tenor Sans headings, Overlock
+    // eyebrows, Gilda Display captions, heavy lines at x1.25.
+    hash: "#modern.synapse.pink-magenta.cyan-samuh.tenor.eyebrow-overlock.caption-gilda.heavy.scale-125.unblur.glow",
   },
   {
     id: "client",
