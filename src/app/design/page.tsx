@@ -7,6 +7,8 @@ import {
   ACCENTS,
   TYPE_PAIRS,
   WEIGHTS,
+  LINE_SCALES,
+  APPROACHES,
   ENTRANCES,
   HOVERS,
   PICKS,
@@ -15,6 +17,7 @@ import {
   comboHash,
   parseComboHash,
   pickCombo,
+  ruleWidths,
   sameCombo,
   type Combo,
   type Accent,
@@ -47,7 +50,8 @@ const TIERS = [
 export default function DesignDirections() {
   const [combo, setCombo] = useState<Combo>(DEFAULT_COMBO);
   const [railOpen, setRailOpen] = useState(true);
-  const { bg, accent, accent2, type, weight, entrance, hover } = combo;
+  const { bg, accent, accent2, type, weight, scale, approach, entrance, hover } = combo;
+  const rule = ruleWidths(combo);
   const set = (patch: Partial<Combo>) => setCombo((c) => ({ ...c, ...patch }));
 
   // deep link: /design#aurora.yellow-amber.cyan-samuh.syne.balanced.rise.lift
@@ -74,7 +78,7 @@ export default function DesignDirections() {
       if (e.target instanceof HTMLInputElement) return;
       const n = parseInt(e.key, 10);
       if (n >= 1 && n <= BACKGROUNDS.length) set({ bg: BACKGROUNDS[n - 1] });
-      const ti = "qwertyuiop".indexOf(e.key.toLowerCase());
+      const ti = "qwertyuiop[]\\;".indexOf(e.key.toLowerCase());
       if (ti >= 0 && ti < TYPE_PAIRS.length) set({ type: TYPE_PAIRS[ti] });
     };
     window.addEventListener("keydown", onKey);
@@ -127,6 +131,7 @@ export default function DesignDirections() {
     <div
       className="stage"
       style={cssVars(combo)}
+      data-approach={approach.id}
       data-entrance={entrance.id}
       data-hover={hover.id}
     >
@@ -169,8 +174,47 @@ export default function DesignDirections() {
               );
             })}
 
+            <div className="rail-block guide" aria-label="Current style">
+              <p className="rail-kicker">03 · Style guide, what you are looking at</p>
+              <div className="guide-row">
+                <span className="guide-k">Approach</span>
+                <span className="guide-v">{approach.name} <span className="guide-sub">on {bg.name}</span></span>
+              </div>
+              <div className="guide-chips">
+                <div className="chip" style={{ background: accent.hex, color: accent.on }}>
+                  <span className="chip-k">Accent 1 · loud</span>
+                  <span className="chip-v">{accent.family} {accent.name}</span>
+                  <span className="chip-hex">{accent.hex}</span>
+                </div>
+                <div className="chip" style={{ background: accent2.hex, color: accent2.on }}>
+                  <span className="chip-k">Accent 2 · quiet</span>
+                  <span className="chip-v">{accent2.family} {accent2.name}</span>
+                  <span className="chip-hex">{accent2.hex}</span>
+                </div>
+              </div>
+              <div className="guide-type">
+                <span className="guide-aa">Aa</span>
+                <span>
+                  <span className="guide-v">{type.displayName} {type.displayWeight}</span>
+                  <span className="guide-sub">{type.bodyName} for body · {type.group}</span>
+                </span>
+              </div>
+              <div className="guide-row">
+                <span className="guide-k">Lines</span>
+                <span className="guide-v">{weight.name} {scale.name} <span className="guide-sub">thin {rule.thin} · heavy {rule.fat}</span></span>
+              </div>
+              <div className="rules guide-rules" aria-hidden="true">
+                <span className="rule-thin" />
+                <span className="rule-fat" />
+              </div>
+              <div className="guide-row">
+                <span className="guide-k">Motion</span>
+                <span className="guide-v">{entrance.name} in · {hover.name} on hover</span>
+              </div>
+            </div>
+
             <div className="rail-block" id="rail-dials">
-              <p className="rail-kicker">03 · Choose your own adventure</p>
+              <p className="rail-kicker">04 · Choose your own adventure</p>
               <Dials combo={combo} set={set} />
               <p className="rail-hash">{comboHash(combo)}</p>
             </div>
@@ -359,13 +403,13 @@ export default function DesignDirections() {
                   </p>
                 </div>
                 <div className="bench-row">
-                  <span className="bench-label">Line weights &middot; {weight.name}</span>
+                  <span className="bench-label">Line weights &middot; {weight.name} {scale.name}</span>
                   <div className="rules" aria-hidden="true">
                     <span className="rule-thin" />
                     <span className="rule-fat" />
                   </div>
                   <p style={{ margin: 0, fontSize: 14, lineHeight: 1.6, color: "var(--muted)" }}>
-                    Hairlines at {weight.thin}, heavy strokes at {weight.fat}.{" "}
+                    Hairlines at {rule.thin}, heavy strokes at {rule.fat}.{" "}
                     {weight.note}
                   </p>
                 </div>
@@ -446,6 +490,10 @@ export default function DesignDirections() {
             </div>
             <dl className="tokens">
               <div>
+                <dt>Approach</dt>
+                <dd>{approach.name} &middot; {approach.note}</dd>
+              </div>
+              <div>
                 <dt>Background</dt>
                 <dd>{bg.n} &middot; {bg.name}</dd>
               </div>
@@ -474,7 +522,7 @@ export default function DesignDirections() {
               </div>
               <div>
                 <dt>Line weights</dt>
-                <dd>{weight.name} &middot; thin {weight.thin} &middot; heavy {weight.fat}</dd>
+                <dd>{weight.name} {scale.name} &middot; thin {rule.thin} &middot; heavy {rule.fat}</dd>
               </div>
               <div>
                 <dt>Corner radius</dt>
@@ -501,9 +549,9 @@ export default function DesignDirections() {
 
           <footer className="foot">
             <p>
-              <strong>Seven dials, not five fixed options.</strong> Background,
-              two accents, type, line weight, entrance and hover move
-              independently, so you are not stuck picking a whole look you only
+              <strong>Nine dials, not five fixed options.</strong> Approach,
+              background, two accents, type, line weight and width, entrance
+              and hover move independently, so you are not stuck picking a whole look you only
               half like. Find the background first, then the accents, then the
               type, then the lines and the effects. The URL updates as you go, so you can send a colleague
               the exact combination you landed on. The picker on the left
@@ -535,7 +583,7 @@ export default function DesignDirections() {
 
 /** Every dial. Rendered twice: in the rail and inline in the adventure section. */
 function Dials({ combo, set }: { combo: Combo; set: (patch: Partial<Combo>) => void }) {
-  const { bg, accent, accent2, type, weight, entrance, hover } = combo;
+  const { bg, accent, accent2, type, weight, scale, approach, entrance, hover } = combo;
   const swatches = (label: string, current: Accent, pick: (x: Accent) => void) => (
     <div className="ctrl">
       <span className="ctrl-label">{label}</span>
@@ -547,19 +595,33 @@ function Dials({ combo, set }: { combo: Combo; set: (patch: Partial<Combo>) => v
               className="sw"
               aria-pressed={x.id === current.id}
               onClick={() => pick(x)}
-              style={{ background: x.hex }}
+              style={{ background: x.hex, "--on": x.on } as React.CSSProperties}
               title={`${x.family} ${x.name} · ${x.hex}`}
               aria-label={`${label}: ${x.family} ${x.name}`}
             />
           </span>
         ))}
-        <span className="ctrl-value">{current.family} {current.name}</span>
+        <span className="ctrl-value">
+          <span className="ctrl-dot" style={{ background: current.hex }} />
+          {current.family} {current.name} · {current.hex}
+        </span>
       </div>
     </div>
   );
 
   return (
     <div className="dials">
+      <div className="ctrl">
+        <span className="ctrl-label">Approach</span>
+        <div className="ctrl-opts">
+          {APPROACHES.map((x) => (
+            <button key={x.id} className="opt" aria-pressed={x.id === approach.id} onClick={() => set({ approach: x })} title={x.note}>
+              {x.name}
+            </button>
+          ))}
+        </div>
+      </div>
+
       <div className="ctrl">
         <span className="ctrl-label">Background</span>
         <div className="ctrl-opts">
@@ -577,7 +639,7 @@ function Dials({ combo, set }: { combo: Combo; set: (patch: Partial<Combo>) => v
 
       <div className="ctrl">
         <span className="ctrl-label">Type</span>
-        {(["expressive", "refined"] as TypeGroup[]).map((g) => (
+        {(["expressive", "refined", "formal"] as TypeGroup[]).map((g) => (
           <div className="ctrl-group" key={g}>
             <span className="ctrl-sub">{g}</span>
             <div className="ctrl-opts">
@@ -596,6 +658,17 @@ function Dials({ combo, set }: { combo: Combo; set: (patch: Partial<Combo>) => v
         <div className="ctrl-opts">
           {WEIGHTS.map((x) => (
             <button key={x.id} className="opt" aria-pressed={x.id === weight.id} onClick={() => set({ weight: x })} title={`thin ${x.thin} · heavy ${x.fat}`}>
+              {x.name}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="ctrl">
+        <span className="ctrl-label">Line width · scales the weight above</span>
+        <div className="ctrl-opts">
+          {LINE_SCALES.map((x) => (
+            <button key={x.id} className="opt opt-tight" aria-pressed={x.id === scale.id} onClick={() => set({ scale: x })}>
               {x.name}
             </button>
           ))}

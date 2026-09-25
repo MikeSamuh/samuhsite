@@ -135,3 +135,18 @@ link looks the same as it did. — Wilfred
 **2026-09-25 — The picker shows two named picks.**
 Wilfred's recommendation and the client's own pick from 24 September, as
 pressable cards, so the two can be flipped between. — Wilfred
+
+**2026-09-25 — Three approaches as a dial: Modern #1, Minimal #1, Formal Bold.**
+Composition is independent of colour and type. Minimal is very few boxes,
+light lines, black space. Formal Bold is contrast bands, big section numbers
+and elegant line flow. — Wilfred
+
+**2026-09-25 — Line width scales line weight in quarter steps, ×0.5 to ×2.**
+Relative to the chosen preset so presets stay distinct. — Wilfred
+
+**2026-09-25 — Formal type group added.**
+Playfair Display, Libre Baskerville, EB Garamond, Bodoni Moda, after the
+client asked for more formal choices. — Client
+
+**2026-09-25 — Nothing is pushed until Wilfred says so.**
+Local commits only. Recorded in CLAUDE.md working style. — Wilfred

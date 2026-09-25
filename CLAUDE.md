@@ -124,6 +124,9 @@ From the signed scope. These are contractual, not aspirational.
 
 - Prefer editing an existing file to creating a new one
 - Branch, review on the Vercel preview URL, then merge
+- **Local only until told to push.** Commit on a branch as much as you like,
+  but never `git push`, open a PR, or merge until Wilfred says so. The repo
+  is the client's and every push is visible to them
 - If a change touches scope, pricing or the launch date, flag it rather than
   building it
 - When the client contradicts a doc in `docs/`, update the doc in the same

@@ -189,7 +189,7 @@ export const ACCENTS: Accent[] = [
 // for something classier, let the type carry the discipline and leave the
 // personality to colour and motion.
 
-export type TypeGroup = "expressive" | "refined";
+export type TypeGroup = "expressive" | "refined" | "formal";
 
 export interface TypePair {
   id: string;
@@ -336,6 +336,58 @@ export const TYPE_PAIRS: TypePair[] = [
     displayLeading: "1.04",
     note: "One family for everything, the Swiss route. All the personality has to come from colour, line and motion, which is exactly the split in the brief.",
   },
+  {
+    id: "playfair",
+    group: "formal",
+    name: "Playfair Display / Source Sans 3",
+    displayVar: "var(--f-playfair)",
+    displayName: "Playfair Display",
+    bodyVar: "var(--f-source-sans)",
+    bodyName: "Source Sans 3",
+    displayWeight: 500,
+    displayTracking: "-0.01em",
+    displayLeading: "1.06",
+    note: "The formal serif everyone recognises. Transitional, high contrast, unmistakably a firm rather than a startup.",
+  },
+  {
+    id: "baskerville",
+    group: "formal",
+    name: "Libre Baskerville / Inter",
+    displayVar: "var(--f-baskerville)",
+    displayName: "Libre Baskerville",
+    bodyVar: "var(--f-inter)",
+    bodyName: "Inter",
+    displayWeight: 400,
+    displayTracking: "-0.015em",
+    displayLeading: "1.08",
+    note: "Bookish and wide. The typeface of annual reports and university letterheads. The most conservative option on the page.",
+  },
+  {
+    id: "garamond",
+    group: "formal",
+    name: "EB Garamond / Libre Franklin",
+    displayVar: "var(--f-garamond)",
+    displayName: "EB Garamond",
+    bodyVar: "var(--f-franklin)",
+    bodyName: "Libre Franklin",
+    displayWeight: 500,
+    displayTracking: "-0.005em",
+    displayLeading: "1.04",
+    note: "Five hundred years old and still the definition of formal. Small on the page for its size, so it runs a step larger.",
+  },
+  {
+    id: "bodoni",
+    group: "formal",
+    name: "Bodoni Moda / Inter",
+    displayVar: "var(--f-bodoni)",
+    displayName: "Bodoni Moda",
+    bodyVar: "var(--f-inter)",
+    bodyName: "Inter",
+    displayWeight: 500,
+    displayTracking: "-0.01em",
+    displayLeading: "1.04",
+    note: "Hairline serifs against heavy stems. Formal in the fashion-house sense. The sharpest of the four and the one most at risk on a dark screen.",
+  },
 ];
 
 /* ------------------------------------------------------------------ */
@@ -362,6 +414,44 @@ export const WEIGHTS: Weight[] = [
   { id: "balanced", name: "Balanced", thin: "1px", fat: "3px", note: "A hairline grid with a stroke you notice. The default, and what the page looked like in round one." },
   { id: "heavy", name: "Heavy", thin: "1px", fat: "5px", note: "The heavy stroke starts to feel drawn. The eyebrow rule and the Team circle become marks rather than lines." },
   { id: "marker", name: "Marker", thin: "2px", fat: "8px", note: "Every line is deliberate and the heavy ones are felt-tip. The loosest option, and the one to watch on the tier cards." },
+];
+
+// Line width scales the chosen weight preset, in quarter steps, so the gap
+// between thin and fat is preserved while the whole page gets lighter or
+// heavier. Half is as light as a hairline can go and still render; double is
+// as heavy as any preset stays reasonable at. Marker at double is 16px.
+
+export interface LineScale {
+  id: string;
+  factor: number;
+  name: string;
+}
+
+export const LINE_SCALES: LineScale[] = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2].map((f) => ({
+  id: `scale-${Math.round(f * 100)}`,
+  factor: f,
+  name: `×${f}`,
+}));
+
+/* ------------------------------------------------------------------ */
+/* Approaches                                                          */
+/* ------------------------------------------------------------------ */
+
+// How the page is composed. Same tokens, different amount of chrome. Applied
+// as data-approach on the stage; the overrides live in design.css.
+
+export type ApproachId = "modern" | "minimal" | "formal";
+
+export interface Approach {
+  id: ApproachId;
+  name: string;
+  note: string;
+}
+
+export const APPROACHES: Approach[] = [
+  { id: "modern", name: "Modern #1", note: "Round one. Cards and steps in soft boxes, an accent bar on hover, the grid you can see." },
+  { id: "minimal", name: "Minimal #1", note: "Very few boxes. Hairlines only, generous black space, content sits on the stage rather than in panels." },
+  { id: "formal", name: "Formal Bold", note: "Sections alternate in contrast, section numbers go large, rules run the full width and cards carry a heavy left stroke." },
 ];
 
 /* ------------------------------------------------------------------ */
@@ -408,6 +498,8 @@ export interface Combo {
   accent2: Accent;
   type: TypePair;
   weight: Weight;
+  scale: LineScale;
+  approach: Approach;
   entrance: Effect<EntranceId>;
   hover: Effect<HoverId>;
 }
@@ -422,6 +514,8 @@ export const DEFAULT_COMBO: Combo = {
   accent2: ACCENTS.find((a) => a.family !== ACCENTS[0].family) ?? ACCENTS[1],
   type: TYPE_PAIRS[0],
   weight: WEIGHTS.find((w) => w.id === "balanced") ?? WEIGHTS[0],
+  scale: LINE_SCALES.find((x) => x.factor === 1) ?? LINE_SCALES[0],
+  approach: APPROACHES[0],
   entrance: ENTRANCES[0],
   hover: HOVERS[0],
 };
@@ -471,9 +565,9 @@ export function sameCombo(a: Combo, b: Combo): boolean {
   return comboHash(a) === comboHash(b);
 }
 
-/** The shareable form: #background.accent1.accent2.type.weight.entrance.hover */
+/** The shareable form: #approach.background.accent1.accent2.type.weight.scale.entrance.hover */
 export function comboHash(c: Combo): string {
-  return `#${c.bg.id}.${c.accent.id}.${c.accent2.id}.${c.type.id}.${c.weight.id}.${c.entrance.id}.${c.hover.id}`;
+  return `#${c.approach.id}.${c.bg.id}.${c.accent.id}.${c.accent2.id}.${c.type.id}.${c.weight.id}.${c.scale.id}.${c.entrance.id}.${c.hover.id}`;
 }
 
 // Ids that were renamed or retired after links went out.
@@ -507,6 +601,10 @@ export function parseComboHash(hash: string): Combo {
     if (tp) { c.type = tp; continue; }
     const wt = WEIGHTS.find((x) => x.id === id);
     if (wt) { c.weight = wt; continue; }
+    const sc = LINE_SCALES.find((x) => x.id === id);
+    if (sc) { c.scale = sc; continue; }
+    const ap = APPROACHES.find((x) => x.id === id);
+    if (ap) { c.approach = ap; continue; }
     const en = ENTRANCES.find((x) => x.id === id);
     if (en) { c.entrance = en; continue; }
     const hv = HOVERS.find((x) => x.id === id);
@@ -517,7 +615,15 @@ export function parseComboHash(hash: string): Combo {
   return c;
 }
 
-export function cssVars({ bg, accent, accent2, type, weight }: Combo): React.CSSProperties {
+/** the two rule widths after the scale is applied, as CSS lengths */
+export function ruleWidths({ weight, scale }: { weight: Weight; scale: LineScale }): { thin: string; fat: string } {
+  const px = (v: string) => `${parseFloat(v) * scale.factor}px`;
+  return { thin: px(weight.thin), fat: px(weight.fat) };
+}
+
+export function cssVars(combo: Combo): React.CSSProperties {
+  const { bg, accent, accent2, type } = combo;
+  const rule = ruleWidths(combo);
   return {
     "--base": bg.base,
     "--surface": bg.surface,
@@ -525,8 +631,8 @@ export function cssVars({ bg, accent, accent2, type, weight }: Combo): React.CSS
     "--border": bg.border,
     "--text": bg.text,
     "--muted": bg.muted,
-    "--rule-thin": weight.thin,
-    "--rule-fat": weight.fat,
+    "--rule-thin": rule.thin,
+    "--rule-fat": rule.fat,
     "--radius": bg.radius,
     "--dur": bg.motionDur,
     "--ease": bg.motionEase,

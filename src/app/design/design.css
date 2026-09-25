@@ -166,6 +166,8 @@
   background: var(--accent);
   border-color: var(--accent);
   color: var(--on-accent);
+  font-weight: 500;
+  box-shadow: 0 0 0 1px var(--base), 0 0 0 2px var(--accent);
 }
 
 .opt-n { opacity: 0.5; margin-right: 6px; }
@@ -195,9 +197,34 @@
 .sw:hover { transform: scale(1.15); }
 
 .sw[aria-pressed="true"] {
-  border-color: var(--text);
-  transform: scale(1.15);
+  border-color: var(--base);
+  box-shadow: 0 0 0 2px var(--text);
+  transform: scale(1.2);
 }
+
+/* a tick in the swatch's own on-colour, so the pick is unmistakable */
+.sw[aria-pressed="true"]::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  width: 5px;
+  height: 9px;
+  border: solid var(--on);
+  border-width: 0 2px 2px 0;
+  transform: translate(-50%, -55%) rotate(45deg);
+}
+
+.ctrl-dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  margin-right: 6px;
+  vertical-align: -1px;
+}
+
+.opt-tight { padding: 5px 7px; }
 
 .sw-gap { width: 8px; }
 
@@ -264,6 +291,91 @@
 }
 
 .rec[aria-pressed="true"] .rec-list { color: var(--text); }
+
+/* ---------- style guide block: the rail as the spec sheet ---------- */
+
+.guide { display: grid; gap: 10px; }
+
+.guide-row {
+  display: grid;
+  grid-template-columns: 58px 1fr;
+  gap: 10px;
+  align-items: baseline;
+}
+
+.guide-k {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.guide-v {
+  font-size: 13px;
+  color: var(--text);
+  display: block;
+  line-height: 1.4;
+}
+
+.guide-sub {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--muted);
+  display: block;
+}
+
+.guide-v .guide-sub { display: inline; margin-left: 4px; }
+
+.guide-chips {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.chip {
+  display: grid;
+  gap: 2px;
+  padding: 10px 12px;
+  border-radius: min(var(--radius), 12px);
+  transition: background var(--dur) var(--ease);
+}
+
+.chip-k {
+  font-family: var(--font-mono);
+  font-size: 8.5px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  opacity: 0.75;
+}
+
+.chip-v { font-size: 12.5px; font-weight: 500; text-transform: capitalize; }
+
+.chip-hex {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+}
+
+.guide-type {
+  display: grid;
+  grid-template-columns: 58px 1fr;
+  gap: 10px;
+  align-items: center;
+  padding: 8px 0 2px;
+}
+
+.guide-aa {
+  font-family: var(--font-display);
+  font-weight: var(--display-weight);
+  letter-spacing: var(--display-tracking);
+  font-size: 38px;
+  line-height: 1;
+  color: var(--text);
+}
+
+.guide-rules { padding: 0 0 4px; }
+.guide-rules .rule-thin, .guide-rules .rule-fat { max-width: none; }
 
 /* compact notes at the bottom of the rail */
 .notes h4 {
@@ -960,6 +1072,89 @@ a.inline-link:hover { color: var(--accent-2); background-size: 100% var(--rule-f
   background: var(--surface);
 }
 .stage[data-hover="quiet"] .btn:hover .arrow { transform: none; }
+
+/* ---------- approaches ----------
+   Same tokens, different amount of chrome. Read from data-approach on the
+   stage and scoped to .content so the rail is untouched. */
+
+/* Minimal #1: very few boxes, hairlines only, generous black space */
+.stage[data-approach="minimal"] .content { --border: color-mix(in srgb, var(--text) 14%, transparent); }
+.stage[data-approach="minimal"] .hero { padding: 150px 0 120px; }
+.stage[data-approach="minimal"] section.band { padding: 110px 0; }
+.stage[data-approach="minimal"] .sec-head { margin-bottom: 52px; }
+.stage[data-approach="minimal"] :is(.step, .card) {
+  background: transparent;
+  border: 0;
+  border-top: var(--rule-thin) solid var(--border);
+  border-radius: 0;
+  padding-left: 0;
+  padding-right: 0;
+}
+.stage[data-approach="minimal"] .process { gap: 28px; }
+.stage[data-approach="minimal"] .cards { gap: 40px; }
+.stage[data-approach="minimal"] :is(.step, .card):hover {
+  background: transparent;
+  border-color: var(--accent);
+  transform: none;
+  box-shadow: none;
+}
+.stage[data-approach="minimal"] .step::after,
+.stage[data-approach="minimal"] .card::before { display: none; }
+.stage[data-approach="minimal"] .btn-secondary { border-color: transparent; padding-left: 0; }
+.stage[data-approach="minimal"] .btn-secondary:hover { border-color: transparent; }
+.stage[data-approach="minimal"] .field input { background: transparent; border-radius: 0; border-width: 0 0 var(--rule-thin) 0; padding-left: 0; }
+.stage[data-approach="minimal"] .field input:focus { box-shadow: none; border-color: var(--accent); }
+.stage[data-approach="minimal"] .tokens { background: transparent; border: 0; border-top: var(--rule-thin) solid var(--border); border-radius: 0; }
+.stage[data-approach="minimal"] .tokens div { padding-left: 0; padding-right: 0; }
+.stage[data-approach="minimal"] .pill { border-color: transparent; padding-left: 0; }
+.stage[data-approach="minimal"] .pill.is-accent { background: transparent; padding-left: 13px; }
+.stage[data-approach="minimal"] .orb-team { background: transparent; }
+
+/* Formal Bold: alternating contrast bands, large section numbers, full-width
+   rules, a heavy left stroke on cards */
+.stage[data-approach="formal"] section.band { padding: 96px 0; }
+.stage[data-approach="formal"] section.band:nth-of-type(even) {
+  background: var(--surface);
+  box-shadow: 0 0 0 100vmax var(--surface);
+  clip-path: inset(0 -100vmax);
+}
+.stage[data-approach="formal"] .sec-head {
+  align-items: flex-start;
+  gap: 28px;
+  padding-bottom: 26px;
+  margin-bottom: 44px;
+  border-bottom: var(--rule-thin) solid var(--border);
+  position: relative;
+}
+.stage[data-approach="formal"] .sec-head::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: calc(var(--rule-thin) * -1);
+  width: 160px;
+  height: var(--rule-fat);
+  background: var(--accent);
+}
+.stage[data-approach="formal"] .sec-n { font-size: clamp(40px, 5vw, 64px); line-height: 0.9; }
+.stage[data-approach="formal"] h2.sec { font-size: clamp(32px, 4.4vw, 52px); }
+.stage[data-approach="formal"] .eyebrow::after { max-width: none; }
+.stage[data-approach="formal"] h1.display { font-size: clamp(46px, 8vw, 100px); }
+.stage[data-approach="formal"] .hero { padding-bottom: 96px; border-bottom: var(--rule-fat) solid var(--text); }
+.stage[data-approach="formal"] :is(.step, .card) {
+  border-radius: 0;
+  border-left: var(--rule-fat) solid var(--accent);
+  background: var(--surface-alt);
+}
+.stage[data-approach="formal"] section.band:nth-of-type(even) :is(.step, .card) { background: var(--base); }
+.stage[data-approach="formal"] .step::after,
+.stage[data-approach="formal"] .card::before { display: none; }
+.stage[data-approach="formal"] :is(.step, .card):hover { border-left-color: var(--accent-2); transform: none; }
+.stage[data-approach="formal"] :is(.btn, .field input, .tokens, .pill) { border-radius: 0; }
+.stage[data-approach="formal"] .btn { letter-spacing: 0.04em; text-transform: uppercase; font-size: 13px; padding: 15px 30px; }
+.stage[data-approach="formal"] .btn-small { padding: 11px 20px; font-size: 12px; }
+.stage[data-approach="formal"] .card h3 { font-size: 26px; }
+.stage[data-approach="formal"] .specimen > div { border-bottom-width: var(--rule-thin); }
+.stage[data-approach="formal"] .specimen > div:first-child { border-top: var(--rule-fat) solid var(--accent-2); }
 
 @media (prefers-reduced-motion: reduce) {
   .stage *, .stage *::before, .stage *::after {

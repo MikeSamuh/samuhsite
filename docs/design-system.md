@@ -128,6 +128,10 @@ colour, line and motion.
 | `newsreader` | Refined | Newsreader / Inter | Editorial serif drawn for screens. The compromise candidate |
 | `manrope` | Refined | Manrope / Inter | Geometric sans, corners softened. Nearest cousin to the sans in their decks |
 | `hanken` | Refined | Hanken Grotesk / Hanken Grotesk | One family for everything, the Swiss route |
+| `playfair` | Formal | Playfair Display / Source Sans 3 | The formal serif everyone recognises |
+| `baskerville` | Formal | Libre Baskerville / Inter | Bookish, wide, the most conservative |
+| `garamond` | Formal | EB Garamond / Libre Franklin | Five hundred years of formal |
+| `bodoni` | Formal | Bodoni Moda / Inter | Hairline serifs, fashion-house formal. Watch it on dark |
 
 IBM Plex Mono carries captions and data in every pairing. Fifteen families
 load while the picker is live; that is not a production font budget.
@@ -143,6 +147,34 @@ Team circle, inline link underlines and the accent bar on cards and steps.
 | `balanced` | 1px | 3px | The default and what round one looked like |
 | `heavy` | 1px | 5px | The heavy stroke starts to feel drawn |
 | `marker` | 2px | 8px | Felt-tip. The loosest, watch it on the tier cards |
+
+Line width scales the chosen weight in quarter steps from ×0.5 to ×2
+(`scale-50` to `scale-200`), so the thin/fat gap is preserved while the whole
+page gets lighter or heavier. Marker at ×2 is 4px against 16px.
+
+## Axis 0: approach
+
+How the page is composed. Same tokens, different amount of chrome. Applied as
+`data-approach` on the stage; overrides are scoped to `.content` in
+`design.css` so the rail is untouched.
+
+| id | Name | Treatment |
+|---|---|---|
+| `modern` | Modern #1 | Round one. Boxed cards and steps, accent bar on hover |
+| `minimal` | Minimal #1 | Very few boxes. Hairlines only, generous black space, content on the stage |
+| `formal` | Formal Bold | Alternating contrast bands, large section numbers, full-width rules, heavy left stroke on cards |
+
+The hash is now nine parts:
+`#approach.background.accent1.accent2.type.weight.scale.entrance.hover`.
+Anything missing falls back to the default (Modern, Balanced, ×1).
+
+## The rail is the style guide
+
+Block 03 in the rail shows the current selection as a spec: approach and
+background, both accents as filled chips with name and hex, an "Aa" specimen
+in the display face with the pairing named, the two rules drawn at their
+current width, and the motion pair. Selected swatches carry a tick in their
+own on-colour and the value line repeats the hex.
 
 ## Axis 5 and 6: effects
 

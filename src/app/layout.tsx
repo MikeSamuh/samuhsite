@@ -14,6 +14,12 @@ import {
   Hanken_Grotesk,
   Newsreader,
   Manrope,
+  Playfair_Display,
+  Source_Sans_3,
+  Libre_Baskerville,
+  EB_Garamond,
+  Libre_Franklin,
+  Bodoni_Moda,
   IBM_Plex_Mono,
 } from "next/font/google";
 import "./globals.css";
@@ -47,6 +53,18 @@ const hanken = Hanken_Grotesk({ subsets: ["latin"], variable: "--f-hanken" });
 const newsreader = Newsreader({ subsets: ["latin"], variable: "--f-newsreader" });
 const manrope = Manrope({ subsets: ["latin"], variable: "--f-manrope" });
 
+// formal
+const playfair = Playfair_Display({ subsets: ["latin"], variable: "--f-playfair" });
+const sourceSans = Source_Sans_3({ subsets: ["latin"], variable: "--f-source-sans" });
+const baskerville = Libre_Baskerville({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  variable: "--f-baskerville",
+});
+const garamond = EB_Garamond({ subsets: ["latin"], variable: "--f-garamond" });
+const franklin = Libre_Franklin({ subsets: ["latin"], variable: "--f-franklin" });
+const bodoni = Bodoni_Moda({ subsets: ["latin"], variable: "--f-bodoni" });
+
 // captions and data, every pairing
 const plexMono = IBM_Plex_Mono({
   subsets: ["latin"],
@@ -69,6 +87,12 @@ const fontVars = [
   hanken,
   newsreader,
   manrope,
+  playfair,
+  sourceSans,
+  baskerville,
+  garamond,
+  franklin,
+  bodoni,
   plexMono,
 ]
   .map((f) => f.variable)
