@@ -659,7 +659,7 @@ function Dials({ combo, set }: { combo: Combo; set: (patch: Partial<Combo>) => v
 
   return (
     <div className="dials">
-      <details className="sect" open>
+      <details className="sect">
       <summary>Layout</summary>
       <div className="ctrl">
         <span className="ctrl-label">Approach</span>
@@ -686,7 +686,7 @@ function Dials({ combo, set }: { combo: Combo; set: (patch: Partial<Combo>) => v
 
       </details>
 
-      <details className="sect" open>
+      <details className="sect">
       <summary>Colours</summary>
       {swatches("Accent 1 · loud", accent, (x) => set({ accent: x ?? accent }))}
       {swatches("Accent 2 · quiet", accent2, (x) => set({ accent2: x ?? accent2 }))}
@@ -706,7 +706,7 @@ function Dials({ combo, set }: { combo: Combo; set: (patch: Partial<Combo>) => v
 
       </details>
 
-      <details className="sect" open>
+      <details className="sect">
       <summary>Fonts</summary>
       <div className="ctrl">
         <span className="ctrl-label ctrl-label-row">
@@ -752,7 +752,7 @@ function Dials({ combo, set }: { combo: Combo; set: (patch: Partial<Combo>) => v
 
       </details>
 
-      <details className="sect" open>
+      <details className="sect">
       <summary>Lines</summary>
       <div className="ctrl">
         <span className="ctrl-label">Line weight</span>
@@ -778,7 +778,7 @@ function Dials({ combo, set }: { combo: Combo; set: (patch: Partial<Combo>) => v
 
       </details>
 
-      <details className="sect" open>
+      <details className="sect">
       <summary>Motion</summary>
       <div className="ctrl">
         <span className="ctrl-label">Entrance</span>
