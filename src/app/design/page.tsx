@@ -188,6 +188,7 @@ export default function DesignDirections() {
                       <span className="pick-dot" style={{ background: c.accent.hex }} />
                       <span className="pick-title">{p.title}</span>
                       <span className="pick-name">{p.kicker} · {comboName(c)}</span>
+                      {p.quote ? <span className="pick-quote">{p.quote}</span> : null}
                     </button>
                   );
                 })}

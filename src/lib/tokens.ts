@@ -699,6 +699,8 @@ export interface Pick {
   kicker: string;
   title: string;
   hash: string;
+  /** the client's own words, verbatim, for feedback entries */
+  quote?: string;
 }
 
 export const PICKS: Pick[] = [
@@ -726,6 +728,8 @@ export const PICKS: Pick[] = [
     section: "feedback",
     kicker: "24 September",
     title: "Cyan and more formal font",
+    quote:
+      "We liked: #synapse.pink-magenta.pink-magenta.syne.unblur.glow\n\nBut we had a tough time choosing the 2nd accent (we used cyan) - you can check out some of our materials and riff on that.\n\nWe had a tough time with the fonts. We are looking for something classy. Can you give us more optoios",
     // The link Mike sent, with the cyan the team said they used in place of
     // the doubled magenta.
     hash: "#synapse.pink-magenta.cyan-samuh.syne.unblur.glow.balanced",
