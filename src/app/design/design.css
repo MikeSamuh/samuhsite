@@ -259,7 +259,17 @@
   font-size: 14px;
   color: var(--text);
   user-select: none;
+  /* stays pinned to the top of the rail while its section scrolls, so you
+     always know which dial you are in. The next section pushes it out. */
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: color-mix(in srgb, var(--base) 94%, transparent);
+  backdrop-filter: blur(8px);
+  border-bottom: var(--rule-thin) solid transparent;
 }
+
+.sect[open] > summary { border-bottom-color: var(--border); }
 
 .sect > summary::-webkit-details-marker { display: none; }
 
