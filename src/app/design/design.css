@@ -124,6 +124,48 @@
   gap: 6px;
 }
 
+/* collapsible sections inside the dials */
+.sect {
+  border-top: var(--rule-thin) solid var(--border);
+  padding: 4px 0 6px;
+}
+
+.sect > summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  font-family: var(--font-display);
+  font-weight: var(--display-weight);
+  letter-spacing: var(--display-tracking);
+  font-size: 14px;
+  color: var(--text);
+  user-select: none;
+}
+
+.sect > summary::-webkit-details-marker { display: none; }
+
+.sect > summary::after {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border: solid var(--muted);
+  border-width: 0 1.5px 1.5px 0;
+  transform: rotate(45deg);
+  transition: transform var(--dur) var(--ease);
+  margin-right: 4px;
+}
+
+.sect[open] > summary::after { transform: rotate(-135deg); }
+
+.sect > summary:hover { color: var(--accent); }
+
+.sect[open] > summary { margin-bottom: 8px; }
+
+.sect > .ctrl + .ctrl { margin-top: 14px; }
+
 .ctrl-label {
   font-family: var(--font-mono);
   font-size: 10px;

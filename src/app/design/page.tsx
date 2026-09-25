@@ -659,6 +659,8 @@ function Dials({ combo, set }: { combo: Combo; set: (patch: Partial<Combo>) => v
 
   return (
     <div className="dials">
+      <details className="sect" open>
+      <summary>Layout</summary>
       <div className="ctrl">
         <span className="ctrl-label">Approach</span>
         <div className="ctrl-opts">
@@ -682,6 +684,10 @@ function Dials({ combo, set }: { combo: Combo; set: (patch: Partial<Combo>) => v
         </div>
       </div>
 
+      </details>
+
+      <details className="sect" open>
+      <summary>Colours</summary>
       {swatches("Accent 1 · loud", accent, (x) => set({ accent: x ?? accent }))}
       {swatches("Accent 2 · quiet", accent2, (x) => set({ accent2: x ?? accent2 }))}
       {swatches("Accent 3 · data", accent3, (x) => set({ accent3: x }), true)}
@@ -698,6 +704,10 @@ function Dials({ combo, set }: { combo: Combo; set: (patch: Partial<Combo>) => v
         </div>
       </div>
 
+      </details>
+
+      <details className="sect" open>
+      <summary>Fonts</summary>
       <div className="ctrl">
         <span className="ctrl-label ctrl-label-row">
           Type · headings
@@ -740,6 +750,10 @@ function Dials({ combo, set }: { combo: Combo; set: (patch: Partial<Combo>) => v
         </div>
       </div>
 
+      </details>
+
+      <details className="sect" open>
+      <summary>Lines</summary>
       <div className="ctrl">
         <span className="ctrl-label">Line weight</span>
         <div className="ctrl-opts">
@@ -762,6 +776,10 @@ function Dials({ combo, set }: { combo: Combo; set: (patch: Partial<Combo>) => v
         </div>
       </div>
 
+      </details>
+
+      <details className="sect" open>
+      <summary>Motion</summary>
       <div className="ctrl">
         <span className="ctrl-label">Entrance</span>
         <div className="ctrl-opts">
@@ -783,6 +801,7 @@ function Dials({ combo, set }: { combo: Combo; set: (patch: Partial<Combo>) => v
           ))}
         </div>
       </div>
+      </details>
     </div>
   );
 }
