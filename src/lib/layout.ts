@@ -90,6 +90,33 @@ export const VIEWS: (Opt<ViewId> & { px: number })[] = [
 ];
 
 /* ------------------------------------------------------------------ */
+/* Pages                                                               */
+/* ------------------------------------------------------------------ */
+
+// The sitemap from docs/scope.md. Home is the twelve sections below; the
+// rest are composed in pages.tsx from confirmed material and visible TODOs.
+// "start" is the intake assessment, reached from Get Started, not the nav.
+
+export type PageId = "home" | "solutions" | "process" | "insights" | "about" | "contact" | "start";
+
+export interface PageDef {
+  id: PageId;
+  name: string;
+  nav: boolean;
+  note: string;
+}
+
+export const PAGES: PageDef[] = [
+  { id: "home", name: "Home", nav: true, note: "The argument, then conversion." },
+  { id: "solutions", name: "Solutions", nav: true, note: "Self-guided, Supported, Guided on one page, a comparison table, testimonials." },
+  { id: "process", name: "Process", nav: true, note: "The team process. Structure still TBD in the scope." },
+  { id: "insights", name: "Insights", nav: true, note: "Foundations, articles, video and research in one filterable feed. Research gets its own weight." },
+  { id: "about", name: "About", nav: true, note: "About SAMUH, the team, Sapien Labs in the body. Partners TBA." },
+  { id: "contact", name: "Contact", nav: true, note: "Form plus calendar booking, contact details." },
+  { id: "start", name: "Get Started", nav: false, note: "The intake assessment. Free, ungated, value before the first ask. Not TeamQ." },
+];
+
+/* ------------------------------------------------------------------ */
 /* Sections                                                            */
 /* ------------------------------------------------------------------ */
 
@@ -230,6 +257,8 @@ export interface Layout {
   numbers: Opt<NumbersId>;
   /** preview width; in the hash only when not desktop, so links open at the size they were made */
   view: ViewId;
+  /** which page the frame shows; in the hash only when not home */
+  page: PageId;
   /** variant id per section, or "off" */
   sections: Record<SectionId, string>;
 }
@@ -289,11 +318,12 @@ export const DEFAULT_LAYOUT: Layout = parseLayoutHash(PRESETS[0].hash);
 export function layoutHash(l: Layout): string {
   const secs = SECTIONS.map((s) => l.sections[s.id]).join(".");
   const view = l.view === "desktop" ? "" : `.${l.view}`;
-  return `#${l.bg}.${l.align.id}.${l.width.id}.${l.spacing.id}.${l.nav.id}.${l.divider.id}.${l.numbers.id}.${secs}${view}`;
+  const page = l.page === "home" ? "" : `.page-${l.page}`;
+  return `#${l.bg}.${l.align.id}.${l.width.id}.${l.spacing.id}.${l.nav.id}.${l.divider.id}.${l.numbers.id}.${secs}${view}${page}`;
 }
 
 export function sameLayout(a: Layout, b: Layout): boolean {
-  return layoutHash({ ...a, view: "desktop" }) === layoutHash({ ...b, view: "desktop" });
+  return layoutHash({ ...a, view: "desktop", page: "home" }) === layoutHash({ ...b, view: "desktop", page: "home" });
 }
 
 /**
@@ -311,6 +341,7 @@ export function parseLayoutHash(hash: string): Layout {
     divider: DIVIDERS[0],
     numbers: NUMBERS[0],
     view: "desktop",
+    page: "home",
     sections: Object.fromEntries(SECTIONS.map((s) => [s.id, s.variants[0].id])) as Record<SectionId, string>,
   };
   for (const id of parts) {
@@ -322,6 +353,9 @@ export function parseLayoutHash(hash: string): Layout {
     const dv = DIVIDERS.find((x) => x.id === id); if (dv) { l.divider = dv; continue; }
     const nm = NUMBERS.find((x) => x.id === id); if (nm) { l.numbers = nm; continue; }
     const vw = VIEWS.find((x) => x.id === id); if (vw) { l.view = vw.id; continue; }
+    if (id.startsWith("page-")) {
+      const pg = PAGES.find((x) => x.id === id.slice(5)); if (pg) { l.page = pg.id; continue; }
+    }
     const sec = SECTIONS.find((s) => id.startsWith(`${s.id}-`));
     if (sec) {
       if (id === `${sec.id}-${OFF}` || sec.variants.some((v) => v.id === id)) l.sections[sec.id] = id;

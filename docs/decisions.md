@@ -167,3 +167,9 @@ Style is fixed there; the dials are background, frame (alignment, column
 width, spacing, nav, dividers, numbers) and a variant per home section, with
 three presets A Editorial, B Keynote, C Cinema. Viewport preview via container
 queries. /design stays as the archive. — Wilfred
+
+**2026-09-25 — The layout tool carries the whole sitemap.**
+Solutions, Process, Insights, About, Contact and Get Started are composed
+in /layout from the scope and brief, with the nav, footer and CTAs wired
+between them. Confirmed material only; the rest is visible TODO(content).
+Page is part of the hash (`page-<id>`). — Wilfred and Claude

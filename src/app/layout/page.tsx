@@ -5,17 +5,17 @@ import Image from "next/image";
 import { BACKGROUNDS, cssVars, comboName } from "@/lib/tokens";
 import {
   ALIGNS, WIDTHS, SPACINGS, NAVS, DIVIDERS, NUMBERS, VIEWS,
-  SECTIONS, PRESETS, FEEDBACK, OFF, LOCKED_HASH,
+  SECTIONS, PAGES, PRESETS, FEEDBACK, OFF, LOCKED_HASH,
   DEFAULT_LAYOUT, lockedCombo, layoutHash, parseLayoutHash, sameLayout,
   layoutName, layoutVars,
-  type Layout, type SectionId, type Opt,
+  type Layout, type SectionId, type PageId, type Opt,
 } from "@/lib/layout";
+import { Page } from "./pages";
 import Backdrop from "../design/Backdrop";
 import "../design/backdrops.css";
 import "../design/design.css";
 import "./layout.css";
 
-const NAV = ["Solutions", "Process", "Insights", "About", "Contact"];
 const stay = (e: React.MouseEvent) => e.preventDefault();
 const LOGO_H = 285;
 
@@ -32,6 +32,10 @@ export default function LayoutTool() {
   const set = (patch: Partial<Layout>) => setLayout((l) => ({ ...l, ...patch }));
   const setSection = (id: SectionId, v: string) =>
     setLayout((l) => ({ ...l, sections: { ...l.sections, [id]: v } }));
+  const go = (p: PageId) => {
+    set({ page: p });
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   useEffect(() => {
     const read = () =>
@@ -168,6 +172,16 @@ export default function LayoutTool() {
                 <details className="sect" open>
                   <summary>Stage</summary>
                   <div className="ctrl">
+                    <span className="ctrl-label">Page · the nav works too</span>
+                    <div className="ctrl-opts">
+                      {PAGES.map((x) => (
+                        <button key={x.id} className="opt" aria-pressed={x.id === layout.page} onClick={() => go(x.id)} title={x.note}>
+                          {x.name}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="ctrl">
                     <span className="ctrl-label">Background · site wide</span>
                     <div className="ctrl-opts">
                       {BACKGROUNDS.map((x) => (
@@ -199,8 +213,8 @@ export default function LayoutTool() {
                   {opts("Section numbers", NUMBERS, layout.numbers, (x) => set({ numbers: x }))}
                 </details>
 
-                <details className="sect" open>
-                  <summary>Sections</summary>
+                <details className="sect" open={layout.page === "home"}>
+                  <summary>Home sections</summary>
                   {SECTIONS.map((s) => (
                     <div className="ctrl" key={s.id}>
                       <span className="ctrl-label"><span className="opt-n">{String(s.n).padStart(2, "0")}</span>{s.title}</span>
@@ -241,14 +255,21 @@ export default function LayoutTool() {
               <Backdrop id={layout.bg} pointer="well" />
             </div>
             <div className="L-body">
-              <Nav />
-              {SECTIONS.map((s) => {
-                const v = layout.sections[s.id];
-                if (v === `${s.id}-${OFF}`) return null;
-                return <Section key={s.id} def={s} variant={v} />;
-              })}
+              <Nav page={layout.page} go={go} />
+              {layout.page === "home"
+                ? SECTIONS.map((s) => {
+                    const v = layout.sections[s.id];
+                    if (v === `${s.id}-${OFF}`) return null;
+                    return <Section key={s.id} def={s} variant={v} go={go} />;
+                  })
+                : <Page id={layout.page} go={go} />}
               <footer className="L-foot L-wrap">
                 <span className="L-cap">SAMUH · in partnership with Sapien Labs</span>
+                <nav className="L-foot-links" aria-label="Footer">
+                  {PAGES.filter((x) => x.nav && x.id !== "home").map((x) => (
+                    <a key={x.id} className="L-cap" onClick={() => go(x.id)}>{x.name}</a>
+                  ))}
+                </nav>
                 <span className="L-cap">Privacy · Terms · Cookies</span>
               </footer>
             </div>
@@ -266,17 +287,19 @@ export default function LayoutTool() {
 /* Nav                                                                 */
 /* ------------------------------------------------------------------ */
 
-function Nav() {
+function Nav({ page, go }: { page: PageId; go: (p: PageId) => void }) {
   return (
     <header className="L-nav L-wrap">
-      <a href="#" className="nav-logo" onClick={stay} aria-label="SAMUH home">
+      <a href="#" className="nav-logo" onClick={(e) => { stay(e); go("home"); }} aria-label="SAMUH home">
         <Image src="/samuh-logo.png" alt="SAMUH" width={960} height={LOGO_H} priority />
       </a>
       <nav className="nav-links L-links" aria-label="Primary">
-        {NAV.map((item) => <a key={item} href="#" onClick={stay}>{item}</a>)}
+        {PAGES.filter((x) => x.nav && x.id !== "home").map((x) => (
+          <a key={x.id} href="#" onClick={(e) => { stay(e); go(x.id); }} aria-current={x.id === page ? "page" : undefined}>{x.name}</a>
+        ))}
       </nav>
       <span className="L-menu tbtn">Menu</span>
-      <button className="btn btn-small">Get started <span className="arrow">&rarr;</span></button>
+      <button className="btn btn-small" onClick={() => go("start")}>Get started <span className="arrow">&rarr;</span></button>
     </header>
   );
 }
@@ -306,7 +329,7 @@ function Frame({ label, tall }: { label: string; tall?: boolean }) {
 
 const TODO = (what: string) => `TODO(content): ${what}`;
 
-function Section({ def, variant }: { def: (typeof SECTIONS)[number]; variant: string }) {
+function Section({ def, variant, go }: { def: (typeof SECTIONS)[number]; variant: string; go: (p: PageId) => void }) {
   const v = variant.replace(`${def.id}-`, "");
   return (
     <section className={`L-sec L-s-${def.id}`} data-v={v} id={def.id}>
@@ -318,8 +341,8 @@ function Section({ def, variant }: { def: (typeof SECTIONS)[number]; variant: st
               <h1 className="display">High performance <em>without</em> the cost to people.</h1>
               <p className="lede">{TODO("hero lede, must match Daniel's video script")}</p>
               <div className="cta-row">
-                <button className="btn">Get started <span className="arrow">&rarr;</span></button>
-                <button className="btn btn-secondary">Book a call</button>
+                <button className="btn" onClick={() => go("start")}>Get started <span className="arrow">&rarr;</span></button>
+                <button className="btn btn-secondary" onClick={() => go("contact")}>Book a call</button>
               </div>
             </div>
             <Frame label="Hero video · muted loop, full video on click" tall />
@@ -468,8 +491,8 @@ function Section({ def, variant }: { def: (typeof SECTIONS)[number]; variant: st
                 <button className="btn">Start</button>
               </div>
               <div className="cta-row">
-                <button className="btn">Get started <span className="arrow">&rarr;</span></button>
-                <button className="btn btn-secondary">Book a call</button>
+                <button className="btn" onClick={() => go("start")}>Get started <span className="arrow">&rarr;</span></button>
+                <button className="btn btn-secondary" onClick={() => go("contact")}>Book a call</button>
               </div>
             </div>
           </div>
