@@ -900,20 +900,20 @@ export const PICKS: Pick[] = [
   {
     id: "recommended",
     section: "picks",
-    kicker: "01 · Wilfred's recommendation",
-    title: "Wilfred’s recommendation",
-    // Revised 25 September 2026, building on the client's pick: their
-    // background and pink, their own cyan as the quiet accent, a refined
-    // serif in place of Syne.
-    hash: "#synapse.pink-magenta.cyan-samuh.dm-serif.unblur.glow.balanced",
+    kicker: "23 September",
+    title: "Wilfred\u2019s recommendation",
+    // What went to the client with round one: Aurora, Hot pink with
+    // Periwinkle, Syne, Unblur, Glow. Hot pink is now the deck pink and
+    // Periwinkle lives in the violet family; the look is the same.
+    hash: "#aurora.pink-samuh.violet-peri.syne.unblur.glow",
   },
   {
     id: "recommended-2",
     section: "picks",
-    kicker: "Wilfred's second recommendation",
+    kicker: "25 September",
     title: "Wilfred\u2019s second recommendation",
-    // Set by Wilfred, 25 September: Synapse, Magenta with Samuh cyan,
-    // Tenor Sans headings, Libre Franklin eyebrows, heavy lines at x1.25.
+    // Synapse, Magenta with Samuh cyan, Tenor Sans headings, Libre Franklin
+    // eyebrows, heavy lines at x1.25.
     hash: "#modern.synapse.pink-magenta.cyan-samuh.tenor.eyebrow-franklin.heavy.scale-125.unblur.glow",
   },
   {
@@ -921,11 +921,11 @@ export const PICKS: Pick[] = [
     section: "feedback",
     kicker: "24 September",
     title: "Cyan and more formal font",
-    quote:
-      "We liked: #synapse.pink-magenta.pink-magenta.syne.unblur.glow\n\nBut we had a tough time choosing the 2nd accent (we used cyan) - you can check out some of our materials and riff on that.\n\nWe had a tough time with the fonts. We are looking for something classy. Can you give us more optoios",
     // The link Mike sent, with the cyan the team said they used in place of
     // the doubled magenta.
     hash: "#synapse.pink-magenta.cyan-samuh.syne.unblur.glow.balanced",
+    quote:
+      "We liked: #synapse.pink-magenta.pink-magenta.syne.unblur.glow\n\nBut we had a tough time choosing the 2nd accent (we used cyan) - you can check out some of our materials and riff on that.\n\nWe had a tough time with the fonts. We are looking for something classy. Can you give us more optoios",
   },
 ];
 
