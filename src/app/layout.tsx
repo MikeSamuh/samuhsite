@@ -8,9 +8,10 @@ import {
   Syne,
   Space_Grotesk,
   Figtree,
-  Bilbo,
-  Dr_Sugiyama,
+  Modern_Antiqua,
   Special_Elite,
+  Overlock,
+  IM_Fell_French_Canon,
   DM_Serif_Display,
   DM_Sans,
   Cormorant_Garamond,
@@ -43,8 +44,14 @@ const instrumentSans = Instrument_Sans({ subsets: ["latin"], variable: "--f-inst
 const syne = Syne({ subsets: ["latin"], variable: "--f-syne" });
 const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], variable: "--f-space" });
 const figtree = Figtree({ subsets: ["latin"], variable: "--f-figtree" });
-const bilbo = Bilbo({ subsets: ["latin"], weight: "400", variable: "--f-bilbo" });
-const sugiyama = Dr_Sugiyama({ subsets: ["latin"], weight: "400", variable: "--f-sugiyama" });
+const antiqua = Modern_Antiqua({ subsets: ["latin"], weight: "400", variable: "--f-antiqua" });
+const overlock = Overlock({
+  subsets: ["latin"],
+  weight: ["400", "700", "900"],
+  style: ["normal", "italic"],
+  variable: "--f-overlock",
+});
+const imfell = IM_Fell_French_Canon({ subsets: ["latin"], weight: "400", variable: "--f-imfell" });
 const elite = Special_Elite({ subsets: ["latin"], weight: "400", variable: "--f-elite" });
 
 // refined
@@ -87,9 +94,10 @@ const fontVars = [
   syne,
   spaceGrotesk,
   figtree,
-  bilbo,
-  sugiyama,
+  antiqua,
   elite,
+  overlock,
+  imfell,
   dmSerif,
   dmSans,
   cormorant,

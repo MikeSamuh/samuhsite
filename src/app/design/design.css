@@ -357,7 +357,7 @@
   transform: scale(1.2);
 }
 
-/* a tick in the swatch's own on-colour, so the pick is unmistakable */
+/* a tick in the swatch's own on-color, so the pick is unmistakable */
 .sw[aria-pressed="true"]::after {
   content: "";
   position: absolute;
@@ -391,7 +391,7 @@
 }
 .sw-none[aria-pressed="true"] { --on: var(--text); }
 
-/* the wash chip shows the tint the way the page uses it, not the raw colour */
+/* the wash chip shows the tint the way the page uses it, not the raw color */
 .chip-wash {
   background: color-mix(in srgb, var(--wash) 22%, var(--surface));
   color: var(--text);

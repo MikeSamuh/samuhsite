@@ -29,7 +29,7 @@ The working split:
 
 - **Looseness** in the background, the motion, the illustration, and the
   contrast between hairline and heavy stroke
-- **Discipline** in the typography, the spacing, and using one loud colour at a
+- **Discipline** in the typography, the spacing, and using one loud color at a
   time
 
 If a change makes the page more playful by making it less legible or less
@@ -142,7 +142,7 @@ From the signed scope. These are contractual, not aspirational.
 |---|---|
 | `docs/brief.md` | You need positioning, audience, tone or the Sapien Labs relationship |
 | `docs/scope.md` | You are adding or arguing about a page, section or feature |
-| `docs/design-system.md` | You are touching tokens, type, colour, line weight or motion |
+| `docs/design-system.md` | You are touching tokens, type, color, line weight or motion |
 | `docs/content.md` | You need to know who owns a piece of copy, or what we may claim |
 | `docs/assets.md` | You need a logo, font, photo or video |
 | `docs/conventions.md` | You are writing new components |

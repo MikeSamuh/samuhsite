@@ -1,6 +1,6 @@
 /* Background treatments.
    Every layer is pointer-events none and sits behind the content.
-   All colour comes from --accent, --accent-2, --accent-3 (data, the signals),
+   All color comes from --accent, --accent-2, --accent-3 (data, the signals),
    --accent-4 (wash, the third blob and the synapse haze) and --base. */
 
 .bd {
@@ -35,7 +35,7 @@
 
 /* ---------- 3. Aurora: lava lamp ----------
    Blobs are mixed well into the base so they read as a glow under the page,
-   not a colour on top of it. They rise, squash, and sink. Nothing crosses
+   not a color on top of it. They rise, squash, and sink. Nothing crosses
    the screen sideways. */
 
 .blob-wrap {

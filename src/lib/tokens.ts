@@ -31,7 +31,7 @@ export interface Background {
   name: string;
   bet: string;
   risk: string;
-  /** base page colour behind every layer */
+  /** base page color behind every layer */
   base: string;
   surface: string;
   surfaceAlt: string;
@@ -83,7 +83,7 @@ export const BACKGROUNDS: Background[] = [
     id: "aurora",
     n: 3,
     name: "Aurora",
-    bet: "Black with toned-down colour rising and falling underneath, lava lamp style. This is the mushrooms one. Each blob takes 20 to 30 seconds to travel the screen, slow enough to be atmosphere, fast enough that you notice it moving.",
+    bet: "Black with toned-down color rising and falling underneath, lava lamp style. This is the mushrooms one. Each blob takes 20 to 30 seconds to travel the screen, slow enough to be atmosphere, fast enough that you notice it moving.",
     risk: "Highest craft cost and the one that goes wrong fastest if the blur or the speed is off. Also the hardest to keep text legible on.",
     base: "#000000",
     surface: "rgba(20, 20, 24, 0.72)",
@@ -136,11 +136,11 @@ export const BACKGROUNDS: Background[] = [
 /* Accents                                                             */
 /* ------------------------------------------------------------------ */
 
-// The brand book has no colour codes, but SAMUH's own decks do. The
+// The brand book has no color codes, but SAMUH's own decks do. The
 // introduction deck and the Bangalore keynote (July 2026) use these fills:
 //   #FC0097  pink, on nearly every page of both decks
-//   #0CC0DF  cyan, the keynote's second colour
-//   #48B1A5  teal, the introduction deck's second colour
+//   #0CC0DF  cyan, the keynote's second color
+//   #48B1A5  teal, the introduction deck's second color
 //   #8243F6  violet, the frame around the performance-levers chart
 // Anything marked "sampled" below is one of those, taken as-is. The rest are
 // riffs around them. Every hue clears 4.5:1 against the darkest stage so all
@@ -153,7 +153,7 @@ export interface Accent {
   family: AccentFamily;
   name: string;
   hex: string;
-  /** text colour that sits on top of the accent */
+  /** text color that sits on top of the accent */
   on: string;
   note: string;
 }
@@ -167,12 +167,12 @@ export const ACCENTS: Accent[] = [
   // cyan
   { id: "cyan-samuh", family: "cyan", name: "Samuh", hex: "#0CC0DF", on: "#05070B", note: "Sampled from the Bangalore keynote. Cold and bright, so it reads as a signal next to the pink." },
   { id: "cyan-teal", family: "cyan", name: "Teal", hex: "#48B1A5", on: "#05070B", note: "Sampled from the introduction deck. Greener and calmer, the closest to a true complement of magenta." },
-  { id: "cyan-steel", family: "cyan", name: "Steel", hex: "#4394AF", on: "#05070B", note: "The bar colour from your levers chart. The most muted, so it sits behind the pink rather than beside it." },
+  { id: "cyan-steel", family: "cyan", name: "Steel", hex: "#4394AF", on: "#05070B", note: "The bar color from your levers chart. The most muted, so it sits behind the pink rather than beside it." },
 
   // violet
   { id: "violet-ultra", family: "violet", name: "Ultraviolet", hex: "#8F55FF", on: "#05070B", note: "Your chart frame violet, lifted one step so it passes as text. Pink's neighbour on the wheel, so the pair reads as one glow." },
   { id: "violet-peri", family: "violet", name: "Periwinkle", hex: "#8B8BFF", on: "#05070B", note: "Blue drifting into violet. The strangest one, in a good way." },
-  { id: "violet-lilac", family: "violet", name: "Lilac", hex: "#C4A6FF", on: "#05070B", note: "Pale and calm. Reads as a highlight rather than a colour." },
+  { id: "violet-lilac", family: "violet", name: "Lilac", hex: "#C4A6FF", on: "#05070B", note: "Pale and calm. Reads as a highlight rather than a color." },
 
   // yellow
   { id: "yellow-amber", family: "yellow", name: "Amber", hex: "#F5A524", on: "#0A0A0A", note: "Warm and human. Reads as energy rather than caution." },
@@ -187,7 +187,7 @@ export const ACCENTS: Accent[] = [
 // Two groups. Expressive pairings put a display face with real personality
 // against a sober body face. Refined pairings, added after the client asked
 // for something classier, let the type carry the discipline and leave the
-// personality to colour and motion.
+// personality to color and motion.
 
 export type TypeGroup = "expressive" | "refined" | "formal";
 
@@ -272,30 +272,17 @@ export const TYPE_PAIRS: TypePair[] = [
     note: "Geometric with quirks hidden in the details. Reads modern and technical without going cold.",
   },
   {
-    id: "bilbo",
+    id: "antiqua",
     group: "expressive",
-    name: "Bilbo / Inter",
-    displayVar: "var(--f-bilbo)",
-    displayName: "Bilbo",
+    name: "Modern Antiqua / Inter",
+    displayVar: "var(--f-antiqua)",
+    displayName: "Modern Antiqua",
     bodyVar: "var(--f-inter)",
     bodyName: "Inter",
     displayWeight: 400,
-    displayTracking: "0",
-    displayLeading: "1.0",
-    note: "A brush script. Handmade in the same spirit as the logo lettering, so the two either sing together or fight. One weight only.",
-  },
-  {
-    id: "sugiyama",
-    group: "expressive",
-    name: "Dr Sugiyama / Inter",
-    displayVar: "var(--f-sugiyama)",
-    displayName: "Dr Sugiyama",
-    bodyVar: "var(--f-inter)",
-    bodyName: "Inter",
-    displayWeight: 400,
-    displayTracking: "0",
-    displayLeading: "1.0",
-    note: "A looping calligraphic script, far from any boardroom. Only works at hero size with very few words. One weight only.",
+    displayTracking: "-0.01em",
+    displayLeading: "1.06",
+    note: "A blackletter-flavoured roman. Medieval at a glance, readable up close. One weight only.",
   },
   {
     id: "elite",
@@ -373,7 +360,7 @@ export const TYPE_PAIRS: TypePair[] = [
     displayWeight: 500,
     displayTracking: "-0.025em",
     displayLeading: "1.04",
-    note: "One family for everything, the Swiss route. All the personality has to come from colour, line and motion, which is exactly the split in the brief.",
+    note: "One family for everything, the Swiss route. All the personality has to come from color, line and motion, which is exactly the split in the brief.",
   },
   {
     id: "playfair",
@@ -425,7 +412,33 @@ export const TYPE_PAIRS: TypePair[] = [
     displayWeight: 500,
     displayTracking: "-0.01em",
     displayLeading: "1.04",
-    note: "Hairline serifs against heavy stems. Formal in the fashion-house sense. The sharpest of the four and the one most at risk on a dark screen.",
+    note: "Hairline serifs against heavy stems. Formal in the fashion-house sense. The sharpest of the serifs and the one most at risk on a dark screen.",
+  },
+  {
+    id: "overlock",
+    group: "formal",
+    name: "Overlock / Inter",
+    displayVar: "var(--f-overlock)",
+    displayName: "Overlock",
+    bodyVar: "var(--f-inter)",
+    bodyName: "Inter",
+    displayWeight: 700,
+    displayTracking: "-0.015em",
+    displayLeading: "1.04",
+    note: "Rounded and hand-cut, with true italics and a black weight. Softer than the serifs, warmer than the grotesks.",
+  },
+  {
+    id: "imfell",
+    group: "formal",
+    name: "IM Fell French Canon / Inter",
+    displayVar: "var(--f-imfell)",
+    displayName: "IM Fell French Canon",
+    bodyVar: "var(--f-inter)",
+    bodyName: "Inter",
+    displayWeight: 400,
+    displayTracking: "-0.005em",
+    displayLeading: "1.06",
+    note: "A seventeenth-century type revived with the ink and wear left in. Vintage and formal at once. One weight only.",
   },
 ];
 
@@ -486,8 +499,9 @@ export const FACES: Face[] = [
   { slug: "baskerville", name: "Libre Baskerville", var: "var(--f-baskerville)" },
   { slug: "garamond", name: "EB Garamond", var: "var(--f-garamond)" },
   { slug: "bodoni", name: "Bodoni Moda", var: "var(--f-bodoni)" },
-  { slug: "bilbo", name: "Bilbo", var: "var(--f-bilbo)" },
-  { slug: "sugiyama", name: "Dr Sugiyama", var: "var(--f-sugiyama)" },
+  { slug: "antiqua", name: "Modern Antiqua", var: "var(--f-antiqua)" },
+  { slug: "overlock", name: "Overlock", var: "var(--f-overlock)" },
+  { slug: "imfell", name: "IM Fell French Canon", var: "var(--f-imfell)" },
 ];
 
 export type FontRole = "eyebrow" | "caption" | "ui";
@@ -615,9 +629,9 @@ export const ENTRANCES: Effect<EntranceId>[] = [
 export const HOVERS: Effect<HoverId>[] = [
   { id: "lift", name: "Lift", note: "Element rises a few pixels and gains a soft shadow in the accent. Tactile, familiar." },
   { id: "glow", name: "Glow", note: "No movement. A ring of accent light around the element. Calm and a little sci-fi." },
-  { id: "fill", name: "Fill", note: "Colour floods in. Buttons invert, cards tint toward the accent. The loudest option." },
+  { id: "fill", name: "Fill", note: "Color floods in. Buttons invert, cards tint toward the accent. The loudest option." },
   { id: "scale", name: "Scale", note: "Element grows slightly toward the pointer. Playful, and easy to overdo." },
-  { id: "quiet", name: "Quiet", note: "Colour and border change only. No motion. Safest for a Fortune 500 buyer." },
+  { id: "quiet", name: "Quiet", note: "Color and border change only. No motion. Safest for a Fortune 500 buyer." },
 ];
 
 /* ------------------------------------------------------------------ */
@@ -724,7 +738,7 @@ export function pickCombo(p: Pick): Combo {
 
 /**
  * A name for the combination, so people can talk about it without reading
- * a hash. Background becomes a word, accent 1 supplies the colour, approach
+ * a hash. Background becomes a word, accent 1 supplies the color, approach
  * prefixes when it is not the default. "Neural Magenta", "Formal Lava Amber".
  */
 const BG_WORD: Record<BackdropId, string> = {
@@ -782,6 +796,8 @@ const LEGACY_IDS: Record<string, string> = {
   "blue-sky": "cyan-samuh",
   "blue-electric": "violet-peri",
   "blue-peri": "violet-peri",
+  bilbo: "elite",
+  sugiyama: "elite",
 };
 
 /**

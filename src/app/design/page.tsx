@@ -93,7 +93,7 @@ export default function DesignDirections() {
       if (e.target instanceof HTMLInputElement) return;
       const n = parseInt(e.key, 10);
       if (n >= 1 && n <= BACKGROUNDS.length) set({ bg: BACKGROUNDS[n - 1] });
-      const ti = "qwertyuiop[]\\;',".indexOf(e.key.toLowerCase());
+      const ti = "qwertyuiop[]\\;',./".indexOf(e.key.toLowerCase());
       if (ti >= 0 && ti < TYPE_PAIRS.length) set({ type: TYPE_PAIRS[ti] });
     };
     window.addEventListener("keydown", onKey);
@@ -547,7 +547,7 @@ export default function DesignDirections() {
                 <dd>{bg.n} &middot; {bg.name}</dd>
               </div>
               <div>
-                <dt>Base colour</dt>
+                <dt>Base color</dt>
                 <dd>{bg.base.toUpperCase()}</dd>
               </div>
               <div>
@@ -638,7 +638,7 @@ export default function DesignDirections() {
               keeps it credible in front of a Fortune 500 buyer.
             </p>
             <p>
-              <strong>Two notes.</strong> Your brand book has no colour codes in
+              <strong>Two notes.</strong> Your brand book has no color codes in
               it, but your decks do. The pink, cyan, teal and steel marked
               &ldquo;Samuh&rdquo; or &ldquo;sampled&rdquo; in the specs are
               lifted straight from the introduction deck and the Bangalore
@@ -730,7 +730,7 @@ function Dials({ combo, set }: { combo: Combo; set: (patch: Partial<Combo>) => v
       </details>
 
       <details className="sect">
-      <summary>Colours</summary>
+      <summary>Colors</summary>
       {swatches("Accent 1 · loud", accent, (x) => set({ accent: x ?? accent }))}
       {swatches("Accent 2 · quiet", accent2, (x) => set({ accent2: x ?? accent2 }))}
       {swatches("Accent 3 · data", accent3, (x) => set({ accent3: x }), true)}

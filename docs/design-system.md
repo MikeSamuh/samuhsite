@@ -37,19 +37,19 @@ After selection:
 
 ## The palette is inherited from the decks, not the brand book
 
-SAMUH's brand book contains no colour codes. The fields are unfilled
+SAMUH's brand book contains no color codes. The fields are unfilled
 placeholders reading `Color 1: #HexCode (RGB: R, G, B)`. The only defined values
 are black and white.
 
-Their decks do carry colour, consistently. Reading the fill operators out of
+Their decks do carry color, consistently. Reading the fill operators out of
 the two PDFs in the reference folder:
 
 | Source | Hex | Where |
 |---|---|---|
 | Introduction deck (July 2026) and Bangalore keynote | `#FC0097` | The pink, on nearly every page of both |
-| Bangalore keynote | `#0CC0DF` | The cyan, the keynote's second colour |
-| Introduction deck | `#48B1A5` | The teal, the introduction's second colour |
-| Performance-levers chart screenshot | `#4394AF` | The bar colour |
+| Bangalore keynote | `#0CC0DF` | The cyan, the keynote's second color |
+| Introduction deck | `#48B1A5` | The teal, the introduction's second color |
+| Performance-levers chart screenshot | `#4394AF` | The bar color |
 | Performance-levers chart screenshot | `#8243F6` | The frame around the chart |
 
 Those go into the picker as-is where they pass contrast, and the rest of each
@@ -66,7 +66,7 @@ the background too; it is now its own axis.
 |---|---|---|---|
 | 1 | `void` | Void | Pure black, nothing behind the content |
 | 2 | `slate` | Slate | Dark slate, not black. Lighter at the top, darker as you scroll |
-| 3 | `aurora` | Aurora | Toned-down colour rising and sinking under grain, lava lamp style, 18 to 23 second cycles. Each blob also parallaxes with scroll |
+| 3 | `aurora` | Aurora | Toned-down color rising and sinking under grain, lava lamp style, 18 to 23 second cycles. Each blob also parallaxes with scroll |
 | 4 | `chalk` | Chalk | Blackboard. Changes with scroll: the board cools, the wiped dust drifts past, a chalk line along the bottom fills with progress |
 | 5 | `synapse` | Synapse | A faint network of drifting nodes and curved connections with signals travelling along them. Nodes parallax with scroll at their own depth |
 
@@ -90,10 +90,10 @@ decoration.
 | Pink | Rose | `#E28BA8` | Muted and editorial |
 | Cyan | Samuh | `#0CC0DF` | Sampled from the keynote. Cold and bright, reads as a signal beside pink |
 | Cyan | Teal | `#48B1A5` | Sampled from the introduction deck. Greener, calmer, the nearest true complement of magenta |
-| Cyan | Steel | `#4394AF` | The levers-chart bar colour. Most muted, sits behind the pink |
+| Cyan | Steel | `#4394AF` | The levers-chart bar color. Most muted, sits behind the pink |
 | Violet | Ultraviolet | `#8F55FF` | The chart frame `#8243F6` lifted one step to pass 4.5:1. Pink's neighbour, so the pair reads as one glow |
 | Violet | Periwinkle | `#8B8BFF` | Blue drifting into violet. The strangest one |
-| Violet | Lilac | `#C4A6FF` | Pale and calm, a highlight rather than a colour |
+| Violet | Lilac | `#C4A6FF` | Pale and calm, a highlight rather than a color |
 | Yellow | Amber | `#F5A524` | Warm, reads as energy not caution |
 | Yellow | Butter | `#F5D547` | Softer, best of the three for large areas |
 | Yellow | Acid | `#D9F04B` | Pushed toward green. Most contemporary, most divisive |
@@ -114,7 +114,7 @@ and default to none, so links without them look exactly as before.
 
 Two accents are chosen, from any family. Accent 1 is the loud one: buttons,
 the Team circle, the synapse nodes, the first aurora blob. Accent 2 is the quiet
-one: eyebrows, inline links, tags, the second blob. One loud colour per screen.
+one: eyebrows, inline links, tags, the second blob. One loud color per screen.
 The scope calls for pink, blue and yellow together, and this is how they work
 as a system rather than all at once.
 
@@ -124,7 +124,7 @@ Two groups. The expressive five put a display face with real personality
 against a sober body face, which is what keeps it playful without becoming
 childish. The refined five, added when the client asked for something
 classier, let the type carry the discipline and leave the personality to
-colour, line and motion.
+color, line and motion.
 
 | id | Group | Pairing | Character |
 |---|---|---|---|
@@ -184,7 +184,7 @@ Block 03 in the rail shows the current selection as a spec: approach and
 background, both accents as filled chips with name and hex, an "Aa" specimen
 in the display face with the pairing named, the two rules drawn at their
 current width, and the motion pair. Selected swatches carry a tick in their
-own on-colour and the value line repeats the hex.
+own on-color and the value line repeats the hex.
 
 ## Axis 5 and 6: effects
 
@@ -204,9 +204,9 @@ attributes on the stage and always run at the direction's `--dur` and `--ease`.
 |---|---|
 | `lift` | Rises with a soft accent shadow |
 | `glow` | No movement, a ring of accent light |
-| `fill` | Colour floods in, buttons invert |
+| `fill` | Color floods in, buttons invert |
 | `scale` | Grows slightly |
-| `quiet` | Colour and border only, no motion |
+| `quiet` | Color and border only, no motion |
 
 ## Three circles
 
@@ -221,13 +221,13 @@ Nothing outside `src/lib/tokens.ts` carries a design value.
 
 | CSS var | Controls |
 |---|---|
-| `--base` | Page colour behind every backdrop layer |
+| `--base` | Page color behind every backdrop layer |
 | `--surface`, `--surface-alt` | Cards, panels, inputs, hover state |
 | `--border` | Hairlines and dividers |
 | `--text`, `--muted` | Primary and secondary text |
 | `--rule-thin`, `--rule-fat` | The two line weights |
-| `--accent`, `--on-accent` | The loud colour and text sitting on it |
-| `--accent-2`, `--on-accent-2` | The quiet colour and text sitting on it |
+| `--accent`, `--on-accent` | The loud color and text sitting on it |
+| `--accent-2`, `--on-accent-2` | The quiet color and text sitting on it |
 | `--radius` | Every corner |
 | `--dur`, `--ease` | Every transition |
 | `--font-display`, `--font-body`, `--font-mono` | Type |
@@ -260,5 +260,5 @@ Dark backgrounds make it easy to ship text that fails.
 - Body and primary text clear 4.5:1 against `--base` and `--surface`
 - Muted text may sit at 3:1 but never below
 - Aurora is the risk case. Text sits on translucent surfaces over moving
-  colour, so check contrast against the brightest frame of the drift, not the
+  color, so check contrast against the brightest frame of the drift, not the
   darkest
