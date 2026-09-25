@@ -12,6 +12,7 @@ import {
   WEIGHTS,
   LINE_SCALES,
   FILLS,
+  POINTERS,
   APPROACHES,
   ENTRANCES,
   HOVERS,
@@ -151,7 +152,7 @@ export default function DesignDirections() {
       data-entrance={entrance.id}
       data-hover={hover.id}
     >
-      <Backdrop id={bg.id} />
+      <Backdrop id={bg.id} pointer={combo.pointer.id} />
 
       {/* the menu bar: a left rail with every dial, minimisable to a strip */}
       <aside className="rail" data-open={railOpen} aria-label="Style picker">
@@ -251,7 +252,7 @@ export default function DesignDirections() {
               </div>
               <div className="guide-row">
                 <span className="guide-k">Motion</span>
-                <span className="guide-v">{entrance.name} in · {hover.name} on hover</span>
+                <span className="guide-v">{entrance.name} in · {hover.name} on hover{bg.id === "synapse" ? ` · pointer ${combo.pointer.name}` : ""}</span>
               </div>
             </div>
 
@@ -615,6 +616,10 @@ export default function DesignDirections() {
                 <dd>{hover.name}</dd>
               </div>
               <div>
+                <dt>Synapse pointer</dt>
+                <dd>{combo.pointer.name} &middot; {combo.pointer.note}</dd>
+              </div>
+              <div>
                 <dt>Share this exact combination</dt>
                 <dd>/design{comboHash(combo)}</dd>
               </div>
@@ -866,6 +871,17 @@ function Dials({ combo, set }: { combo: Combo; set: (patch: Partial<Combo>) => v
         <div className="ctrl-opts">
           {HOVERS.map((x) => (
             <button key={x.id} className="opt" aria-pressed={x.id === hover.id} onClick={() => set({ hover: x })}>
+              {x.name}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="ctrl">
+        <span className="ctrl-label">Synapse pointer · background 5 only</span>
+        <div className="ctrl-opts">
+          {POINTERS.map((x) => (
+            <button key={x.id} className="opt" aria-pressed={x.id === combo.pointer.id} onClick={() => set({ pointer: x })} title={x.note}>
               {x.name}
             </button>
           ))}

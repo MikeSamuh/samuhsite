@@ -207,6 +207,8 @@ export interface TypePair {
   displayWeight: number;
   displayTracking: string;
   displayLeading: string;
+  /** italic display face; normal when absent */
+  displayStyle?: "italic";
   note: string;
 }
 
@@ -314,6 +316,20 @@ export const TYPE_PAIRS: TypePair[] = [
     displayTracking: "-0.01em",
     displayLeading: "1.04",
     note: "High contrast, tight and quietly expensive. The most boardroom of the serifs, drawn as a pair with its body face.",
+  },
+  {
+    id: "inter-light",
+    group: "refined",
+    name: "Inter Light Italic / Inter",
+    displayVar: "var(--f-inter)",
+    displayName: "Inter Light Italic",
+    bodyVar: "var(--f-inter)",
+    bodyName: "Inter",
+    displayWeight: 300,
+    displayTracking: "-0.02em",
+    displayLeading: "1.04",
+    displayStyle: "italic",
+    note: "One family, headings in the light italic. Understated to the point of whispering, which on a dark stage reads as confidence.",
   },
   {
     id: "cormorant",
@@ -647,6 +663,29 @@ export const LINE_SCALES: LineScale[] = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2].map((
 }));
 
 /* ------------------------------------------------------------------ */
+/* Pointer                                                             */
+/* ------------------------------------------------------------------ */
+
+// How the Synapse field reacts to the pointer. Well is a vortex under the
+// cursor. Gather makes the nodes around the cursor close ranks on each
+// other, and only while the pointer is moving: the faster it moves, the
+// tighter they pull, and they relax when it stops.
+
+export type PointerId = "well" | "gather" | "no-pointer";
+
+export interface PointerMode {
+  id: PointerId;
+  name: string;
+  note: string;
+}
+
+export const POINTERS: PointerMode[] = [
+  { id: "well", name: "Well", note: "A gravity well under the cursor. Nodes are drawn in with a slight swirl and ease back when it leaves." },
+  { id: "gather", name: "Gather", note: "Nodes near the cursor pull toward each other while it moves. Speed sets how tight, stillness lets them go." },
+  { id: "no-pointer", name: "Off", note: "The field ignores the pointer." },
+];
+
+/* ------------------------------------------------------------------ */
 /* Fill                                                                */
 /* ------------------------------------------------------------------ */
 
@@ -748,6 +787,7 @@ export interface Combo {
   weight: Weight;
   scale: LineScale;
   fill: Fill;
+  pointer: PointerMode;
   approach: Approach;
   entrance: Effect<EntranceId>;
   hover: Effect<HoverId>;
@@ -771,6 +811,7 @@ export const DEFAULT_COMBO: Combo = {
   weight: WEIGHTS.find((w) => w.id === "balanced") ?? WEIGHTS[0],
   scale: LINE_SCALES.find((x) => x.factor === 1) ?? LINE_SCALES[0],
   fill: FILLS[0],
+  pointer: POINTERS[0],
   approach: APPROACHES[0],
   entrance: ENTRANCES[0],
   hover: HOVERS[0],
@@ -877,7 +918,8 @@ export function comboHash(c: Combo): string {
     .join("");
   const body = (c.body ? `.${c.body.id}` : "") + roles;
   const fill = c.fill.id === "solid" ? "" : `.${c.fill.id}`;
-  return `#${c.approach.id}.${c.bg.id}.${accents.join(".")}${fill}.${c.type.id}${body}.${c.weight.id}.${c.scale.id}.${c.entrance.id}.${c.hover.id}`;
+  const pointer = c.pointer.id === "well" ? "" : `.${c.pointer.id}`;
+  return `#${c.approach.id}.${c.bg.id}.${accents.join(".")}${fill}.${c.type.id}${body}.${c.weight.id}.${c.scale.id}.${c.entrance.id}.${c.hover.id}${pointer}`;
 }
 
 // Ids that were renamed or retired after links went out.
@@ -927,6 +969,8 @@ export function parseComboHash(hash: string): Combo {
     if (ap) { c.approach = ap; continue; }
     const fl = FILLS.find((x) => x.id === id);
     if (fl) { c.fill = fl; continue; }
+    const pt = POINTERS.find((x) => x.id === id);
+    if (pt) { c.pointer = pt; continue; }
     const en = ENTRANCES.find((x) => x.id === id);
     if (en) { c.entrance = en; continue; }
     const hv = HOVERS.find((x) => x.id === id);
@@ -941,6 +985,7 @@ export function parseComboHash(hash: string): Combo {
     if (!parts.some((raw) => raw.startsWith(`${r}-`))) c[r] = null;
   }
   if (!parts.includes("gradient")) c.fill = FILLS[0];
+  if (!parts.some((raw) => POINTERS.some((x) => x.id === raw))) c.pointer = POINTERS[0];
   return c;
 }
 
@@ -987,6 +1032,7 @@ export function cssVars(combo: Combo): React.CSSProperties {
     "--font-caption": caption?.var ?? "var(--f-plex-mono)",
     "--font-ui": ui?.var ?? bodyVar,
     "--display-weight": String(type.displayWeight),
+    "--display-style": type.displayStyle ?? "normal",
     "--display-tracking": type.displayTracking,
     "--display-leading": type.displayLeading,
   } as React.CSSProperties;

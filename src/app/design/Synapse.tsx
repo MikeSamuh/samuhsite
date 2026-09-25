@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import type { PointerId } from "@/lib/tokens";
 
 /**
  * A faint network that is never still. Every node drifts on its own slow
@@ -10,14 +11,18 @@ import { useEffect, useRef } from "react";
  * quadratic curves recomputed each frame so they stay attached. Signals and
  * pulses are CSS.
  *
- * The pointer is a gravity well. Nodes inside its reach are drawn toward it
- * with a slight swirl, nearer nodes more than far ones, and ease back when
- * it leaves. Links follow because they are rebuilt from node positions.
+ * The pointer has two modes. Well: a gravity well, nodes inside its reach
+ * are drawn toward it with a slight swirl and ease back when it leaves.
+ * Gather: nodes inside its reach close ranks on their own centre, only
+ * while the pointer moves; speed sets how tight, stillness lets them go.
+ * Links follow because they are rebuilt from node positions.
  *
- * Reduced motion: one static frame, no loop, no well.
+ * Reduced motion: one static frame, no loop, no pointer.
  */
-export default function Synapse() {
+export default function Synapse({ mode = "well" }: { mode?: PointerId }) {
   const svgRef = useRef<SVGSVGElement>(null);
+  const modeRef = useRef<PointerId>(mode);
+  modeRef.current = mode;
 
   useEffect(() => {
     const svg = svgRef.current;
@@ -32,6 +37,9 @@ export default function Synapse() {
 
     // pointer in viewBox units, or null when it is off the page
     let well: { x: number; y: number } | null = null;
+    // smoothed pointer speed, viewBox units per second, for gather
+    let energy = 0;
+    let lastMove = 0;
     // per-node displacement, eased toward its target every frame
     const pull = NODES.map(() => ({ x: 0, y: 0 }));
 
@@ -45,7 +53,17 @@ export default function Synapse() {
         y: (clientY - r.top - (r.height - 100 * k) / 2) / k,
       };
     };
-    const onMove = (e: PointerEvent) => { well = toView(e.clientX, e.clientY); };
+    const onMove = (e: PointerEvent) => {
+      const next = toView(e.clientX, e.clientY);
+      const now = performance.now();
+      if (well && lastMove) {
+        const dt = Math.max(8, now - lastMove) / 1000;
+        const v = Math.hypot(next.x - well.x, next.y - well.y) / dt;
+        energy = energy * 0.6 + v * 0.4;
+      }
+      lastMove = now;
+      well = next;
+    };
     const onLeave = () => { well = null; };
     if (!still) {
       window.addEventListener("pointermove", onMove, { passive: true });
@@ -57,6 +75,32 @@ export default function Synapse() {
       const t = (now - t0) / 1000;
       const max = document.documentElement.scrollHeight - window.innerHeight;
       const p = max > 0 ? window.scrollY / max : 0;
+
+      // gather strength decays when the pointer rests
+      energy *= GATHER_DECAY;
+      const gather = Math.min(1, energy / GATHER_SPEED);
+      const m = modeRef.current;
+
+      const base = NODES.map((n) => {
+        const drift = still ? 0 : 1;
+        const x = n.x + drift * n.ax * Math.sin(t * n.fx + n.px);
+        const y =
+          n.y +
+          drift * n.ay * Math.cos(t * n.fy + n.py) -
+          p * SCROLL_TRAVEL * n.depth;
+        return [x, y] as const;
+      });
+
+      // gather: the centre of every node within reach of the pointer
+      let gx = 0;
+      let gy = 0;
+      let gn = 0;
+      if (well && m === "gather" && gather > 0.01) {
+        base.forEach(([x, y]) => {
+          if (Math.hypot(well!.x - x, well!.y - y) < GATHER_REACH) { gx += x; gy += y; gn++; }
+        });
+        if (gn) { gx /= gn; gy /= gn; }
+      }
 
       const pos = NODES.map((n, i) => {
         const drift = still ? 0 : 1;
@@ -73,7 +117,14 @@ export default function Synapse() {
         // swirl so it reads as a vortex rather than a magnet
         let tx = 0;
         let ty = 0;
-        if (well) {
+        if (well && m === "gather" && gn > 1) {
+          const d = Math.hypot(well.x - x, well.y - y);
+          if (d < GATHER_REACH) {
+            const f = (1 - d / GATHER_REACH) * gather * GATHER_PULL * (0.5 + 0.5 * n.depth);
+            tx = (gx - x) * f;
+            ty = (gy - y) * f;
+          }
+        } else if (well && m === "well") {
           const dx = well.x - x;
           const dy = well.y - y;
           const d = Math.hypot(dx, dy);
@@ -178,6 +229,14 @@ const WELL_REACH = 24;
 const WELL_PULL = 9;
 const WELL_SWIRL = 0.45;
 const WELL_EASE = 0.07;
+
+// Gather: reach around the pointer, the share of the distance to the
+// cluster centre a node closes at full strength, the pointer speed that
+// counts as full strength, and how fast the strength fades per frame.
+const GATHER_REACH = 30;
+const GATHER_PULL = 0.55;
+const GATHER_SPEED = 140;
+const GATHER_DECAY = 0.965;
 
 // A seeded random constellation, so it looks scattered rather than gridded
 // and still draws the same picture on every load. Nodes keep a minimum

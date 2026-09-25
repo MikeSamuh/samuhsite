@@ -39,7 +39,7 @@ import "./globals.css";
 
 // expressive
 const fraunces = Fraunces({ subsets: ["latin"], variable: "--f-fraunces" });
-const inter = Inter({ subsets: ["latin"], variable: "--f-inter" });
+const inter = Inter({ subsets: ["latin"], style: ["normal", "italic"], variable: "--f-inter" });
 const bricolage = Bricolage_Grotesque({ subsets: ["latin"], variable: "--f-bricolage" });
 const unbounded = Unbounded({
   subsets: ["latin"],
