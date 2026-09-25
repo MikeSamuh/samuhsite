@@ -10,7 +10,11 @@ import { useEffect, useRef } from "react";
  * quadratic curves recomputed each frame so they stay attached. Signals and
  * pulses are CSS.
  *
- * Reduced motion: one static frame, no loop.
+ * The pointer is a gravity well. Nodes inside its reach are drawn toward it
+ * with a slight swirl, nearer nodes more than far ones, and ease back when
+ * it leaves. Links follow because they are rebuilt from node positions.
+ *
+ * Reduced motion: one static frame, no loop, no well.
  */
 export default function Synapse() {
   const svgRef = useRef<SVGSVGElement>(null);
@@ -26,12 +30,35 @@ export default function Synapse() {
     let raf = 0;
     const t0 = performance.now();
 
+    // pointer in viewBox units, or null when it is off the page
+    let well: { x: number; y: number } | null = null;
+    // per-node displacement, eased toward its target every frame
+    const pull = NODES.map(() => ({ x: 0, y: 0 }));
+
+    const toView = (clientX: number, clientY: number) => {
+      const r = svg.getBoundingClientRect();
+      // preserveAspectRatio slice: the 100x100 box is scaled to cover and
+      // centred, so undo that
+      const k = Math.max(r.width / 100, r.height / 100);
+      return {
+        x: (clientX - r.left - (r.width - 100 * k) / 2) / k,
+        y: (clientY - r.top - (r.height - 100 * k) / 2) / k,
+      };
+    };
+    const onMove = (e: PointerEvent) => { well = toView(e.clientX, e.clientY); };
+    const onLeave = () => { well = null; };
+    if (!still) {
+      window.addEventListener("pointermove", onMove, { passive: true });
+      window.addEventListener("pointerleave", onLeave);
+      document.addEventListener("mouseleave", onLeave);
+    }
+
     const frame = (now: number) => {
       const t = (now - t0) / 1000;
       const max = document.documentElement.scrollHeight - window.innerHeight;
       const p = max > 0 ? window.scrollY / max : 0;
 
-      const pos = NODES.map((n) => {
+      const pos = NODES.map((n, i) => {
         const drift = still ? 0 : 1;
         const x = n.x + drift * n.ax * Math.sin(t * n.fx + n.px);
         // the field is taller than the view; scroll pulls it up by depth,
@@ -40,7 +67,27 @@ export default function Synapse() {
           n.y +
           drift * n.ay * Math.cos(t * n.fy + n.py) -
           p * SCROLL_TRAVEL * n.depth;
-        return [x, y] as const;
+
+        // the well: target displacement toward the pointer, falling off
+        // with distance, stronger for near nodes, with a quarter turn of
+        // swirl so it reads as a vortex rather than a magnet
+        let tx = 0;
+        let ty = 0;
+        if (well) {
+          const dx = well.x - x;
+          const dy = well.y - y;
+          const d = Math.hypot(dx, dy);
+          if (d < WELL_REACH && d > 0.001) {
+            const f = (1 - d / WELL_REACH) ** 2 * (0.4 + 0.6 * n.depth);
+            const g = f * WELL_PULL;
+            tx = (dx / d) * g + (-dy / d) * g * WELL_SWIRL;
+            ty = (dy / d) * g + (dx / d) * g * WELL_SWIRL;
+          }
+        }
+        const q = pull[i];
+        q.x += (tx - q.x) * WELL_EASE;
+        q.y += (ty - q.y) * WELL_EASE;
+        return [x + q.x, y + q.y] as const;
       });
 
       nodeEls.forEach((el, i) => {
@@ -76,6 +123,9 @@ export default function Synapse() {
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerleave", onLeave);
+      document.removeEventListener("mouseleave", onLeave);
     };
   }, []);
 
@@ -119,6 +169,15 @@ export default function Synapse() {
 
 // How far, in viewBox units, the nearest nodes travel over the whole page.
 const SCROLL_TRAVEL = 69;
+
+// The gravity well under the pointer, in viewBox units (100 = the short
+// side of the view). Reach is how far it is felt, pull is the most a node
+// moves toward it, swirl is the sideways share of that, ease is how fast
+// nodes settle per frame.
+const WELL_REACH = 24;
+const WELL_PULL = 9;
+const WELL_SWIRL = 0.45;
+const WELL_EASE = 0.07;
 
 // A seeded random constellation, so it looks scattered rather than gridded
 // and still draws the same picture on every load. Nodes keep a minimum
