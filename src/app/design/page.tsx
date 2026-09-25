@@ -177,23 +177,25 @@ export default function DesignDirections() {
               </span>
             </div>
 
-            <div className="rail-block picks">
-              <p className="rail-kicker">01 · Saved picks</p>
-              {PICKS.map((p) => {
-                const c = pickCombo(p);
-                const on = sameCombo(combo, c);
-                return (
-                  <button className="pick" key={p.id} aria-pressed={on} onClick={() => setCombo(c)} title={c.type.name}>
-                    <span className="pick-dot" style={{ background: c.accent.hex }} />
-                    <span className="pick-title">{p.title}</span>
-                    <span className="pick-name">{comboName(c)}</span>
-                  </button>
-                );
-              })}
-            </div>
+            {(["picks", "feedback"] as const).map((section, i) => (
+              <div className="rail-block picks" key={section}>
+                <p className="rail-kicker">0{i + 1} · {section === "picks" ? "Saved picks" : "Feedback"}</p>
+                {PICKS.filter((p) => p.section === section).map((p) => {
+                  const c = pickCombo(p);
+                  const on = sameCombo(combo, c);
+                  return (
+                    <button className="pick" key={p.id} aria-pressed={on} onClick={() => setCombo(c)} title={c.type.name}>
+                      <span className="pick-dot" style={{ background: c.accent.hex }} />
+                      <span className="pick-title">{p.title}</span>
+                      <span className="pick-name">{p.kicker} · {comboName(c)}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            ))}
 
             <div className="rail-block guide" aria-label="Current selection">
-              <p className="rail-kicker">02 · Current selection, updates as you go</p>
+              <p className="rail-kicker">03 · Current selection, updates as you go</p>
               <p className="guide-name">{comboName(combo)}</p>
               <div className="guide-row">
                 <span className="guide-k">Approach</span>
@@ -253,7 +255,7 @@ export default function DesignDirections() {
             </div>
 
             <div className="rail-block" id="rail-dials">
-              <p className="rail-kicker">03 · Choose your own adventure</p>
+              <p className="rail-kicker">04 · Choose your own adventure</p>
               <Dials combo={combo} set={set} />
               <p className="rail-hash">{comboHash(combo)}</p>
             </div>

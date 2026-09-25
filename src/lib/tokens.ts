@@ -680,6 +680,8 @@ export const DEFAULT_COMBO: Combo = {
  */
 export interface Pick {
   id: string;
+  /** which rail block it sits in */
+  section: "picks" | "feedback";
   kicker: string;
   title: string;
   hash: string;
@@ -688,6 +690,7 @@ export interface Pick {
 export const PICKS: Pick[] = [
   {
     id: "recommended",
+    section: "picks",
     kicker: "01 · Wilfred's recommendation",
     title: "Wilfred’s recommendation",
     // Revised 25 September 2026, building on the client's pick: their
@@ -697,6 +700,7 @@ export const PICKS: Pick[] = [
   },
   {
     id: "recommended-2",
+    section: "picks",
     kicker: "Wilfred's second recommendation",
     title: "Wilfred\u2019s second recommendation",
     // Formal Bold on the darker Slate, the deck pink with the deck teal,
@@ -705,8 +709,9 @@ export const PICKS: Pick[] = [
   },
   {
     id: "client",
-    kicker: "Feedback, 24 September",
-    title: "Feedback: Cyan and more formal font",
+    section: "feedback",
+    kicker: "24 September",
+    title: "Cyan and more formal font",
     // The link Mike sent, with the cyan the team said they used in place of
     // the doubled magenta.
     hash: "#synapse.pink-magenta.cyan-samuh.syne.unblur.glow.balanced",
