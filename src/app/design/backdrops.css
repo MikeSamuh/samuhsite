@@ -1,6 +1,7 @@
 /* Background treatments.
    Every layer is pointer-events none and sits behind the content.
-   All colour comes from --accent, --accent-2 and --base. */
+   All colour comes from --accent, --accent-2, --accent-3 (data, the signals),
+   --accent-4 (wash, the third blob and the synapse haze) and --base. */
 
 .bd {
   position: fixed;
@@ -88,7 +89,7 @@
   left: 44vw;
   background: color-mix(
     in srgb,
-    color-mix(in srgb, var(--accent) 50%, var(--accent-2)) 36%,
+    color-mix(in srgb, var(--accent-4) 50%, var(--accent-2)) 36%,
     var(--base)
   );
   opacity: 0.6;
@@ -189,7 +190,7 @@
 .bd-synapse {
   background: radial-gradient(
     ellipse 80% 60% at 50% 30%,
-    color-mix(in srgb, var(--accent) 3%, transparent) 0%,
+    color-mix(in srgb, var(--accent-4) 3%, transparent) 0%,
     transparent 70%
   );
 }
@@ -217,7 +218,7 @@
 
 .net-signal {
   fill: none;
-  stroke: var(--accent-2);
+  stroke: var(--accent-3);
   stroke-width: 1;
   stroke-linecap: round;
   vector-effect: non-scaling-stroke;

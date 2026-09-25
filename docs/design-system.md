@@ -102,6 +102,16 @@ Retired in round two, with old links redirected in `LEGACY_IDS`: Hot
 (`#FF3D8B`, now Samuh pink), Electric and Sky (the blue family, now Periwinkle
 and Samuh cyan).
 
+Up to four accents are chosen, from any family. Accents 3 and 4 are optional
+and default to none, so links without them look exactly as before.
+
+| Slot | Job | Falls back to |
+|---|---|---|
+| Accent 1 · loud | Buttons, the Team circle, synapse nodes, first aurora blob | |
+| Accent 2 · quiet | Eyebrows, inline links, second blob | |
+| Accent 3 · data | Tags, step numbers, card tags, synapse signals | Accent 2 |
+| Accent 4 · wash | Tints only, never text: Team circle fill, third blob, synapse haze, fill-hover tint, focus ring, Formal bands at 10% | Accent 1 |
+
 Two accents are chosen, from any family. Accent 1 is the loud one: buttons,
 the Team circle, the synapse nodes, the first aurora blob. Accent 2 is the quiet
 one: eyebrows, inline links, tags, the second blob. One loud colour per screen.

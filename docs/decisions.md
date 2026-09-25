@@ -150,3 +150,8 @@ client asked for more formal choices. — Client
 
 **2026-09-25 — Nothing is pushed until Wilfred says so.**
 Local commits only. Recorded in CLAUDE.md working style. — Wilfred
+
+**2026-09-25 — Accents 3 and 4 are optional slots with fixed jobs.**
+Accent 3 is data (tags, numbers, signals), accent 4 is wash (tints only,
+never text). Both default to none so the one-loud-colour rule holds unless
+the client opts in. — Wilfred and Claude

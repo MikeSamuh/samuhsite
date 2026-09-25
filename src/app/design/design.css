@@ -228,6 +228,21 @@
 
 .sw-gap { width: 8px; }
 
+/* the "none" swatch: an empty ring with a slash */
+.sw-none {
+  background: transparent;
+  border-color: var(--border);
+  background-image: linear-gradient(135deg, transparent 46%, var(--muted) 46%, var(--muted) 54%, transparent 54%);
+}
+.sw-none[aria-pressed="true"] { --on: var(--text); }
+
+/* the wash chip shows the tint the way the page uses it, not the raw colour */
+.chip-wash {
+  background: color-mix(in srgb, var(--wash) 22%, var(--surface));
+  color: var(--text);
+  border: var(--rule-thin) solid color-mix(in srgb, var(--wash) 45%, transparent);
+}
+
 /* ---------- rail blocks ---------- */
 
 .rail-block {
@@ -625,7 +640,7 @@ h2.sec {
   left: calc(50% - var(--d) / 2);
   bottom: 14px;
   border: var(--rule-fat) solid var(--accent);
-  background: color-mix(in srgb, var(--accent) 9%, transparent);
+  background: color-mix(in srgb, var(--accent-4) 9%, transparent);
   animation: float-b 14s ease-in-out infinite;
 }
 
@@ -658,7 +673,7 @@ h2.sec {
 
 
 .orb-team:hover {
-  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  background: color-mix(in srgb, var(--accent-4) 16%, transparent);
 }
 
 @keyframes float-a {
@@ -718,7 +733,7 @@ h2.sec {
 .step-n {
   font-family: var(--font-mono);
   font-size: 10.5px;
-  color: var(--accent);
+  color: var(--accent-3);
   letter-spacing: 0.1em;
   display: block;
   margin-bottom: 12px;
@@ -774,7 +789,7 @@ h2.sec {
   font-size: 9.5px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--accent-3);
   display: block;
   margin-bottom: 14px;
 }
@@ -849,9 +864,9 @@ a.inline-link:hover { color: var(--accent-2); background-size: 100% var(--rule-f
 .pill:hover { border-color: var(--accent); color: var(--accent); }
 
 .pill.is-accent {
-  background: color-mix(in srgb, var(--accent-2) 16%, transparent);
-  border-color: color-mix(in srgb, var(--accent-2) 45%, transparent);
-  color: var(--accent-2);
+  background: color-mix(in srgb, var(--accent-3) 16%, transparent);
+  border-color: color-mix(in srgb, var(--accent-3) 45%, transparent);
+  color: var(--accent-3);
 }
 
 /* the two line weights, drawn once so the gap between them is visible */
@@ -893,7 +908,7 @@ a.inline-link:hover { color: var(--accent-2); background-size: 100% var(--rule-f
 
 .field input:focus {
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-4) 20%, transparent);
 }
 
 /* ---------- specimen ---------- */
@@ -1050,7 +1065,7 @@ a.inline-link:hover { color: var(--accent-2); background-size: 100% var(--rule-f
 }
 .stage[data-hover="fill"] :is(.card, .step):hover {
   transform: none;
-  background: color-mix(in srgb, var(--accent) 16%, var(--surface));
+  background: color-mix(in srgb, var(--accent-4) 16%, var(--surface));
 }
 
 .stage[data-hover="scale"] .btn:hover {
@@ -1114,8 +1129,9 @@ a.inline-link:hover { color: var(--accent-2); background-size: 100% var(--rule-f
    rules, a heavy left stroke on cards */
 .stage[data-approach="formal"] section.band { padding: 96px 0; }
 .stage[data-approach="formal"] section.band:nth-of-type(even) {
-  background: var(--surface);
-  box-shadow: 0 0 0 100vmax var(--surface);
+  --band: color-mix(in srgb, var(--accent-4) var(--wash-mix, 0%), var(--surface));
+  background: var(--band);
+  box-shadow: 0 0 0 100vmax var(--band);
   clip-path: inset(0 -100vmax);
 }
 .stage[data-approach="formal"] .sec-head {

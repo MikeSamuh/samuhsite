@@ -54,6 +54,10 @@ npm run build    # must pass before any push to main
 npm run lint
 ```
 
+Stop `npm run dev` before `npm run build`. They share `.next`, and a build
+under a running dev server leaves it serving broken chunks
+(`__webpack_modules__[moduleId] is not a function`). Restart dev after.
+
 ## Where things are
 
 ```

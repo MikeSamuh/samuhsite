@@ -50,7 +50,7 @@ const TIERS = [
 export default function DesignDirections() {
   const [combo, setCombo] = useState<Combo>(DEFAULT_COMBO);
   const [railOpen, setRailOpen] = useState(true);
-  const { bg, accent, accent2, type, weight, scale, approach, entrance, hover } = combo;
+  const { bg, accent, accent2, accent3, accent4, type, weight, scale, approach, entrance, hover } = combo;
   const rule = ruleWidths(combo);
   const set = (patch: Partial<Combo>) => setCombo((c) => ({ ...c, ...patch }));
 
@@ -191,6 +191,20 @@ export default function DesignDirections() {
                   <span className="chip-v">{accent2.family} {accent2.name}</span>
                   <span className="chip-hex">{accent2.hex}</span>
                 </div>
+                {accent3 ? (
+                  <div className="chip" style={{ background: accent3.hex, color: accent3.on }}>
+                    <span className="chip-k">Accent 3 · data</span>
+                    <span className="chip-v">{accent3.family} {accent3.name}</span>
+                    <span className="chip-hex">{accent3.hex}</span>
+                  </div>
+                ) : null}
+                {accent4 ? (
+                  <div className="chip chip-wash" style={{ "--wash": accent4.hex } as React.CSSProperties}>
+                    <span className="chip-k">Accent 4 · wash</span>
+                    <span className="chip-v">{accent4.family} {accent4.name}</span>
+                    <span className="chip-hex">{accent4.hex}</span>
+                  </div>
+                ) : null}
               </div>
               <div className="guide-type">
                 <span className="guide-aa">Aa</span>
@@ -510,6 +524,14 @@ export default function DesignDirections() {
                 <dd>{accent2.family} {accent2.name} &middot; {accent2.hex} &middot; {accent2.note}</dd>
               </div>
               <div>
+                <dt>Accent 3 &middot; data</dt>
+                <dd>{accent3 ? `${accent3.family} ${accent3.name} · ${accent3.hex}` : "none, data elements use accent 2"}</dd>
+              </div>
+              <div>
+                <dt>Accent 4 &middot; wash</dt>
+                <dd>{accent4 ? `${accent4.family} ${accent4.name} · ${accent4.hex}, tints only` : "none, tints come from accent 1"}</dd>
+              </div>
+              <div>
                 <dt>Display</dt>
                 <dd>
                   {type.displayName} {type.displayWeight} &middot; tracking{" "}
@@ -583,17 +605,29 @@ export default function DesignDirections() {
 
 /** Every dial. Rendered twice: in the rail and inline in the adventure section. */
 function Dials({ combo, set }: { combo: Combo; set: (patch: Partial<Combo>) => void }) {
-  const { bg, accent, accent2, type, weight, scale, approach, entrance, hover } = combo;
-  const swatches = (label: string, current: Accent, pick: (x: Accent) => void) => (
+  const { bg, accent, accent2, accent3, accent4, type, weight, scale, approach, entrance, hover } = combo;
+  const swatches = (label: string, current: Accent | null, pick: (x: Accent | null) => void, optional = false) => (
     <div className="ctrl">
       <span className="ctrl-label">{label}</span>
       <div className="ctrl-opts">
+        {optional ? (
+          <>
+            <button
+              className="sw sw-none"
+              aria-pressed={current === null}
+              onClick={() => pick(null)}
+              title="None"
+              aria-label={`${label}: none`}
+            />
+            <span className="sw-gap" />
+          </>
+        ) : null}
         {ACCENTS.map((x, i) => (
           <span key={x.id} style={{ display: "contents" }}>
             {i > 0 && ACCENTS[i - 1].family !== x.family ? <span className="sw-gap" /> : null}
             <button
               className="sw"
-              aria-pressed={x.id === current.id}
+              aria-pressed={x.id === current?.id}
               onClick={() => pick(x)}
               style={{ background: x.hex, "--on": x.on } as React.CSSProperties}
               title={`${x.family} ${x.name} · ${x.hex}`}
@@ -602,8 +636,14 @@ function Dials({ combo, set }: { combo: Combo; set: (patch: Partial<Combo>) => v
           </span>
         ))}
         <span className="ctrl-value">
-          <span className="ctrl-dot" style={{ background: current.hex }} />
-          {current.family} {current.name} · {current.hex}
+          {current ? (
+            <>
+              <span className="ctrl-dot" style={{ background: current.hex }} />
+              {current.family} {current.name} · {current.hex}
+            </>
+          ) : (
+            "none"
+          )}
         </span>
       </div>
     </div>
@@ -634,8 +674,10 @@ function Dials({ combo, set }: { combo: Combo; set: (patch: Partial<Combo>) => v
         </div>
       </div>
 
-      {swatches("Accent 1", accent, (x) => set({ accent: x }))}
-      {swatches("Accent 2", accent2, (x) => set({ accent2: x }))}
+      {swatches("Accent 1 · loud", accent, (x) => set({ accent: x ?? accent }))}
+      {swatches("Accent 2 · quiet", accent2, (x) => set({ accent2: x ?? accent2 }))}
+      {swatches("Accent 3 · data, optional", accent3, (x) => set({ accent3: x }), true)}
+      {swatches("Accent 4 · wash, optional", accent4, (x) => set({ accent4: x }), true)}
 
       <div className="ctrl">
         <span className="ctrl-label">Type</span>

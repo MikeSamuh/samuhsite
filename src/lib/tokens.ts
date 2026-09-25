@@ -490,12 +490,19 @@ export const HOVERS: Effect<HoverId>[] = [
 
 /* ------------------------------------------------------------------ */
 
+/** the id that stands for "no accent in this slot" in a hash */
+export const NO_ACCENT = "none";
+
 export interface Combo {
   bg: Background;
   /** the loud one: buttons, the Team circle, the arc */
   accent: Accent;
-  /** the quiet one: eyebrows, links, tags, the second blob */
+  /** the quiet one: eyebrows, links, the second blob */
   accent2: Accent;
+  /** optional, data: tags, step numbers, captions, the synapse signals. Falls back to accent 2 */
+  accent3: Accent | null;
+  /** optional, wash: tints only, never text. Bands, blobs, hover tints. Falls back to accent 1 */
+  accent4: Accent | null;
   type: TypePair;
   weight: Weight;
   scale: LineScale;
@@ -512,6 +519,8 @@ export const DEFAULT_COMBO: Combo = {
   bg: BACKGROUNDS[0],
   accent: ACCENTS[0],
   accent2: ACCENTS.find((a) => a.family !== ACCENTS[0].family) ?? ACCENTS[1],
+  accent3: null,
+  accent4: null,
   type: TYPE_PAIRS[0],
   weight: WEIGHTS.find((w) => w.id === "balanced") ?? WEIGHTS[0],
   scale: LINE_SCALES.find((x) => x.factor === 1) ?? LINE_SCALES[0],
@@ -565,9 +574,17 @@ export function sameCombo(a: Combo, b: Combo): boolean {
   return comboHash(a) === comboHash(b);
 }
 
-/** The shareable form: #approach.background.accent1.accent2.type.weight.scale.entrance.hover */
+/**
+ * The shareable form:
+ * #approach.background.accent1.accent2[.accent3[.accent4]].type.weight.scale.entrance.hover
+ * Accents 3 and 4 only appear when set; "none" holds slot 3 open when only
+ * slot 4 is set.
+ */
 export function comboHash(c: Combo): string {
-  return `#${c.approach.id}.${c.bg.id}.${c.accent.id}.${c.accent2.id}.${c.type.id}.${c.weight.id}.${c.scale.id}.${c.entrance.id}.${c.hover.id}`;
+  const accents = [c.accent.id, c.accent2.id];
+  if (c.accent4) accents.push(c.accent3?.id ?? NO_ACCENT, c.accent4.id);
+  else if (c.accent3) accents.push(c.accent3.id);
+  return `#${c.approach.id}.${c.bg.id}.${accents.join(".")}.${c.type.id}.${c.weight.id}.${c.scale.id}.${c.entrance.id}.${c.hover.id}`;
 }
 
 // Ids that were renamed or retired after links went out.
@@ -590,9 +607,10 @@ const LEGACY_IDS: Record<string, string> = {
 export function parseComboHash(hash: string): Combo {
   const parts = hash.replace(/^#/, "").split(".").filter(Boolean);
   const c: Combo = { ...DEFAULT_COMBO };
-  const accents: Accent[] = [];
+  const accents: (Accent | null)[] = [];
   for (const raw of parts) {
     const id = LEGACY_IDS[raw] ?? raw;
+    if (id === NO_ACCENT) { accents.push(null); continue; }
     const bg = BACKGROUNDS.find((x) => x.id === id);
     if (bg) { c.bg = bg; continue; }
     const ac = ACCENTS.find((x) => x.id === id);
@@ -612,6 +630,8 @@ export function parseComboHash(hash: string): Combo {
   }
   if (accents[0]) c.accent = accents[0];
   if (accents[1]) c.accent2 = accents[1];
+  c.accent3 = accents[2] ?? null;
+  c.accent4 = accents[3] ?? null;
   return c;
 }
 
@@ -622,8 +642,10 @@ export function ruleWidths({ weight, scale }: { weight: Weight; scale: LineScale
 }
 
 export function cssVars(combo: Combo): React.CSSProperties {
-  const { bg, accent, accent2, type } = combo;
+  const { bg, accent, accent2, accent3, accent4, type } = combo;
   const rule = ruleWidths(combo);
+  const data = accent3 ?? accent2;
+  const wash = accent4 ?? accent;
   return {
     "--base": bg.base,
     "--surface": bg.surface,
@@ -640,6 +662,11 @@ export function cssVars(combo: Combo): React.CSSProperties {
     "--on-accent": accent.on,
     "--accent-2": accent2.hex,
     "--on-accent-2": accent2.on,
+    "--accent-3": data.hex,
+    "--on-accent-3": data.on,
+    "--accent-4": wash.hex,
+    /* how strongly a wash tints large areas: nothing unless accent 4 is set */
+    "--wash-mix": accent4 ? "10%" : "0%",
     "--font-display": type.displayVar,
     "--font-body": type.bodyVar,
     "--font-mono": "var(--f-plex-mono)",
