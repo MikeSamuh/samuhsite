@@ -32,6 +32,7 @@ import {
   type TypeGroup,
 } from "@/lib/tokens";
 import Backdrop from "./Backdrop";
+import ColorWheel from "./ColorWheel";
 import "./backdrops.css";
 import "./design.css";
 
@@ -741,6 +742,11 @@ function Dials({ combo, set }: { combo: Combo; set: (patch: Partial<Combo>) => v
       {swatches("Accent 2 · quiet", accent2, (x) => set({ accent2: x ?? accent2 }))}
       {swatches("Accent 3 · data", accent3, (x) => set({ accent3: x }), true)}
       {swatches("Accent 4 · wash", accent4, (x) => set({ accent4: x }), true)}
+      <ColorWheel
+        bg={bg}
+        current={{ accent, accent2, accent3, accent4 }}
+        apply={(slot, x) => set({ [slot]: x } as Partial<Combo>)}
+      />
 
       <div className="ctrl">
         <span className="ctrl-label">Accent fill</span>

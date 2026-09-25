@@ -181,6 +181,69 @@ export const ACCENTS: Accent[] = [
   { id: "yellow-acid", family: "yellow", name: "Acid", hex: "#D9F04B", on: "#0A0A0A", note: "Yellow pushed toward green. The most contemporary and the most divisive." },
 ];
 
+// A color picked on the wheel in the rail. The one place a hex value enters
+// the system from outside this file, and it still becomes an Accent here,
+// so every consumer treats it the same as a named swatch. Id carries the
+// hex so it survives the share link: custom-fc0097.
+
+const ON_DARK = "#0A0A0A";
+const ON_LIGHT = "#F5F5F5";
+
+function channel(v: number): number {
+  const c = v / 255;
+  return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+}
+
+/** WCAG relative luminance of a #rrggbb */
+export function luminance(hex: string): number {
+  const n = parseInt(hex.replace("#", ""), 16);
+  return 0.2126 * channel((n >> 16) & 255) + 0.7152 * channel((n >> 8) & 255) + 0.0722 * channel(n & 255);
+}
+
+/** WCAG contrast ratio between two #rrggbb, 1 to 21 */
+export function contrastRatio(a: string, b: string): number {
+  const la = luminance(a);
+  const lb = luminance(b);
+  return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05);
+}
+
+function hueFamily(hex: string): AccentFamily {
+  const n = parseInt(hex.replace("#", ""), 16);
+  const r = ((n >> 16) & 255) / 255;
+  const g = ((n >> 8) & 255) / 255;
+  const b = (n & 255) / 255;
+  const max = Math.max(r, g, b);
+  const min = Math.min(r, g, b);
+  const d = max - min;
+  let h = 0;
+  if (d > 0) {
+    if (max === r) h = ((g - b) / d) % 6;
+    else if (max === g) h = (b - r) / d + 2;
+    else h = (r - g) / d + 4;
+    h = (h * 60 + 360) % 360;
+  }
+  if (h < 20 || h >= 300) return "pink";
+  if (h < 75) return "yellow";
+  if (h < 220) return "cyan";
+  return "violet";
+}
+
+export const CUSTOM_ID = /^custom-([0-9a-f]{6})$/i;
+
+export function customAccent(hex: string): Accent {
+  const clean = "#" + hex.replace("#", "").toLowerCase();
+  const onDark = contrastRatio(clean, ON_DARK);
+  const onLight = contrastRatio(clean, ON_LIGHT);
+  return {
+    id: `custom-${clean.slice(1)}`,
+    family: hueFamily(clean),
+    name: "Custom",
+    hex: clean.toUpperCase(),
+    on: onDark >= onLight ? ON_DARK : ON_LIGHT,
+    note: "Picked on the wheel. Not one of the twelve, so check it against the stage before it ships.",
+  };
+}
+
 /* ------------------------------------------------------------------ */
 /* Typography                                                          */
 /* ------------------------------------------------------------------ */
@@ -952,6 +1015,8 @@ export function parseComboHash(hash: string): Combo {
     if (bg) { c.bg = bg; continue; }
     const ac = ACCENTS.find((x) => x.id === id);
     if (ac) { accents.push(ac); continue; }
+    const cu = CUSTOM_ID.exec(id);
+    if (cu) { accents.push(customAccent(cu[1])); continue; }
     const tp = TYPE_PAIRS.find((x) => x.id === id);
     if (tp) { c.type = tp; continue; }
     const bf = BODY_FONTS.find((x) => x.id === id);
