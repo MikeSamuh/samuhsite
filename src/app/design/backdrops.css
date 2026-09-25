@@ -230,6 +230,7 @@
 }
 
 .net-node {
+  /* nodes alternate between the two primary accents, half and half */
   fill: var(--accent);
   opacity: 0.13;
   transform-box: fill-box;
@@ -238,6 +239,8 @@
   animation: net-pulse var(--dur-n) ease-in-out infinite;
   animation-delay: var(--delay-n);
 }
+
+.net-node-b { fill: var(--accent-2); }
 
 @keyframes net-signal {
   0%   { stroke-dashoffset: 100; opacity: 0; }

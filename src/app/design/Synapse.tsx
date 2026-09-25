@@ -206,7 +206,7 @@ export default function Synapse({ mode = "well" }: { mode?: PointerId }) {
         {NODES.map((n, i) => (
           <circle
             key={`n${i}`}
-            className="net-node"
+            className={`net-node ${i % 2 ? "net-node-b" : "net-node-a"}`}
             style={{ "--dur-n": `${n.dur}s`, "--delay-n": `${n.delay}s`, "--peak": n.peak, "--depth": n.depth } as React.CSSProperties}
             cx={n.x}
             cy={n.y}
