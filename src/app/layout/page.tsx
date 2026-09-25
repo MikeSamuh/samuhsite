@@ -387,6 +387,39 @@ function Circles() {
   );
 }
 
+/**
+ * "What SAMUH means", set like a dictionary entry: headword, a speaker
+ * that says it, pronunciation, part of speech and origin, then the
+ * definition. The audio is a placeholder made with the Mac speech engine
+ * until SAMUH records the word; the browser's own voice is the fallback.
+ */
+function Dictionary() {
+  const say = () => {
+    const a = new Audio("/samuh.m4a");
+    a.play().catch(() => {
+      const u = new SpeechSynthesisUtterance("Samuh");
+      u.rate = 0.85;
+      window.speechSynthesis?.speak(u);
+    });
+  };
+  return (
+    <div className="L-dict">
+      <div className="L-dict-head">
+        <span className="L-dict-word">Samuh</span>
+        <button className="L-dict-say" onClick={say} aria-label="Hear how Samuh is pronounced" title="Hear it">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor" /><path d="M16 8.5a4.5 4.5 0 0 1 0 7M18.5 6a8 8 0 0 1 0 12" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>
+        </button>
+        <span className="L-dict-pron">/s&#601;&#712;mu&#720;/</span>
+        <span className="L-dict-pos">noun &middot; Sanskrit <span lang="sa">&#2360;&#2350;&#2370;&#2361;</span>, <i>sam&#363;ha</i></span>
+      </div>
+      <ol className="L-dict-defs">
+        <li>A group of people who come together for a purpose larger than themselves.</li>
+      </ol>
+      <span className="L-cap">{TODO("confirm pronunciation with SAMUH and record the word. Placeholder voice for now")}</span>
+    </div>
+  );
+}
+
 function Frame({ label, tall }: { label: string; tall?: boolean }) {
   return <div className={`ph${tall ? " ph-tall" : ""}`}>{label}</div>;
 }
@@ -421,11 +454,7 @@ function Section({ def, variant, go }: { def: (typeof SECTIONS)[number]; variant
           </div>
         )}
 
-        {def.id === "meaning" && (
-          <p className="L-meaning">
-            <strong>Samuh</strong> (Sanskrit): a group of people who come together for a purpose larger than themselves.
-          </p>
-        )}
+        {def.id === "meaning" && <Dictionary />}
 
         {def.id === "circles" && v === "nested" && (
           <>

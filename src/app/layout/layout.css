@@ -223,7 +223,8 @@
 /* centered alignment */
 .L-page[data-align="align-center"] .L-sec { text-align: center; }
 .L-page[data-align="align-center"] .L-head { justify-content: center; }
-.L-page[data-align="align-center"] :is(.L-big, .L-mid, h1.display, .lede, h2.sec, .L-meaning, .L-research) { margin-left: auto; margin-right: auto; }
+.L-page[data-align="align-center"] :is(.L-big, .L-mid, h1.display, .lede, h2.sec, .L-dict, .L-research) { margin-left: auto; margin-right: auto; }
+.L-page[data-align="align-center"] .L-dict-head { justify-content: center; }
 .L-page[data-align="align-center"] :is(.cta-row, .L-eq, .field) { justify-content: center; }
 .L-page[data-align="align-center"] .eyebrow { justify-content: center; }
 .L-page[data-align="align-center"] .eyebrow::after { display: none; }
@@ -255,12 +256,52 @@
 .L-s-thesis[data-v="under"] .L-thesis-in { border-top: var(--rule-fat) solid var(--accent-2); padding-top: 22px; }
 .L-s-thesis[data-v="band"] .L-big { font-size: clamp(24px, 3cqw, 40px); }
 
-/* ---------- 03 meaning ---------- */
+/* ---------- 03 meaning: a dictionary entry ---------- */
 
-.L-meaning { font-size: clamp(18px, 1.8cqw, 24px); line-height: 1.5; color: var(--text); margin: 0; max-width: 40ch; }
-.L-meaning strong { font-family: var(--font-display); font-weight: var(--display-weight); }
-.L-sec[data-v="line"] .L-meaning { text-align: center; margin-left: auto; margin-right: auto; }
-.L-sec[data-v="aside"] .L-meaning { font-size: 15px; color: var(--muted); border-left: var(--rule-fat) solid var(--accent-2); padding-left: 18px; max-width: 48ch; }
+.L-dict {
+  display: grid;
+  gap: 12px;
+  max-width: 56ch;
+  padding: 22px 0;
+  border-top: var(--rule-thin) solid var(--border);
+  border-bottom: var(--rule-thin) solid var(--border);
+}
+.L-dict-head { display: flex; align-items: baseline; flex-wrap: wrap; gap: 6px 14px; }
+.L-dict-word {
+  font-family: var(--font-display);
+  font-weight: var(--display-weight);
+  font-style: var(--display-style, normal);
+  letter-spacing: var(--display-tracking);
+  font-size: clamp(30px, 3.4cqw, 46px);
+  line-height: 1;
+}
+.L-dict-say {
+  align-self: center;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border: var(--rule-thin) solid var(--border);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--accent);
+  cursor: pointer;
+  transition: all var(--dur) var(--ease);
+}
+.L-dict-say:hover { border-color: var(--accent); background: color-mix(in srgb, var(--accent-4) 14%, transparent); }
+.L-dict-say:active { transform: scale(0.94); }
+.L-dict-pron { font-family: var(--font-caption); font-size: 15px; color: var(--muted); letter-spacing: 0.02em; }
+.L-dict-pos { font-size: 14px; color: var(--muted); font-style: italic; }
+.L-dict-pos i { font-style: italic; }
+.L-dict-pos [lang="sa"] { font-style: normal; }
+.L-dict-defs { list-style: decimal; margin: 0; padding: 0 0 0 1.6em; font-size: clamp(17px, 1.7cqw, 21px); line-height: 1.5; color: var(--text); }
+.L-dict-defs li::marker { font-family: var(--font-caption); color: var(--accent-2); font-size: 0.85em; }
+.L-sec[data-v="line"] .L-dict { margin-left: auto; margin-right: auto; text-align: center; }
+.L-sec[data-v="line"] .L-dict-head { justify-content: center; }
+.L-sec[data-v="line"] .L-dict-defs { list-style-position: inside; padding: 0; }
+.L-sec[data-v="aside"] .L-dict { max-width: 44ch; padding: 0 0 0 18px; border-top: 0; border-bottom: 0; border-left: var(--rule-fat) solid var(--accent-2); }
+.L-sec[data-v="aside"] .L-dict-word { font-size: 26px; }
+.L-sec[data-v="aside"] .L-dict-defs { font-size: 15px; color: var(--muted); }
 .L-sec[data-v="aside"].L-sec { padding: calc(40px * var(--space, 1)) 0; }
 
 /* ---------- 04 circles ---------- */
@@ -603,7 +644,7 @@
   align-items: end;
 }
 .L-page[data-comp="comp-editorial"] .L-s-thesis[data-v="under"] .L-cap { text-align: right; }
-.L-page[data-comp="comp-editorial"] .L-s-meaning .L-meaning { font-size: 15px; }
+.L-page[data-comp="comp-editorial"] .L-s-meaning .L-dict { max-width: 60ch; }
 .L-page[data-comp="comp-editorial"] .L-page-head .L-head { align-items: flex-start; flex-direction: column; gap: 10px; }
 .L-page[data-comp="comp-editorial"] .L-page-head .L-n { font-size: 34px; color: var(--text); }
 .L-page[data-comp="comp-editorial"] :is(.card, .step) { border-radius: 0; background: transparent; border-width: 0; border-top: var(--rule-thin) solid var(--border); padding-left: 0; padding-right: 0; }
@@ -659,11 +700,14 @@
 .L-page[data-comp="comp-keynote"] .L-big { font-size: clamp(28px, 4cqw, 52px); max-width: 22ch; line-height: 1.12; }
 .L-page[data-comp="comp-keynote"] .L-mid { font-size: 18px; max-width: 46ch; }
 .L-page[data-comp="comp-keynote"] .L-sec { text-align: center; }
-.L-page[data-comp="comp-keynote"] :is(.L-big, .L-mid, h1.display, .lede, h2.sec, .L-meaning, .L-research, .L-page-title) { margin-left: auto; margin-right: auto; }
+.L-page[data-comp="comp-keynote"] :is(.L-big, .L-mid, h1.display, .lede, h2.sec, .L-dict, .L-research, .L-page-title) { margin-left: auto; margin-right: auto; }
 .L-page[data-comp="comp-keynote"] :is(.cta-row, .L-eq, .field, .L-head, .L-pills) { justify-content: center; }
 .L-page[data-comp="comp-keynote"] .L-s-hero h1.display { font-size: clamp(40px, 6.4cqw, 92px); max-width: 16ch; }
 .L-page[data-comp="comp-keynote"] .L-page-title { font-size: clamp(40px, 6cqw, 84px); }
-.L-page[data-comp="comp-keynote"] .L-s-meaning .L-meaning { font-size: clamp(22px, 2.8cqw, 34px); max-width: 30ch; }
+.L-page[data-comp="comp-keynote"] .L-s-meaning .L-dict { margin-left: auto; margin-right: auto; text-align: center; border: 0; }
+.L-page[data-comp="comp-keynote"] .L-s-meaning .L-dict-head { justify-content: center; }
+.L-page[data-comp="comp-keynote"] .L-s-meaning .L-dict-word { font-size: clamp(48px, 7cqw, 96px); }
+.L-page[data-comp="comp-keynote"] .L-s-meaning .L-dict-defs { list-style-position: inside; padding: 0; font-size: clamp(20px, 2.4cqw, 30px); }
 .L-page[data-comp="comp-keynote"] :is(.card, .step) { background: transparent; border-color: transparent; text-align: center; }
 .L-page[data-comp="comp-keynote"] :is(.card, .step):hover { background: transparent; box-shadow: none; transform: none; }
 .L-page[data-comp="comp-keynote"] .card::before, .L-page[data-comp="comp-keynote"] .step::after { display: none; }
