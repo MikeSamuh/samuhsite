@@ -155,3 +155,15 @@ Local commits only. Recorded in CLAUDE.md working style. — Wilfred
 Accent 3 is data (tags, numbers, signals), accent 4 is wash (tints only,
 never text). Both default to none so the one-loud-color rule holds unless
 the client opts in. — Wilfred and Claude
+
+**2026-09-25 — Style locked from Mike's link.**
+`#modern.void.pink-magenta.cyan-steel.marcellus.caption-gilda.heavy.scale-125.unblur.glow`.
+Magenta primary, Steel cyan secondary, Marcellus / Inter, Gilda Display
+captions, Heavy lines at x1.25, Unblur, Glow. Fonts they like: Manrope /
+Inter and Marcellus / Inter. Background stays open. — Mike Gabour
+
+**2026-09-25 — Layout is its own tool at /layout.**
+Style is fixed there; the dials are background, frame (alignment, column
+width, spacing, nav, dividers, numbers) and a variant per home section, with
+three presets A Editorial, B Keynote, C Cinema. Viewport preview via container
+queries. /design stays as the archive. — Wilfred

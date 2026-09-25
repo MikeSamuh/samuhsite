@@ -65,13 +65,17 @@ src/
   app/
     layout.tsx           font loading
     page.tsx             home
-    design/              the direction configurator. delete after selection
+    design/              the style picker. colors, fonts, lines, motion. archive now
       page.tsx
       Backdrop.tsx       the five background treatments
       backdrops.css
       design.css
+    layout/              the layout tool. locked style, twelve sections, three layouts
+      page.tsx
+      layout.css
   lib/
     tokens.ts            THE DESIGN SYSTEM. backgrounds, accents, type pairings
+    layout.ts            the locked style hash, frame options, section variants, presets
 docs/                    project context, read before big changes
 ```
 
