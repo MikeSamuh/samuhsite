@@ -173,3 +173,11 @@ Solutions, Process, Insights, About, Contact and Get Started are composed
 in /layout from the scope and brief, with the nav, footer and CTAs wired
 between them. Confirmed material only; the rest is visible TODO(content).
 Page is part of the hash (`page-<id>`). — Wilfred and Claude
+
+**2026-09-25 — Composition is a dial: Editorial, Keynote, Cinema.**
+Beyond the frame dials, each preset now builds sections differently.
+Editorial: a sticky margin column carries the numbered section head beside
+the content, hairlines, boxless cards. Keynote: every section fills the
+view, centred, slide counter, no rules, menu nav. Cinema: alternating
+full-bleed bands tinted by the wash, big accent numbers, imagery to the
+edges, heavy left strokes. Presets set it; the client can mix. — Wilfred and Claude

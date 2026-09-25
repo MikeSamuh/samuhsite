@@ -48,6 +48,7 @@ export type NavId = "nav-bar" | "nav-centered" | "nav-minimal" | "nav-menu";
 export type DividerId = "rule-hairline" | "rule-none" | "rule-heavy";
 export type NumbersId = "numbers-on" | "numbers-off";
 export type ViewId = "desktop" | "tablet" | "phone";
+export type CompId = "comp-editorial" | "comp-keynote" | "comp-cinema";
 
 export const ALIGNS: Opt<AlignId>[] = [
   { id: "align-left", name: "Left", note: "Headings and copy start at the left edge of the column. The editorial default." },
@@ -82,6 +83,17 @@ export const DIVIDERS: Opt<DividerId>[] = [
 export const NUMBERS: Opt<NumbersId>[] = [
   { id: "numbers-on", name: "On", note: "01 to 12 beside each section heading." },
   { id: "numbers-off", name: "Off" },
+];
+
+// Composition: how a section is built, beyond the frame dials. Editorial
+// runs a margin column with the section head beside the content, like a
+// well-set report. Keynote gives every section its own screen, centred,
+// one idea at a time. Cinema alternates full-bleed contrast bands with big
+// numbers and edge-to-edge imagery.
+export const COMPS: Opt<CompId>[] = [
+  { id: "comp-editorial", name: "Editorial", note: "Section heads sit in a margin column beside the content. Numbered, hairlined, a report you want to read." },
+  { id: "comp-keynote", name: "Keynote", note: "One idea per screen. Each section fills the view, centred, with a slide counter. No rules." },
+  { id: "comp-cinema", name: "Cinema", note: "Full-bleed contrast bands, big section numbers, imagery to the edges, heavy strokes." },
 ];
 
 export const VIEWS: (Opt<ViewId> & { px: number })[] = [
@@ -257,6 +269,7 @@ export interface Layout {
   nav: Opt<NavId>;
   divider: Opt<DividerId>;
   numbers: Opt<NumbersId>;
+  comp: Opt<CompId>;
   /** preview width; in the hash only when not desktop, so links open at the size they were made */
   view: ViewId;
   /** which page the frame shows; in the hash only when not home */
@@ -280,21 +293,21 @@ export const PRESETS: Preset[] = [
     letter: "A",
     name: "Editorial",
     note: "Left aligned, standard column, a hairline between sections. Reads like a well-set report.",
-    hash: "#void.align-left.width-standard.space-regular.nav-bar.rule-hairline.numbers-on.hero-split.thesis-under.meaning-aside.circles-nested.aspire-columns.research-statement.voices-grid.case-card.tool-split.cards-grid.equation-split.start-band",
+    hash: "#void.comp-editorial.align-left.width-standard.space-regular.nav-bar.rule-hairline.numbers-on.hero-split.thesis-under.meaning-aside.circles-nested.aspire-columns.research-statement.voices-grid.case-card.tool-split.cards-grid.equation-split.start-band",
   },
   {
     id: "b",
     letter: "B",
     name: "Keynote",
     note: "Centred, narrow, airy, no rules. One idea per screen, like a talk.",
-    hash: "#void.align-center.width-narrow.space-airy.nav-menu.rule-none.numbers-off.hero-centered.thesis-band.meaning-line.circles-row.aspire-statement.research-quote.voices-single.case-inline.tool-card.cards-strip.equation-centered.start-split",
+    hash: "#void.comp-keynote.align-center.width-narrow.space-airy.nav-menu.rule-none.numbers-off.hero-centered.thesis-band.meaning-line.circles-row.aspire-statement.research-quote.voices-single.case-inline.tool-card.cards-strip.equation-centered.start-split",
   },
   {
     id: "c",
     letter: "C",
     name: "Cinema",
     note: "Wide and tight, video behind the hero, full-bleed bands, heavy rules. The boldest of the three.",
-    hash: "#void.align-left.width-wide.space-tight.nav-minimal.rule-heavy.numbers-on.hero-cinema.thesis-under.meaning-line.circles-stack.aspire-image.research-card.voices-strip.case-split.tool-bleed.cards-list.equation-centered.start-form",
+    hash: "#void.comp-cinema.align-left.width-wide.space-tight.nav-minimal.rule-heavy.numbers-on.hero-cinema.thesis-under.meaning-line.circles-stack.aspire-image.research-card.voices-strip.case-split.tool-bleed.cards-list.equation-centered.start-form",
   },
 ];
 
@@ -321,7 +334,7 @@ export function layoutHash(l: Layout): string {
   const secs = SECTIONS.map((s) => l.sections[s.id]).join(".");
   const view = l.view === "desktop" ? "" : `.${l.view}`;
   const page = l.page === "home" ? "" : `.page-${l.page}`;
-  return `#${l.bg}.${l.align.id}.${l.width.id}.${l.spacing.id}.${l.nav.id}.${l.divider.id}.${l.numbers.id}.${secs}${view}${page}`;
+  return `#${l.bg}.${l.comp.id}.${l.align.id}.${l.width.id}.${l.spacing.id}.${l.nav.id}.${l.divider.id}.${l.numbers.id}.${secs}${view}${page}`;
 }
 
 export function sameLayout(a: Layout, b: Layout): boolean {
@@ -342,6 +355,7 @@ export function parseLayoutHash(hash: string): Layout {
     nav: NAVS[0],
     divider: DIVIDERS[0],
     numbers: NUMBERS[0],
+    comp: COMPS[0],
     view: "desktop",
     page: "home",
     sections: Object.fromEntries(SECTIONS.map((s) => [s.id, s.variants[0].id])) as Record<SectionId, string>,
@@ -354,6 +368,7 @@ export function parseLayoutHash(hash: string): Layout {
     const nv = NAVS.find((x) => x.id === id); if (nv) { l.nav = nv; continue; }
     const dv = DIVIDERS.find((x) => x.id === id); if (dv) { l.divider = dv; continue; }
     const nm = NUMBERS.find((x) => x.id === id); if (nm) { l.numbers = nm; continue; }
+    const cp = COMPS.find((x) => x.id === id); if (cp) { l.comp = cp; continue; }
     const vw = VIEWS.find((x) => x.id === id); if (vw) { l.view = vw.id; continue; }
     if (id.startsWith("page-")) {
       const pg = PAGES.find((x) => x.id === id.slice(5)); if (pg) { l.page = pg.id; continue; }

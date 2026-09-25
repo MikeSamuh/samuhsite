@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { BACKGROUNDS, cssVars, comboName } from "@/lib/tokens";
 import {
-  ALIGNS, WIDTHS, SPACINGS, NAVS, DIVIDERS, NUMBERS, VIEWS,
+  ALIGNS, WIDTHS, SPACINGS, NAVS, DIVIDERS, NUMBERS, COMPS, VIEWS,
   SECTIONS, PAGES, PRESETS, FEEDBACK, OFF, LOCKED_HASH,
   DEFAULT_LAYOUT, lockedCombo, layoutHash, parseLayoutHash, sameLayout,
   layoutName, layoutVars,
@@ -205,6 +205,7 @@ export default function LayoutTool() {
 
                 <details className="sect" open>
                   <summary>Frame</summary>
+                  {opts("Composition", COMPS, layout.comp, (x) => set({ comp: x }))}
                   {opts("Alignment", ALIGNS, layout.align, (x) => set({ align: x }))}
                   {opts("Column width", WIDTHS, layout.width, (x) => set({ width: x as typeof layout.width }))}
                   {opts("Section spacing", SPACINGS, layout.spacing, (x) => set({ spacing: x as typeof layout.spacing }))}
@@ -247,6 +248,7 @@ export default function LayoutTool() {
           <div
             className="L-page"
             data-align={layout.align.id}
+            data-comp={layout.comp.id}
             data-nav={layout.nav.id}
             data-rule={layout.divider.id}
             data-numbers={layout.numbers.id}
@@ -393,8 +395,9 @@ const TODO = (what: string) => `TODO(content): ${what}`;
 
 function Section({ def, variant, go }: { def: (typeof SECTIONS)[number]; variant: string; go: (p: PageId) => void }) {
   const v = variant.replace(`${def.id}-`, "");
+  const headed = !["hero", "thesis", "meaning", "start"].includes(def.id);
   return (
-    <section className={`L-sec L-s-${def.id}`} data-v={v} id={def.id}>
+    <section className={`L-sec L-s-${def.id}${headed ? " L-sec-h" : ""}`} data-v={v} data-n={String(def.n).padStart(2, "0")} id={def.id}>
       <div className="L-wrap">
         {def.id === "hero" && (
           <div className="L-hero-grid">

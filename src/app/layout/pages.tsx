@@ -18,7 +18,7 @@ export function Frame({ label, tall }: { label: string; tall?: boolean }) {
 
 function PageHead({ n, kicker, title, lede }: { n: string; kicker: string; title: string; lede?: string }) {
   return (
-    <section className="L-sec L-page-head">
+    <section className="L-sec L-page-head" data-n={n}>
       <div className="L-wrap">
         <div className="L-head">
           <span className="L-n">{n}</span>
@@ -35,7 +35,7 @@ function PageHead({ n, kicker, title, lede }: { n: string; kicker: string; title
 
 function Sec({ n, kicker, title, children, id }: { n: string; kicker: string; title: string; children: React.ReactNode; id?: string }) {
   return (
-    <section className="L-sec" id={id}>
+    <section className="L-sec L-sec-h" id={id} data-n={n}>
       <div className="L-wrap">
         <div className="L-head">
           <span className="L-n">{n}</span>

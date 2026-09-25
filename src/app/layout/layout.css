@@ -559,3 +559,170 @@
   .L-scale-opt { padding: 12px 0; font-size: 15px; }
   .L-table { font-size: 12px; }
 }
+
+/* ==================================================================
+   Compositions. Read from data-comp on the page. Frame dials still
+   apply on top; these change how a section is built.
+   ================================================================== */
+
+/* ---------- Editorial: a margin column beside the content ----------
+   The section head lives in the left column and sticks while the content
+   scrolls past, like the running head of a report. Numbers are set large
+   in the caption face, headings step down, hairlines do the structure. */
+
+.L-page[data-comp="comp-editorial"] .L-sec-h > .L-wrap {
+  display: grid;
+  grid-template-columns: minmax(180px, 240px) 1fr;
+  column-gap: clamp(28px, 5cqw, 72px);
+  align-items: start;
+}
+.L-page[data-comp="comp-editorial"] .L-sec-h > .L-wrap > :not(.L-head) { grid-column: 2; }
+.L-page[data-comp="comp-editorial"] .L-sec-h .L-head {
+  grid-column: 1;
+  position: sticky;
+  top: 28px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 0;
+  padding-top: 4px;
+  border-top: var(--rule-fat) solid var(--accent);
+}
+.L-page[data-comp="comp-editorial"] .L-sec-h .L-n {
+  font-size: 34px;
+  line-height: 1;
+  color: var(--text);
+}
+.L-page[data-comp="comp-editorial"] .L-sec-h h2.sec { font-size: clamp(22px, 2.2cqw, 28px); line-height: 1.2; }
+.L-page[data-comp="comp-editorial"] .L-sec-h .L-eyebrow { order: 2; margin: 6px 0 0; font-size: 10px; letter-spacing: 0.12em; }
+.L-page[data-comp="comp-editorial"] .L-eyebrow::after { display: none; }
+.L-page[data-comp="comp-editorial"] .L-big { font-size: clamp(22px, 2.4cqw, 30px); }
+.L-page[data-comp="comp-editorial"] .L-s-thesis[data-v="under"] .L-thesis-in {
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  align-items: end;
+}
+.L-page[data-comp="comp-editorial"] .L-s-thesis[data-v="under"] .L-cap { text-align: right; }
+.L-page[data-comp="comp-editorial"] .L-s-meaning .L-meaning { font-size: 15px; }
+.L-page[data-comp="comp-editorial"] .L-page-head .L-head { align-items: flex-start; flex-direction: column; gap: 10px; }
+.L-page[data-comp="comp-editorial"] .L-page-head .L-n { font-size: 34px; color: var(--text); }
+.L-page[data-comp="comp-editorial"] :is(.card, .step) { border-radius: 0; background: transparent; border-width: 0; border-top: var(--rule-thin) solid var(--border); padding-left: 0; padding-right: 0; }
+.L-page[data-comp="comp-editorial"] :is(.card, .step):hover { background: transparent; box-shadow: none; transform: none; border-top-color: var(--accent); }
+.L-page[data-comp="comp-editorial"] .card::before, .L-page[data-comp="comp-editorial"] .step::after { display: none; }
+.L-page[data-comp="comp-editorial"] .L-foot { flex-direction: column; align-items: flex-start; }
+
+/* ---------- Keynote: one idea per screen ----------
+   Each section fills the view and centres its idea. Numbers go, a slide
+   counter arrives in the corner, rules go, cards lose their boxes and
+   headings step up. Every scroll stop is a slide. */
+
+.L-page[data-comp="comp-keynote"] .L-sec {
+  min-height: 100vh;
+  display: grid;
+  align-content: center;
+  position: relative;
+  padding: 10vh 0;
+  border-top: 0;
+}
+.L-page[data-comp="comp-keynote"] .L-sec::after {
+  content: attr(data-n);
+  position: absolute;
+  right: 24px;
+  bottom: 22px;
+  font-family: var(--font-caption);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  color: var(--muted);
+}
+.L-page[data-comp="comp-keynote"] .L-sec::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 1px;
+  height: 6vh;
+  background: var(--border);
+  transform: translateX(-50%);
+}
+.L-page[data-comp="comp-keynote"] .L-sec:last-of-type::before { display: none; }
+.L-page[data-comp="comp-keynote"] .L-n { display: none; }
+.L-page[data-comp="comp-keynote"] .L-head {
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 14px;
+  margin-bottom: calc(40px * var(--space, 1));
+}
+.L-page[data-comp="comp-keynote"] .L-head .L-eyebrow { justify-content: center; margin: 0; }
+.L-page[data-comp="comp-keynote"] .L-eyebrow::after { display: none; }
+.L-page[data-comp="comp-keynote"] h2.sec { font-size: clamp(34px, 5cqw, 64px); max-width: 18ch; }
+.L-page[data-comp="comp-keynote"] .L-big { font-size: clamp(28px, 4cqw, 52px); max-width: 22ch; line-height: 1.12; }
+.L-page[data-comp="comp-keynote"] .L-mid { font-size: 18px; max-width: 46ch; }
+.L-page[data-comp="comp-keynote"] .L-sec { text-align: center; }
+.L-page[data-comp="comp-keynote"] :is(.L-big, .L-mid, h1.display, .lede, h2.sec, .L-meaning, .L-research, .L-page-title) { margin-left: auto; margin-right: auto; }
+.L-page[data-comp="comp-keynote"] :is(.cta-row, .L-eq, .field, .L-head, .L-pills) { justify-content: center; }
+.L-page[data-comp="comp-keynote"] .L-s-hero h1.display { font-size: clamp(40px, 6.4cqw, 92px); max-width: 16ch; }
+.L-page[data-comp="comp-keynote"] .L-page-title { font-size: clamp(40px, 6cqw, 84px); }
+.L-page[data-comp="comp-keynote"] .L-s-meaning .L-meaning { font-size: clamp(22px, 2.8cqw, 34px); max-width: 30ch; }
+.L-page[data-comp="comp-keynote"] :is(.card, .step) { background: transparent; border-color: transparent; text-align: center; }
+.L-page[data-comp="comp-keynote"] :is(.card, .step):hover { background: transparent; box-shadow: none; transform: none; }
+.L-page[data-comp="comp-keynote"] .card::before, .L-page[data-comp="comp-keynote"] .step::after { display: none; }
+.L-page[data-comp="comp-keynote"] .L-quote blockquote { font-family: var(--font-display); font-weight: var(--display-weight); font-size: clamp(20px, 2.4cqw, 30px); line-height: 1.3; }
+.L-page[data-comp="comp-keynote"] .L-circ { grid-template-columns: 1fr; gap: 20px; }
+.L-page[data-comp="comp-keynote"] .L-c-line, .L-page[data-comp="comp-keynote"] .L-c-sq { display: none; }
+.L-page[data-comp="comp-keynote"] .L-c-left { order: -1; }
+.L-page[data-comp="comp-keynote"] .L-tier { grid-template-columns: 1fr; max-width: 52ch; margin: 0 auto; gap: 18px; }
+.L-page[data-comp="comp-keynote"] .L-table { max-width: 720px; margin-left: auto; margin-right: auto; }
+.L-page[data-comp="comp-keynote"] .L-foot { justify-content: center; text-align: center; }
+.L-page[data-comp="comp-keynote"] .L-s-thesis[data-v="under"] { min-height: 0; padding: 0 0 10vh; }
+
+/* ---------- Cinema: full-bleed bands, big numbers, edge to edge ----------
+   Every other section is a contrast band tinted by the wash. Section
+   numbers are the size of the heading and set in the accent. Imagery runs
+   to the edges. Cards carry a heavy left stroke, no radius. */
+
+.L-page[data-comp="comp-cinema"] .L-sec { padding: calc(100px * var(--space, 1)) 0; }
+.L-page[data-comp="comp-cinema"] .L-sec:nth-of-type(even) {
+  background: color-mix(in srgb, var(--accent-4) var(--wash-mix, 0%), var(--surface));
+}
+.L-page[data-comp="comp-cinema"] .L-head { align-items: flex-start; gap: 24px; margin-bottom: calc(44px * var(--space, 1)); }
+.L-page[data-comp="comp-cinema"] .L-n {
+  font-size: clamp(44px, 6cqw, 88px);
+  line-height: 0.85;
+  color: var(--accent);
+}
+.L-page[data-comp="comp-cinema"] h2.sec { font-size: clamp(30px, 4.2cqw, 56px); max-width: 16ch; }
+.L-page[data-comp="comp-cinema"] .L-eyebrow { letter-spacing: 0.2em; }
+.L-page[data-comp="comp-cinema"] .L-eyebrow::after { max-width: 200px; }
+.L-page[data-comp="comp-cinema"] .L-big { font-size: clamp(26px, 3.4cqw, 44px); max-width: 26ch; }
+.L-page[data-comp="comp-cinema"] .ph { border-style: solid; border-radius: 0; background: color-mix(in srgb, var(--surface-alt) 80%, transparent); }
+.L-page[data-comp="comp-cinema"] .L-sec[data-v="image"] > .L-wrap { max-width: none; padding: 0; }
+.L-page[data-comp="comp-cinema"] .L-sec[data-v="image"] .L-head { padding: 0 24px; max-width: var(--width-px); margin-left: auto; margin-right: auto; }
+.L-page[data-comp="comp-cinema"] .L-sec[data-v="image"] .ph { min-height: 70vh; border-left: 0; border-right: 0; }
+.L-page[data-comp="comp-cinema"] .L-sec[data-v="image"] .L-big { left: max(24px, calc((100% - var(--width-px)) / 2 + 24px)); }
+.L-page[data-comp="comp-cinema"] .L-s-hero[data-v="video"] > .L-wrap { max-width: none; padding: 0; }
+.L-page[data-comp="comp-cinema"] .L-s-hero[data-v="video"] .L-hero-copy { padding: 40px 24px 0; max-width: var(--width-px); margin: 0 auto; }
+.L-page[data-comp="comp-cinema"] .L-s-hero[data-v="video"] .ph { min-height: 70vh; border-left: 0; border-right: 0; }
+.L-page[data-comp="comp-cinema"] :is(.card, .step) { border-radius: 0; border-left: var(--rule-fat) solid var(--accent); background: var(--surface-alt); }
+.L-page[data-comp="comp-cinema"] .L-sec:nth-of-type(even) :is(.card, .step) { background: var(--base); }
+.L-page[data-comp="comp-cinema"] :is(.card, .step):hover { border-left-color: var(--accent-2); transform: none; }
+.L-page[data-comp="comp-cinema"] .card::before, .L-page[data-comp="comp-cinema"] .step::after { display: none; }
+.L-page[data-comp="comp-cinema"] :is(.btn, .field input, .L-form input, .L-form textarea, .L-form select) { border-radius: 0; }
+.L-page[data-comp="comp-cinema"] .btn { text-transform: uppercase; letter-spacing: 0.06em; font-size: 13px; }
+.L-page[data-comp="comp-cinema"] .L-s-hero[data-v="cinema"] .L-hero-copy { padding-top: calc(160px * var(--space, 1)); }
+.L-page[data-comp="comp-cinema"] .L-s-hero[data-v="cinema"] h1.display { font-size: clamp(44px, 7.4cqw, 104px); }
+.L-page[data-comp="comp-cinema"] .L-s-thesis[data-v="under"] .L-thesis-in { border-top-width: var(--rule-fat); }
+.L-page[data-comp="comp-cinema"] .L-number { font-size: clamp(56px, 9cqw, 128px); }
+.L-page[data-comp="comp-cinema"] .L-c-org { stroke-width: var(--rule-fat); }
+.L-page[data-comp="comp-cinema"] .L-page-head .L-n { font-size: clamp(56px, 8cqw, 120px); }
+.L-page[data-comp="comp-cinema"] .L-foot { border-top: var(--rule-fat) solid var(--accent); }
+
+@container page (max-width: 900px) {
+  .L-page[data-comp="comp-editorial"] .L-sec-h > .L-wrap { grid-template-columns: 1fr; row-gap: 20px; }
+  .L-page[data-comp="comp-editorial"] .L-sec-h > .L-wrap > :not(.L-head) { grid-column: 1; }
+  .L-page[data-comp="comp-editorial"] .L-sec-h .L-head { position: static; }
+  .L-page[data-comp="comp-editorial"] .L-s-thesis[data-v="under"] .L-thesis-in { grid-template-columns: 1fr; }
+  .L-page[data-comp="comp-editorial"] .L-s-thesis[data-v="under"] .L-cap { text-align: left; }
+  .L-page[data-comp="comp-keynote"] .L-sec { min-height: 0; padding: calc(64px * var(--space, 1)) 0; }
+  .L-page[data-comp="comp-cinema"] .L-n { font-size: 40px; }
+}
