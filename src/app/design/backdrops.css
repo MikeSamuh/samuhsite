@@ -1,6 +1,7 @@
 /* Background treatments.
    Every layer is pointer-events none and sits behind the content.
-   All colour comes from --accent, --accent-2 and --base. */
+   All color comes from --accent, --accent-2, --accent-3 (data, the signals),
+   --accent-4 (wash, the third blob and the synapse haze) and --base. */
 
 .bd {
   position: fixed;
@@ -34,7 +35,7 @@
 
 /* ---------- 3. Aurora: lava lamp ----------
    Blobs are mixed well into the base so they read as a glow under the page,
-   not a colour on top of it. They rise, squash, and sink. Nothing crosses
+   not a color on top of it. They rise, squash, and sink. Nothing crosses
    the screen sideways. */
 
 .blob-wrap {
@@ -88,7 +89,7 @@
   left: 44vw;
   background: color-mix(
     in srgb,
-    color-mix(in srgb, var(--accent) 50%, var(--accent-2)) 36%,
+    color-mix(in srgb, var(--accent-4) 50%, var(--accent-2)) 36%,
     var(--base)
   );
   opacity: 0.6;
@@ -131,16 +132,15 @@
    content, the grain shifts, and a chalk line along the bottom edge fills. */
 
 .bd-chalk {
-  background:
-    radial-gradient(ellipse 100% 70% at 30% 20%, #10150F 0%, transparent 60%),
-    radial-gradient(ellipse 90% 60% at 75% 70%, #0D1210 0%, transparent 55%),
-    color-mix(in srgb, transparent, #0B1220 calc(var(--scroll-p, 0) * 55%));
+  /* the board is a photograph (public/chalk-board.jpg, supplied by Wilfred
+     25 Sept), shown as is. No tint, no grain, no dust on top. */
+  background: url("/chalk-board.jpg") center / cover no-repeat #1C1C1C;
 }
 
 .bd-chalk-grain {
   position: absolute;
   inset: 0;
-  opacity: 0.22;
+  opacity: 0.1;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='c'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='4'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23c)' opacity='0.55'/%3E%3C/svg%3E");
   background-position: 0 calc(var(--scroll-p, 0) * -600px);
 }
@@ -189,7 +189,7 @@
 .bd-synapse {
   background: radial-gradient(
     ellipse 80% 60% at 50% 30%,
-    color-mix(in srgb, var(--accent) 3%, transparent) 0%,
+    color-mix(in srgb, var(--accent-4) 3%, transparent) 0%,
     transparent 70%
   );
 }
@@ -217,7 +217,7 @@
 
 .net-signal {
   fill: none;
-  stroke: var(--accent-2);
+  stroke: var(--accent-3);
   stroke-width: 1;
   stroke-linecap: round;
   vector-effect: non-scaling-stroke;
@@ -230,6 +230,7 @@
 }
 
 .net-node {
+  /* nodes alternate between the two primary accents, half and half */
   fill: var(--accent);
   opacity: 0.13;
   transform-box: fill-box;
@@ -238,6 +239,8 @@
   animation: net-pulse var(--dur-n) ease-in-out infinite;
   animation-delay: var(--delay-n);
 }
+
+.net-node-b { fill: var(--accent-2); }
 
 @keyframes net-signal {
   0%   { stroke-dashoffset: 100; opacity: 0; }

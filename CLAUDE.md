@@ -29,7 +29,7 @@ The working split:
 
 - **Looseness** in the background, the motion, the illustration, and the
   contrast between hairline and heavy stroke
-- **Discipline** in the typography, the spacing, and using one loud colour at a
+- **Discipline** in the typography, the spacing, and using one loud color at a
   time
 
 If a change makes the page more playful by making it less legible or less
@@ -53,6 +53,10 @@ npm run dev      # localhost:3000
 npm run build    # must pass before any push to main
 npm run lint
 ```
+
+Stop `npm run dev` before `npm run build`. They share `.next`, and a build
+under a running dev server leaves it serving broken chunks
+(`__webpack_modules__[moduleId] is not a function`). Restart dev after.
 
 ## Where things are
 
@@ -124,6 +128,9 @@ From the signed scope. These are contractual, not aspirational.
 
 - Prefer editing an existing file to creating a new one
 - Branch, review on the Vercel preview URL, then merge
+- **Local only until told to push.** Commit on a branch as much as you like,
+  but never `git push`, open a PR, or merge until Wilfred says so. The repo
+  is the client's and every push is visible to them
 - If a change touches scope, pricing or the launch date, flag it rather than
   building it
 - When the client contradicts a doc in `docs/`, update the doc in the same
@@ -135,7 +142,7 @@ From the signed scope. These are contractual, not aspirational.
 |---|---|
 | `docs/brief.md` | You need positioning, audience, tone or the Sapien Labs relationship |
 | `docs/scope.md` | You are adding or arguing about a page, section or feature |
-| `docs/design-system.md` | You are touching tokens, type, colour, line weight or motion |
+| `docs/design-system.md` | You are touching tokens, type, color, line weight or motion |
 | `docs/content.md` | You need to know who owns a piece of copy, or what we may claim |
 | `docs/assets.md` | You need a logo, font, photo or video |
 | `docs/conventions.md` | You are writing new components |

@@ -57,7 +57,7 @@ redrawing or modifying it. Place the supplied file. Never set it in a web font.
 
 **The SVGs are not vectors.** Each one is an SVG wrapper around an embedded
 JPEG with a solid background rectangle, between roughly 550KB and 1.9MB. They
-cannot be recoloured, scaled cleanly, or placed on a dark stage. SVGO will not
+cannot be recolored, scaled cleanly, or placed on a dark stage. SVGO will not
 help. Before launch, get a real vector from whoever drew the lettering, or have
 the mark redrawn as clean paths with the client's sign-off. Track this as a
 real task, not a nice to have.

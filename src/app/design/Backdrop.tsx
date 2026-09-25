@@ -1,6 +1,6 @@
 "use client";
 
-import type { BackdropId } from "@/lib/tokens";
+import type { BackdropId, PointerId } from "@/lib/tokens";
 import Synapse from "./Synapse";
 
 /**
@@ -8,7 +8,7 @@ import Synapse from "./Synapse";
  * Each reads --accent and --accent-2 so the stage and the accents always agree.
  * Chalk and Aurora read --scroll-p, the page's scroll progress from 0 to 1.
  */
-export default function Backdrop({ id }: { id: BackdropId }) {
+export default function Backdrop({ id, pointer = "well" }: { id: BackdropId; pointer?: PointerId }) {
   if (id === "void") return null;
 
   if (id === "slate") {
@@ -33,14 +33,11 @@ export default function Backdrop({ id }: { id: BackdropId }) {
   if (id === "chalk") {
     return (
       <div className="bd bd-chalk" aria-hidden>
-        <div className="bd-chalk-grain" />
-        <div className="bd-chalk-dust" />
-        <div className="bd-vignette" />
         <div className="bd-chalk-mark" />
       </div>
     );
   }
 
   // synapse
-  return <Synapse />;
+  return <Synapse mode={pointer} />;
 }

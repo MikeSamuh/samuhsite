@@ -12,10 +12,11 @@ npm run dev
 http://localhost:3000 - placeholder home
 http://localhost:3000/design - the direction configurator
 
-Three independent dials: background (5), accent (9), type pairing (5). Number
-keys 1 to 5 switch the background, q/w/e/r/t switch the type. The URL records
-the exact combination, for example `/design#aurora.yellow-amber.syne`, so a
-combination can be shared as a link.
+Seven independent dials: background (5), two accents (12 hues), type pairing
+(10), line weight (4), entrance (5), hover (5). Number keys 1 to 5 switch the
+background, q through p switch the type. The URL records the exact combination,
+for example `/design#synapse.pink-magenta.cyan-samuh.dm-serif.balanced.unblur.glow`,
+so a combination can be shared as a link.
 
 ## Layout
 

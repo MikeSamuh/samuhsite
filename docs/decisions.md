@@ -49,7 +49,7 @@ Dark was agreed in an earlier call as the luxury and thought-leadership look.
 Light alternatives were offered and declined. — Client
 
 **2026-09-23 — The palette is being set, not matched.**
-SAMUH's brand book has no colour codes in it; the hex fields are unfilled
+SAMUH's brand book has no color codes in it; the hex fields are unfilled
 placeholders. Whatever direction is chosen defines the brand's digital
 palette. — Discovered during build
 
@@ -71,7 +71,7 @@ leans on. — Scope document
 
 **2026-09-23 — Two accents, not one.**
 The configurator picks Accent 1 (loud: buttons, Team circle, arc) and Accent 2
-(quiet: eyebrows, links, tags). The client wants two colours to pick and choose
+(quiet: eyebrows, links, tags). The client wants two colors to pick and choose
 from rather than a single accent. — Client
 
 **2026-09-23 — Ascent becomes Slate.**
@@ -80,7 +80,7 @@ scroll. Void and Orbit were also indistinguishable, so Orbit's rings and arcs
 were strengthened until they read. — Client
 
 **2026-09-23 — Aurora is a lava lamp.**
-Colours toned down and mixed into the base, movement is vertical rise and
+Colors toned down and mixed into the base, movement is vertical rise and
 sink rather than sideways drift. — Client
 
 **2026-09-23 — The three circles are nested.**
@@ -106,3 +106,52 @@ opposite kind of type, so the five pairings still cover the range. — Client
 Chalk now changes as you scroll rather than sitting still. Aurora's lava lamp
 motion was sped up from 44 to 58 second cycles to 24 to 30 so it is visibly
 moving. — Client
+
+**2026-09-24 — Round one feedback: Synapse, Magenta, Syne, Unblur, Glow.**
+The client's link was `#synapse.pink-magenta.pink-magenta.syne.unblur.glow`.
+They said they had used cyan as the second accent but found it hard to
+choose, pointed at their own materials for it, and asked for classier fonts
+with more options. — Mike Gabour
+
+**2026-09-25 — The palette is sampled from the decks, not invented.**
+The brand book has no codes, but the introduction deck and the Bangalore
+keynote use `#FC0097` pink throughout, `#0CC0DF` cyan and `#48B1A5` teal as
+second colors, and `#8243F6` violet as a chart frame. Those enter the picker
+as-is where they pass contrast and the rest of each family riffs on them. The
+blue family is retired in favour of cyan and violet; old ids redirect.
+Supersedes the 23 September "set, not matched" entry. — Wilfred
+
+**2026-09-25 — Type pairings come in two groups.**
+Five refined pairings (DM Serif Display, Cormorant Garamond, Newsreader,
+Manrope, Hanken Grotesk) sit beside the five expressive ones rather than
+replacing them, because the client's pick was Syne and the ask was more
+options, not different ones. — Wilfred
+
+**2026-09-25 — Line weight is a dial.**
+Backgrounds no longer carry their own thin and fat rules. Fine, Balanced,
+Heavy and Marker are picked independently, default Balanced so every round-one
+link looks the same as it did. — Wilfred
+
+**2026-09-25 — The picker shows two named picks.**
+Wilfred's recommendation and the client's own pick from 24 September, as
+pressable cards, so the two can be flipped between. — Wilfred
+
+**2026-09-25 — Three approaches as a dial: Modern #1, Minimal #1, Formal Bold.**
+Composition is independent of color and type. Minimal is very few boxes,
+light lines, black space. Formal Bold is contrast bands, big section numbers
+and elegant line flow. — Wilfred
+
+**2026-09-25 — Line width scales line weight in quarter steps, ×0.5 to ×2.**
+Relative to the chosen preset so presets stay distinct. — Wilfred
+
+**2026-09-25 — Formal type group added.**
+Playfair Display, Libre Baskerville, EB Garamond, Bodoni Moda, after the
+client asked for more formal choices. — Client
+
+**2026-09-25 — Nothing is pushed until Wilfred says so.**
+Local commits only. Recorded in CLAUDE.md working style. — Wilfred
+
+**2026-09-25 — Accents 3 and 4 are optional slots with fixed jobs.**
+Accent 3 is data (tags, numbers, signals), accent 4 is wash (tints only,
+never text). Both default to none so the one-loud-color rule holds unless
+the client opts in. — Wilfred and Claude

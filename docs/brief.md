@@ -58,7 +58,7 @@ The practical split:
 - **Looseness** lives in the background treatment, the motion, the illustration
   and the gap between hairline and heavy stroke
 - **Discipline** lives in the typography, the spacing and the restraint of
-  using one loud colour at a time
+  using one loud color at a time
 
 That split is what lets it read as distinctive to a founder and as credible to
 a Fortune 500 procurement team looking at the same page.
