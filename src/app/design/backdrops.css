@@ -133,13 +133,8 @@
 
 .bd-chalk {
   /* the board is a photograph (public/chalk-board.jpg, supplied by Wilfred
-     25 Sept). The scroll-driven cooling sits on top of it as a tint. */
-  background:
-    linear-gradient(
-      color-mix(in srgb, transparent, #0B1220 calc(var(--scroll-p, 0) * 45%)),
-      color-mix(in srgb, transparent, #0B1220 calc(var(--scroll-p, 0) * 45%))
-    ),
-    url("/chalk-board.jpg") center / cover no-repeat #1C1C1C;
+     25 Sept), shown as is. No tint, no grain, no dust on top. */
+  background: url("/chalk-board.jpg") center / cover no-repeat #1C1C1C;
 }
 
 .bd-chalk-grain {

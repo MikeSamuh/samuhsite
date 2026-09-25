@@ -33,9 +33,6 @@ export default function Backdrop({ id }: { id: BackdropId }) {
   if (id === "chalk") {
     return (
       <div className="bd bd-chalk" aria-hidden>
-        <div className="bd-chalk-grain" />
-        <div className="bd-chalk-dust" />
-        <div className="bd-vignette" />
         <div className="bd-chalk-mark" />
       </div>
     );
