@@ -78,7 +78,7 @@ export default function DesignDirections() {
       if (e.target instanceof HTMLInputElement) return;
       const n = parseInt(e.key, 10);
       if (n >= 1 && n <= BACKGROUNDS.length) set({ bg: BACKGROUNDS[n - 1] });
-      const ti = "qwertyuiop[]\\;".indexOf(e.key.toLowerCase());
+      const ti = "qwertyuiop[]\\;',".indexOf(e.key.toLowerCase());
       if (ti >= 0 && ti < TYPE_PAIRS.length) set({ type: TYPE_PAIRS[ti] });
     };
     window.addEventListener("keydown", onKey);

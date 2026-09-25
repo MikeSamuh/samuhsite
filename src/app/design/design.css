@@ -1105,7 +1105,23 @@ a.inline-link:hover { color: var(--accent-2); background-size: 100% var(--rule-f
   padding-left: 0;
   padding-right: 0;
 }
-.stage[data-approach="minimal"] .process { gap: 28px; }
+.stage[data-approach="minimal"] .process { grid-template-columns: 1fr; gap: 0; }
+.stage[data-approach="minimal"] .step {
+  display: grid;
+  grid-template-columns: 72px 1fr 1.2fr;
+  align-items: baseline;
+  gap: 32px;
+  padding: 44px 0;
+}
+.stage[data-approach="minimal"] .step:last-child { border-bottom: var(--rule-thin) solid var(--border); }
+.stage[data-approach="minimal"] .step-n { margin: 0; font-size: 12px; }
+.stage[data-approach="minimal"] .step-name {
+  margin: 0;
+  font-size: clamp(30px, 3.6vw, 46px);
+  font-weight: bolder;
+  line-height: 1.05;
+}
+.stage[data-approach="minimal"] .step-note { font-size: 16px; line-height: 1.6; }
 .stage[data-approach="minimal"] .cards { gap: 40px; }
 .stage[data-approach="minimal"] :is(.step, .card):hover {
   background: transparent;
@@ -1160,6 +1176,25 @@ a.inline-link:hover { color: var(--accent-2); background-size: 100% var(--rule-f
   border-radius: 0;
   border-left: var(--rule-fat) solid var(--accent);
   background: var(--surface-alt);
+}
+/* the team process as trapezoids, two per row, right edge cut on a slant */
+.stage[data-approach="formal"] .process { grid-template-columns: 1fr 1fr; gap: 18px; }
+.stage[data-approach="formal"] .step {
+  --slant: 56px;
+  clip-path: polygon(0 0, 100% 0, calc(100% - var(--slant)) 100%, 0 100%);
+  padding: 34px calc(var(--slant) + 28px) 38px 30px;
+  border-top: var(--rule-thin) solid var(--border);
+  border-bottom: var(--rule-thin) solid var(--border);
+}
+.stage[data-approach="formal"] .step:nth-child(even) {
+  clip-path: polygon(0 0, calc(100% - var(--slant)) 0, 100% 100%, 0 100%);
+}
+.stage[data-approach="formal"] .step-name { font-size: 26px; }
+.stage[data-approach="formal"] .step-note { font-size: 14px; }
+@media (max-width: 960px) {
+  .stage[data-approach="formal"] .process { grid-template-columns: 1fr; }
+  .stage[data-approach="minimal"] .step { grid-template-columns: 48px 1fr; }
+  .stage[data-approach="minimal"] .step-note { grid-column: 2; }
 }
 .stage[data-approach="formal"] section.band:nth-of-type(even) :is(.step, .card) { background: var(--base); }
 .stage[data-approach="formal"] .step::after,

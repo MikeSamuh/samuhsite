@@ -8,6 +8,9 @@ import {
   Syne,
   Space_Grotesk,
   Figtree,
+  Bilbo,
+  Dr_Sugiyama,
+  Special_Elite,
   DM_Serif_Display,
   DM_Sans,
   Cormorant_Garamond,
@@ -40,6 +43,9 @@ const instrumentSans = Instrument_Sans({ subsets: ["latin"], variable: "--f-inst
 const syne = Syne({ subsets: ["latin"], variable: "--f-syne" });
 const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], variable: "--f-space" });
 const figtree = Figtree({ subsets: ["latin"], variable: "--f-figtree" });
+const bilbo = Bilbo({ subsets: ["latin"], weight: "400", variable: "--f-bilbo" });
+const sugiyama = Dr_Sugiyama({ subsets: ["latin"], weight: "400", variable: "--f-sugiyama" });
+const elite = Special_Elite({ subsets: ["latin"], weight: "400", variable: "--f-elite" });
 
 // refined
 const dmSerif = DM_Serif_Display({ subsets: ["latin"], weight: "400", variable: "--f-dm-serif" });
@@ -81,6 +87,9 @@ const fontVars = [
   syne,
   spaceGrotesk,
   figtree,
+  bilbo,
+  sugiyama,
+  elite,
   dmSerif,
   dmSans,
   cormorant,
