@@ -693,7 +693,7 @@ h1.display {
 }
 
 h1.display em {
-  font-style: normal;
+  font-style: var(--display-style, normal);
   color: var(--accent);
 }
 
