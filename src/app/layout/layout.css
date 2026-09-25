@@ -288,6 +288,43 @@
 .L-sec[data-v="stack"] .L-circle-1 .L-circle-label { color: var(--accent); }
 .L-sec[data-v="stack"] .L-circle-note { margin: 0; }
 
+/* the nested circles diagram */
+.L-circ {
+  display: grid;
+  grid-template-columns: 1fr minmax(320px, 640px) 1fr;
+  align-items: center;
+  gap: 0;
+}
+.L-c-svg { width: 100%; height: auto; display: block; overflow: visible; }
+.L-c-line { fill: none; stroke: var(--text); stroke-width: var(--rule-thin); vector-effect: non-scaling-stroke; }
+.L-c-sq { fill: var(--text); }
+.L-c-org { fill: none; stroke: var(--text); stroke-width: var(--rule-fat); vector-effect: non-scaling-stroke; }
+.L-c-team { fill: color-mix(in srgb, var(--accent-4) 8%, transparent); stroke: var(--accent); stroke-width: var(--rule-fat); vector-effect: non-scaling-stroke; }
+.L-c-ind { fill: none; stroke: var(--text); stroke-width: var(--rule-thin); vector-effect: non-scaling-stroke; }
+.L-c-t {
+  fill: var(--text);
+  text-anchor: middle;
+  font-family: var(--font-display);
+  font-weight: var(--display-weight);
+  font-style: var(--display-style, normal);
+  letter-spacing: var(--display-tracking);
+}
+.L-c-t-ind { font-size: 20px; }
+.L-c-t-team { font-size: 44px; fill: var(--accent); }
+.L-c-t-org { font-size: 20px; }
+.L-c-call {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: var(--display-weight);
+  font-style: var(--display-style, normal);
+  letter-spacing: var(--display-tracking);
+  font-size: clamp(18px, 2.2cqw, 28px);
+  line-height: 1.2;
+  text-align: center;
+  padding: 0 12px;
+}
+.L-page[data-align="align-center"] .L-c-call { margin-left: auto; margin-right: auto; }
+
 /* ---------- 05 aspire ---------- */
 
 .L-aspire { display: grid; gap: 28px; }
@@ -407,6 +444,9 @@
   .L-sec[data-v="split"] .L-start { grid-template-columns: 1fr; }
   .L-sec[data-v="grid"] .L-cards { grid-template-columns: 1fr 1fr; }
   .L-sec[data-v="stack"] .L-circle { grid-template-columns: 1fr; gap: 6px; }
+  .L-circ { grid-template-columns: 1fr; gap: 18px; }
+  .L-c-left { order: -1; }
+  .L-c-line, .L-c-sq { display: none; }
   .L-nav { flex-wrap: wrap; gap: 14px 20px; }
   .L-links { display: none; }
   .L-menu { display: inline-block; }

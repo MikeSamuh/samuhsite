@@ -351,6 +351,40 @@ function Head({ def }: { def: (typeof SECTIONS)[number] }) {
   );
 }
 
+/**
+ * The three circles, after the client's sketch of 25 September: the
+ * organization houses the team, the team houses the individual, and the
+ * individual sits at the top of the team. Two callouts: the team is where
+ * people experience their work life, the individual and the organization
+ * are where organizations focus. Only the team circle carries the accent.
+ */
+function Circles() {
+  const sq = (x: number, y: number) => <rect x={x - 5} y={y - 5} width={10} height={10} className="L-c-sq" />;
+  return (
+    <div className="L-circ">
+      <p className="L-c-call L-c-left">Where people experience their work life</p>
+      <svg className="L-c-svg" viewBox="0 0 640 440" role="img" aria-label="Three nested circles: organization, team, individual">
+        {/* leader lines run to the edges, where the callouts sit */}
+        <line x1={0} y1={220} x2={205} y2={220} className="L-c-line" />
+        {sq(205, 220)}
+        <polyline points="640,220 470,110" className="L-c-line" />
+        <polyline points="640,220 440,352" className="L-c-line" />
+        {sq(470, 110)}
+        {sq(440, 352)}
+        {/* circles */}
+        <circle cx={320} cy={220} r={190} className="L-c-org" />
+        <circle cx={320} cy={182} r={128} className="L-c-team" />
+        <circle cx={320} cy={100} r={52} className="L-c-ind" />
+        {/* labels */}
+        <text x={320} y={106} className="L-c-t L-c-t-ind">Individual</text>
+        <text x={320} y={236} className="L-c-t L-c-t-team">Team</text>
+        <text x={320} y={362} className="L-c-t L-c-t-org">Organization</text>
+      </svg>
+      <p className="L-c-call L-c-right">Where organizations focus</p>
+    </div>
+  );
+}
+
 function Frame({ label, tall }: { label: string; tall?: boolean }) {
   return <div className={`ph${tall ? " ph-tall" : ""}`}>{label}</div>;
 }
@@ -390,7 +424,14 @@ function Section({ def, variant, go }: { def: (typeof SECTIONS)[number]; variant
           </p>
         )}
 
-        {def.id === "circles" && (
+        {def.id === "circles" && v === "nested" && (
+          <>
+            <Head def={def} />
+            <Circles />
+          </>
+        )}
+
+        {def.id === "circles" && v !== "nested" && (
           <>
             <Head def={def} />
             <div className="L-circles">
