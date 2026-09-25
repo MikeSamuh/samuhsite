@@ -452,6 +452,54 @@ export const BODY_FONTS: BodyFont[] = [
   { id: "body-garamond", name: "EB Garamond", var: "var(--f-garamond)", note: "A serif for body. Formal, runs small so it needs a size up." },
 ];
 
+// Every face that is loaded, for the minor roles. Eyebrow is the small
+// uppercase line above a heading, caption is data, tags, numbers and
+// specs, ui is buttons and the nav. Each role is null by default, which
+// means: eyebrow and caption use IBM Plex Mono, ui uses the paragraph face.
+
+export interface Face {
+  slug: string;
+  name: string;
+  var: string;
+}
+
+export const FACES: Face[] = [
+  { slug: "plex-mono", name: "IBM Plex Mono", var: "var(--f-plex-mono)" },
+  { slug: "inter", name: "Inter", var: "var(--f-inter)" },
+  { slug: "dm-sans", name: "DM Sans", var: "var(--f-dm-sans)" },
+  { slug: "hanken", name: "Hanken Grotesk", var: "var(--f-hanken)" },
+  { slug: "instrument", name: "Instrument Sans", var: "var(--f-instrument-sans)" },
+  { slug: "figtree", name: "Figtree", var: "var(--f-figtree)" },
+  { slug: "source", name: "Source Sans 3", var: "var(--f-source-sans)" },
+  { slug: "franklin", name: "Libre Franklin", var: "var(--f-franklin)" },
+  { slug: "manrope", name: "Manrope", var: "var(--f-manrope)" },
+  { slug: "space", name: "Space Grotesk", var: "var(--f-space)" },
+  { slug: "syne", name: "Syne", var: "var(--f-syne)" },
+  { slug: "unbounded", name: "Unbounded", var: "var(--f-unbounded)" },
+  { slug: "bricolage", name: "Bricolage Grotesque", var: "var(--f-bricolage)" },
+  { slug: "elite", name: "Special Elite", var: "var(--f-elite)" },
+  { slug: "fraunces", name: "Fraunces", var: "var(--f-fraunces)" },
+  { slug: "dm-serif", name: "DM Serif Display", var: "var(--f-dm-serif)" },
+  { slug: "cormorant", name: "Cormorant Garamond", var: "var(--f-cormorant)" },
+  { slug: "newsreader", name: "Newsreader", var: "var(--f-newsreader)" },
+  { slug: "playfair", name: "Playfair Display", var: "var(--f-playfair)" },
+  { slug: "baskerville", name: "Libre Baskerville", var: "var(--f-baskerville)" },
+  { slug: "garamond", name: "EB Garamond", var: "var(--f-garamond)" },
+  { slug: "bodoni", name: "Bodoni Moda", var: "var(--f-bodoni)" },
+  { slug: "bilbo", name: "Bilbo", var: "var(--f-bilbo)" },
+  { slug: "sugiyama", name: "Dr Sugiyama", var: "var(--f-sugiyama)" },
+];
+
+export type FontRole = "eyebrow" | "caption" | "ui";
+
+export const FONT_ROLES: { role: FontRole; label: string; fallback: string }[] = [
+  { role: "eyebrow", label: "Eyebrow · the line above a heading", fallback: "IBM Plex Mono" },
+  { role: "caption", label: "Captions, tags, numbers, data", fallback: "IBM Plex Mono" },
+  { role: "ui", label: "Buttons and nav", fallback: "the paragraph face" },
+];
+
+export const roleId = (role: FontRole, f: Face) => `${role}-${f.slug}`;
+
 /* ------------------------------------------------------------------ */
 /* Line weights                                                        */
 /* ------------------------------------------------------------------ */
@@ -590,6 +638,10 @@ export interface Combo {
   type: TypePair;
   /** paragraph face override; null uses the pairing's own body face */
   body: BodyFont | null;
+  /** minor roles, null means the role's default */
+  eyebrow: Face | null;
+  caption: Face | null;
+  ui: Face | null;
   weight: Weight;
   scale: LineScale;
   fill: Fill;
@@ -610,6 +662,9 @@ export const DEFAULT_COMBO: Combo = {
   accent4: null,
   type: TYPE_PAIRS[0],
   body: null,
+  eyebrow: null,
+  caption: null,
+  ui: null,
   weight: WEIGHTS.find((w) => w.id === "balanced") ?? WEIGHTS[0],
   scale: LINE_SCALES.find((x) => x.factor === 1) ?? LINE_SCALES[0],
   fill: FILLS[0],
@@ -641,9 +696,17 @@ export const PICKS: Pick[] = [
     hash: "#synapse.pink-magenta.cyan-samuh.dm-serif.unblur.glow.balanced",
   },
   {
+    id: "recommended-2",
+    kicker: "Wilfred's second recommendation",
+    title: "Wilfred\u2019s second recommendation",
+    // Formal Bold on the darker Slate, the deck pink with the deck teal,
+    // Playfair for headings, heavier lines, unblur in and a quiet hover.
+    hash: "#formal.slate.pink-samuh.cyan-teal.playfair.heavy.scale-100.unblur.quiet",
+  },
+  {
     id: "client",
-    kicker: "02 · Your pick, 24 September",
-    title: "Your pick",
+    kicker: "Feedback, 24 September",
+    title: "Feedback: Cyan and more formal font",
     // The link Mike sent, with the cyan the team said they used in place of
     // the doubled magenta.
     hash: "#synapse.pink-magenta.cyan-samuh.syne.unblur.glow.balanced",
@@ -696,7 +759,11 @@ export function comboHash(c: Combo): string {
   const accents = [c.accent.id, c.accent2.id];
   if (c.accent4) accents.push(c.accent3?.id ?? NO_ACCENT, c.accent4.id);
   else if (c.accent3) accents.push(c.accent3.id);
-  const body = c.body ? `.${c.body.id}` : "";
+  const roles = (["eyebrow", "caption", "ui"] as FontRole[])
+    .filter((r) => c[r])
+    .map((r) => `.${roleId(r, c[r] as Face)}`)
+    .join("");
+  const body = (c.body ? `.${c.body.id}` : "") + roles;
   const fill = c.fill.id === "solid" ? "" : `.${c.fill.id}`;
   return `#${c.approach.id}.${c.bg.id}.${accents.join(".")}${fill}.${c.type.id}${body}.${c.weight.id}.${c.scale.id}.${c.entrance.id}.${c.hover.id}`;
 }
@@ -733,6 +800,11 @@ export function parseComboHash(hash: string): Combo {
     if (tp) { c.type = tp; continue; }
     const bf = BODY_FONTS.find((x) => x.id === id);
     if (bf) { c.body = bf; continue; }
+    const m = /^(eyebrow|caption|ui)-(.+)$/.exec(id);
+    if (m) {
+      const face = FACES.find((x) => x.slug === m[2]);
+      if (face) { c[m[1] as FontRole] = face; continue; }
+    }
     const wt = WEIGHTS.find((x) => x.id === id);
     if (wt) { c.weight = wt; continue; }
     const sc = LINE_SCALES.find((x) => x.id === id);
@@ -751,6 +823,9 @@ export function parseComboHash(hash: string): Combo {
   c.accent3 = accents[2] ?? null;
   c.accent4 = accents[3] ?? null;
   if (!parts.some((raw) => BODY_FONTS.some((b) => b.id === raw))) c.body = null;
+  for (const r of ["eyebrow", "caption", "ui"] as FontRole[]) {
+    if (!parts.some((raw) => raw.startsWith(`${r}-`))) c[r] = null;
+  }
   if (!parts.includes("gradient")) c.fill = FILLS[0];
   return c;
 }
@@ -762,7 +837,8 @@ export function ruleWidths({ weight, scale }: { weight: Weight; scale: LineScale
 }
 
 export function cssVars(combo: Combo): React.CSSProperties {
-  const { bg, accent, accent2, accent3, accent4, type, body } = combo;
+  const { bg, accent, accent2, accent3, accent4, type, body, eyebrow, caption, ui } = combo;
+  const bodyVar = body?.var ?? type.bodyVar;
   const rule = ruleWidths(combo);
   const data = accent3 ?? accent2;
   const wash = accent4 ?? accent;
@@ -791,8 +867,11 @@ export function cssVars(combo: Combo): React.CSSProperties {
     /* how strongly a wash tints large areas: nothing unless accent 4 is set */
     "--wash-mix": accent4 ? "10%" : "0%",
     "--font-display": type.displayVar,
-    "--font-body": body?.var ?? type.bodyVar,
+    "--font-body": bodyVar,
     "--font-mono": "var(--f-plex-mono)",
+    "--font-eyebrow": eyebrow?.var ?? "var(--f-plex-mono)",
+    "--font-caption": caption?.var ?? "var(--f-plex-mono)",
+    "--font-ui": ui?.var ?? bodyVar,
     "--display-weight": String(type.displayWeight),
     "--display-tracking": type.displayTracking,
     "--display-leading": type.displayLeading,

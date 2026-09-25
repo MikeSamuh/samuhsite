@@ -7,6 +7,8 @@ import {
   ACCENTS,
   TYPE_PAIRS,
   BODY_FONTS,
+  FACES,
+  FONT_ROLES,
   WEIGHTS,
   LINE_SCALES,
   FILLS,
@@ -25,6 +27,7 @@ import {
   sameCombo,
   type Combo,
   type Accent,
+  type Face,
   type TypeGroup,
 } from "@/lib/tokens";
 import Backdrop from "./Backdrop";
@@ -227,6 +230,12 @@ export default function DesignDirections() {
                 <span>
                   <span className="guide-v">{type.displayName} {type.displayWeight}</span>
                   <span className="guide-sub">{bodyName(combo)} for body{combo.body ? "" : " (paired)"} · {type.group}</span>
+                </span>
+              </div>
+              <div className="guide-row">
+                <span className="guide-k">Minor</span>
+                <span className="guide-v">
+                  <span className="guide-sub">eyebrow {combo.eyebrow?.name ?? "Plex Mono"} · captions {combo.caption?.name ?? "Plex Mono"} · ui {combo.ui?.name ?? bodyName(combo)}</span>
                 </span>
               </div>
               <div className="guide-row">
@@ -567,6 +576,18 @@ export default function DesignDirections() {
                 </dd>
               </div>
               <div>
+                <dt>Eyebrow</dt>
+                <dd>{combo.eyebrow?.name ?? "IBM Plex Mono (default)"}</dd>
+              </div>
+              <div>
+                <dt>Captions and data</dt>
+                <dd>{combo.caption?.name ?? "IBM Plex Mono (default)"}</dd>
+              </div>
+              <div>
+                <dt>Buttons and nav</dt>
+                <dd>{combo.ui?.name ?? `${bodyName(combo)} (the paragraph face)`}</dd>
+              </div>
+              <div>
                 <dt>Body</dt>
                 <dd>{bodyName(combo)}{combo.body ? ` · ${combo.body.note}` : " · the pairing's own"}</dd>
               </div>
@@ -730,7 +751,7 @@ function Dials({ combo, set }: { combo: Combo; set: (patch: Partial<Combo>) => v
       <summary>Fonts</summary>
       <div className="ctrl">
         <span className="ctrl-label ctrl-label-row">
-          Type · headings
+          Headlines · display pairing
           <span className="stepper">
             <button className="tbtn" onClick={() => set({ type: TYPE_PAIRS[(TYPE_PAIRS.indexOf(type) - 1 + TYPE_PAIRS.length) % TYPE_PAIRS.length] })} aria-label="Previous type pairing">&larr; prev</button>
             <button className="tbtn" onClick={() => set({ type: TYPE_PAIRS[(TYPE_PAIRS.indexOf(type) + 1) % TYPE_PAIRS.length] })} aria-label="Next type pairing">next &rarr;</button>
@@ -770,6 +791,32 @@ function Dials({ combo, set }: { combo: Combo; set: (patch: Partial<Combo>) => v
         </div>
       </div>
 
+      {FONT_ROLES.map(({ role, label, fallback }) => {
+        const current = combo[role];
+        const idx = current ? FACES.indexOf(current) : -1;
+        const pick = (f: Face | null) => set({ [role]: f } as Partial<Combo>);
+        return (
+          <div className="ctrl" key={role}>
+            <span className="ctrl-label ctrl-label-row">
+              {label}
+              <span className="stepper">
+                <button className="tbtn" onClick={() => pick(idx <= 0 ? (idx === 0 ? null : FACES[FACES.length - 1]) : FACES[idx - 1])} aria-label={`Previous ${role} font`}>&larr; prev</button>
+                <button className="tbtn" onClick={() => pick(FACES[idx + 1] ?? null)} aria-label={`Next ${role} font`}>next &rarr;</button>
+              </span>
+            </span>
+            <div className="ctrl-opts">
+              <button className="opt" aria-pressed={current === null} onClick={() => pick(null)} title={`Default: ${fallback}`}>
+                Default · {fallback}
+              </button>
+              {FACES.map((f) => (
+                <button key={f.slug} className="opt" aria-pressed={f.slug === current?.slug} onClick={() => pick(f)} style={{ fontFamily: f.var }}>
+                  {f.name}
+                </button>
+              ))}
+            </div>
+          </div>
+        );
+      })}
       </details>
 
       <details className="sect">
