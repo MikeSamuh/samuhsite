@@ -340,7 +340,7 @@
 
 .opt-n { opacity: 0.5; margin-right: 6px; }
 
-/* type pairings sit in two labelled groups */
+/* type pairings sit in four labelled groups */
 .ctrl-group { display: grid; gap: 4px; }
 
 .ctrl-sub {

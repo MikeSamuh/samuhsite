@@ -24,6 +24,12 @@ import {
   EB_Garamond,
   Libre_Franklin,
   Bodoni_Moda,
+  Marcellus,
+  Italiana,
+  Prata,
+  Gilda_Display,
+  Instrument_Serif,
+  Tenor_Sans,
   IBM_Plex_Mono,
 } from "next/font/google";
 import "./globals.css";
@@ -78,6 +84,19 @@ const garamond = EB_Garamond({ subsets: ["latin"], variable: "--f-garamond" });
 const franklin = Libre_Franklin({ subsets: ["latin"], variable: "--f-franklin" });
 const bodoni = Bodoni_Moda({ subsets: ["latin"], variable: "--f-bodoni" });
 
+// classy. every display face here is a single weight
+const marcellus = Marcellus({ subsets: ["latin"], weight: "400", variable: "--f-marcellus" });
+const italiana = Italiana({ subsets: ["latin"], weight: "400", variable: "--f-italiana" });
+const prata = Prata({ subsets: ["latin"], weight: "400", variable: "--f-prata" });
+const gilda = Gilda_Display({ subsets: ["latin"], weight: "400", variable: "--f-gilda" });
+const instrumentSerif = Instrument_Serif({
+  subsets: ["latin"],
+  weight: "400",
+  style: ["normal", "italic"],
+  variable: "--f-instrument-serif",
+});
+const tenor = Tenor_Sans({ subsets: ["latin"], weight: "400", variable: "--f-tenor" });
+
 // captions and data, every pairing
 const plexMono = IBM_Plex_Mono({
   subsets: ["latin"],
@@ -110,6 +129,12 @@ const fontVars = [
   garamond,
   franklin,
   bodoni,
+  marcellus,
+  italiana,
+  prata,
+  gilda,
+  instrumentSerif,
+  tenor,
   plexMono,
 ]
   .map((f) => f.variable)

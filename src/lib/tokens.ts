@@ -4,7 +4,8 @@
 //   BACKGROUNDS  the stage and its motion character
 //   ACCENTS      pink / cyan / violet / yellow, three hues each. Picked twice:
 //                a loud primary and a quieter secondary
-//   TYPE_PAIRS   display and body pairings, in two groups: expressive and refined
+//   TYPE_PAIRS   display and body pairings, in four groups: expressive,
+//                refined, formal and classy
 //   WEIGHTS      the gap between the hairline and the heavy stroke
 //   ENTRANCES    how content arrives as you scroll
 //   HOVERS       how interactive things react to a pointer
@@ -184,12 +185,16 @@ export const ACCENTS: Accent[] = [
 /* Typography                                                          */
 /* ------------------------------------------------------------------ */
 
-// Two groups. Expressive pairings put a display face with real personality
-// against a sober body face. Refined pairings, added after the client asked
-// for something classier, let the type carry the discipline and leave the
-// personality to color and motion.
+// Four groups. Expressive pairings put a display face with real personality
+// against a sober body face. Refined pairings let the type carry the
+// discipline and leave the personality to color and motion. Formal is the
+// institutional serif shelf. Classy, added after the client asked for it by
+// name, is the luxury shelf: high contrast, inscriptional or fashion-house,
+// the faces boutique hotels and jewellers set their names in. Every classy
+// display face is a single weight, so the hairline-and-heavy contrast comes
+// from the rule weights and the body face, not from the heading itself.
 
-export type TypeGroup = "expressive" | "refined" | "formal";
+export type TypeGroup = "expressive" | "refined" | "formal" | "classy";
 
 export interface TypePair {
   id: string;
@@ -440,6 +445,84 @@ export const TYPE_PAIRS: TypePair[] = [
     displayLeading: "1.06",
     note: "A seventeenth-century type revived with the ink and wear left in. Vintage and formal at once. One weight only.",
   },
+  {
+    id: "marcellus",
+    group: "classy",
+    name: "Marcellus / Inter",
+    displayVar: "var(--f-marcellus)",
+    displayName: "Marcellus",
+    bodyVar: "var(--f-inter)",
+    bodyName: "Inter",
+    displayWeight: 400,
+    displayTracking: "0.01em",
+    displayLeading: "1.08",
+    note: "Roman inscriptional capitals with a proper lowercase. The Trajan lineage without the film-poster baggage. Reads carved rather than printed. One weight only.",
+  },
+  {
+    id: "italiana",
+    group: "classy",
+    name: "Italiana / Inter",
+    displayVar: "var(--f-italiana)",
+    displayName: "Italiana",
+    bodyVar: "var(--f-inter)",
+    bodyName: "Inter",
+    displayWeight: 400,
+    displayTracking: "0.02em",
+    displayLeading: "1.06",
+    note: "Hairline thin and very high contrast, the fashion-house register. Needs size to hold on a dark screen. The most overtly luxurious face on the page. One weight only.",
+  },
+  {
+    id: "prata",
+    group: "classy",
+    name: "Prata / Inter",
+    displayVar: "var(--f-prata)",
+    displayName: "Prata",
+    bodyVar: "var(--f-inter)",
+    bodyName: "Inter",
+    displayWeight: 400,
+    displayTracking: "-0.005em",
+    displayLeading: "1.06",
+    note: "A Didone with warmth left in. Sharper than Cormorant, softer than Bodoni. Sturdy enough to survive a bright accent behind it. One weight only.",
+  },
+  {
+    id: "gilda",
+    group: "classy",
+    name: "Gilda Display / Hanken Grotesk",
+    displayVar: "var(--f-gilda)",
+    displayName: "Gilda Display",
+    bodyVar: "var(--f-hanken)",
+    bodyName: "Hanken Grotesk",
+    displayWeight: 400,
+    displayTracking: "0",
+    displayLeading: "1.06",
+    note: "Delicate, upright and slightly condensed. Perfume-box lettering. Sits quietly against a Swiss body face. One weight only.",
+  },
+  {
+    id: "instrument-serif",
+    group: "classy",
+    name: "Instrument Serif / Instrument Sans",
+    displayVar: "var(--f-instrument-serif)",
+    displayName: "Instrument Serif",
+    bodyVar: "var(--f-instrument-sans)",
+    bodyName: "Instrument Sans",
+    displayWeight: 400,
+    displayTracking: "-0.01em",
+    displayLeading: "1.02",
+    note: "The contemporary luxury default, condensed and a touch louche, drawn as a pair with its sans. The classy option that still looks like it was made this decade. One weight, with a true italic.",
+  },
+  {
+    id: "tenor",
+    group: "classy",
+    name: "Tenor Sans / Inter",
+    displayVar: "var(--f-tenor)",
+    displayName: "Tenor Sans",
+    bodyVar: "var(--f-inter)",
+    bodyName: "Inter",
+    displayWeight: 400,
+    displayTracking: "0.015em",
+    displayLeading: "1.08",
+    note: "The one classy sans. Flared strokes in the Optima line, calligraphic without a serif in sight. For a client who wants elegance but not a serif. One weight only.",
+  },
 ];
 
 // Paragraph font, chosen on its own. Every pairing above carries a default
@@ -502,6 +585,12 @@ export const FACES: Face[] = [
   { slug: "antiqua", name: "Modern Antiqua", var: "var(--f-antiqua)" },
   { slug: "overlock", name: "Overlock", var: "var(--f-overlock)" },
   { slug: "imfell", name: "IM Fell French Canon", var: "var(--f-imfell)" },
+  { slug: "marcellus", name: "Marcellus", var: "var(--f-marcellus)" },
+  { slug: "italiana", name: "Italiana", var: "var(--f-italiana)" },
+  { slug: "prata", name: "Prata", var: "var(--f-prata)" },
+  { slug: "gilda", name: "Gilda Display", var: "var(--f-gilda)" },
+  { slug: "instrument-serif", name: "Instrument Serif", var: "var(--f-instrument-serif)" },
+  { slug: "tenor", name: "Tenor Sans", var: "var(--f-tenor)" },
 ];
 
 export type FontRole = "eyebrow" | "caption" | "ui";

@@ -760,7 +760,7 @@ function Dials({ combo, set }: { combo: Combo; set: (patch: Partial<Combo>) => v
             <button className="tbtn" onClick={() => set({ type: TYPE_PAIRS[(TYPE_PAIRS.indexOf(type) + 1) % TYPE_PAIRS.length] })} aria-label="Next type pairing">next &rarr;</button>
           </span>
         </span>
-        {(["expressive", "refined", "formal"] as TypeGroup[]).map((g) => (
+        {(["expressive", "refined", "formal", "classy"] as TypeGroup[]).map((g) => (
           <div className="ctrl-group" key={g}>
             <span className="ctrl-sub">{g}</span>
             <div className="ctrl-opts">
