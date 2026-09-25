@@ -6,16 +6,19 @@ import {
   BACKGROUNDS,
   ACCENTS,
   TYPE_PAIRS,
+  WEIGHTS,
   ENTRANCES,
   HOVERS,
+  PICKS,
   DEFAULT_COMBO,
   cssVars,
   comboHash,
   parseComboHash,
-  recommendedCombo,
+  pickCombo,
   sameCombo,
   type Combo,
   type Accent,
+  type TypeGroup,
 } from "@/lib/tokens";
 import Backdrop from "./Backdrop";
 import "./backdrops.css";
@@ -44,19 +47,17 @@ const TIERS = [
 export default function DesignDirections() {
   const [combo, setCombo] = useState<Combo>(DEFAULT_COMBO);
   const [railOpen, setRailOpen] = useState(true);
-  const recommended = recommendedCombo();
-  const onRecommended = sameCombo(combo, recommended);
-  const { bg, accent, accent2, type, entrance, hover } = combo;
+  const { bg, accent, accent2, type, weight, entrance, hover } = combo;
   const set = (patch: Partial<Combo>) => setCombo((c) => ({ ...c, ...patch }));
 
-  // deep link: /design#aurora.yellow-amber.blue-sky.syne.rise.lift
+  // deep link: /design#aurora.yellow-amber.cyan-samuh.syne.balanced.rise.lift
   // No hash means the client has just arrived, so they see the recommendation.
   useEffect(() => {
     const read = () =>
       setCombo(
         window.location.hash.length > 1
           ? parseComboHash(window.location.hash)
-          : recommendedCombo()
+          : pickCombo(PICKS[0])
       );
     read();
     window.addEventListener("hashchange", read);
@@ -67,13 +68,13 @@ export default function DesignDirections() {
     window.history.replaceState(null, "", comboHash(combo));
   }, [combo]);
 
-  // 1-5 background, q-w-e-r-t type
+  // 1-5 background, q to p across the ten type pairings
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLInputElement) return;
       const n = parseInt(e.key, 10);
       if (n >= 1 && n <= BACKGROUNDS.length) set({ bg: BACKGROUNDS[n - 1] });
-      const ti = ["q", "w", "e", "r", "t"].indexOf(e.key.toLowerCase());
+      const ti = "qwertyuiop".indexOf(e.key.toLowerCase());
       if (ti >= 0 && ti < TYPE_PAIRS.length) set({ type: TYPE_PAIRS[ti] });
     };
     window.addEventListener("keydown", onKey);
@@ -147,27 +148,29 @@ export default function DesignDirections() {
               </button>
             </div>
 
-            <div className="rail-block">
-              <p className="rail-kicker">01 · Wilfred&apos;s recommendation</p>
-              <button
-                className="rec"
-                aria-pressed={onRecommended}
-                onClick={() => setCombo(recommended)}
-              >
-                <span className="rec-title">
-                  {onRecommended ? "Showing Wilfred\u2019s recommendation" : "Show Wilfred\u2019s recommendation"}
-                </span>
-                <span className="rec-list">
-                  <span>{recommended.bg.name}</span>
-                  <span>{recommended.accent.name} + {recommended.accent2.name}</span>
-                  <span>{recommended.type.name}</span>
-                  <span>{recommended.entrance.name} · {recommended.hover.name}</span>
-                </span>
-              </button>
-            </div>
+            {PICKS.map((p) => {
+              const c = pickCombo(p);
+              const on = sameCombo(combo, c);
+              return (
+                <div className="rail-block" key={p.id}>
+                  <p className="rail-kicker">{p.kicker}</p>
+                  <button className="rec" aria-pressed={on} onClick={() => setCombo(c)}>
+                    <span className="rec-title">
+                      {on ? `Showing ${p.title}` : `Show ${p.title}`}
+                    </span>
+                    <span className="rec-list">
+                      <span>{c.bg.name}</span>
+                      <span>{c.accent.family} {c.accent.name} + {c.accent2.family} {c.accent2.name}</span>
+                      <span>{c.type.name}</span>
+                      <span>{c.weight.name} lines · {c.entrance.name} · {c.hover.name}</span>
+                    </span>
+                  </button>
+                </div>
+              );
+            })}
 
             <div className="rail-block" id="rail-dials">
-              <p className="rail-kicker">02 · Choose your own adventure</p>
+              <p className="rail-kicker">03 · Choose your own adventure</p>
               <Dials combo={combo} set={set} />
               <p className="rail-hash">{comboHash(combo)}</p>
             </div>
@@ -356,11 +359,14 @@ export default function DesignDirections() {
                   </p>
                 </div>
                 <div className="bench-row">
-                  <span className="bench-label">Line weights</span>
+                  <span className="bench-label">Line weights &middot; {weight.name}</span>
+                  <div className="rules" aria-hidden="true">
+                    <span className="rule-thin" />
+                    <span className="rule-fat" />
+                  </div>
                   <p style={{ margin: 0, fontSize: 14, lineHeight: 1.6, color: "var(--muted)" }}>
-                    Hairlines at {bg.ruleThin}, deliberate heavy strokes at{" "}
-                    {bg.ruleFat}. The contrast between the two is where the
-                    playfulness lives.
+                    Hairlines at {weight.thin}, heavy strokes at {weight.fat}.{" "}
+                    {weight.note}
                   </p>
                 </div>
               </div>
@@ -468,7 +474,7 @@ export default function DesignDirections() {
               </div>
               <div>
                 <dt>Line weights</dt>
-                <dd>thin {bg.ruleThin} &middot; heavy {bg.ruleFat}</dd>
+                <dd>{weight.name} &middot; thin {weight.thin} &middot; heavy {weight.fat}</dd>
               </div>
               <div>
                 <dt>Corner radius</dt>
@@ -495,11 +501,11 @@ export default function DesignDirections() {
 
           <footer className="foot">
             <p>
-              <strong>Six dials, not five fixed options.</strong> Background,
-              two accents, type, entrance and hover move independently, so you
-              are not stuck picking a whole look you only half like. Find the
-              background first, then the accents, then the type, then the
-              effects. The URL updates as you go, so you can send a colleague
+              <strong>Seven dials, not five fixed options.</strong> Background,
+              two accents, type, line weight, entrance and hover move
+              independently, so you are not stuck picking a whole look you only
+              half like. Find the background first, then the accents, then the
+              type, then the lines and the effects. The URL updates as you go, so you can send a colleague
               the exact combination you landed on. The picker on the left
               minimises out of the way when you want to look at the page.
             </p>
@@ -512,10 +518,13 @@ export default function DesignDirections() {
             </p>
             <p>
               <strong>Two notes.</strong> Your brand book has no colour codes in
-              it, so these palettes are proposals rather than matches. And the
-              logo sits on top of whichever we pick without changing, because
-              the brand book is explicit that the handmade lettering must not be
-              recreated.
+              it, but your decks do. The pink, cyan, teal and steel marked
+              &ldquo;Samuh&rdquo; or &ldquo;sampled&rdquo; in the specs are
+              lifted straight from the introduction deck and the Bangalore
+              keynote, and the rest of the palette is built around them. And
+              the logo sits on top of whichever we pick without changing,
+              because the brand book is explicit that the handmade lettering
+              must not be recreated.
             </p>
           </footer>
         </div>
@@ -526,14 +535,14 @@ export default function DesignDirections() {
 
 /** Every dial. Rendered twice: in the rail and inline in the adventure section. */
 function Dials({ combo, set }: { combo: Combo; set: (patch: Partial<Combo>) => void }) {
-  const { bg, accent, accent2, type, entrance, hover } = combo;
+  const { bg, accent, accent2, type, weight, entrance, hover } = combo;
   const swatches = (label: string, current: Accent, pick: (x: Accent) => void) => (
     <div className="ctrl">
       <span className="ctrl-label">{label}</span>
       <div className="ctrl-opts">
         {ACCENTS.map((x, i) => (
           <span key={x.id} style={{ display: "contents" }}>
-            {i === 3 || i === 6 ? <span className="sw-gap" /> : null}
+            {i > 0 && ACCENTS[i - 1].family !== x.family ? <span className="sw-gap" /> : null}
             <button
               className="sw"
               aria-pressed={x.id === current.id}
@@ -568,9 +577,25 @@ function Dials({ combo, set }: { combo: Combo; set: (patch: Partial<Combo>) => v
 
       <div className="ctrl">
         <span className="ctrl-label">Type</span>
+        {(["expressive", "refined"] as TypeGroup[]).map((g) => (
+          <div className="ctrl-group" key={g}>
+            <span className="ctrl-sub">{g}</span>
+            <div className="ctrl-opts">
+              {TYPE_PAIRS.filter((x) => x.group === g).map((x) => (
+                <button key={x.id} className="opt" aria-pressed={x.id === type.id} onClick={() => set({ type: x })}>
+                  {x.name}
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="ctrl">
+        <span className="ctrl-label">Line weight</span>
         <div className="ctrl-opts">
-          {TYPE_PAIRS.map((x) => (
-            <button key={x.id} className="opt" aria-pressed={x.id === type.id} onClick={() => set({ type: x })}>
+          {WEIGHTS.map((x) => (
+            <button key={x.id} className="opt" aria-pressed={x.id === weight.id} onClick={() => set({ weight: x })} title={`thin ${x.thin} · heavy ${x.fat}`}>
               {x.name}
             </button>
           ))}

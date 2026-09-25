@@ -2,9 +2,10 @@
 //
 // Independent axes the client can mix, choose-your-own-adventure style:
 //   BACKGROUNDS  the stage and its motion character
-//   ACCENTS      pink / yellow / blue, three hues each. Picked twice: a loud
-//                primary and a quieter secondary
-//   TYPE_PAIRS   display and body pairings
+//   ACCENTS      pink / cyan / violet / yellow, three hues each. Picked twice:
+//                a loud primary and a quieter secondary
+//   TYPE_PAIRS   display and body pairings, in two groups: expressive and refined
+//   WEIGHTS      the gap between the hairline and the heavy stroke
 //   ENTRANCES    how content arrives as you scroll
 //   HOVERS       how interactive things react to a pointer
 //
@@ -37,9 +38,6 @@ export interface Background {
   border: string;
   text: string;
   muted: string;
-  /** hairline vs deliberate heavy stroke — the line-weight personality */
-  ruleThin: string;
-  ruleFat: string;
   radius: string;
   motionDur: string;
   motionEase: string;
@@ -59,8 +57,6 @@ export const BACKGROUNDS: Background[] = [
     border: "#242424",
     text: "#FFFFFF",
     muted: "#8A8A8A",
-    ruleThin: "1px",
-    ruleFat: "3px",
     radius: "0px",
     motionDur: "260ms",
     motionEase: "cubic-bezier(0.22, 1, 0.36, 1)",
@@ -78,8 +74,6 @@ export const BACKGROUNDS: Background[] = [
     border: "#364050",
     text: "#F0F2F5",
     muted: "#9AA3B2",
-    ruleThin: "1px",
-    ruleFat: "4px",
     radius: "6px",
     motionDur: "420ms",
     motionEase: "cubic-bezier(0.32, 0.72, 0, 1)",
@@ -97,8 +91,6 @@ export const BACKGROUNDS: Background[] = [
     border: "rgba(255, 255, 255, 0.14)",
     text: "#FFFFFF",
     muted: "#9A9AA4",
-    ruleThin: "1px",
-    ruleFat: "3px",
     radius: "18px",
     motionDur: "560ms",
     motionEase: "cubic-bezier(0.34, 1.26, 0.64, 1)",
@@ -116,8 +108,6 @@ export const BACKGROUNDS: Background[] = [
     border: "#2A322C",
     text: "#F2F0E9",
     muted: "#93998F",
-    ruleThin: "1px",
-    ruleFat: "5px",
     radius: "3px",
     motionDur: "340ms",
     motionEase: "cubic-bezier(0.2, 0.9, 0.3, 1)",
@@ -135,8 +125,6 @@ export const BACKGROUNDS: Background[] = [
     border: "#242A34",
     text: "#F4F5F7",
     muted: "#8B939F",
-    ruleThin: "1px",
-    ruleFat: "3px",
     radius: "14px",
     motionDur: "480ms",
     motionEase: "cubic-bezier(0.16, 1, 0.3, 1)",
@@ -148,7 +136,17 @@ export const BACKGROUNDS: Background[] = [
 /* Accents                                                             */
 /* ------------------------------------------------------------------ */
 
-export type AccentFamily = "pink" | "yellow" | "blue";
+// The brand book has no colour codes, but SAMUH's own decks do. The
+// introduction deck and the Bangalore keynote (July 2026) use these fills:
+//   #FC0097  pink, on nearly every page of both decks
+//   #0CC0DF  cyan, the keynote's second colour
+//   #48B1A5  teal, the introduction deck's second colour
+//   #8243F6  violet, the frame around the performance-levers chart
+// Anything marked "sampled" below is one of those, taken as-is. The rest are
+// riffs around them. Every hue clears 4.5:1 against the darkest stage so all
+// twelve are safe for text, not only decoration.
+
+export type AccentFamily = "pink" | "cyan" | "violet" | "yellow";
 
 export interface Accent {
   id: string;
@@ -162,27 +160,40 @@ export interface Accent {
 
 export const ACCENTS: Accent[] = [
   // pink
-  { id: "pink-hot", family: "pink", name: "Hot", hex: "#FF3D8B", on: "#0A0A0A", note: "Loudest option. Unmistakable, and the closest to the original brief." },
+  { id: "pink-samuh", family: "pink", name: "Samuh", hex: "#FC0097", on: "#0A0A0A", note: "Sampled from your decks. The loudest option and the one your audience has already seen." },
   { id: "pink-magenta", family: "pink", name: "Magenta", hex: "#D946A0", on: "#0A0A0A", note: "Deeper and more adult. Holds up better next to a client logo wall." },
   { id: "pink-rose", family: "pink", name: "Rose", hex: "#E28BA8", on: "#0A0A0A", note: "Muted and editorial. The quiet end of pink." },
+
+  // cyan
+  { id: "cyan-samuh", family: "cyan", name: "Samuh", hex: "#0CC0DF", on: "#05070B", note: "Sampled from the Bangalore keynote. Cold and bright, so it reads as a signal next to the pink." },
+  { id: "cyan-teal", family: "cyan", name: "Teal", hex: "#48B1A5", on: "#05070B", note: "Sampled from the introduction deck. Greener and calmer, the closest to a true complement of magenta." },
+  { id: "cyan-steel", family: "cyan", name: "Steel", hex: "#4394AF", on: "#05070B", note: "The bar colour from your levers chart. The most muted, so it sits behind the pink rather than beside it." },
+
+  // violet
+  { id: "violet-ultra", family: "violet", name: "Ultraviolet", hex: "#8F55FF", on: "#05070B", note: "Your chart frame violet, lifted one step so it passes as text. Pink's neighbour on the wheel, so the pair reads as one glow." },
+  { id: "violet-peri", family: "violet", name: "Periwinkle", hex: "#8B8BFF", on: "#05070B", note: "Blue drifting into violet. The strangest one, in a good way." },
+  { id: "violet-lilac", family: "violet", name: "Lilac", hex: "#C4A6FF", on: "#05070B", note: "Pale and calm. Reads as a highlight rather than a colour." },
 
   // yellow
   { id: "yellow-amber", family: "yellow", name: "Amber", hex: "#F5A524", on: "#0A0A0A", note: "Warm and human. Reads as energy rather than caution." },
   { id: "yellow-butter", family: "yellow", name: "Butter", hex: "#F5D547", on: "#0A0A0A", note: "Softer, friendlier. Best of the three for large areas." },
   { id: "yellow-acid", family: "yellow", name: "Acid", hex: "#D9F04B", on: "#0A0A0A", note: "Yellow pushed toward green. The most contemporary and the most divisive." },
-
-  // blue
-  { id: "blue-electric", family: "blue", name: "Electric", hex: "#4D7CFF", on: "#05070B", note: "Confident and technical. Safest choice for a boardroom." },
-  { id: "blue-sky", family: "blue", name: "Sky", hex: "#5BC8FF", on: "#05070B", note: "Lighter and more open. Pairs best with the aurora background." },
-  { id: "blue-peri", family: "blue", name: "Periwinkle", hex: "#8B8BFF", on: "#05070B", note: "Blue drifting into violet. The strangest blue, in a good way." },
 ];
 
 /* ------------------------------------------------------------------ */
 /* Typography                                                          */
 /* ------------------------------------------------------------------ */
 
+// Two groups. Expressive pairings put a display face with real personality
+// against a sober body face. Refined pairings, added after the client asked
+// for something classier, let the type carry the discipline and leave the
+// personality to colour and motion.
+
+export type TypeGroup = "expressive" | "refined";
+
 export interface TypePair {
   id: string;
+  group: TypeGroup;
   name: string;
   displayVar: string;
   displayName: string;
@@ -197,6 +208,7 @@ export interface TypePair {
 export const TYPE_PAIRS: TypePair[] = [
   {
     id: "fraunces",
+    group: "expressive",
     name: "Fraunces / Inter",
     displayVar: "var(--f-fraunces)",
     displayName: "Fraunces",
@@ -209,6 +221,7 @@ export const TYPE_PAIRS: TypePair[] = [
   },
   {
     id: "bricolage",
+    group: "expressive",
     name: "Bricolage Grotesque / Inter",
     displayVar: "var(--f-bricolage)",
     displayName: "Bricolage Grotesque",
@@ -221,6 +234,7 @@ export const TYPE_PAIRS: TypePair[] = [
   },
   {
     id: "unbounded",
+    group: "expressive",
     name: "Unbounded / Instrument Sans",
     displayVar: "var(--f-unbounded)",
     displayName: "Unbounded",
@@ -229,10 +243,11 @@ export const TYPE_PAIRS: TypePair[] = [
     displayWeight: 500,
     displayTracking: "-0.02em",
     displayLeading: "1.02",
-    note: "Wide and geometric, almost a wordmark. The most contemporary of the five and the one that takes up the most room.",
+    note: "Wide and geometric, almost a wordmark. The most contemporary of the expressive five and the one that takes up the most room.",
   },
   {
     id: "syne",
+    group: "expressive",
     name: "Syne / Inter",
     displayVar: "var(--f-syne)",
     displayName: "Syne",
@@ -245,6 +260,7 @@ export const TYPE_PAIRS: TypePair[] = [
   },
   {
     id: "space",
+    group: "expressive",
     name: "Space Grotesk / Figtree",
     displayVar: "var(--f-space)",
     displayName: "Space Grotesk",
@@ -255,6 +271,97 @@ export const TYPE_PAIRS: TypePair[] = [
     displayLeading: "0.95",
     note: "Geometric with quirks hidden in the details. Reads modern and technical without going cold.",
   },
+  {
+    id: "dm-serif",
+    group: "refined",
+    name: "DM Serif Display / DM Sans",
+    displayVar: "var(--f-dm-serif)",
+    displayName: "DM Serif Display",
+    bodyVar: "var(--f-dm-sans)",
+    bodyName: "DM Sans",
+    displayWeight: 400,
+    displayTracking: "-0.01em",
+    displayLeading: "1.04",
+    note: "High contrast, tight and quietly expensive. The most boardroom of the serifs, drawn as a pair with its body face.",
+  },
+  {
+    id: "cormorant",
+    group: "refined",
+    name: "Cormorant Garamond / Hanken Grotesk",
+    displayVar: "var(--f-cormorant)",
+    displayName: "Cormorant Garamond",
+    bodyVar: "var(--f-hanken)",
+    bodyName: "Hanken Grotesk",
+    displayWeight: 500,
+    displayTracking: "-0.005em",
+    displayLeading: "1.02",
+    note: "Old-style and unhurried, the most literally classy option here. Lightest on the page, so it leans on size rather than weight.",
+  },
+  {
+    id: "newsreader",
+    group: "refined",
+    name: "Newsreader / Inter",
+    displayVar: "var(--f-newsreader)",
+    displayName: "Newsreader",
+    bodyVar: "var(--f-inter)",
+    bodyName: "Inter",
+    displayWeight: 400,
+    displayTracking: "-0.015em",
+    displayLeading: "1.06",
+    note: "An editorial serif drawn for screens. Quieter than DM Serif, warmer than Cormorant. The compromise candidate.",
+  },
+  {
+    id: "manrope",
+    group: "refined",
+    name: "Manrope / Inter",
+    displayVar: "var(--f-manrope)",
+    displayName: "Manrope",
+    bodyVar: "var(--f-inter)",
+    bodyName: "Inter",
+    displayWeight: 600,
+    displayTracking: "-0.03em",
+    displayLeading: "1.02",
+    note: "Geometric sans with the corners softened. Reads like a well-funded product company, and it is the nearest cousin to the sans in your own decks.",
+  },
+  {
+    id: "hanken",
+    group: "refined",
+    name: "Hanken Grotesk / Hanken Grotesk",
+    displayVar: "var(--f-hanken)",
+    displayName: "Hanken Grotesk",
+    bodyVar: "var(--f-hanken)",
+    bodyName: "Hanken Grotesk",
+    displayWeight: 500,
+    displayTracking: "-0.025em",
+    displayLeading: "1.04",
+    note: "One family for everything, the Swiss route. All the personality has to come from colour, line and motion, which is exactly the split in the brief.",
+  },
+];
+
+/* ------------------------------------------------------------------ */
+/* Line weights                                                        */
+/* ------------------------------------------------------------------ */
+
+// The gap between the hairline and the heavy stroke is where the playfulness
+// lives. Uniform 1px everywhere is what makes a site feel corporate. Thin
+// draws the borders, dividers and grid. Fat draws the eyebrow rule, the Team
+// circle, link underlines and the accent bar on cards.
+
+export type WeightId = "fine" | "balanced" | "heavy" | "marker";
+
+export interface Weight {
+  id: WeightId;
+  name: string;
+  thin: string;
+  fat: string;
+  note: string;
+}
+
+export const WEIGHTS: Weight[] = [
+  { id: "fine", name: "Fine", thin: "1px", fat: "2px", note: "Everything is a hairline and the heavy stroke is only just heavier. Quiet, precise, closest to a printed report." },
+  { id: "balanced", name: "Balanced", thin: "1px", fat: "3px", note: "A hairline grid with a stroke you notice. The default, and what the page looked like in round one." },
+  { id: "heavy", name: "Heavy", thin: "1px", fat: "5px", note: "The heavy stroke starts to feel drawn. The eyebrow rule and the Team circle become marks rather than lines." },
+  { id: "marker", name: "Marker", thin: "2px", fat: "8px", note: "Every line is deliberate and the heavy ones are felt-tip. The loosest option, and the one to watch on the tier cards." },
 ];
 
 /* ------------------------------------------------------------------ */
@@ -300,58 +407,91 @@ export interface Combo {
   /** the quiet one: eyebrows, links, tags, the second blob */
   accent2: Accent;
   type: TypePair;
+  weight: Weight;
   entrance: Effect<EntranceId>;
   hover: Effect<HoverId>;
 }
 
-// Default is the first entry on each axis. Accent 2 defaults to the first
-// entry of a different family so the pair is visibly a pair.
+// Default is the first entry on each axis, except weight, which defaults to
+// Balanced because that is what every round-one link looked like. Accent 2
+// defaults to the first entry of a different family so the pair is visibly
+// a pair.
 export const DEFAULT_COMBO: Combo = {
   bg: BACKGROUNDS[0],
   accent: ACCENTS[0],
   accent2: ACCENTS.find((a) => a.family !== ACCENTS[0].family) ?? ACCENTS[1],
   type: TYPE_PAIRS[0],
+  weight: WEIGHTS.find((w) => w.id === "balanced") ?? WEIGHTS[0],
   entrance: ENTRANCES[0],
   hover: HOVERS[0],
 };
 
-// The recommendation. Shown at the top of the picker, before the client is
-// invited to mix and match. Chosen by Wilfred, 23 September 2026.
-export const RECOMMENDED = {
-  bg: "aurora" as BackdropId,
-  accent: "pink-hot",
-  accent2: "blue-peri",
-  type: "syne",
-  entrance: "unblur" as EntranceId,
-  hover: "glow" as HoverId,
-};
+/**
+ * A named, pressable combination shown at the top of the picker. Two of
+ * them: Wilfred's recommendation and the client's own pick, so the two can
+ * be flipped between without hunting for either.
+ */
+export interface Pick {
+  id: string;
+  kicker: string;
+  title: string;
+  hash: string;
+}
 
+export const PICKS: Pick[] = [
+  {
+    id: "recommended",
+    kicker: "01 · Wilfred's recommendation",
+    title: "Wilfred’s recommendation",
+    // Revised 25 September 2026, building on the client's pick: their
+    // background and pink, their own cyan as the quiet accent, a refined
+    // serif in place of Syne.
+    hash: "#synapse.pink-magenta.cyan-samuh.dm-serif.unblur.glow.balanced",
+  },
+  {
+    id: "client",
+    kicker: "02 · Your pick, 24 September",
+    title: "your pick",
+    // The link Mike sent, with the cyan the team said they used in place of
+    // the doubled magenta.
+    hash: "#synapse.pink-magenta.cyan-samuh.syne.unblur.glow.balanced",
+  },
+];
+
+export function pickCombo(p: Pick): Combo {
+  return parseComboHash(p.hash);
+}
+
+/** kept for the home shell and older callers */
 export function recommendedCombo(): Combo {
-  return parseComboHash(
-    [RECOMMENDED.bg, RECOMMENDED.accent, RECOMMENDED.accent2, RECOMMENDED.type, RECOMMENDED.entrance, RECOMMENDED.hover].join(".")
-  );
+  return pickCombo(PICKS[0]);
 }
 
 export function sameCombo(a: Combo, b: Combo): boolean {
   return comboHash(a) === comboHash(b);
 }
 
-/** The shareable form: #background.accent1.accent2.type.entrance.hover */
+/** The shareable form: #background.accent1.accent2.type.weight.entrance.hover */
 export function comboHash(c: Combo): string {
-  return `#${c.bg.id}.${c.accent.id}.${c.accent2.id}.${c.type.id}.${c.entrance.id}.${c.hover.id}`;
+  return `#${c.bg.id}.${c.accent.id}.${c.accent2.id}.${c.type.id}.${c.weight.id}.${c.entrance.id}.${c.hover.id}`;
 }
 
-// Ids that were renamed after links went out.
+// Ids that were renamed or retired after links went out.
 const LEGACY_IDS: Record<string, string> = {
   ascent: "slate",
   orbit: "synapse",
   instrument: "unbounded",
+  "pink-hot": "pink-samuh",
+  "blue-sky": "cyan-samuh",
+  "blue-electric": "violet-peri",
+  "blue-peri": "violet-peri",
 };
 
 /**
  * Reads a hash back into a combo. Order does not matter, every id is unique
  * across the axes, and anything unrecognised falls back to the default. The
- * older three-part links (#background.accent.type) still resolve.
+ * older links without a weight, and the original three-part links, still
+ * resolve.
  */
 export function parseComboHash(hash: string): Combo {
   const parts = hash.replace(/^#/, "").split(".").filter(Boolean);
@@ -365,6 +505,8 @@ export function parseComboHash(hash: string): Combo {
     if (ac) { accents.push(ac); continue; }
     const tp = TYPE_PAIRS.find((x) => x.id === id);
     if (tp) { c.type = tp; continue; }
+    const wt = WEIGHTS.find((x) => x.id === id);
+    if (wt) { c.weight = wt; continue; }
     const en = ENTRANCES.find((x) => x.id === id);
     if (en) { c.entrance = en; continue; }
     const hv = HOVERS.find((x) => x.id === id);
@@ -375,7 +517,7 @@ export function parseComboHash(hash: string): Combo {
   return c;
 }
 
-export function cssVars({ bg, accent, accent2, type }: Combo): React.CSSProperties {
+export function cssVars({ bg, accent, accent2, type, weight }: Combo): React.CSSProperties {
   return {
     "--base": bg.base,
     "--surface": bg.surface,
@@ -383,8 +525,8 @@ export function cssVars({ bg, accent, accent2, type }: Combo): React.CSSProperti
     "--border": bg.border,
     "--text": bg.text,
     "--muted": bg.muted,
-    "--rule-thin": bg.ruleThin,
-    "--rule-fat": bg.ruleFat,
+    "--rule-thin": weight.thin,
+    "--rule-fat": weight.fat,
     "--radius": bg.radius,
     "--dur": bg.motionDur,
     "--ease": bg.motionEase,

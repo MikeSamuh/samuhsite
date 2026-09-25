@@ -2,20 +2,27 @@
 
 ## Status
 
-**Nothing selected yet.** `/design` is a configurator with six independent
-dials, a choose-your-own-adventure style guide. The client picks a background,
-two accents, a type pairing, an entrance and a hover behaviour, and the URL
-records the exact combination.
+**Round two, nothing locked yet.** `/design` is a configurator with seven
+independent dials, a choose-your-own-adventure style guide. The client picks a
+background, two accents, a type pairing, a line weight, an entrance and a
+hover behaviour, and the URL records the exact combination.
 
-`/design#aurora.yellow-amber.blue-sky.syne.unblur.glow` is a real, shareable
-state. Order does not matter and the older three-part links still resolve.
+`/design#synapse.pink-magenta.cyan-samuh.dm-serif.balanced.unblur.glow` is a
+real, shareable state. Order does not matter, round-one links without a weight
+still resolve, and so do the original three-part links.
 
-The dials live in a left rail that minimises. It opens with Wilfred's
-recommendation, a single card that applies it, then the choose-your-own-
-adventure dials. The page to the right is the preview, with a top nav example
-and the logo at the top. The recommendation is the `RECOMMENDED` constant in
-`tokens.ts`: Aurora, Hot with Periwinkle, Syne / Inter, Unblur, Glow. Arriving
-without a hash shows it.
+The dials live in a left rail that minimises. It opens with two pressable
+cards, Wilfred's recommendation and the client's own pick from 24 September,
+then the choose-your-own-adventure dials. The page to the right is the
+preview, with a top nav example and the logo at the top. Both cards are the
+`PICKS` constant in `tokens.ts`. Arriving without a hash shows the
+recommendation.
+
+Round one (23 September) the client landed on
+`#synapse.pink-magenta.pink-magenta.syne.unblur.glow`, said they had used cyan
+as the second accent but struggled to choose it, and asked for classier type.
+Round two answers that: a cyan family sampled from their decks, five refined
+pairings, and line weight as its own dial.
 
 After selection:
 
@@ -28,20 +35,32 @@ After selection:
 5. Delete `src/app/design/`
 6. Record it in `docs/decisions.md`
 
-## There is no inherited palette
+## The palette is inherited from the decks, not the brand book
 
 SAMUH's brand book contains no colour codes. The fields are unfilled
 placeholders reading `Color 1: #HexCode (RGB: R, G, B)`. The only defined values
 are black and white.
 
-The scope document says: dark mode, pink, blue and yellow accents on a black
-and white base. That is the brief. The specific hues are ours to propose, which
-is why the configurator offers three of each rather than one.
+Their decks do carry colour, consistently. Reading the fill operators out of
+the two PDFs in the reference folder:
+
+| Source | Hex | Where |
+|---|---|---|
+| Introduction deck (July 2026) and Bangalore keynote | `#FC0097` | The pink, on nearly every page of both |
+| Bangalore keynote | `#0CC0DF` | The cyan, the keynote's second colour |
+| Introduction deck | `#48B1A5` | The teal, the introduction's second colour |
+| Performance-levers chart screenshot | `#4394AF` | The bar colour |
+| Performance-levers chart screenshot | `#8243F6` | The frame around the chart |
+
+Those go into the picker as-is where they pass contrast, and the rest of each
+family is a riff around them. The scope document says dark mode with pink,
+blue and yellow accents on a black and white base, and that still holds.
 
 ## Axis 1: backgrounds
 
-All dark. Each carries its own line weights, radius and motion character, so
-the background choice also sets how the whole thing behaves.
+All dark. Each carries its own radius and motion character, so the background
+choice also sets how the whole thing behaves. Line weight used to come from
+the background too; it is now its own axis.
 
 | # | id | Name | Treatment |
 |---|---|---|---|
@@ -60,20 +79,28 @@ cost. Watch legibility on it above everything else.
 
 ## Axis 2: accents
 
-Three families, three hues each. Every one clears 4.5:1 against black, so all
-nine are safe for text and not only decoration.
+Four families, three hues each. Every one clears 4.5:1 against the darkest
+stage (Synapse, `#04060A`), so all twelve are safe for text and not only
+decoration.
 
 | Family | Hue | Hex | Character |
 |---|---|---|---|
-| Pink | Hot | `#FF3D8B` | Loudest. Closest to the original brief |
-| Pink | Magenta | `#D946A0` | Deeper, more adult, better next to a client logo wall |
+| Pink | Samuh | `#FC0097` | Sampled from the decks. Loudest, and already familiar to their audience |
+| Pink | Magenta | `#D946A0` | Deeper, more adult, better next to a client logo wall. The client's round-one pick |
 | Pink | Rose | `#E28BA8` | Muted and editorial |
+| Cyan | Samuh | `#0CC0DF` | Sampled from the keynote. Cold and bright, reads as a signal beside pink |
+| Cyan | Teal | `#48B1A5` | Sampled from the introduction deck. Greener, calmer, the nearest true complement of magenta |
+| Cyan | Steel | `#4394AF` | The levers-chart bar colour. Most muted, sits behind the pink |
+| Violet | Ultraviolet | `#8F55FF` | The chart frame `#8243F6` lifted one step to pass 4.5:1. Pink's neighbour, so the pair reads as one glow |
+| Violet | Periwinkle | `#8B8BFF` | Blue drifting into violet. The strangest one |
+| Violet | Lilac | `#C4A6FF` | Pale and calm, a highlight rather than a colour |
 | Yellow | Amber | `#F5A524` | Warm, reads as energy not caution |
 | Yellow | Butter | `#F5D547` | Softer, best of the three for large areas |
 | Yellow | Acid | `#D9F04B` | Pushed toward green. Most contemporary, most divisive |
-| Blue | Electric | `#4D7CFF` | Confident and technical. Safest for a boardroom |
-| Blue | Sky | `#5BC8FF` | Lighter and more open, pairs best with Aurora |
-| Blue | Periwinkle | `#8B8BFF` | Drifting into violet. The strangest blue |
+
+Retired in round two, with old links redirected in `LEGACY_IDS`: Hot
+(`#FF3D8B`, now Samuh pink), Electric and Sky (the blue family, now Periwinkle
+and Samuh cyan).
 
 Two accents are chosen, from any family. Accent 1 is the loud one: buttons,
 the Team circle, the synapse nodes, the first aurora blob. Accent 2 is the quiet
@@ -83,20 +110,41 @@ as a system rather than all at once.
 
 ## Axis 3: typography
 
-Each pairing puts a display face with real personality against a sober body
-face. The pairing is what keeps it playful without becoming childish.
+Two groups. The expressive five put a display face with real personality
+against a sober body face, which is what keeps it playful without becoming
+childish. The refined five, added when the client asked for something
+classier, let the type carry the discipline and leave the personality to
+colour, line and motion.
 
-| id | Pairing | Character |
-|---|---|---|
-| `fraunces` | Fraunces / Inter | Serif with deliberate wonk. Warm up close, serious at a glance |
-| `bricolage` | Bricolage Grotesque / Inter | Irregular by design. Playful without a rounded corner |
-| `unbounded` | Unbounded / Instrument Sans | Wide and geometric, almost a wordmark. The most contemporary |
-| `syne` | Syne / Inter | Architectural and genuinely strange. The boldest swing |
-| `space` | Space Grotesk / Figtree | Geometric with quirks in the details |
+| id | Group | Pairing | Character |
+|---|---|---|---|
+| `fraunces` | Expressive | Fraunces / Inter | Serif with deliberate wonk. Warm up close, serious at a glance |
+| `bricolage` | Expressive | Bricolage Grotesque / Inter | Irregular by design. Playful without a rounded corner |
+| `unbounded` | Expressive | Unbounded / Instrument Sans | Wide and geometric, almost a wordmark |
+| `syne` | Expressive | Syne / Inter | Architectural and genuinely strange. The client's round-one pick |
+| `space` | Expressive | Space Grotesk / Figtree | Geometric with quirks in the details |
+| `dm-serif` | Refined | DM Serif Display / DM Sans | High contrast, tight, quietly expensive. The most boardroom serif |
+| `cormorant` | Refined | Cormorant Garamond / Hanken Grotesk | Old-style and unhurried. Lightest on the page |
+| `newsreader` | Refined | Newsreader / Inter | Editorial serif drawn for screens. The compromise candidate |
+| `manrope` | Refined | Manrope / Inter | Geometric sans, corners softened. Nearest cousin to the sans in their decks |
+| `hanken` | Refined | Hanken Grotesk / Hanken Grotesk | One family for everything, the Swiss route |
 
-IBM Plex Mono carries captions and data in every pairing.
+IBM Plex Mono carries captions and data in every pairing. Fifteen families
+load while the picker is live; that is not a production font budget.
 
-## Axis 4 and 5: effects
+## Axis 4: line weight
+
+Thin draws borders, dividers and the grid. Fat draws the eyebrow rule, the
+Team circle, inline link underlines and the accent bar on cards and steps.
+
+| id | Thin | Fat | Character |
+|---|---|---|---|
+| `fine` | 1px | 2px | Everything a hairline. Closest to a printed report |
+| `balanced` | 1px | 3px | The default and what round one looked like |
+| `heavy` | 1px | 5px | The heavy stroke starts to feel drawn |
+| `marker` | 2px | 8px | Felt-tip. The loosest, watch it on the tier cards |
+
+## Axis 5 and 6: effects
 
 Entrance is how a section arrives as it scrolls into view. Hover is how
 buttons, cards and steps react to a pointer. Both are applied as data
@@ -145,13 +193,11 @@ Nothing outside `src/lib/tokens.ts` carries a design value.
 
 ## Line weights
 
-Called out because it is easy to miss. Every background defines a thin rule and
-a fat rule, and the gap between them is deliberate. Uniform 1px everywhere is
-what makes a site feel corporate. A hairline grid with a few confident heavy
-strokes is what makes it feel drawn.
-
-Chalk runs the widest gap, 1px against 5px. Void and Synapse run 1px against 3px.
-Slate runs 1px against 4px.
+Called out because it is easy to miss. The gap between the thin rule and the
+fat rule is deliberate. Uniform 1px everywhere is what makes a site feel
+corporate. A hairline grid with a few confident heavy strokes is what makes it
+feel drawn. Since round two the gap is the client's to set (see Axis 4) rather
+than something each background carried.
 
 ## Motion
 

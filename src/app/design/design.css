@@ -170,6 +170,17 @@
 
 .opt-n { opacity: 0.5; margin-right: 6px; }
 
+/* type pairings sit in two labelled groups */
+.ctrl-group { display: grid; gap: 4px; }
+
+.ctrl-sub {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--muted) 70%, transparent);
+}
+
 .sw {
   width: 22px;
   height: 22px;
@@ -730,6 +741,26 @@ a.inline-link:hover { color: var(--accent-2); background-size: 100% var(--rule-f
   border-color: color-mix(in srgb, var(--accent-2) 45%, transparent);
   color: var(--accent-2);
 }
+
+/* the two line weights, drawn once so the gap between them is visible */
+.rules {
+  width: 100%;
+  display: grid;
+  gap: 10px;
+  padding: 6px 0 2px;
+}
+
+.rule-thin,
+.rule-fat {
+  display: block;
+  width: 100%;
+  max-width: 320px;
+  border-radius: 99px;
+  transition: height var(--dur) var(--ease);
+}
+
+.rule-thin { height: var(--rule-thin); background: var(--border); }
+.rule-fat  { height: var(--rule-fat);  background: var(--accent-2); }
 
 .field { display: flex; gap: 10px; width: 100%; max-width: 420px; }
 

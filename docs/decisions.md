@@ -106,3 +106,32 @@ opposite kind of type, so the five pairings still cover the range. — Client
 Chalk now changes as you scroll rather than sitting still. Aurora's lava lamp
 motion was sped up from 44 to 58 second cycles to 24 to 30 so it is visibly
 moving. — Client
+
+**2026-09-24 — Round one feedback: Synapse, Magenta, Syne, Unblur, Glow.**
+The client's link was `#synapse.pink-magenta.pink-magenta.syne.unblur.glow`.
+They said they had used cyan as the second accent but found it hard to
+choose, pointed at their own materials for it, and asked for classier fonts
+with more options. — Mike Gabour
+
+**2026-09-25 — The palette is sampled from the decks, not invented.**
+The brand book has no codes, but the introduction deck and the Bangalore
+keynote use `#FC0097` pink throughout, `#0CC0DF` cyan and `#48B1A5` teal as
+second colours, and `#8243F6` violet as a chart frame. Those enter the picker
+as-is where they pass contrast and the rest of each family riffs on them. The
+blue family is retired in favour of cyan and violet; old ids redirect.
+Supersedes the 23 September "set, not matched" entry. — Wilfred
+
+**2026-09-25 — Type pairings come in two groups.**
+Five refined pairings (DM Serif Display, Cormorant Garamond, Newsreader,
+Manrope, Hanken Grotesk) sit beside the five expressive ones rather than
+replacing them, because the client's pick was Syne and the ask was more
+options, not different ones. — Wilfred
+
+**2026-09-25 — Line weight is a dial.**
+Backgrounds no longer carry their own thin and fat rules. Fine, Balanced,
+Heavy and Marker are picked independently, default Balanced so every round-one
+link looks the same as it did. — Wilfred
+
+**2026-09-25 — The picker shows two named picks.**
+Wilfred's recommendation and the client's own pick from 24 September, as
+pressable cards, so the two can be flipped between. — Wilfred
