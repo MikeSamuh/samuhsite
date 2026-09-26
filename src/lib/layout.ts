@@ -217,7 +217,7 @@ export const SECTIONS: SectionDef[] = [
     ],
   },
   {
-    id: "case", n: 8, title: "Case study reference",
+    id: "case", n: 8, title: "Case Studies",
     intent: "Snippet plus link. Likely anonymised.",
     variants: [
       { id: "case-card", name: "Card", note: "A panel with the snippet and the link." },

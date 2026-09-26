@@ -437,7 +437,9 @@ function Carousel() {
   const cur = QUOTES[i];
   return (
     <div className="L-carousel">
-      <button className="L-car-arrow" onClick={() => go(-1)} aria-label="Previous testimonial">&larr;</button>
+      <button className="L-car-arrow" onClick={() => go(-1)} aria-label="Previous testimonial">
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+      </button>
       <figure className="L-car-slide" key={i}>
         <blockquote>&ldquo;{cur.q}&rdquo;</blockquote>
         <figcaption>
@@ -446,12 +448,9 @@ function Carousel() {
           <span className="L-car-mark" aria-label="Client mark">Client mark</span>
         </figcaption>
       </figure>
-      <button className="L-car-arrow" onClick={() => go(1)} aria-label="Next testimonial">&rarr;</button>
-      <div className="L-car-dots" role="tablist">
-        {QUOTES.map((_, k) => (
-          <button key={k} className="L-car-dot" aria-pressed={k === i} onClick={() => setI(k)} aria-label={`Testimonial ${k + 1}`} />
-        ))}
-      </div>
+      <button className="L-car-arrow" onClick={() => go(1)} aria-label="Next testimonial">
+        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+      </button>
     </div>
   );
 }
