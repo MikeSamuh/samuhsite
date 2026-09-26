@@ -620,9 +620,23 @@
   .L-circ { grid-template-columns: 1fr; gap: 18px; }
   .L-c-left { order: -1; }
   .L-c-line, .L-c-sq { display: none; }
-  .L-nav { flex-wrap: wrap; gap: 14px 20px; }
+  /* two lines: the logo, then the menu button and the call to action */
+  .L-nav, .L-page[data-nav="nav-menu"] .L-nav {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 16px 12px;
+    padding-top: 18px;
+    padding-bottom: 18px;
+  }
+  .L-nav .nav-logo { grid-column: 1 / -1; justify-self: start; }
+  .L-page[data-nav="nav-menu"] .L-nav .nav-logo { grid-column: 2; justify-self: start; }
+  .L-page[data-nav="nav-menu"] .L-burger { grid-column: 1; grid-row: 1; }
   .L-links { display: none; }
-  .L-menu { display: inline-block; }
+  .L-menu, .L-page[data-nav="nav-minimal"] .L-menu { display: inline-flex; grid-column: 1; margin: 0; }
+  .L-nav .btn-small { grid-column: 2; justify-self: end; }
+  .L-page[data-nav="nav-menu"] .L-nav .btn-small { grid-column: 1 / -1; justify-self: start; }
+  .L-page[data-nav="nav-menu"] .L-menu { display: none; }
   .L-sec { padding: calc(56px * var(--space, 1)) 0; }
 }
 
