@@ -918,6 +918,24 @@ export const PICKS: Pick[] = [
     hash: "#modern.synapse.cyan-teal.pink-magenta.tenor.eyebrow-overlock.caption-gilda.heavy.scale-125.unblur.glow",
   },
   {
+    id: "mike-1",
+    section: "picks",
+    kicker: "25 September",
+    title: "Mike\u2019s pick",
+    // Mike's reply to the second recommendation: pink back in front,
+    // the steel cyan behind it, Marcellus headings, Gilda captions.
+    hash: "#modern.void.pink-magenta.cyan-steel.marcellus.caption-gilda.heavy.scale-125.unblur.glow.gather",
+  },
+  {
+    id: "client-2",
+    section: "feedback",
+    kicker: "25 September",
+    title: "Pink primary, steel cyan, Marcellus",
+    hash: "#modern.void.pink-magenta.cyan-steel.marcellus.caption-gilda.heavy.scale-125.unblur.glow.gather",
+    quote:
+      "I like the new cyans, I swapped and made pink the primary:\n#modern.void.pink-magenta.cyan-steel.marcellus.caption-gilda.heavy.scale-125.unblur.glow.gather\n\nHere are the fonts we like;\n- Manrope / Inter\n- Marcellus / Inter",
+  },
+  {
     id: "client",
     section: "feedback",
     kicker: "24 September",

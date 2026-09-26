@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import {
   BACKGROUNDS,
@@ -56,10 +56,38 @@ const TIERS = [
   ["Tier 03", "Guided", "In person. The Samuh team delivers the work hands on.", "Talk to us"],
 ];
 
+// Device preview. Desktop is the page as it is. Tablet and iPhone load the
+// same page in a frame at the device's CSS width, so the real breakpoints
+// fire. The frame gets ?frame in its URL, which hides the rail inside it.
+type DeviceId = "desktop" | "tablet" | "iphone";
+
+const DEVICES: { id: DeviceId; name: string; w: number; h: number; note: string }[] = [
+  { id: "desktop", name: "Desktop", w: 0, h: 0, note: "The page at your window width" },
+  { id: "tablet", name: "Tablet", w: 820, h: 1180, note: "iPad, portrait, 820 CSS pixels wide" },
+  { id: "iphone", name: "iPhone", w: 393, h: 852, note: "iPhone 15 and 16, 393 CSS pixels wide" },
+];
+
 export default function DesignDirections() {
   const [combo, setCombo] = useState<Combo>(DEFAULT_COMBO);
+  const [device, setDevice] = useState<DeviceId>("desktop");
+  const [frame, setFrame] = useState(false);
+  const frameRef = useRef<HTMLIFrameElement>(null);
+  useEffect(() => {
+    setFrame(new URLSearchParams(window.location.search).has("frame"));
+  }, []);
   const [railOpen, setRailOpen] = useState(true);
   const [copied, setCopied] = useState(false);
+  const railRef = useRef<HTMLElement>(null);
+  const topRef = useRef<HTMLDivElement>(null);
+  // the sticky head's height, so section headers stack under it not behind it
+  useEffect(() => {
+    const rail = railRef.current;
+    const top = topRef.current;
+    if (!rail || !top) return;
+    const ro = new ResizeObserver(() => rail.style.setProperty("--rail-top", `${top.offsetHeight}px`));
+    ro.observe(top);
+    return () => ro.disconnect();
+  }, [railOpen]);
   const copyLink = () => {
     const url = `${window.location.origin}/design${comboHash(combo)}`;
     navigator.clipboard?.writeText(url).then(() => {
@@ -87,6 +115,15 @@ export default function DesignDirections() {
 
   useEffect(() => {
     window.history.replaceState(null, "", comboHash(combo));
+    // the device frame follows: same origin, so its hash can be set directly
+    const win = frameRef.current?.contentWindow;
+    if (win) {
+      try {
+        if (win.location.hash !== comboHash(combo)) win.location.hash = comboHash(combo);
+      } catch {
+        /* frame not ready yet */
+      }
+    }
   }, [combo]);
 
   // 1-5 background, q to p across the ten type pairings
@@ -152,13 +189,24 @@ export default function DesignDirections() {
       data-fill={combo.fill.id}
       data-entrance={entrance.id}
       data-hover={hover.id}
+      data-frame={frame ? "" : undefined}
     >
       <Backdrop id={bg.id} pointer={combo.pointer.id} />
 
       {/* the menu bar: a left rail with every dial, minimisable to a strip */}
-      <aside className="rail" data-open={railOpen} aria-label="Style picker">
+      <aside className="rail" data-open={railOpen} aria-label="Style picker" ref={railRef}>
         {railOpen ? (
           <>
+            <div className="rail-pin" ref={topRef}>
+            <div className="rail-preview" role="group" aria-label="Preview device">
+              <span className="rail-preview-k">Preview:</span>
+              {DEVICES.map((d) => (
+                <button key={d.id} className="opt opt-tight" aria-pressed={device === d.id} onClick={() => setDevice(d.id)} title={d.note}>
+                  {d.name}
+                </button>
+              ))}
+            </div>
+            <div className="rail-top">
             <div className="rail-head">
               <span className="rail-title">
                 <span className="rail-now">Now showing</span>
@@ -177,6 +225,21 @@ export default function DesignDirections() {
                   Minimise
                 </button>
               </span>
+            </div>
+            <div className="rail-sum" aria-label="Current selection, short form">
+              <span className="rail-sum-dots" aria-hidden="true">
+                {[accent, accent2, accent3, accent4].map((a, i) =>
+                  a ? <span key={i} className="rail-sum-dot" style={{ background: a.hex }} /> : <span key={i} className="rail-sum-dot rail-sum-none" />,
+                )}
+              </span>
+              <span className="rail-sum-line">
+                {type.displayName} · {bodyName(combo)} · {approach.name} on {bg.name}
+              </span>
+              <span className="rail-sum-line">
+                {weight.name} {scale.name} · {entrance.name} in · {hover.name} on hover
+              </span>
+            </div>
+            </div>
             </div>
 
             {(["picks", "feedback"] as const).map((section, i) => (
@@ -276,6 +339,21 @@ export default function DesignDirections() {
         )}
       </aside>
 
+      {device !== "desktop" ? (
+        <div className="content content-device">
+          {DEVICES.filter((d) => d.id === device).map((d) => (
+            <div key={d.id} className="device-frame" style={{ "--dev-w": `${d.w}px`, "--dev-h": `${d.h}px` } as React.CSSProperties}>
+              <iframe
+                ref={frameRef}
+                className="device-screen"
+                src={`/design?frame${comboHash(combo)}`}
+                title={`${d.name} preview`}
+              />
+              <span className="device-label">{d.name} · {d.w} × {d.h}</span>
+            </div>
+          ))}
+        </div>
+      ) : (
       <div className="content">
         <div className="wrap">
           {/* top nav example. Nothing here navigates: the page is a style
@@ -657,6 +735,7 @@ export default function DesignDirections() {
           </footer>
         </div>
       </div>
+      )}
     </div>
   );
 }

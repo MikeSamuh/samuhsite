@@ -37,43 +37,20 @@ credible, it is the wrong change.
 
 ## Stack
 
-- Next.js 15, App Router, TypeScript
-- Tailwind v4 for layout and spacing. Design values come from tokens
+- Design values come from tokens, Tailwind only for layout and spacing
 - GSAP with ScrollTrigger for scroll sequences, Framer Motion for component
   transitions. Neither is installed yet; wait for the direction decision
-- `next/font/google`, self-hosted at build
 - Headless CMS for foundations, insights, case studies, team, testimonials and
   solutions
 - Vercel. `main` is production, every branch gets a preview URL
 
 ## Commands
 
-```bash
-npm run dev      # localhost:3000
-npm run build    # must pass before any push to main
-npm run lint
-```
+`npm run build` must pass before any push to main.
 
 Stop `npm run dev` before `npm run build`. They share `.next`, and a build
 under a running dev server leaves it serving broken chunks
 (`__webpack_modules__[moduleId] is not a function`). Restart dev after.
-
-## Where things are
-
-```
-src/
-  app/
-    layout.tsx           font loading
-    page.tsx             home
-    design/              the direction configurator. delete after selection
-      page.tsx
-      Backdrop.tsx       the five background treatments
-      backdrops.css
-      design.css
-  lib/
-    tokens.ts            THE DESIGN SYSTEM. backgrounds, accents, type pairings
-docs/                    project context, read before big changes
-```
 
 ## Hard rules
 

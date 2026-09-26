@@ -155,3 +155,29 @@ Local commits only. Recorded in CLAUDE.md working style. — Wilfred
 Accent 3 is data (tags, numbers, signals), accent 4 is wash (tints only,
 never text). Both default to none so the one-loud-color rule holds unless
 the client opts in. — Wilfred and Claude
+
+**2026-09-25 — Style locked from Mike's link.**
+`#modern.void.pink-magenta.cyan-steel.marcellus.caption-gilda.heavy.scale-125.unblur.glow`.
+Magenta primary, Steel cyan secondary, Marcellus / Inter, Gilda Display
+captions, Heavy lines at x1.25, Unblur, Glow. Fonts they like: Manrope /
+Inter and Marcellus / Inter. Background stays open. — Mike Gabour
+
+**2026-09-25 — Layout is its own tool at /layout.**
+Style is fixed there; the dials are background, frame (alignment, column
+width, spacing, nav, dividers, numbers) and a variant per home section, with
+three presets A Editorial, B Keynote, C Cinema. Viewport preview via container
+queries. /design stays as the archive. — Wilfred
+
+**2026-09-25 — The layout tool carries the whole sitemap.**
+Solutions, Process, Insights, About, Contact and Get Started are composed
+in /layout from the scope and brief, with the nav, footer and CTAs wired
+between them. Confirmed material only; the rest is visible TODO(content).
+Page is part of the hash (`page-<id>`). — Wilfred and Claude
+
+**2026-09-25 — Composition is a dial: Editorial, Keynote, Cinema.**
+Beyond the frame dials, each preset now builds sections differently.
+Editorial: a sticky margin column carries the numbered section head beside
+the content, hairlines, boxless cards. Keynote: every section fills the
+view, centred, slide counter, no rules, menu nav. Cinema: alternating
+full-bleed bands tinted by the wash, big accent numbers, imagery to the
+edges, heavy left strokes. Presets set it; the client can mix. — Wilfred and Claude
