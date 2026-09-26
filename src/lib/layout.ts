@@ -319,14 +319,14 @@ export const PRESETS: Preset[] = [
     letter: "B",
     name: "Keynote",
     note: "Centred, narrow, airy, no rules. One idea per screen, like a talk.",
-    hash: "#void.comp-keynote.align-center.width-narrow.space-airy.nav-menu.rule-none.numbers-off.hero-centered.thesis-band.meaning-line.circles-row.aspire-statement.research-quote.voices-carousel.case-inline.tool-card.cards-strip.equation-centered.start-split",
+    hash: "#void.comp-keynote.align-center.width-narrow.space-airy.nav-menu.rule-none.numbers-off.hero-centered.thesis-band.meaning-line.circles-nested.aspire-statement.research-quote.voices-carousel.case-inline.tool-card.cards-strip.equation-centered.start-split",
   },
   {
     id: "c",
     letter: "C",
     name: "Cinema",
     note: "Wide and tight, video behind the hero, full-bleed bands, heavy rules. The boldest of the three.",
-    hash: "#void.comp-cinema.align-left.width-wide.space-tight.nav-minimal.rule-heavy.numbers-off.hero-cinema.thesis-under.meaning-line.circles-stack.aspire-image.research-card.voices-carousel.case-split.tool-bleed.cards-list.equation-centered.start-form",
+    hash: "#void.comp-cinema.align-left.width-wide.space-tight.nav-minimal.rule-heavy.numbers-off.hero-cinema.thesis-under.meaning-line.circles-nested.aspire-image.research-card.voices-carousel.case-split.tool-bleed.cards-list.equation-centered.start-form",
   },
 ];
 

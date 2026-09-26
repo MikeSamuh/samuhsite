@@ -396,11 +396,14 @@
   gap: 0;
 }
 .L-c-svg { width: 100%; height: auto; display: block; overflow: visible; }
-.L-c-line { fill: none; stroke: var(--text); stroke-width: var(--rule-thin); vector-effect: non-scaling-stroke; }
+/* one standard stroke for all three circles, a hairline for the leaders.
+   Deliberately not tied to the line-weight dial. */
+.L-circ { --c-stroke: 2px; --c-line: 1px; }
+.L-c-line { fill: none; stroke: var(--text); stroke-width: var(--c-line); vector-effect: non-scaling-stroke; }
 .L-c-sq { fill: var(--text); }
-.L-c-org { fill: none; stroke: var(--text); stroke-width: var(--rule-fat); vector-effect: non-scaling-stroke; }
-.L-c-team { fill: color-mix(in srgb, var(--accent-4) 8%, transparent); stroke: var(--accent); stroke-width: var(--rule-fat); vector-effect: non-scaling-stroke; }
-.L-c-ind { fill: none; stroke: var(--text); stroke-width: var(--rule-thin); vector-effect: non-scaling-stroke; }
+.L-c-org { fill: none; stroke: var(--text); stroke-width: var(--c-stroke); vector-effect: non-scaling-stroke; }
+.L-c-team { fill: color-mix(in srgb, var(--accent-4) 8%, transparent); stroke: var(--accent); stroke-width: var(--c-stroke); vector-effect: non-scaling-stroke; }
+.L-c-ind { fill: none; stroke: var(--text); stroke-width: var(--c-stroke); vector-effect: non-scaling-stroke; }
 .L-c-t {
   fill: var(--text);
   text-anchor: middle;
@@ -898,7 +901,6 @@
 .L-page[data-comp="comp-cinema"] .L-s-hero[data-v="cinema"] h1.display { font-size: clamp(44px, 7.4cqw, 104px); }
 .L-page[data-comp="comp-cinema"] .L-s-thesis[data-v="under"] .L-thesis-in { border-top-width: var(--rule-fat); }
 .L-page[data-comp="comp-cinema"] .L-number { font-size: clamp(56px, 9cqw, 128px); }
-.L-page[data-comp="comp-cinema"] .L-c-org { stroke-width: var(--rule-fat); }
 .L-page[data-comp="comp-cinema"] .L-page-head .L-n { font-size: clamp(56px, 8cqw, 120px); }
 .L-page[data-comp="comp-cinema"] .L-foot { border-top: var(--rule-fat) solid var(--accent); }
 
