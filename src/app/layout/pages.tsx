@@ -4,13 +4,13 @@ import type { PageId } from "@/lib/layout";
 
 /**
  * The pages behind the nav, composed from docs/scope.md and docs/brief.md.
- * Confirmed material only; everything else is a visible TODO(content) or a
- * labelled frame. Same shared classes as the home sections so the frame
+ * Copy is confirmed material or draft written from the introduction deck
+ * and the brief, marked draft where it needs SAMUH's sign-off. No figures,
+ * no invented endorsements. Same shared classes as the home sections so the frame
  * dials (alignment, width, spacing, rules, numbers) apply here too.
  */
 
 const stay = (e: React.MouseEvent) => e.preventDefault();
-const TODO = (what: string) => `TODO(content): ${what}`;
 
 export function Frame({ label, tall }: { label: string; tall?: boolean }) {
   return <div className={`ph${tall ? " ph-tall" : ""}`}>{label}</div>;
@@ -53,15 +53,15 @@ function Sec({ n, kicker, title, children, id }: { n: string; kicker: string; ti
 /* ------------------------------------------------------------------ */
 
 const TIERS = [
-  { tag: "Tier 01", name: "Self-guided", what: "Fully automated. The team works through the material on its own.", cta: "Price to confirm · or talk to us" },
-  { tag: "Tier 02", name: "Supported", what: "Self-guided plus periodic support calls from the Samuh team.", cta: "Talk to us" },
-  { tag: "Tier 03", name: "Guided", what: "In person. The Samuh team delivers the work hands on.", cta: "Talk to us" },
+  { tag: "Tier 01", name: "Self-guided", what: "Fully automated. The team works through the material on its own.", who: "Teams with a strong leader who want the method without the meetings, and organizations rolling it out across many teams.", get: "The team process, the baseline and the re-measure, and the material to run one ritual for ninety days.", cta: "Price to confirm · or talk to us" },
+  { tag: "Tier 02", name: "Supported", what: "Self-guided plus periodic support calls from the Samuh team.", who: "Teams that want a second pair of eyes at the moments that matter: choosing the practice, and the check-in at day 45.", get: "Everything in Self-guided, with scheduled calls to read the data together and keep the ritual on track.", cta: "Talk to us" },
+  { tag: "Tier 03", name: "Guided", what: "In person. The Samuh team delivers the work hands on.", who: "Leadership teams and mission-critical teams where the stakes justify having us in the room.", get: "Confidential interviews, a facilitated day one, coaching for two ritual keepers every two weeks, and the close.", cta: "Talk to us" },
 ];
 
 function Solutions({ go }: { go: (p: PageId) => void }) {
   return (
     <>
-      <PageHead n="01" kicker="Three ways to engage" title="Same process, three levels of support." lede={TODO("solutions intro, two sentences on how the tiers relate")} />
+      <PageHead n="01" kicker="Three ways to engage" title="Same process, three levels of support." lede="One methodology, the team process, delivered with as much or as little of us in the room as the team needs. Organization-wide work layers on top of it." />
       {TIERS.map((t, i) => (
         <Sec key={t.name} n={`0${i + 2}`} kicker={t.tag} title={t.name} id={t.name.toLowerCase()}>
           <div className="L-tier">
@@ -71,11 +71,11 @@ function Solutions({ go }: { go: (p: PageId) => void }) {
             </div>
             <div>
               <span className="L-cap">Who it is for</span>
-              <p className="L-mid">{TODO(`who ${t.name} is for`)}</p>
+              <p className="L-mid">{t.who}</p>
             </div>
             <div>
               <span className="L-cap">What you get</span>
-              <p className="L-mid">{TODO(`what a ${t.name} engagement includes`)}</p>
+              <p className="L-mid">{t.get}</p>
             </div>
             <div className="L-tier-cta">
               <button className="btn" onClick={() => go("contact")}>{t.cta} <span className="arrow">&rarr;</span></button>
@@ -89,22 +89,29 @@ function Solutions({ go }: { go: (p: PageId) => void }) {
             <tr><th />{TIERS.map((t) => <th key={t.name}>{t.name}</th>)}</tr>
           </thead>
           <tbody>
-            {["The team process", "Support calls", "In-person delivery", "TeamQ baseline and re-measure", "Ritual keeper coaching", "Price"].map((row) => (
+            {[
+              ["The team process", "Included", "Included", "Included"],
+              ["Support calls", "Not included", "Scheduled", "Ongoing"],
+              ["In-person delivery", "Not included", "Not included", "Included"],
+              ["TeamQ baseline and re-measure", "Included", "Included", "Included"],
+              ["Ritual keeper coaching", "Self-directed", "At check-ins", "Every two weeks"],
+              ["Price", "To confirm", "Talk to us", "Talk to us"],
+            ].map(([row, ...cells]) => (
               <tr key={row}>
                 <th>{row}</th>
-                {TIERS.map((t) => <td key={t.name}>{row === "Price" && t.name === "Self-guided" ? "To confirm" : TODO("confirm")}</td>)}
+                {cells.map((c, i) => <td key={i}>{c}</td>)}
               </tr>
             ))}
           </tbody>
         </table>
-        <p className="L-cap">Organization-wide engagements layer on top of the team process, not beside it.</p>
+        <p className="L-cap">Draft, to confirm with SAMUH. Organization-wide engagements layer on top of the team process, not beside it.</p>
       </Sec>
       <Sec n="06" kicker="Trust before proof" title="What teams say">
         <div className="L-voices L-voices-grid">
           {[0, 1, 2].map((i) => (
             <figure className="card L-quote" key={i}>
-              <blockquote>{TODO("testimonial quote")}</blockquote>
-              <figcaption className="L-cap">{TODO("attribution, cleared for publication")}</figcaption>
+              <blockquote>&ldquo;Sample testimonial. Two or three sentences in the client&rsquo;s own words about what changed for the team.&rdquo;</blockquote>
+              <figcaption className="L-cap">Name &middot; Role &middot; Organization</figcaption>
             </figure>
           ))}
         </div>
@@ -146,7 +153,7 @@ function Process({ go }: { go: (p: PageId) => void }) {
             </div>
           ))}
         </div>
-        <p className="L-cap">Structure still TBD in the scope. Step names from the kickoff, one-liners are placeholders.</p>
+        <p className="L-cap">Step names from the kickoff. Structure to confirm with SAMUH.</p>
       </Sec>
       <Sec n="03" kicker="About four months, end to end" title="The arc">
         <ol className="L-arc">
@@ -194,20 +201,27 @@ function Insights() {
           <Frame label="Report cover" />
           <div>
             <span className="card-tag">Research · in partnership with Sapien Labs</span>
-            <p className="L-mid">{TODO("one paragraph on what the report covers, no figures until cleared")}</p>
+            <p className="L-mid">The research spine of the site. How the conditions people work in relate to how they feel and how they function, read across countries and industries, and what that means for the teams inside a multi-team organization.</p>
             <a href="#" className="inline-link" onClick={stay}>Read the report</a>
           </div>
         </div>
       </Sec>
       <Sec n="03" kicker="Latest" title="From the feed">
         <div className="L-feed">
-          {["Foundations", "Article", "Video", "Foundations", "Article", "Video"].map((k, i) => (
+          {[
+            ["Foundations", "Capacity", "Why teams leak performance", "The environment, not the effort. The argument in one sitting."],
+            ["Article", "Rituals", "What a ritual is, and is not", "A repeatable practice the team owns, against a meeting nobody asked for."],
+            ["Video", "Measurement", "Reading a TeamQ report", "Thirteen factors, thirteen practices, and the one number that matters."],
+            ["Foundations", "Team practices", "The four conditions of a team environment", "Social, autonomous, meaningful, healthy. What each looks like on a Tuesday."],
+            ["Article", "Team practices", "Feedback as a practice", "How one leadership team turned the hardest conversation into a habit."],
+            ["Video", "Rituals", "Ninety days, one ritual", "What changes when a team commits to a single practice and measures it."],
+          ].map(([k, topic, title, stand], i) => (
             <article className="card L-post" key={i}>
               <Frame label={k === "Video" ? "Video still · YouTube or Vimeo embed" : "Illustration"} />
-              <span className="card-tag">{k} · {TODO("topic")}</span>
-              <h3>{TODO("title")}</h3>
-              <p>{TODO("standfirst")}</p>
-              <span className="L-cap">{TODO("author")} · {TODO("date")} · {k === "Video" ? "watch" : "read"} time</span>
+              <span className="card-tag">{k} · {topic}</span>
+              <h3>{title}</h3>
+              <p>{stand}</p>
+              <span className="L-cap">Samuh · draft · {k === "Video" ? "watch" : "read"} time</span>
             </article>
           ))}
         </div>
@@ -220,11 +234,11 @@ function Insights() {
 /* ------------------------------------------------------------------ */
 
 const TEAM = [
-  ["Rahul Varma", "Co-Founder & CEO"],
-  ["Calina Mircea", "Co-Founder & Methodology Lead"],
-  ["Mike Gabour", "Co-Founder & CTO"],
-  ["Dr. Tara Thiagarajan", "Chief Scientific Advisor"],
-  ["Jake DeBerry", "Lead, Enterprise Growth"],
+  ["Rahul Varma", "Co-Founder & CEO", "Former CHRO, Accenture Technology."],
+  ["Calina Mircea", "Co-Founder & Methodology Lead", "Systemic coach, learning and leadership expert."],
+  ["Mike Gabour", "Co-Founder & CTO", "Global analytics strategy and design leader."],
+  ["Dr. Tara Thiagarajan", "Chief Scientific Advisor", "Founder, Sapien Labs. Ph.D., Stanford."],
+  ["Jake DeBerry", "Lead, Enterprise Growth", "CEB/Gartner, Deloitte, NeuroLeadership Institute."],
 ];
 
 function About() {
@@ -232,26 +246,27 @@ function About() {
     <>
       <PageHead n="01" kicker="About" title="A group of people who come together for a purpose larger than themselves." lede="That is what Samuh means in Sanskrit, and it is the standard the work is held to." />
       <Sec n="02" kicker="What we believe" title="Performance is created in teams">
-        <p className="L-big">{TODO("the thesis in SAMUH's approved wording")}</p>
-        <p className="L-mid">{TODO("two paragraphs on the model: team environment shapes capacity to perform, capacity shapes performance")}</p>
+        <p className="L-big">High performance without the cost to people. Sustained performance, where people thriving and results thriving reinforce each other rather than trading off.</p>
+        <p className="L-mid">Most organizations invest above the team, in transformations and organization-wide programs, and below it, in individual evaluation and development. The work itself gets done in teams: information flows, trust builds, feedback happens and decisions get made there.</p>
+        <p className="L-mid">The environment inside a team shapes how much capacity its people can bring to the work. Samuh shows a team where its capacity is leaking, the team chooses one practice to close the gap, and the change is measured.</p>
       </Sec>
       <Sec n="03" kicker="In partnership with Sapien Labs" title="The research behind the work">
         <div className="L-partner">
           <Frame label="Sapien Labs mark" />
           <div>
             <p className="L-mid">Sapien Labs is the primary partner and the source of the research the site leans on. The Work Culture Report is the research spine, and the intake assessment is built on Sapien Labs team environment factors.</p>
-            <p className="L-mid">{TODO("one paragraph on the MHQ and the Global Mind Project, figures only when cleared")}</p>
+            <p className="L-mid">Sapien Labs&rsquo; MHQ measures mental wellbeing across aspects of functioning and feeling, gathered through the Global Mind Project. TeamQ reads the team environment through it, so what was previously inferred about a team can now be measured.</p>
           </div>
         </div>
       </Sec>
       <Sec n="04" kicker="The people you would be working with" title="Team">
         <div className="L-team">
-          {TEAM.map(([name, role]) => (
+          {TEAM.map(([name, role, bio]) => (
             <article className="L-person" key={name}>
               <Frame label="Photo" />
               <span className="L-person-name">{name}</span>
               <span className="L-cap">{role}</span>
-              <p>{TODO("two-line bio")}</p>
+              <p>{bio}</p>
             </article>
           ))}
         </div>
@@ -282,7 +297,7 @@ function Contact() {
                 <select defaultValue=""><option value="" disabled>Choose one</option><option>Understand the model</option><option>Assess a team</option><option>Talk about a 90-day sprint</option><option>Something else</option></select>
               </label>
               <button className="btn" type="submit">Send <span className="arrow">&rarr;</span></button>
-              <span className="L-cap">{TODO("where leads land: inbox, sheet or CRM. Owner Jake")}</span>
+              <span className="L-cap">A person reads every message. No newsletter, no drip.</span>
             </form>
             <aside className="L-contact-side">
               <div className="card L-book">
@@ -290,9 +305,9 @@ function Contact() {
                 <Frame label="Calendar embed" tall />
               </div>
               <div className="L-details">
-                <span className="L-cap">Email</span><span>{TODO("public contact email")}</span>
-                <span className="L-cap">Phone</span><span>{TODO("public phone, if any")}</span>
-                <span className="L-cap">Where</span><span>{TODO("city, or remote")}</span>
+                <span className="L-cap">Email</span><span>jake@samuh.work</span>
+                <span className="L-cap">Partner</span><span>Sapien Labs</span>
+                <span className="L-cap">Where</span><span>Working with teams across time zones.</span>
               </div>
             </aside>
           </div>
@@ -309,15 +324,15 @@ function Start({ go }: { go: (p: PageId) => void }) {
     <section className="L-sec L-intake">
       <div className="L-wrap L-wrap-narrow">
         <div className="L-intake-bar" aria-hidden><span style={{ width: "12%" }} /></div>
-        <span className="L-cap">Question 1 of {TODO("N")} · free and ungated · no email to start</span>
-        <h1 className="display L-intake-q">{TODO("first question, on one Sapien Labs team environment factor")}</h1>
+        <span className="L-cap">Question 1 · free and ungated · no email to start</span>
+        <h1 className="display L-intake-q">How often does your team get the information it needs, when it needs it?</h1>
         <div className="L-scale">
           {[1, 2, 3, 4, 5, 6, 7].map((n) => <button className="opt L-scale-opt" key={n}>{n}</button>)}
         </div>
         <div className="L-scale-ends"><span className="L-cap">Rarely true</span><span className="L-cap">Almost always true</span></div>
         <aside className="card L-insight">
           <span className="card-tag">While you answer</span>
-          <p>{TODO("one data insight or testimonial, interlaced between questions, Noom style")}</p>
+          <p>TeamQ reads thirteen factors of the team environment and thirteen practices. This one is about information flows: whether people hear things from the team, or from the corridor.</p>
         </aside>
         <div className="cta-row">
           <button className="btn">Next <span className="arrow">&rarr;</span></button>

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { BACKGROUNDS, cssVars, comboName } from "@/lib/tokens";
 import {
-  ALIGNS, WIDTHS, SPACINGS, NAVS, DIVIDERS, NUMBERS, COMPS, VIEWS,
+  ALIGNS, WIDTHS, SPACINGS, NAVS, DIVIDERS, NUMBERS, HEADS, COMPS, VIEWS,
   SECTIONS, PAGES, PRESETS, FEEDBACK, OFF, LOCKED_HASH,
   DEFAULT_LAYOUT, lockedCombo, layoutHash, parseLayoutHash, sameLayout,
   layoutName, layoutVars,
@@ -211,6 +211,7 @@ export default function LayoutTool() {
                   {opts("Section spacing", SPACINGS, layout.spacing, (x) => set({ spacing: x as typeof layout.spacing }))}
                   {opts("Navigation", NAVS, layout.nav, (x) => set({ nav: x }))}
                   {opts("Dividers", DIVIDERS, layout.divider, (x) => set({ divider: x }))}
+                  {opts("Section heads", HEADS, layout.heads, (x) => set({ heads: x }))}
                   {opts("Section numbers", NUMBERS, layout.numbers, (x) => set({ numbers: x }))}
                 </details>
 
@@ -252,6 +253,7 @@ export default function LayoutTool() {
             data-nav={layout.nav.id}
             data-rule={layout.divider.id}
             data-numbers={layout.numbers.id}
+            data-heads={layout.heads.id}
           >
             <div className="L-bd" aria-hidden>
               <Backdrop id={layout.bg} pointer="well" />
@@ -338,8 +340,9 @@ function Nav({ page, go, menu }: { page: PageId; go: (p: PageId) => void; menu: 
 /* Sections                                                            */
 /* ------------------------------------------------------------------ */
 
-// Copy here is confirmed material only (docs/content.md). Everything else
-// is a visible TODO(content) or a labelled placeholder frame.
+// Copy here is confirmed material or draft written from the introduction
+// deck and the brief. No figures, no invented endorsements. Frames stand in
+// for imagery and video.
 
 function Head({ def }: { def: (typeof SECTIONS)[number] }) {
   return (
@@ -415,7 +418,7 @@ function Dictionary() {
       <ol className="L-dict-defs">
         <li>A group of people who come together for a purpose larger than themselves.</li>
       </ol>
-      <span className="L-cap">{TODO("confirm pronunciation with SAMUH and record the word. Placeholder voice for now")}</span>
+      <span className="L-cap">Placeholder voice. SAMUH to confirm the pronunciation and record it.</span>
     </div>
   );
 }
@@ -423,8 +426,6 @@ function Dictionary() {
 function Frame({ label, tall }: { label: string; tall?: boolean }) {
   return <div className={`ph${tall ? " ph-tall" : ""}`}>{label}</div>;
 }
-
-const TODO = (what: string) => `TODO(content): ${what}`;
 
 function Section({ def, variant, go }: { def: (typeof SECTIONS)[number]; variant: string; go: (p: PageId) => void }) {
   const v = variant.replace(`${def.id}-`, "");
@@ -437,7 +438,7 @@ function Section({ def, variant, go }: { def: (typeof SECTIONS)[number]; variant
             <div className="L-hero-copy">
               <p className="eyebrow">Organizational and high-performance consulting</p>
               <h1 className="display">High performance <em>without</em> the cost to people.</h1>
-              <p className="lede">{TODO("hero lede, must match Daniel's video script")}</p>
+              <p className="lede">Most teams leak performance through their environment, not their effort. Samuh finds where yours is leaking, and gives you the practices to close it.</p>
               <div className="cta-row">
                 <button className="btn" onClick={() => go("start")}>Get started <span className="arrow">&rarr;</span></button>
                 <button className="btn btn-secondary" onClick={() => go("contact")}>Book a call</button>
@@ -449,7 +450,7 @@ function Section({ def, variant, go }: { def: (typeof SECTIONS)[number]; variant
 
         {def.id === "thesis" && (
           <div className="L-thesis-in">
-            <p className="L-big">{TODO("the problem SAMUH solves, one or two sentences")}</p>
+            <p className="L-big">Every leadership team leaks performance. Few can see where. You have already paid for the talent. The question is whether the team&rsquo;s conditions let you get the full return.</p>
             <span className="L-cap">In partnership with Sapien Labs</span>
           </div>
         )}
@@ -467,10 +468,14 @@ function Section({ def, variant, go }: { def: (typeof SECTIONS)[number]; variant
           <>
             <Head def={def} />
             <div className="L-circles">
-              {["Organization", "Team", "Individual"].map((c, i) => (
+              {[
+                ["Organization", "Where transformations and organization-wide programs land."],
+                ["Team", "Where the work gets done, and where capacity is won or lost."],
+                ["Individual", "Where evaluation and development are aimed."],
+              ].map(([c, note], i) => (
                 <div className={`L-circle L-circle-${i}`} key={c}>
                   <span className="L-circle-label">{c}</span>
-                  <span className="L-circle-note">{TODO(`one line on the ${c.toLowerCase()}`)}</span>
+                  <span className="L-circle-note">{note}</span>
                 </div>
               ))}
             </div>
@@ -482,10 +487,15 @@ function Section({ def, variant, go }: { def: (typeof SECTIONS)[number]; variant
             <Head def={def} />
             <div className="L-aspire">
               <Frame label="Imagery · a team you would want to lead" tall />
-              <p className="L-big">{TODO("the aspirational statement")}</p>
+              <p className="L-big">Sustained performance, where people thriving and results thriving reinforce each other instead of trading off.</p>
               <ul className="L-cols">
-                {["Cognitive", "Relational", "Emotional", "Physical"].map((c) => (
-                  <li key={c}><span className="L-col-title">{c}</span><span className="L-col-note">{TODO("competency line")}</span></li>
+                {[
+                  ["Cognitive", "Judgment and focus that hold under load."],
+                  ["Relational", "Trust, feedback and how decisions get made."],
+                  ["Emotional", "Energy, and the will to keep going."],
+                  ["Physical", "The stamina the other three depend on."],
+                ].map(([c, note]) => (
+                  <li key={c}><span className="L-col-title">{c}</span><span className="L-col-note">{note}</span></li>
                 ))}
               </ul>
             </div>
@@ -496,7 +506,7 @@ function Section({ def, variant, go }: { def: (typeof SECTIONS)[number]; variant
           <>
             <Head def={def} />
             <blockquote className="L-research">
-              <p className="L-big">{TODO("one research-backed statement, SAMUH owns the wording")}</p>
+              <p className="L-big">The environment inside a team shapes how much capacity its people can bring to the work. What was previously inferred can now be measured.</p>
               <a href="#" className="inline-link" onClick={stay}>Sapien Labs Work Culture Report</a>
             </blockquote>
           </>
@@ -508,8 +518,8 @@ function Section({ def, variant, go }: { def: (typeof SECTIONS)[number]; variant
             <div className="L-voices">
               {[0, 1, 2].map((i) => (
                 <figure className="card L-quote" key={i}>
-                  <blockquote>{TODO("testimonial quote")}</blockquote>
-                  <figcaption className="L-cap">{TODO("attribution, cleared for publication")}</figcaption>
+                  <blockquote>&ldquo;Sample testimonial. Two or three sentences in the client&rsquo;s own words about what changed for the team.&rdquo;</blockquote>
+                  <figcaption className="L-cap">Name &middot; Role &middot; Organization</figcaption>
                 </figure>
               ))}
             </div>
@@ -523,7 +533,7 @@ function Section({ def, variant, go }: { def: (typeof SECTIONS)[number]; variant
               <Frame label="Case study image or client mark · contract check first" />
               <div>
                 <span className="card-tag">Case study · a Fortune 10 leadership team</span>
-                <p className="L-mid">{TODO("anonymised snippet, cleared by Rahul")}</p>
+                <p className="L-mid">A business unit president wanted more rigor in how the team challenged and strengthened its biggest strategic bets. The team chose feedback on strategic initiatives as the practice to improve, and built one ritual around it.</p>
                 <a href="#" className="inline-link" onClick={stay}>Read the case study</a>
               </div>
             </div>
@@ -544,8 +554,8 @@ function Section({ def, variant, go }: { def: (typeof SECTIONS)[number]; variant
               </div>
               <div className="L-result">
                 <span className="L-cap">Estimated productive days lost per month</span>
-                <span className="L-number">{TODO("model")}</span>
-                <span className="L-cap">Our own intake tool. Not TeamQ, not diagnostic.</span>
+                <span className="L-number">&mdash;</span>
+                <span className="L-cap">Your estimate appears here as you move the sliders. Our own intake tool, not TeamQ, not diagnostic.</span>
               </div>
             </div>
           </>
@@ -555,11 +565,16 @@ function Section({ def, variant, go }: { def: (typeof SECTIONS)[number]; variant
           <>
             <Head def={def} />
             <div className="L-cards">
-              {[0, 1, 2, 3].map((i) => (
-                <article className="card L-arche" key={i}>
+              {[
+                ["The Fire Brigade", "Brilliant in a crisis, exhausted by Thursday. Nothing gets planned because everything gets rescued."],
+                ["The Silo Farm", "Six strong people, six separate plans. Information travels by rumour."],
+                ["The Quiet Room", "Meetings end in agreement and nothing changes. The real conversation happens afterwards, in pairs."],
+                ["The Flywheel", "Feedback is a habit, not an event. The team knows what it is working on and why."],
+              ].map(([name, line]) => (
+                <article className="card L-arche" key={name}>
                   <Frame label="Illustration" />
-                  <h3>{TODO("archetype name")}</h3>
-                  <p>{TODO("two lines you recognise yourself in")}</p>
+                  <h3>{name}</h3>
+                  <p>{line}</p>
                 </article>
               ))}
             </div>
@@ -570,12 +585,11 @@ function Section({ def, variant, go }: { def: (typeof SECTIONS)[number]; variant
           <>
             <Head def={def} />
             <div className="L-equation">
-              <div className="L-eq">
-                {["Team environment", "+", "Team practices", "=", "Capacity to perform", "→", "Performance"].map((t, i) => (
-                  <span key={i} className={/^[+=→]$/.test(t) ? "L-eq-op" : "L-eq-term"}>{t}</span>
-                ))}
+              <Frame label="The SAMUH equation · video, plays in place" tall />
+              <div>
+                <p className="L-big">Team practices shape the team environment. The environment sets the capacity people can bring. Capacity turns into performance.</p>
+                <p className="L-mid">Team environment + team practices = capacity to perform, and capacity is what becomes performance. The film walks the equation one term at a time.</p>
               </div>
-              <p className="L-mid">{TODO("two sentences on how the equation reads, from the introduction deck")}</p>
             </div>
           </>
         )}

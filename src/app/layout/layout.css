@@ -180,6 +180,9 @@
   flex-shrink: 0;
 }
 .L-page[data-numbers="numbers-off"] .L-n { display: none; }
+.L-page[data-heads="heads-off"] .L-head { display: none; }
+.L-page[data-heads="heads-off"][data-comp="comp-editorial"] .L-sec-h > .L-wrap { grid-template-columns: 1fr; }
+.L-page[data-heads="heads-off"][data-comp="comp-editorial"] .L-sec-h > .L-wrap > :not(.L-head) { grid-column: 1; }
 .L-eyebrow { margin-bottom: 10px; }
 .L-eyebrow::after { display: none; }
 
@@ -476,15 +479,17 @@
 
 /* ---------- 11 equation ---------- */
 
-.L-equation { display: grid; gap: 28px; }
+.L-equation { display: grid; gap: 28px; align-items: center; }
+.L-equation .ph { min-height: min(56vh, 520px); }
+.L-equation .L-big { margin-bottom: 14px; }
 .L-eq { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 18px; }
 .L-eq-term { font-family: var(--font-display); font-weight: var(--display-weight); font-size: clamp(20px, 2.4cqw, 34px); padding: 12px 18px; border: var(--rule-thin) solid var(--border); border-radius: min(var(--radius), 14px); }
 .L-eq-term:nth-child(5) { border: var(--rule-fat) solid var(--accent); }
 .L-eq-term:last-child { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
 .L-eq-op { font-family: var(--font-caption); font-size: 22px; color: var(--muted); }
 .L-sec[data-v="centered"] .L-equation { justify-items: center; text-align: center; }
-.L-sec[data-v="centered"] .L-eq { justify-content: center; }
-.L-sec[data-v="split"] .L-equation { grid-template-columns: 1.4fr 1fr; align-items: center; }
+.L-sec[data-v="centered"] .L-equation .ph { width: 100%; }
+.L-sec[data-v="split"] .L-equation { grid-template-columns: 1.4fr 1fr; }
 
 /* ---------- 12 start ---------- */
 
@@ -686,6 +691,14 @@
 .L-page[data-comp="comp-editorial"] :is(.card, .step):hover { background: transparent; box-shadow: none; transform: none; border-top-color: var(--accent); }
 .L-page[data-comp="comp-editorial"] .card::before, .L-page[data-comp="comp-editorial"] .step::after { display: none; }
 .L-page[data-comp="comp-editorial"] .L-foot { flex-direction: column; align-items: flex-start; }
+.L-page[data-comp="comp-editorial"] .L-s-circles > .L-wrap { grid-template-columns: 1fr; justify-items: center; row-gap: 28px; }
+.L-page[data-comp="comp-editorial"] .L-s-circles > .L-wrap > :not(.L-head) { grid-column: 1; width: 100%; }
+.L-page[data-comp="comp-editorial"] .L-s-circles .L-head { position: static; align-items: center; text-align: center; border-top: 0; }
+.L-page[data-comp="comp-editorial"] .L-s-circles .L-head .L-n { border-top: var(--rule-fat) solid var(--accent); padding-top: 10px; }
+.L-page[data-comp="comp-editorial"] .L-s-hero[data-v="video"] > .L-wrap { max-width: none; padding: 0; }
+.L-page[data-comp="comp-editorial"] .L-s-hero[data-v="video"] .L-hero-copy { padding: 36px 24px 0; max-width: var(--width-px); margin: 0 auto; }
+.L-page[data-comp="comp-editorial"] .L-s-hero[data-v="video"] .ph { border: 0; border-radius: 0; min-height: min(62vh, 680px); }
+.L-page[data-comp="comp-editorial"] .L-s-hero { padding-top: 0; }
 
 /* ---------- Keynote: one idea per screen ----------
    Each section fills the view and centres its idea. Numbers go, a slide

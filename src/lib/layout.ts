@@ -47,6 +47,7 @@ export type SpacingId = "space-tight" | "space-regular" | "space-airy";
 export type NavId = "nav-bar" | "nav-centered" | "nav-minimal" | "nav-menu";
 export type DividerId = "rule-hairline" | "rule-none" | "rule-heavy";
 export type NumbersId = "numbers-on" | "numbers-off";
+export type HeadsId = "heads-on" | "heads-off";
 export type ViewId = "desktop" | "tablet" | "phone";
 export type CompId = "comp-editorial" | "comp-keynote" | "comp-cinema";
 
@@ -78,6 +79,11 @@ export const DIVIDERS: Opt<DividerId>[] = [
   { id: "rule-hairline", name: "Hairline", note: "A thin rule between sections." },
   { id: "rule-none", name: "None", note: "Space does the separating." },
   { id: "rule-heavy", name: "Heavy", note: "The fat rule, in the accent, between sections." },
+];
+
+export const HEADS: Opt<HeadsId>[] = [
+  { id: "heads-on", name: "On", note: "Number, kicker and title above (or beside) each section." },
+  { id: "heads-off", name: "Off", note: "Sections open straight on their content. In Editorial the margin column goes too." },
 ];
 
 export const NUMBERS: Opt<NumbersId>[] = [
@@ -270,6 +276,7 @@ export interface Layout {
   nav: Opt<NavId>;
   divider: Opt<DividerId>;
   numbers: Opt<NumbersId>;
+  heads: Opt<HeadsId>;
   comp: Opt<CompId>;
   /** preview width; in the hash only when not desktop, so links open at the size they were made */
   view: ViewId;
@@ -294,7 +301,7 @@ export const PRESETS: Preset[] = [
     letter: "A",
     name: "Editorial",
     note: "Left aligned, standard column, a hairline between sections. Reads like a well-set report.",
-    hash: "#void.comp-editorial.align-left.width-standard.space-regular.nav-bar.rule-hairline.numbers-on.hero-split.thesis-under.meaning-aside.circles-nested.aspire-columns.research-statement.voices-grid.case-card.tool-split.cards-grid.equation-split.start-band",
+    hash: "#void.comp-editorial.align-left.width-standard.space-regular.nav-bar.rule-hairline.numbers-on.hero-video.thesis-under.meaning-aside.circles-nested.aspire-columns.research-statement.voices-grid.case-card.tool-split.cards-grid.equation-split.start-band",
   },
   {
     id: "b",
@@ -335,7 +342,8 @@ export function layoutHash(l: Layout): string {
   const secs = SECTIONS.map((s) => l.sections[s.id]).join(".");
   const view = l.view === "desktop" ? "" : `.${l.view}`;
   const page = l.page === "home" ? "" : `.page-${l.page}`;
-  return `#${l.bg}.${l.comp.id}.${l.align.id}.${l.width.id}.${l.spacing.id}.${l.nav.id}.${l.divider.id}.${l.numbers.id}.${secs}${view}${page}`;
+  const heads = l.heads.id === "heads-on" ? "" : `.${l.heads.id}`;
+  return `#${l.bg}.${l.comp.id}.${l.align.id}.${l.width.id}.${l.spacing.id}.${l.nav.id}.${l.divider.id}.${l.numbers.id}${heads}.${secs}${view}${page}`;
 }
 
 export function sameLayout(a: Layout, b: Layout): boolean {
@@ -356,6 +364,7 @@ export function parseLayoutHash(hash: string): Layout {
     nav: NAVS[0],
     divider: DIVIDERS[0],
     numbers: NUMBERS[0],
+    heads: HEADS[0],
     comp: COMPS[0],
     view: "desktop",
     page: "home",
@@ -370,6 +379,7 @@ export function parseLayoutHash(hash: string): Layout {
     const dv = DIVIDERS.find((x) => x.id === id); if (dv) { l.divider = dv; continue; }
     const nm = NUMBERS.find((x) => x.id === id); if (nm) { l.numbers = nm; continue; }
     const cp = COMPS.find((x) => x.id === id); if (cp) { l.comp = cp; continue; }
+    const hd = HEADS.find((x) => x.id === id); if (hd) { l.heads = hd; continue; }
     const vw = VIEWS.find((x) => x.id === id); if (vw) { l.view = vw.id; continue; }
     if (id.startsWith("page-")) {
       const pg = PAGES.find((x) => x.id === id.slice(5)); if (pg) { l.page = pg.id; continue; }
