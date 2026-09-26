@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { BACKGROUNDS, cssVars, comboName } from "@/lib/tokens";
 import {
@@ -28,6 +28,17 @@ export default function LayoutTool() {
   const [layout, setLayout] = useState<Layout>(DEFAULT_LAYOUT);
   const [railOpen, setRailOpen] = useState(true);
   const [copied, setCopied] = useState(false);
+  const railRef = useRef<HTMLElement>(null);
+  const topRef = useRef<HTMLDivElement>(null);
+  // the pinned head's height, so section headers stack under it not behind it
+  useEffect(() => {
+    const rail = railRef.current;
+    const top = topRef.current;
+    if (!rail || !top) return;
+    const ro = new ResizeObserver(() => rail.style.setProperty("--rail-top", `${top.offsetHeight}px`));
+    ro.observe(top);
+    return () => ro.disconnect();
+  }, [railOpen]);
   const combo = lockedCombo(layout.bg);
   const set = (patch: Partial<Layout>) => setLayout((l) => ({ ...l, ...patch }));
   const setSection = (id: SectionId, v: string) =>
@@ -98,9 +109,19 @@ export default function LayoutTool() {
       data-hover={combo.hover.id}
       data-entrance="still"
     >
-      <aside className="rail" data-open={railOpen} aria-label="Layout tool">
+      <aside className="rail" data-open={railOpen} aria-label="Layout tool" ref={railRef}>
         {railOpen ? (
           <>
+            <div className="rail-pin" ref={topRef}>
+            <div className="rail-preview" role="group" aria-label="Preview device">
+              <span className="rail-preview-k">Preview:</span>
+              {VIEWS.map((x) => (
+                <button key={x.id} className="opt opt-tight" aria-pressed={x.id === view} onClick={() => set({ view: x.id })} title={`${x.px}px wide`}>
+                  {x.name}
+                </button>
+              ))}
+            </div>
+            <div className="rail-top">
             <div className="rail-head">
               <span className="rail-title">
                 <span className="rail-now">Layout · now showing</span>
@@ -110,6 +131,16 @@ export default function LayoutTool() {
                 <button className="tbtn tbtn-accent" onClick={copyLink}>{copied ? "Copied" : "Copy link"}</button>
                 <button className="tbtn" onClick={() => setRailOpen(false)} aria-expanded="true" aria-controls="rail-dials">Minimise</button>
               </span>
+            </div>
+            <div className="rail-sum" aria-label="Current selection, short form">
+              <span className="rail-sum-line">
+                {PAGES.find((x) => x.id === layout.page)?.name ?? layout.page} page · {comboName(combo)} · {viewPx}px
+              </span>
+              <span className="rail-sum-line">
+                {layout.align.name} · {layout.width.name} · {layout.spacing.name} · {layout.nav.name} · {layout.comp.name}
+              </span>
+            </div>
+            </div>
             </div>
 
             <div className="rail-block picks">
@@ -161,8 +192,7 @@ export default function LayoutTool() {
                 </span>
               </div>
               <p className="rail-note">
-                From Mike&apos;s link of 25 September. Colors, fonts, lines and motion are fixed here.
-                To revisit them, <a className="rail-link" href={`/design${LOCKED_HASH}`}>open the style picker</a>.
+                To revisit the style, <a className="rail-link" href={`/design${LOCKED_HASH}`}>open the style picker</a>.
               </p>
             </div>
 
@@ -187,16 +217,6 @@ export default function LayoutTool() {
                       {BACKGROUNDS.map((x) => (
                         <button key={x.id} className="opt" aria-pressed={x.id === layout.bg} onClick={() => set({ bg: x.id })} title={x.bet}>
                           <span className="opt-n">{x.n}</span>{x.name}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="ctrl">
-                    <span className="ctrl-label">Viewport · preview only</span>
-                    <div className="ctrl-opts">
-                      {VIEWS.map((x) => (
-                        <button key={x.id} className="opt" aria-pressed={x.id === view} onClick={() => set({ view: x.id })}>
-                          {x.name} <span className="opt-n">{x.px}</span>
                         </button>
                       ))}
                     </div>

@@ -112,7 +112,7 @@ export const COMPS: Opt<CompId>[] = [
 export const VIEWS: (Opt<ViewId> & { px: number })[] = [
   { id: "desktop", name: "Desktop", px: 1440 },
   { id: "tablet", name: "Tablet", px: 834 },
-  { id: "phone", name: "Phone", px: 390 },
+  { id: "phone", name: "iPhone", px: 390 },
 ];
 
 /* ------------------------------------------------------------------ */
