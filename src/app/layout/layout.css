@@ -903,6 +903,12 @@
 .L-page[data-comp="comp-cinema"] .L-number { font-size: clamp(56px, 9cqw, 128px); }
 .L-page[data-comp="comp-cinema"] .L-page-head .L-n { font-size: clamp(56px, 8cqw, 120px); }
 .L-page[data-comp="comp-cinema"] .L-foot { border-top: var(--rule-fat) solid var(--accent); }
+/* the circles centre in Cinema too: head stacked above the diagram */
+.L-page[data-comp="comp-cinema"] .L-s-circles { text-align: center; }
+.L-page[data-comp="comp-cinema"] .L-s-circles .L-head { flex-direction: column; align-items: center; gap: 10px; }
+.L-page[data-comp="comp-cinema"] .L-s-circles .L-head .L-eyebrow { justify-content: center; }
+.L-page[data-comp="comp-cinema"] .L-s-circles .L-head .L-eyebrow::after { display: none; }
+.L-page[data-comp="comp-cinema"] .L-s-circles h2.sec { margin-left: auto; margin-right: auto; }
 
 @container page (max-width: 900px) {
   .L-page[data-comp="comp-editorial"] .L-sec-h > .L-wrap { grid-template-columns: 1fr; row-gap: 20px; }
