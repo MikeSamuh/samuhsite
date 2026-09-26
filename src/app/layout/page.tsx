@@ -367,18 +367,20 @@ function Head({ def }: { def: (typeof SECTIONS)[number] }) {
  * are where organizations focus. Only the team circle carries the accent.
  */
 function Circles() {
-  const sq = (x: number, y: number) => <rect x={x - 5} y={y - 5} width={10} height={10} className="L-c-sq" />;
+  const sq = (x: number, y: number, cls: string) => <rect x={x - 5} y={y - 5} width={10} height={10} className={`L-c-sq ${cls}`} />;
   return (
     <div className="L-circ">
-      <p className="L-c-call L-c-left">Where people experience their work life</p>
+      <p className="L-c-call L-c-left L-c-hi">Where people experience their work life</p>
       <svg className="L-c-svg" viewBox="0 0 640 440" role="img" aria-label="Three nested circles: organization, team, individual">
-        {/* leader lines run to the edges, where the callouts sit */}
-        <line x1={0} y1={220} x2={205} y2={220} className="L-c-line" />
-        {sq(205, 220)}
-        <polyline points="640,220 470,110" className="L-c-line" />
-        <polyline points="640,220 440,352" className="L-c-line" />
-        {sq(470, 110)}
-        {sq(440, 352)}
+        {/* leader lines run to the edges, where the callouts sit. The left
+            one lands inside the team, the right pair inside the individual
+            and inside the organization ring */}
+        <line x1={0} y1={220} x2={215} y2={220} className="L-c-line L-c-hi" />
+        {sq(215, 220, "L-c-hi")}
+        <polyline points="640,220 356,72" className="L-c-line L-c-alt" />
+        <polyline points="640,220 440,352" className="L-c-line L-c-alt" />
+        {sq(356, 72, "L-c-alt")}
+        {sq(440, 352, "L-c-alt")}
         {/* circles */}
         <circle cx={320} cy={220} r={190} className="L-c-org" />
         <circle cx={320} cy={182} r={128} className="L-c-team" />
@@ -388,7 +390,7 @@ function Circles() {
         <text x={320} y={236} className="L-c-t L-c-t-team">Team</text>
         <text x={320} y={362} className="L-c-t L-c-t-org">Organization</text>
       </svg>
-      <p className="L-c-call L-c-right">Where organizations focus</p>
+      <p className="L-c-call L-c-right L-c-alt">Where organizations focus</p>
     </div>
   );
 }

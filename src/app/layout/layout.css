@@ -401,9 +401,17 @@
 .L-circ { --c-stroke: 2px; --c-line: 1px; }
 .L-c-line { fill: none; stroke: var(--text); stroke-width: var(--c-line); vector-effect: non-scaling-stroke; }
 .L-c-sq { fill: var(--text); }
-.L-c-org { fill: none; stroke: var(--text); stroke-width: var(--c-stroke); vector-effect: non-scaling-stroke; }
+/* the team is the subject: highlighted in the primary. The individual and
+   the organization, where organizations focus, sit in the secondary */
+.L-c-org { fill: none; stroke: var(--accent-2); stroke-width: var(--c-stroke); vector-effect: non-scaling-stroke; }
 .L-c-team { fill: color-mix(in srgb, var(--accent-4) 8%, transparent); stroke: var(--accent); stroke-width: var(--c-stroke); vector-effect: non-scaling-stroke; }
-.L-c-ind { fill: none; stroke: var(--text); stroke-width: var(--c-stroke); vector-effect: non-scaling-stroke; }
+.L-c-ind { fill: none; stroke: var(--accent-2); stroke-width: var(--c-stroke); vector-effect: non-scaling-stroke; }
+.L-c-line.L-c-hi, .L-c-hi.L-c-sq { stroke: var(--accent); fill: var(--accent); }
+.L-c-line.L-c-alt, .L-c-alt.L-c-sq { stroke: var(--accent-2); fill: var(--accent-2); }
+.L-c-line.L-c-hi { fill: none; }
+.L-c-line.L-c-alt { fill: none; }
+.L-c-call.L-c-hi { color: var(--accent); }
+.L-c-call.L-c-alt { color: var(--accent-2); }
 .L-c-t {
   fill: var(--text);
   text-anchor: middle;
@@ -412,9 +420,9 @@
   font-style: var(--display-style, normal);
   letter-spacing: var(--display-tracking);
 }
-.L-c-t-ind { font-size: 20px; }
+.L-c-t-ind { font-size: 20px; fill: var(--accent-2); }
 .L-c-t-team { font-size: 44px; fill: var(--accent); }
-.L-c-t-org { font-size: 20px; }
+.L-c-t-org { font-size: 20px; fill: var(--accent-2); }
 .L-c-call {
   margin: 0;
   font-family: var(--font-display);
