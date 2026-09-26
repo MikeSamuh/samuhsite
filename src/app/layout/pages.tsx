@@ -78,7 +78,8 @@ function Solutions({ go }: { go: (p: PageId) => void }) {
               <p className="L-mid">{t.get}</p>
             </div>
             <div className="L-tier-cta">
-              <button className="btn" onClick={() => go("contact")}>{t.cta} <span className="arrow">&rarr;</span></button>
+              {t.name === "Self-guided" ? <span className="L-cap">Price to confirm</span> : null}
+              <a href="#" className="inline-link L-text-cta" onClick={(e) => { stay(e); go("contact"); }}>Talk to us <span className="arrow">&rarr;</span></a>
             </div>
           </div>
         </Sec>

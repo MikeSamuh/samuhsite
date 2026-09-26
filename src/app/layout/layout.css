@@ -624,7 +624,10 @@
 /* solutions */
 .L-tier { display: grid; grid-template-columns: repeat(3, 1fr) auto; gap: 28px; align-items: start; }
 .L-tier .L-mid { margin-top: 8px; }
-.L-tier-cta { align-self: end; }
+.L-tier-cta { align-self: end; display: grid; gap: 8px; justify-items: start; }
+.L-text-cta { font-size: 15px; display: inline-flex; align-items: center; gap: 8px; }
+.L-text-cta .arrow { transition: transform var(--dur) var(--ease); }
+.L-text-cta:hover .arrow { transform: translateX(4px); }
 .L-table { width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 14px; }
 .L-table th, .L-table td { text-align: left; padding: 12px 14px; border-top: var(--rule-thin) solid var(--border); }
 .L-table thead th { font-family: var(--font-display); font-weight: var(--display-weight); font-size: 18px; border-top: 0; }
