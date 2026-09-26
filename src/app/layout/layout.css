@@ -903,7 +903,9 @@
 .L-page[data-comp="comp-cinema"] .L-sec:nth-of-type(even) :is(.card, .step) { background: var(--base); }
 .L-page[data-comp="comp-cinema"] :is(.card, .step):hover { border-left-color: var(--accent-2); transform: none; }
 .L-page[data-comp="comp-cinema"] .card::before, .L-page[data-comp="comp-cinema"] .step::after { display: none; }
-.L-page[data-comp="comp-cinema"] :is(.btn, .field input, .L-form input, .L-form textarea, .L-form select) { border-radius: 0; }
+/* Cinema squares the buttons only when they are left at Filled. Rounded and
+   Outline are explicit choices and win. */
+.L-page[data-comp="comp-cinema"][data-btn="btn-filled"] :is(.btn, .field input, .L-form input, .L-form textarea, .L-form select) { border-radius: 0; }
 .L-page[data-comp="comp-cinema"] .btn { text-transform: uppercase; letter-spacing: 0.06em; font-size: 13px; }
 .L-page[data-comp="comp-cinema"] .L-s-hero[data-v="cinema"] .L-hero-copy { padding-top: calc(160px * var(--space, 1)); }
 .L-page[data-comp="comp-cinema"] .L-s-hero[data-v="cinema"] h1.display { font-size: clamp(44px, 7.4cqw, 104px); }
