@@ -420,7 +420,7 @@
   font-style: var(--display-style, normal);
   letter-spacing: var(--display-tracking);
 }
-.L-c-t-ind { font-size: 20px; fill: var(--accent-2); }
+.L-c-t-ind { font-size: 16px; fill: var(--accent-2); }
 .L-c-t-team { font-size: 44px; fill: var(--accent); }
 .L-c-t-org { font-size: 20px; fill: var(--accent-2); }
 .L-c-call {
