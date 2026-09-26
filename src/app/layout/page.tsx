@@ -261,7 +261,7 @@ export default function LayoutTool() {
               <Backdrop id={layout.bg} pointer="well" />
             </div>
             <div className="L-body">
-              <Nav page={layout.page} go={go} menu={layout.nav.id === "nav-menu"} />
+              <Nav page={layout.page} go={go} menu={layout.nav.id === "nav-menu"} explore={layout.nav.id === "nav-minimal"} />
               {layout.page === "home"
                 ? SECTIONS.map((s) => {
                     const v = layout.sections[s.id];
@@ -293,8 +293,9 @@ export default function LayoutTool() {
 /* Nav                                                                 */
 /* ------------------------------------------------------------------ */
 
-function Nav({ page, go, menu }: { page: PageId; go: (p: PageId) => void; menu: boolean }) {
+function Nav({ page, go, menu, explore }: { page: PageId; go: (p: PageId) => void; menu: boolean; explore: boolean }) {
   const [open, setOpen] = useState(false);
+  const overlay = menu || explore;
   const links = PAGES.filter((x) => x.nav && x.id !== "home");
   const jump = (p: PageId) => { setOpen(false); go(p); };
   return (
@@ -313,10 +314,10 @@ function Nav({ page, go, menu }: { page: PageId; go: (p: PageId) => void; menu: 
             <a key={x.id} href="#" onClick={(e) => { stay(e); jump(x.id); }} aria-current={x.id === page ? "page" : undefined}>{x.name}</a>
           ))}
         </nav>
-        <span className="L-menu tbtn" onClick={() => setOpen(true)}>Menu</span>
+        <button className="btn btn-secondary btn-small L-menu" onClick={() => setOpen(true)} aria-expanded={open} aria-controls="L-overlay">Explore</button>
         <button className="btn btn-small" onClick={() => jump("start")}>Get started <span className="arrow">&rarr;</span></button>
       </header>
-      {menu && open ? (
+      {overlay && open ? (
         <div className="L-overlay" id="L-overlay" role="dialog" aria-label="Site menu">
           <div className="L-overlay-head L-wrap">
             <button className="L-burger is-x" onClick={() => setOpen(false)} aria-label="Close menu"><span /><span /><span /></button>

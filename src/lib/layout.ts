@@ -72,7 +72,7 @@ export const SPACINGS: (Opt<SpacingId> & { scale: number })[] = [
 export const NAVS: Opt<NavId>[] = [
   { id: "nav-bar", name: "Bar", note: "Logo left, links and the button right, a hairline under." },
   { id: "nav-centered", name: "Centered", note: "Logo in the middle, links either side." },
-  { id: "nav-minimal", name: "Minimal", note: "Logo and one button. Links live in a menu." },
+  { id: "nav-minimal", name: "Minimal", note: "Logo, an Explore button that opens the full-page menu, and Get started." },
   { id: "nav-menu", name: "Menu", note: "Logo centered, hamburger on the left, a full-screen menu drops down. Bold links." },
 ];
 
