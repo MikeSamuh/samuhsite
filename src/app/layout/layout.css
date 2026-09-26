@@ -437,6 +437,71 @@
 .L-sec[data-v="single"] .L-quote blockquote { font-family: var(--font-display); font-weight: var(--display-weight); font-size: clamp(22px, 2.6cqw, 32px); line-height: 1.3; }
 .L-sec[data-v="strip"] .L-voices { grid-auto-flow: column; grid-auto-columns: minmax(300px, 1fr); overflow-x: auto; padding-bottom: 8px; }
 
+/* the carousel: one quote, arrows either side, dots below */
+.L-carousel {
+  display: grid;
+  grid-template-columns: 48px 1fr 48px;
+  grid-template-rows: auto auto;
+  align-items: center;
+  gap: 18px 24px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+.L-car-slide {
+  margin: 0;
+  text-align: center;
+  display: grid;
+  gap: 26px;
+  animation: L-drop calc(var(--dur) * 1.4) var(--ease) backwards;
+}
+.L-car-slide blockquote {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: var(--display-weight);
+  font-style: italic;
+  letter-spacing: var(--display-tracking);
+  font-size: clamp(24px, 3cqw, 40px);
+  line-height: 1.3;
+  max-width: 30ch;
+  margin: 0 auto;
+}
+.L-car-slide figcaption { display: grid; gap: 6px; justify-items: center; }
+.L-car-who { font-family: var(--font-display); font-weight: var(--display-weight); font-size: 18px; }
+.L-car-mark {
+  margin-top: 14px;
+  width: 120px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border: var(--rule-thin) dashed color-mix(in srgb, var(--muted) 60%, transparent);
+  border-radius: min(var(--radius), 8px);
+  font-family: var(--font-caption);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.L-car-arrow {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: var(--rule-thin) solid var(--border);
+  background: transparent;
+  color: var(--text);
+  font-size: 18px;
+  cursor: pointer;
+  transition: all var(--dur) var(--ease);
+}
+.L-car-arrow:hover { border-color: var(--accent); color: var(--accent); }
+.L-car-dots { grid-column: 1 / -1; display: flex; justify-content: center; gap: 10px; }
+.L-car-dot { width: 8px; height: 8px; border-radius: 50%; border: 0; padding: 0; background: var(--border); cursor: pointer; transition: all var(--dur) var(--ease); }
+.L-car-dot[aria-pressed="true"] { background: var(--accent); transform: scale(1.3); }
+.L-page[data-comp="comp-editorial"] .L-carousel { margin: 0; }
+.L-page[data-comp="comp-editorial"] .L-car-slide { text-align: left; }
+.L-page[data-comp="comp-editorial"] .L-car-slide blockquote { margin: 0; }
+.L-page[data-comp="comp-editorial"] .L-car-slide figcaption { justify-items: start; }
+.L-page[data-comp="comp-editorial"] .L-car-dots { justify-content: flex-start; }
+
 /* ---------- 08 case ---------- */
 
 .L-case { display: grid; gap: 28px; align-items: center; }
@@ -535,6 +600,8 @@
 
 @container page (max-width: 560px) {
   .L-s-hero[data-v="over"] .L-hero-copy { padding: 20px; }
+  .L-carousel { grid-template-columns: 1fr; }
+  .L-car-arrow { display: none; }
   .L-cols, .L-sec[data-v="grid"] .L-cards { grid-template-columns: 1fr; }
   .L-sec[data-v="list"] .L-arche { grid-template-columns: 1fr; }
   .L-sec[data-v="list"] .L-arche .ph { grid-row: auto; }

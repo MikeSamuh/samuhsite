@@ -423,6 +423,39 @@ function Dictionary() {
   );
 }
 
+const QUOTES = [
+  { q: "Sample testimonial. Two or three sentences in the client\u2019s own words about what changed for the team, and what it felt like to work this way.", who: "Name", role: "Role, Organization" },
+  { q: "A second sample. Long enough to show how a real quote wraps at this size, short enough to read in one breath.", who: "Name", role: "Role, Organization" },
+  { q: "A third sample, so the arrows and the dots have somewhere to go.", who: "Name", role: "Role, Organization" },
+];
+
+/** One elegant italic quote at a time, attribution under it, the client's mark under that. */
+function Carousel() {
+  const [i, setI] = useState(0);
+  const n = QUOTES.length;
+  const go = (d: number) => setI((x) => (x + d + n) % n);
+  const cur = QUOTES[i];
+  return (
+    <div className="L-carousel">
+      <button className="L-car-arrow" onClick={() => go(-1)} aria-label="Previous testimonial">&larr;</button>
+      <figure className="L-car-slide" key={i}>
+        <blockquote>&ldquo;{cur.q}&rdquo;</blockquote>
+        <figcaption>
+          <span className="L-car-who">{cur.who}</span>
+          <span className="L-cap">{cur.role}</span>
+          <span className="L-car-mark" aria-label="Client mark">Client mark</span>
+        </figcaption>
+      </figure>
+      <button className="L-car-arrow" onClick={() => go(1)} aria-label="Next testimonial">&rarr;</button>
+      <div className="L-car-dots" role="tablist">
+        {QUOTES.map((_, k) => (
+          <button key={k} className="L-car-dot" aria-pressed={k === i} onClick={() => setI(k)} aria-label={`Testimonial ${k + 1}`} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function Frame({ label, tall }: { label: string; tall?: boolean }) {
   return <div className={`ph${tall ? " ph-tall" : ""}`}>{label}</div>;
 }
@@ -512,7 +545,14 @@ function Section({ def, variant, go }: { def: (typeof SECTIONS)[number]; variant
           </>
         )}
 
-        {def.id === "voices" && (
+        {def.id === "voices" && v === "carousel" && (
+          <>
+            <Head def={def} />
+            <Carousel />
+          </>
+        )}
+
+        {def.id === "voices" && v !== "carousel" && (
           <>
             <Head def={def} />
             <div className="L-voices">

@@ -211,8 +211,8 @@ export const SECTIONS: SectionDef[] = [
     id: "voices", n: 7, title: "Testimonials",
     intent: "Trust before proof.",
     variants: [
+      { id: "voices-carousel", name: "Carousel", note: "One large italic quote at a time, name and role under it, the client's mark below. Arrows and dots." },
       { id: "voices-grid", name: "Grid", note: "Three at once." },
-      { id: "voices-single", name: "Single", note: "One large quote at a time." },
       { id: "voices-strip", name: "Strip", note: "A row that scrolls sideways." },
     ],
   },
@@ -301,21 +301,21 @@ export const PRESETS: Preset[] = [
     letter: "A",
     name: "Editorial",
     note: "Left aligned, standard column, a hairline between sections. Reads like a well-set report.",
-    hash: "#void.comp-editorial.align-left.width-standard.space-regular.nav-bar.rule-hairline.numbers-on.hero-video.thesis-under.meaning-aside.circles-nested.aspire-columns.research-statement.voices-grid.case-card.tool-split.cards-grid.equation-split.start-band",
+    hash: "#void.comp-editorial.align-left.width-standard.space-regular.nav-bar.rule-hairline.numbers-on.hero-video.thesis-under.meaning-aside.circles-nested.aspire-columns.research-statement.voices-carousel.case-card.tool-split.cards-grid.equation-split.start-band",
   },
   {
     id: "b",
     letter: "B",
     name: "Keynote",
     note: "Centred, narrow, airy, no rules. One idea per screen, like a talk.",
-    hash: "#void.comp-keynote.align-center.width-narrow.space-airy.nav-menu.rule-none.numbers-off.hero-centered.thesis-band.meaning-line.circles-row.aspire-statement.research-quote.voices-single.case-inline.tool-card.cards-strip.equation-centered.start-split",
+    hash: "#void.comp-keynote.align-center.width-narrow.space-airy.nav-menu.rule-none.numbers-off.hero-centered.thesis-band.meaning-line.circles-row.aspire-statement.research-quote.voices-carousel.case-inline.tool-card.cards-strip.equation-centered.start-split",
   },
   {
     id: "c",
     letter: "C",
     name: "Cinema",
     note: "Wide and tight, video behind the hero, full-bleed bands, heavy rules. The boldest of the three.",
-    hash: "#void.comp-cinema.align-left.width-wide.space-tight.nav-minimal.rule-heavy.numbers-on.hero-cinema.thesis-under.meaning-line.circles-stack.aspire-image.research-card.voices-strip.case-split.tool-bleed.cards-list.equation-centered.start-form",
+    hash: "#void.comp-cinema.align-left.width-wide.space-tight.nav-minimal.rule-heavy.numbers-on.hero-cinema.thesis-under.meaning-line.circles-stack.aspire-image.research-card.voices-carousel.case-split.tool-bleed.cards-list.equation-centered.start-form",
   },
 ];
 
