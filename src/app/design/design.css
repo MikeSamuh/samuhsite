@@ -251,6 +251,63 @@
 
 .rail[data-open="false"] + .content { padding-left: 48px; }
 
+/* inside a device frame: no rail, the page fills the frame */
+.stage[data-frame] .rail { display: none; }
+.stage[data-frame] .rail + .content { padding-left: 0; }
+
+/* device preview: the page in a frame at a real device width */
+.rail-devices {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.content-device {
+  min-height: 100vh;
+  display: grid;
+  place-items: start center;
+  padding-top: 32px;
+  padding-bottom: 32px;
+}
+
+.device-frame {
+  position: relative;
+  width: var(--dev-w);
+  max-width: calc(100vw - 320px - 48px);
+  height: min(var(--dev-h), calc(100vh - 64px));
+  border: var(--rule-fat) solid var(--border);
+  border-radius: max(var(--radius), 28px);
+  background: var(--base);
+  box-shadow: 0 30px 80px -20px color-mix(in srgb, var(--accent) 30%, transparent);
+  overflow: hidden;
+  transition: width var(--dur) var(--ease), height var(--dur) var(--ease), border-color var(--dur) var(--ease);
+}
+
+.rail[data-open="false"] + .content-device .device-frame { max-width: calc(100vw - 48px - 48px); }
+
+.device-screen {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: var(--base);
+}
+
+.device-label {
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  transform: translate(-50%, -8px);
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.content-device .device-frame { margin-top: 20px; }
+
 /* small toggle button, shared */
 .tbtn {
   font-family: var(--font-mono);
