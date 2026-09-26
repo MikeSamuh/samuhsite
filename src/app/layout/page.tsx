@@ -448,6 +448,38 @@ function Dictionary() {
   );
 }
 
+const ARCHETYPES = [
+  ["The Fire Brigade", "Brilliant in a crisis, exhausted by Thursday. Nothing gets planned because everything gets rescued."],
+  ["The Silo Farm", "Six strong people, six separate plans. Information travels by rumour."],
+  ["The Quiet Room", "Meetings end in agreement and nothing changes. The real conversation happens afterwards, in pairs."],
+  ["The Flywheel", "Feedback is a habit, not an event. The team knows what it is working on and why."],
+];
+
+/** One archetype at a time, rotating on a timer. A click on the card skips ahead. */
+function Rotator() {
+  const [i, setI] = useState(0);
+  const n = ARCHETYPES.length;
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const t = window.setInterval(() => setI((x) => (x + 1) % n), 4200);
+    return () => window.clearInterval(t);
+  }, [n]);
+  const [name, line] = ARCHETYPES[i];
+  return (
+    <div className="L-rotator">
+      <article className="card L-arche L-arche-rot" key={i} onClick={() => setI((x) => (x + 1) % n)}>
+        <Frame label="Illustration" />
+        <div>
+          <span className="card-tag">{String(i + 1).padStart(2, "0")} / {String(n).padStart(2, "0")}</span>
+          <h3>{name}</h3>
+          <p>{line}</p>
+        </div>
+      </article>
+      <div className="L-rot-bar" aria-hidden><span key={i} /></div>
+    </div>
+  );
+}
+
 const QUOTES = [
   { q: "Sample testimonial. Two or three sentences in the client\u2019s own words about what changed for the team, and what it felt like to work this way.", who: "Name", role: "Role, Organization" },
   { q: "A second sample. Long enough to show how a real quote wraps at this size, short enough to read in one breath.", who: "Name", role: "Role, Organization" },
@@ -625,16 +657,18 @@ function Section({ def, variant, go }: { def: (typeof SECTIONS)[number]; variant
           </>
         )}
 
-        {def.id === "cards" && (
+        {def.id === "cards" && v === "rotate" && (
+          <>
+            <Head def={def} />
+            <Rotator />
+          </>
+        )}
+
+        {def.id === "cards" && v !== "rotate" && (
           <>
             <Head def={def} />
             <div className="L-cards">
-              {[
-                ["The Fire Brigade", "Brilliant in a crisis, exhausted by Thursday. Nothing gets planned because everything gets rescued."],
-                ["The Silo Farm", "Six strong people, six separate plans. Information travels by rumour."],
-                ["The Quiet Room", "Meetings end in agreement and nothing changes. The real conversation happens afterwards, in pairs."],
-                ["The Flywheel", "Feedback is a habit, not an event. The team knows what it is working on and why."],
-              ].map(([name, line]) => (
+              {ARCHETYPES.map(([name, line]) => (
                 <article className="card L-arche" key={name}>
                   <Frame label="Illustration" />
                   <h3>{name}</h3>

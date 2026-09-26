@@ -570,6 +570,25 @@
 .L-sec[data-v="list"] .L-arche { grid-template-columns: 160px 1fr; grid-template-rows: auto auto; column-gap: 24px; }
 .L-sec[data-v="list"] .L-arche .ph { grid-row: 1 / 3; min-height: 120px; }
 
+/* one archetype at a time */
+.L-rotator { display: grid; gap: 12px; max-width: 900px; }
+.L-arche-rot {
+  grid-template-columns: minmax(200px, 320px) 1fr;
+  grid-template-rows: auto;
+  align-items: center;
+  column-gap: 32px;
+  cursor: pointer;
+  animation: L-drop calc(var(--dur) * 1.6) var(--ease) backwards;
+}
+.L-arche-rot .ph { min-height: 220px; grid-row: auto; }
+.L-arche-rot h3 { font-size: clamp(24px, 2.8cqw, 36px); margin: 8px 0 10px; }
+.L-arche-rot p { font-size: 16px; line-height: 1.6; }
+.L-rot-bar { height: var(--rule-thin); background: var(--border); overflow: hidden; border-radius: 99px; }
+.L-rot-bar span { display: block; height: 100%; background: var(--accent-2); animation: L-rot 4.2s linear forwards; }
+@keyframes L-rot { from { width: 0; } to { width: 100%; } }
+.L-page[data-comp="comp-keynote"] .L-rotator { margin: 0 auto; }
+.L-page[data-comp="comp-cinema"] .L-rotator { max-width: none; }
+
 /* ---------- 11 equation ---------- */
 
 .L-equation { display: grid; gap: 28px; align-items: center; }
@@ -642,6 +661,7 @@
 
 @container page (max-width: 560px) {
   .L-s-hero[data-v="over"] .L-hero-copy { padding: 20px; }
+  .L-arche-rot { grid-template-columns: 1fr; }
   .L-carousel { grid-template-columns: 1fr; }
   .L-car-arrow { display: none; }
   .L-cols, .L-sec[data-v="grid"] .L-cards { grid-template-columns: 1fr; }

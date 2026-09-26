@@ -251,6 +251,7 @@ export const SECTIONS: SectionDef[] = [
       { id: "cards-grid", name: "Grid", note: "Four across." },
       { id: "cards-strip", name: "Strip", note: "A row that scrolls sideways." },
       { id: "cards-list", name: "List", note: "One per row, illustration beside the text." },
+      { id: "cards-rotate", name: "One at a time", note: "A single card, illustration beside the text, rotating through the set every few seconds." },
     ],
   },
   {
@@ -326,7 +327,7 @@ export const PRESETS: Preset[] = [
     letter: "C",
     name: "Cinema",
     note: "Wide and tight, video behind the hero, full-bleed bands, heavy rules. The boldest of the three.",
-    hash: "#void.comp-cinema.align-left.width-wide.space-tight.nav-minimal.rule-heavy.numbers-off.hero-cinema.thesis-under.meaning-line.circles-nested.aspire-image.research-card.voices-carousel.case-split.tool-bleed.cards-list.equation-centered.start-form",
+    hash: "#void.comp-cinema.align-left.width-wide.space-tight.nav-minimal.rule-heavy.numbers-off.hero-cinema.thesis-under.meaning-line.circles-nested.aspire-image.research-card.voices-carousel.case-split.tool-bleed.cards-rotate.equation-centered.start-form",
   },
 ];
 
