@@ -48,6 +48,7 @@ export type NavId = "nav-bar" | "nav-centered" | "nav-minimal" | "nav-menu";
 export type DividerId = "rule-hairline" | "rule-none" | "rule-heavy";
 export type NumbersId = "numbers-on" | "numbers-off";
 export type HeadsId = "heads-on" | "heads-off";
+export type ButtonId = "btn-filled" | "btn-rounded" | "btn-outline";
 export type ViewId = "desktop" | "tablet" | "phone";
 export type CompId = "comp-editorial" | "comp-keynote" | "comp-cinema";
 
@@ -79,6 +80,12 @@ export const DIVIDERS: Opt<DividerId>[] = [
   { id: "rule-hairline", name: "Hairline", note: "A thin rule between sections." },
   { id: "rule-none", name: "None", note: "Space does the separating." },
   { id: "rule-heavy", name: "Heavy", note: "The fat rule, in the accent, between sections." },
+];
+
+export const BUTTONS: Opt<ButtonId>[] = [
+  { id: "btn-filled", name: "Filled", note: "Solid accent, soft corners. What the style picker showed." },
+  { id: "btn-rounded", name: "Rounded", note: "Solid accent, full pill." },
+  { id: "btn-outline", name: "Outline", note: "A lined rectangle, square corners, accent text. Fills on hover." },
 ];
 
 export const HEADS: Opt<HeadsId>[] = [
@@ -280,6 +287,7 @@ export interface Layout {
   divider: Opt<DividerId>;
   numbers: Opt<NumbersId>;
   heads: Opt<HeadsId>;
+  buttons: Opt<ButtonId>;
   comp: Opt<CompId>;
   /** preview width; in the hash only when not desktop, so links open at the size they were made */
   view: ViewId;
@@ -304,7 +312,7 @@ export const PRESETS: Preset[] = [
     letter: "A",
     name: "Editorial",
     note: "Left aligned, standard column, a hairline between sections. Reads like a well-set report.",
-    hash: "#void.comp-editorial.align-left.width-standard.space-regular.nav-bar.rule-hairline.numbers-off.hero-video.thesis-under.meaning-aside.circles-nested.aspire-columns.research-statement.voices-carousel.case-card.tool-split.cards-grid.equation-split.start-band",
+    hash: "#void.comp-editorial.align-left.width-standard.space-regular.nav-bar.rule-hairline.numbers-off.btn-outline.hero-video.thesis-under.meaning-aside.circles-nested.aspire-columns.research-statement.voices-carousel.case-card.tool-split.cards-grid.equation-split.start-band",
   },
   {
     id: "b",
@@ -345,7 +353,7 @@ export function layoutHash(l: Layout): string {
   const secs = SECTIONS.map((s) => l.sections[s.id]).join(".");
   const view = l.view === "desktop" ? "" : `.${l.view}`;
   const page = l.page === "home" ? "" : `.page-${l.page}`;
-  const heads = l.heads.id === "heads-on" ? "" : `.${l.heads.id}`;
+  const heads = (l.heads.id === "heads-on" ? "" : `.${l.heads.id}`) + (l.buttons.id === "btn-filled" ? "" : `.${l.buttons.id}`);
   return `#${l.bg}.${l.comp.id}.${l.align.id}.${l.width.id}.${l.spacing.id}.${l.nav.id}.${l.divider.id}.${l.numbers.id}${heads}.${secs}${view}${page}`;
 }
 
@@ -368,6 +376,7 @@ export function parseLayoutHash(hash: string): Layout {
     divider: DIVIDERS[0],
     numbers: NUMBERS[0],
     heads: HEADS[0],
+    buttons: BUTTONS[0],
     comp: COMPS[0],
     view: "desktop",
     page: "home",
@@ -383,6 +392,7 @@ export function parseLayoutHash(hash: string): Layout {
     const nm = NUMBERS.find((x) => x.id === id); if (nm) { l.numbers = nm; continue; }
     const cp = COMPS.find((x) => x.id === id); if (cp) { l.comp = cp; continue; }
     const hd = HEADS.find((x) => x.id === id); if (hd) { l.heads = hd; continue; }
+    const bt = BUTTONS.find((x) => x.id === id); if (bt) { l.buttons = bt; continue; }
     const vw = VIEWS.find((x) => x.id === id); if (vw) { l.view = vw.id; continue; }
     if (id.startsWith("page-")) {
       const pg = PAGES.find((x) => x.id === id.slice(5)); if (pg) { l.page = pg.id; continue; }

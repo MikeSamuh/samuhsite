@@ -157,6 +157,26 @@
 .L-overlay-links a:hover, .L-overlay-links a[aria-current="page"] { color: var(--accent); padding-left: 12px; }
 .L-overlay-foot { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-top: 24px; padding-bottom: 40px; border-top: var(--rule-fat) solid var(--accent); }
 
+/* ---------- buttons ---------- */
+
+.L-page[data-btn="btn-rounded"] :is(.btn, .field input, .L-form input, .L-form select) { border-radius: 999px; }
+
+.L-page[data-btn="btn-outline"] .btn {
+  border-radius: 0;
+  background: transparent;
+  color: var(--accent);
+  border: var(--rule-thin) solid var(--accent);
+}
+.L-page[data-btn="btn-outline"] .btn:hover {
+  background: var(--accent);
+  color: var(--on-accent);
+  transform: none;
+  box-shadow: none;
+}
+.L-page[data-btn="btn-outline"] .btn-secondary { color: var(--text); border-color: var(--border); }
+.L-page[data-btn="btn-outline"] .btn-secondary:hover { background: transparent; color: var(--accent); border-color: var(--accent); }
+.L-page[data-btn="btn-outline"] :is(.field input, .L-form input, .L-form textarea, .L-form select) { border-radius: 0; }
+
 /* ---------- sections, shared ---------- */
 
 .L-sec {

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { BACKGROUNDS, cssVars, comboName } from "@/lib/tokens";
 import {
-  ALIGNS, WIDTHS, SPACINGS, NAVS, DIVIDERS, NUMBERS, HEADS, COMPS, VIEWS,
+  ALIGNS, WIDTHS, SPACINGS, NAVS, DIVIDERS, NUMBERS, HEADS, BUTTONS, COMPS, VIEWS,
   SECTIONS, PAGES, PRESETS, FEEDBACK, OFF, LOCKED_HASH,
   DEFAULT_LAYOUT, lockedCombo, layoutHash, parseLayoutHash, sameLayout,
   layoutName, layoutVars,
@@ -211,6 +211,7 @@ export default function LayoutTool() {
                   {opts("Section spacing", SPACINGS, layout.spacing, (x) => set({ spacing: x as typeof layout.spacing }))}
                   {opts("Navigation", NAVS, layout.nav, (x) => set({ nav: x }))}
                   {opts("Dividers", DIVIDERS, layout.divider, (x) => set({ divider: x }))}
+                  {opts("Buttons", BUTTONS, layout.buttons, (x) => set({ buttons: x }))}
                   {opts("Section heads", HEADS, layout.heads, (x) => set({ heads: x }))}
                   {opts("Section numbers", NUMBERS, layout.numbers, (x) => set({ numbers: x }))}
                 </details>
@@ -254,6 +255,7 @@ export default function LayoutTool() {
             data-rule={layout.divider.id}
             data-numbers={layout.numbers.id}
             data-heads={layout.heads.id}
+            data-btn={layout.buttons.id}
           >
             <div className="L-bd" aria-hidden>
               <Backdrop id={layout.bg} pointer="well" />
