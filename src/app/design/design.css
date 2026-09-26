@@ -258,9 +258,12 @@
 /* device preview: the page in a frame at a real device width */
 .rail-devices {
   display: flex;
+  align-items: center;
   gap: 4px;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 }
+
+.rail-devices > .rail-now { margin-right: auto; }
 
 .content-device {
   min-height: 100vh;

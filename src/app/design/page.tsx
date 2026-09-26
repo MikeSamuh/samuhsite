@@ -198,6 +198,14 @@ export default function DesignDirections() {
         {railOpen ? (
           <>
             <div className="rail-top" ref={topRef}>
+            <div className="rail-devices" role="group" aria-label="Viewpoint">
+              <span className="rail-now">Viewpoint</span>
+              {DEVICES.map((d) => (
+                <button key={d.id} className="opt opt-tight" aria-pressed={device === d.id} onClick={() => setDevice(d.id)} title={d.note}>
+                  {d.name}
+                </button>
+              ))}
+            </div>
             <div className="rail-head">
               <span className="rail-title">
                 <span className="rail-now">Now showing</span>
@@ -216,13 +224,6 @@ export default function DesignDirections() {
                   Minimise
                 </button>
               </span>
-            </div>
-            <div className="rail-devices" role="group" aria-label="Preview device">
-              {DEVICES.map((d) => (
-                <button key={d.id} className="opt opt-tight" aria-pressed={device === d.id} onClick={() => setDevice(d.id)} title={d.note}>
-                  {d.name}
-                </button>
-              ))}
             </div>
             <div className="rail-sum" aria-label="Current selection, short form">
               <span className="rail-sum-dots" aria-hidden="true">
