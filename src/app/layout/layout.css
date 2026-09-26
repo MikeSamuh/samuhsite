@@ -243,6 +243,24 @@
 .L-s-hero[data-v="video"] .L-hero-grid { grid-template-columns: 1fr; }
 .L-s-hero[data-v="video"] .ph { order: -1; min-height: min(56vh, 620px); }
 .L-s-hero[data-v="video"] h1.display { max-width: 20ch; }
+/* copy over video: the video stays in the column, the copy sits on it */
+.L-s-hero[data-v="over"] .L-hero-grid { grid-template-columns: 1fr; position: relative; min-height: min(72vh, 680px); }
+.L-s-hero[data-v="over"] .ph {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  align-items: start;
+  justify-items: end;
+  padding: 20px;
+  border-style: solid;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--base) 10%, transparent) 0%, color-mix(in srgb, var(--base) 78%, transparent) 100%),
+    radial-gradient(ellipse 70% 60% at 65% 35%, color-mix(in srgb, var(--accent-4) 22%, var(--surface-alt)) 0%, var(--surface) 55%, var(--base) 100%);
+}
+.L-s-hero[data-v="over"] .L-hero-copy { position: relative; z-index: 1; align-self: end; padding: 40px; }
+.L-s-hero[data-v="over"] h1.display { font-size: clamp(34px, 4.8cqw, 64px); }
+.L-s-hero[data-v="over"] .lede { margin-bottom: 26px; }
+
 .L-s-hero[data-v="cinema"] { padding: 0; }
 .L-s-hero[data-v="cinema"] .L-wrap { max-width: none; padding: 0; }
 .L-s-hero[data-v="cinema"] .L-hero-grid { grid-template-columns: 1fr; gap: 0; position: relative; min-height: min(78vh, 720px); }
@@ -511,6 +529,7 @@
 }
 
 @container page (max-width: 560px) {
+  .L-s-hero[data-v="over"] .L-hero-copy { padding: 20px; }
   .L-cols, .L-sec[data-v="grid"] .L-cards { grid-template-columns: 1fr; }
   .L-sec[data-v="list"] .L-arche { grid-template-columns: 1fr; }
   .L-sec[data-v="list"] .L-arche .ph { grid-row: auto; }

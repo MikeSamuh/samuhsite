@@ -154,6 +154,7 @@ export const SECTIONS: SectionDef[] = [
       { id: "hero-split", name: "Split", note: "Copy left, video right." },
       { id: "hero-centered", name: "Copy first", note: "Copy centred, video below." },
       { id: "hero-video", name: "Video first", note: "Video full width on top, copy below." },
+      { id: "hero-over", name: "Copy over video", note: "The video in the column, copy laid over its lower left, like a poster." },
       { id: "hero-cinema", name: "Cinema", note: "Video behind the copy, full width." },
     ],
   },
