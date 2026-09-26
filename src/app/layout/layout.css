@@ -398,7 +398,7 @@
 .L-c-svg { width: 100%; height: auto; display: block; overflow: visible; }
 /* one standard stroke for all three circles, a hairline for the leaders.
    Deliberately not tied to the line-weight dial. */
-.L-circ { --c-stroke: 2px; --c-line: 1px; }
+.L-circ { --c-stroke: 3px; --c-line: 1.5px; }
 .L-c-line { fill: none; stroke: var(--text); stroke-width: var(--c-line); vector-effect: non-scaling-stroke; }
 .L-c-sq { fill: var(--text); }
 /* the team is the subject: highlighted in the primary. The individual and

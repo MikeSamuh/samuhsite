@@ -377,17 +377,17 @@ function Circles() {
             and inside the organization ring */}
         <line x1={0} y1={220} x2={215} y2={220} className="L-c-line L-c-hi" />
         {sq(215, 220, "L-c-hi")}
-        <polyline points="640,220 356,72" className="L-c-line L-c-alt" />
+        <polyline points="640,220 352,98" className="L-c-line L-c-alt" />
         <polyline points="640,220 440,352" className="L-c-line L-c-alt" />
-        {sq(356, 72, "L-c-alt")}
+        {sq(352, 98, "L-c-alt")}
         {sq(440, 352, "L-c-alt")}
         {/* circles */}
         <circle cx={320} cy={220} r={190} className="L-c-org" />
         <circle cx={320} cy={182} r={128} className="L-c-team" />
-        <circle cx={320} cy={100} r={52} className="L-c-ind" />
+        <circle cx={320} cy={120} r={46} className="L-c-ind" />
         {/* labels */}
-        <text x={320} y={106} className="L-c-t L-c-t-ind">Individual</text>
-        <text x={320} y={236} className="L-c-t L-c-t-team">Team</text>
+        <text x={320} y={126} className="L-c-t L-c-t-ind">Individual</text>
+        <text x={320} y={246} className="L-c-t L-c-t-team">Team</text>
         <text x={320} y={362} className="L-c-t L-c-t-org">Organization</text>
       </svg>
       <p className="L-c-call L-c-right L-c-alt">Where organizations focus</p>
