@@ -87,8 +87,8 @@ export const HEADS: Opt<HeadsId>[] = [
 ];
 
 export const NUMBERS: Opt<NumbersId>[] = [
+  { id: "numbers-off", name: "Off", note: "No section numbers. The default since 25 September." },
   { id: "numbers-on", name: "On", note: "01 to 12 beside each section heading." },
-  { id: "numbers-off", name: "Off" },
 ];
 
 // Composition: how a section is built, beyond the frame dials. Editorial
@@ -301,7 +301,7 @@ export const PRESETS: Preset[] = [
     letter: "A",
     name: "Editorial",
     note: "Left aligned, standard column, a hairline between sections. Reads like a well-set report.",
-    hash: "#void.comp-editorial.align-left.width-standard.space-regular.nav-bar.rule-hairline.numbers-on.hero-video.thesis-under.meaning-aside.circles-nested.aspire-columns.research-statement.voices-carousel.case-card.tool-split.cards-grid.equation-split.start-band",
+    hash: "#void.comp-editorial.align-left.width-standard.space-regular.nav-bar.rule-hairline.numbers-off.hero-video.thesis-under.meaning-aside.circles-nested.aspire-columns.research-statement.voices-carousel.case-card.tool-split.cards-grid.equation-split.start-band",
   },
   {
     id: "b",
@@ -315,7 +315,7 @@ export const PRESETS: Preset[] = [
     letter: "C",
     name: "Cinema",
     note: "Wide and tight, video behind the hero, full-bleed bands, heavy rules. The boldest of the three.",
-    hash: "#void.comp-cinema.align-left.width-wide.space-tight.nav-minimal.rule-heavy.numbers-on.hero-cinema.thesis-under.meaning-line.circles-stack.aspire-image.research-card.voices-carousel.case-split.tool-bleed.cards-list.equation-centered.start-form",
+    hash: "#void.comp-cinema.align-left.width-wide.space-tight.nav-minimal.rule-heavy.numbers-off.hero-cinema.thesis-under.meaning-line.circles-stack.aspire-image.research-card.voices-carousel.case-split.tool-bleed.cards-list.equation-centered.start-form",
   },
 ];
 
