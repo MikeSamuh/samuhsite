@@ -349,7 +349,7 @@ function Head({ def }: { def: (typeof SECTIONS)[number] }) {
     <div className="L-head">
       <span className="L-n">{String(def.n).padStart(2, "0")}</span>
       <div>
-        <p className="eyebrow L-eyebrow">{def.intent}</p>
+        {def.kicker ? <p className="eyebrow L-eyebrow">{def.kicker}</p> : null}
         <h2 className="sec">{def.title}</h2>
       </div>
     </div>

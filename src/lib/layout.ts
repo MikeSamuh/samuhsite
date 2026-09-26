@@ -147,7 +147,10 @@ export interface SectionDef {
   id: SectionId;
   n: number;
   title: string;
+  /** the scope note, for the rail. Not shown on the page */
   intent: string;
+  /** the eyebrow above the title, on the page. Site copy, draft */
+  kicker?: string;
   /** every variant id is prefixed with the section id so hashes stay unique */
   variants: Opt[];
 }
@@ -181,7 +184,7 @@ export const SECTIONS: SectionDef[] = [
     ],
   },
   {
-    id: "circles", n: 4, title: "Three circles",
+    id: "circles", kicker: "Teams, individuals, organizations", n: 4, title: "Three circles",
     intent: "Team, individual, organization. Establishes teams as the subject.",
     variants: [
       { id: "circles-nested", name: "Nested", note: "The organization houses the team, the team houses the individual." },
@@ -190,7 +193,7 @@ export const SECTIONS: SectionDef[] = [
     ],
   },
   {
-    id: "aspire", n: 5, title: "Aspirational moment",
+    id: "aspire", kicker: "What a team like this looks like", n: 5, title: "Aspirational moment",
     intent: "Core competencies. Imagery or a framing that makes you want to lead a team like this.",
     variants: [
       { id: "aspire-image", name: "Image band", note: "Full-width image with the statement over it." },
@@ -199,7 +202,7 @@ export const SECTIONS: SectionDef[] = [
     ],
   },
   {
-    id: "research", n: 6, title: "The research claim",
+    id: "research", kicker: "The research", n: 6, title: "The research claim",
     intent: "One research-backed statement, links to the Sapien Labs report. Wording not landed.",
     variants: [
       { id: "research-statement", name: "Statement", note: "The line, then the link." },
@@ -208,7 +211,7 @@ export const SECTIONS: SectionDef[] = [
     ],
   },
   {
-    id: "voices", n: 7, title: "Testimonials",
+    id: "voices", kicker: "In their words", n: 7, title: "Testimonials",
     intent: "Trust before proof.",
     variants: [
       { id: "voices-carousel", name: "Carousel", note: "One large italic quote at a time, name and role under it, the client's mark below. Arrows and dots." },
@@ -217,7 +220,7 @@ export const SECTIONS: SectionDef[] = [
     ],
   },
   {
-    id: "case", n: 8, title: "Case Studies",
+    id: "case", kicker: "In practice", n: 8, title: "Case Studies",
     intent: "Snippet plus link. Likely anonymised.",
     variants: [
       { id: "case-card", name: "Card", note: "A panel with the snippet and the link." },
@@ -226,7 +229,7 @@ export const SECTIONS: SectionDef[] = [
     ],
   },
   {
-    id: "tool", n: 9, title: "Interactive data tool",
+    id: "tool", kicker: "Try it on your own team", n: 9, title: "Interactive data tool",
     intent: "Visitor adjusts team environment factors, sees estimated productive days lost update live.",
     variants: [
       { id: "tool-card", name: "Card", note: "Sliders and result in one panel." },
@@ -235,7 +238,7 @@ export const SECTIONS: SectionDef[] = [
     ],
   },
   {
-    id: "cards", n: 10, title: "Metaphor cards",
+    id: "cards", kicker: "Which team are you?", n: 10, title: "Metaphor cards",
     intent: "Illustrated team archetypes to self-identify with. Sits after the data so it reads as insight.",
     variants: [
       { id: "cards-grid", name: "Grid", note: "Four across." },
@@ -244,7 +247,7 @@ export const SECTIONS: SectionDef[] = [
     ],
   },
   {
-    id: "equation", n: 11, title: "The SAMUH equation",
+    id: "equation", kicker: "How it adds up", n: 11, title: "The SAMUH equation",
     intent: "Visual section.",
     variants: [
       { id: "equation-centered", name: "Centered", note: "The equation on its own, large." },
