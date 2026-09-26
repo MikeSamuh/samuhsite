@@ -60,15 +60,37 @@
 
 /* the head stays pinned while the rail scrolls, so the combination on
    screen is always named. Section headers stack under it via --rail-top */
-.rail-top {
+.rail-pin {
   position: sticky;
   top: 0;
   z-index: 3;
   margin: -14px -18px 0;
-  padding: 14px 18px 10px;
   background: color-mix(in srgb, var(--base) 94%, transparent);
   backdrop-filter: blur(12px);
   border-bottom: var(--rule-thin) solid var(--border);
+}
+
+/* the preview strip: its own bar at the very top of the tool */
+.rail-preview {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 18px;
+  border-bottom: var(--rule-thin) solid var(--border);
+  background: var(--surface);
+}
+
+.rail-preview-k {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text);
+  margin-right: auto;
+}
+
+.rail-top {
+  padding: 12px 18px 10px;
 }
 
 .rail-head {
@@ -256,15 +278,6 @@
 .stage[data-frame] .rail + .content { padding-left: 0; }
 
 /* device preview: the page in a frame at a real device width */
-.rail-devices {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  margin-bottom: 12px;
-}
-
-.rail-devices > .rail-now { margin-right: auto; }
-
 .content-device {
   min-height: 100vh;
   display: grid;

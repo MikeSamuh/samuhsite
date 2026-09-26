@@ -197,15 +197,16 @@ export default function DesignDirections() {
       <aside className="rail" data-open={railOpen} aria-label="Style picker" ref={railRef}>
         {railOpen ? (
           <>
-            <div className="rail-top" ref={topRef}>
-            <div className="rail-devices" role="group" aria-label="Viewpoint">
-              <span className="rail-now">Viewpoint</span>
+            <div className="rail-pin" ref={topRef}>
+            <div className="rail-preview" role="group" aria-label="Preview device">
+              <span className="rail-preview-k">Preview:</span>
               {DEVICES.map((d) => (
                 <button key={d.id} className="opt opt-tight" aria-pressed={device === d.id} onClick={() => setDevice(d.id)} title={d.note}>
                   {d.name}
                 </button>
               ))}
             </div>
+            <div className="rail-top">
             <div className="rail-head">
               <span className="rail-title">
                 <span className="rail-now">Now showing</span>
@@ -237,6 +238,7 @@ export default function DesignDirections() {
               <span className="rail-sum-line">
                 {weight.name} {scale.name} · {entrance.name} in · {hover.name} on hover
               </span>
+            </div>
             </div>
             </div>
 
