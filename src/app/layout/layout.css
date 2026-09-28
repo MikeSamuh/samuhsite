@@ -1036,3 +1036,78 @@
 }
 .L-video:hover .L-video-hint { border-color: var(--accent); color: var(--accent); }
 .L-s-hero[data-v="cinema"] .L-video, .L-s-hero[data-v="over"] .L-video { background: none; }
+
+/* ---------- nav: icons that become logos on scroll, stuck to the top ---------- */
+
+.L-nav-icons {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: color-mix(in srgb, var(--base) 82%, transparent);
+  backdrop-filter: blur(14px) saturate(140%);
+  transition: padding var(--dur) var(--ease);
+}
+.L-nav-icons[data-scrolled="true"] { padding-top: 14px; padding-bottom: 14px; }
+.L-brand { display: inline-flex; align-items: center; gap: 14px; }
+.L-brand-samuh, .L-brand-sapien { position: relative; display: inline-grid; align-items: center; height: 30px; }
+.L-brand-samuh > *, .L-brand-sapien > * { grid-area: 1 / 1; }
+.L-brand img { height: 30px; width: auto; filter: brightness(0) invert(1); transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease); }
+.L-brand-sapien img { height: 26px; opacity: 0.85; }
+.L-brand-rule { width: var(--rule-thin); height: 26px; background: var(--border); }
+/* at rest the marks show; scrolled, the full logos */
+.L-brand-full { opacity: 0; transform: translateY(4px); pointer-events: none; }
+.L-nav-icons[data-scrolled="true"] .L-brand-mark { opacity: 0; transform: translateY(-4px); position: absolute; }
+.L-nav-icons[data-scrolled="true"] .L-brand-full { opacity: 1; transform: none; position: static; }
+.L-nav-icons:not([data-scrolled="true"]) .L-brand-full { position: absolute; }
+
+/* ---------- circles: hover notes ---------- */
+
+.L-c-g { cursor: pointer; transition: transform 320ms var(--ease); }
+.L-c-g[data-on="true"] circle { filter: drop-shadow(0 0 10px color-mix(in srgb, currentColor 60%, transparent)); }
+.L-c-g[data-on="true"] .L-c-org, .L-c-g[data-on="true"] .L-c-ind { stroke: var(--text); }
+.L-c-g[data-on="true"] .L-c-t-org, .L-c-g[data-on="true"] .L-c-t-ind { fill: var(--text); }
+.L-c-info { grid-column: 1 / -1; display: grid; justify-items: center; min-height: 64px; margin-top: 8px; }
+.L-c-note {
+  display: none;
+  grid-template-columns: auto 1fr;
+  gap: 4px 14px;
+  align-items: baseline;
+  max-width: 52ch;
+  padding: 12px 18px;
+  border: var(--rule-thin) solid var(--border);
+  border-radius: min(var(--radius), 12px);
+  background: var(--surface);
+  animation: L-drop calc(var(--dur) * 1.2) var(--ease) backwards;
+}
+.L-c-note[data-show="true"] { display: grid; }
+.L-c-note-k { font-family: var(--font-display); font-weight: var(--display-weight); font-size: 16px; }
+.L-c-note-team .L-c-note-k { color: var(--accent); }
+.L-c-note-org .L-c-note-k, .L-c-note-ind .L-c-note-k { color: var(--accent-2); }
+.L-c-note-v { font-size: 14px; color: var(--muted); line-height: 1.5; }
+/* no hover: show all three */
+@media (hover: none) {
+  .L-c-note { display: grid; animation: none; }
+  .L-c-info { gap: 8px; }
+}
+
+/* ---------- draft B (Wilfred's 28 September edits) ---------- */
+
+.D-stage[data-draft="b"] .L-dict { max-width: 72ch; }
+.D-stage[data-draft="b"] .L-dict-word { font-size: clamp(44px, 5.2cqw, 76px); }
+.D-stage[data-draft="b"] .L-dict-pron { font-size: 18px; }
+.D-stage[data-draft="b"] .L-dict-pos { font-size: 16px; }
+.D-stage[data-draft="b"] .L-dict-defs { font-size: clamp(22px, 2.4cqw, 30px); }
+/* copy over the hero video, editorial alignment, a scrim so it reads */
+.D-stage[data-draft="b"] .L-s-hero[data-v="cinema"] .L-video { position: absolute; inset: 0; border: 0; border-radius: 0; z-index: 0; background: var(--base); }
+.D-stage[data-draft="b"] .L-s-hero[data-v="cinema"] .L-video::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--base) 78%, transparent) 0%, color-mix(in srgb, var(--base) 45%, transparent) 55%, color-mix(in srgb, var(--base) 20%, transparent) 100%),
+              linear-gradient(180deg, transparent 50%, var(--base) 100%);
+  pointer-events: none;
+}
+.D-stage[data-draft="b"] .L-s-hero[data-v="cinema"] .L-video-hint { top: auto; left: auto; right: 24px; bottom: 24px; transform: none; z-index: 1; }
+.D-stage[data-draft="b"] .L-s-hero[data-v="cinema"] .L-hero-grid { min-height: min(86vh, 820px); }
+.D-stage[data-draft="b"] .L-s-hero[data-v="cinema"] .L-hero-copy { padding-top: calc(140px * var(--space, 1)); }
+.D-stage[data-draft="b"] .L-s-hero[data-v="cinema"] h1.display { font-size: clamp(42px, 6.4cqw, 92px); }

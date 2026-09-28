@@ -45,7 +45,7 @@ export default function DraftShell({ draft, children }: { draft: DraftId; childr
         data-btn={d.layout.buttons.id}
       >
         <div className="L-body D-body">
-          <Nav page={page} go={go} menu={d.layout.nav.id === "nav-menu"} explore={d.layout.nav.id === "nav-minimal"} />
+          <Nav page={page} go={go} menu={d.layout.nav.id === "nav-menu"} explore={d.layout.nav.id === "nav-minimal"} {...d.nav} />
           {children}
           <Footer go={go} />
         </div>

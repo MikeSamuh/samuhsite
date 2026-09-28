@@ -6,6 +6,7 @@
 // draft's name, note or owner.
 
 import { PRESETS, parseLayoutHash, type Layout, type PageId } from "@/lib/layout";
+import type { NavProps, CopyOverrides } from "../layout/sections";
 
 export type DraftId = "a" | "b" | "c";
 
@@ -17,6 +18,10 @@ export interface Draft {
   note: string;
   /** the frame and section variants, from layout.ts so the tool and the draft cannot drift */
   layout: Layout;
+  /** nav link order and brand treatment, when they differ from the default */
+  nav?: Pick<NavProps, "links" | "brand">;
+  /** copy that differs from the shared sections */
+  copy?: CopyOverrides;
 }
 
 export const DRAFTS: Draft[] = [
@@ -33,8 +38,13 @@ export const DRAFTS: Draft[] = [
     letter: "B",
     name: "Twelve sections, second pass",
     owner: "Wilfred",
-    note: "Starts as A. Sculpted from there.",
-    layout: parseLayoutHash(PRESETS[0].hash),
+    note: "Starts as A, then Wilfred's 28 September edits: copy over the hero video, the leak line as the thesis, a bigger dictionary, pointer-active circles, icon nav that grows into the logos on scroll.",
+    layout: parseLayoutHash(PRESETS[0].hash.replace(".hero-video.", ".hero-cinema.")),
+    nav: { links: ["about", "solutions", "process", "contact"], brand: "icons" },
+    copy: {
+      heroLede: null,
+      thesis: "Most teams leak performance through their environment, not their effort. Samuh finds where yours is leaking, and gives you the practices to close it.",
+    },
   },
   {
     id: "c",

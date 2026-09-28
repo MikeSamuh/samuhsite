@@ -11,22 +11,59 @@ const LOGO_H = 285;
 /* Nav                                                                 */
 /* ------------------------------------------------------------------ */
 
-export function Nav({ page, go, menu, explore }: { page: PageId; go: (p: PageId) => void; menu: boolean; explore: boolean }) {
+export interface NavProps {
+  page: PageId;
+  go: (p: PageId) => void;
+  menu: boolean;
+  explore: boolean;
+  /** which pages appear as links, in order. Default: every nav page but home */
+  links?: PageId[];
+  /** "wordmark" is the Samuh logo alone. "icons" shows the Samuh mark and the
+   *  Sapien Labs mark at rest and swaps to both full logos once the page has
+   *  scrolled, with the nav stuck to the top */
+  brand?: "wordmark" | "icons";
+}
+
+export function Nav({ page, go, menu, explore, links: order, brand = "wordmark" }: NavProps) {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const overlay = menu || explore;
-  const links = PAGES.filter((x) => x.nav && x.id !== "home");
+  const links = order
+    ? order.map((id) => PAGES.find((x) => x.id === id)!).filter(Boolean)
+    : PAGES.filter((x) => x.nav && x.id !== "home");
   const jump = (p: PageId) => { setOpen(false); go(p); };
+  useEffect(() => {
+    if (brand !== "icons") return;
+    const on = () => setScrolled(window.scrollY > 40);
+    on();
+    window.addEventListener("scroll", on, { passive: true });
+    return () => window.removeEventListener("scroll", on);
+  }, [brand]);
   return (
     <>
-      <header className="L-nav L-wrap">
+      <header className={`L-nav L-wrap${brand === "icons" ? " L-nav-icons" : ""}`} data-scrolled={scrolled}>
         {menu ? (
           <button className="L-burger" onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-controls="L-overlay" aria-label="Menu">
             <span /><span /><span />
           </button>
         ) : null}
-        <a href="#" className="nav-logo" onClick={(e) => { stay(e); jump("home"); }} aria-label="SAMUH home">
-          <Image src="/samuh-logo.png" alt="SAMUH" width={960} height={LOGO_H} priority />
-        </a>
+        {brand === "icons" ? (
+          <a href="#" className="nav-logo L-brand" onClick={(e) => { stay(e); jump("home"); }} aria-label="SAMUH home, in partnership with Sapien Labs">
+            <span className="L-brand-samuh">
+              <Image className="L-brand-mark" src="/samuh-icon.png" alt="" width={182} height={240} priority />
+              <Image className="L-brand-full" src="/samuh-logo.png" alt="SAMUH" width={960} height={LOGO_H} priority />
+            </span>
+            <span className="L-brand-rule" aria-hidden />
+            <span className="L-brand-sapien">
+              <Image className="L-brand-mark" src="/sapien-icon.png" alt="" width={240} height={240} />
+              <Image className="L-brand-full" src="/sapien-labs.png" alt="Sapien Labs" width={820} height={240} />
+            </span>
+          </a>
+        ) : (
+          <a href="#" className="nav-logo" onClick={(e) => { stay(e); jump("home"); }} aria-label="SAMUH home">
+            <Image src="/samuh-logo.png" alt="SAMUH" width={960} height={LOGO_H} priority />
+          </a>
+        )}
         <nav className="nav-links L-links" aria-label="Primary">
           {links.map((x) => (
             <a key={x.id} href="#" onClick={(e) => { stay(e); jump(x.id); }} aria-current={x.id === page ? "page" : undefined}>{x.name}</a>
@@ -84,12 +121,35 @@ export function Head({ def }: { def: (typeof SECTIONS)[number] }) {
  * people experience their work life, the individual and the organization
  * are where organizations focus. Only the team circle carries the accent.
  */
+const CIRCLE_NOTES: Record<"org" | "team" | "ind", [string, string]> = {
+  org: ["Organization", "Where transformations and organization-wide programs land."],
+  team: ["Team", "Where the work gets done, and where capacity is won or lost."],
+  ind: ["Individual", "Where evaluation and development are aimed."],
+};
+
 export function Circles() {
   const sq = (x: number, y: number, cls: string) => <rect x={x - 5} y={y - 5} width={10} height={10} className={`L-c-sq ${cls}`} />;
+  // the pointer nudges each circle by a different amount, so they move
+  // independently; hovering one shows its note. Touch shows all three.
+  const [off, setOff] = useState({ x: 0, y: 0 });
+  const [hot, setHot] = useState<"org" | "team" | "ind" | null>(null);
+  const onMove = (e: React.MouseEvent<SVGSVGElement>) => {
+    const r = e.currentTarget.getBoundingClientRect();
+    setOff({ x: (e.clientX - r.left) / r.width - 0.5, y: (e.clientY - r.top) / r.height - 0.5 });
+  };
+  const shift = (k: number) => `translate(${(off.x * k).toFixed(1)} ${(off.y * k).toFixed(1)})`;
+  const shown = hot ? [hot] : [];
   return (
-    <div className="L-circ">
+    <div className="L-circ" data-hot={hot ?? ""}>
       <p className="L-c-call L-c-left L-c-hi">Where people experience their work life</p>
-      <svg className="L-c-svg" viewBox="0 0 640 440" role="img" aria-label="Three nested circles: organization, team, individual">
+      <svg
+        className="L-c-svg"
+        viewBox="0 0 640 440"
+        role="img"
+        aria-label="Three nested circles: organization, team, individual"
+        onMouseMove={onMove}
+        onMouseLeave={() => { setOff({ x: 0, y: 0 }); setHot(null); }}
+      >
         {/* leader lines run to the edges, where the callouts sit. The left
             one lands inside the team, the right pair inside the individual
             and inside the organization ring */}
@@ -99,16 +159,29 @@ export function Circles() {
         <polyline points="640,220 440,352" className="L-c-line L-c-alt" />
         {sq(352, 98, "L-c-alt")}
         {sq(440, 352, "L-c-alt")}
-        {/* circles */}
-        <circle cx={320} cy={220} r={190} className="L-c-org" />
-        <circle cx={320} cy={182} r={128} className="L-c-team" />
-        <circle cx={320} cy={120} r={46} className="L-c-ind" />
-        {/* labels */}
-        <text x={320} y={126} className="L-c-t L-c-t-ind">Individual</text>
-        <text x={320} y={246} className="L-c-t L-c-t-team">Team</text>
-        <text x={320} y={362} className="L-c-t L-c-t-org">Organization</text>
+        {/* circles, each on its own drift */}
+        <g className="L-c-g" transform={shift(8)} onMouseEnter={() => setHot("org")} data-on={hot === "org"}>
+          <circle cx={320} cy={220} r={190} className="L-c-org" />
+          <text x={320} y={362} className="L-c-t L-c-t-org">Organization</text>
+        </g>
+        <g className="L-c-g" transform={shift(16)} onMouseEnter={() => setHot("team")} data-on={hot === "team"}>
+          <circle cx={320} cy={182} r={128} className="L-c-team" />
+          <text x={320} y={246} className="L-c-t L-c-t-team">Team</text>
+        </g>
+        <g className="L-c-g" transform={shift(26)} onMouseEnter={() => setHot("ind")} data-on={hot === "ind"}>
+          <circle cx={320} cy={120} r={46} className="L-c-ind" />
+          <text x={320} y={126} className="L-c-t L-c-t-ind">Individual</text>
+        </g>
       </svg>
       <p className="L-c-call L-c-right L-c-alt">Where organizations focus</p>
+      <div className="L-c-info" aria-live="polite">
+        {(["org", "team", "ind"] as const).map((k) => (
+          <div className={`L-c-note L-c-note-${k}`} key={k} data-show={shown.includes(k)}>
+            <span className="L-c-note-k">{CIRCLE_NOTES[k][0]}</span>
+            <span className="L-c-note-v">{CIRCLE_NOTES[k][1]}</span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
@@ -334,7 +407,13 @@ export function Frame({ label, tall }: { label: string; tall?: boolean }) {
   return <div className={`ph${tall ? " ph-tall" : ""}`}>{label}</div>;
 }
 
-export function Section({ def, variant, go }: { def: (typeof SECTIONS)[number]; variant: string; go: (p: PageId) => void }) {
+export interface CopyOverrides {
+  /** null removes the hero lede */
+  heroLede?: string | null;
+  thesis?: string;
+}
+
+export function Section({ def, variant, go, copy = {} }: { def: (typeof SECTIONS)[number]; variant: string; go: (p: PageId) => void; copy?: CopyOverrides }) {
   const v = variant.replace(`${def.id}-`, "");
   const headed = !["hero", "thesis", "meaning", "start"].includes(def.id);
   return (
@@ -345,7 +424,9 @@ export function Section({ def, variant, go }: { def: (typeof SECTIONS)[number]; 
             <div className="L-hero-copy">
               <p className="eyebrow">Organizational and high-performance consulting</p>
               <h1 className="display">High performance <em>without</em> the cost to people.</h1>
-              <p className="lede">Most teams leak performance through their environment, not their effort. Samuh finds where yours is leaking, and gives you the practices to close it.</p>
+              {copy.heroLede === null ? null : (
+                <p className="lede">{copy.heroLede ?? "Most teams leak performance through their environment, not their effort. Samuh finds where yours is leaking, and gives you the practices to close it."}</p>
+              )}
               <div className="cta-row">
                 <button className="btn" onClick={() => go("start")}>Get started <span className="arrow">&rarr;</span></button>
                 <button className="btn btn-secondary" onClick={() => go("contact")}>Book a call</button>
@@ -357,7 +438,7 @@ export function Section({ def, variant, go }: { def: (typeof SECTIONS)[number]; 
 
         {def.id === "thesis" && (
           <div className="L-thesis-in">
-            <p className="L-big">Every leadership team leaks performance. Few can see where. You have already paid for the talent. The question is whether the team&rsquo;s conditions let you get the full return.</p>
+            <p className="L-big">{copy.thesis ?? "Every leadership team leaks performance. Few can see where. You have already paid for the talent. The question is whether the team\u2019s conditions let you get the full return."}</p>
             <span className="L-cap">In partnership with Sapien Labs</span>
           </div>
         )}
