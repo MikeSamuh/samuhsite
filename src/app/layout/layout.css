@@ -1058,7 +1058,7 @@
 .L-brand-samuh .L-brand-full { height: 38px; }
 .L-brand-samuh .L-brand-mark { height: 34px; }
 .L-brand-sapien .L-brand-full { height: 23px; opacity: 0.9; }
-.L-brand-sapien .L-brand-mark { height: 26px; opacity: 0.9; }
+.L-brand-sapien .L-brand-mark { height: 26px; }
 .L-brand-sapien { grid-template-rows: auto auto; row-gap: 3px; }
 .L-brand-sapien > img { grid-row: 2; }
 .L-brand-powered {
@@ -1075,6 +1075,7 @@
 .L-brand-mark { opacity: 0; transform: translateY(-4px); pointer-events: none; }
 .L-nav-icons[data-scrolled="true"] .L-brand-full { opacity: 0; transform: translateY(4px); }
 .L-nav-icons[data-scrolled="true"] .L-brand-mark { opacity: 1; transform: none; }
+.L-nav-icons[data-scrolled="true"] .L-brand-sapien .L-brand-mark { opacity: 0.9; }
 .L-nav-icons[data-scrolled="true"] .L-brand-powered { opacity: 0; }
 .L-nav-icons[data-scrolled="true"] .L-brand-sapien { grid-template-rows: 0 auto; row-gap: 0; }
 
