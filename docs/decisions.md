@@ -181,3 +181,14 @@ the content, hairlines, boxless cards. Keynote: every section fills the
 view, centred, slide counter, no rules, menu nav. Cinema: alternating
 full-bleed bands tinted by the wash, big accent numbers, imagery to the
 edges, heavy left strokes. Presets set it; the client can mix. — Wilfred and Claude
+
+**2026-09-27 — Editorial is the layout.**
+Client feedback: "We like editorial. Testimonial should auto scroll.
+Metaphor cards: remove text; click > zoom in to the image > reflection
+prompts > option to submit answers to us > see what others said." — Mike Gabour
+
+**2026-09-28 — Draft 1 lives at /draft-1 and is sculpted, not configured.**
+Real routes (home, solutions, process, insights, about, contact,
+get-started), the locked style, the Editorial preset read from layout.ts so
+the tool and the draft cannot drift. Wilfred edits the draft directly from
+here; the tools stay as reference. — Wilfred

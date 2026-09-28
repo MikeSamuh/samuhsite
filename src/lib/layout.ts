@@ -252,6 +252,7 @@ export const SECTIONS: SectionDef[] = [
       { id: "cards-strip", name: "Strip", note: "A row that scrolls sideways." },
       { id: "cards-list", name: "List", note: "One per row, illustration beside the text." },
       { id: "cards-rotate", name: "One at a time", note: "A single card, illustration beside the text, rotating through the set every few seconds." },
+      { id: "cards-gallery", name: "Gallery", note: "Image only. Click to zoom in, answer three reflection prompts, send them to Samuh, see what others said." },
     ],
   },
   {
@@ -313,7 +314,7 @@ export const PRESETS: Preset[] = [
     letter: "A",
     name: "Editorial",
     note: "Left aligned, standard column, a hairline between sections. Reads like a well-set report.",
-    hash: "#void.comp-editorial.align-left.width-standard.space-regular.nav-bar.rule-hairline.numbers-off.btn-outline.hero-video.thesis-under.meaning-aside.circles-nested.aspire-columns.research-statement.voices-carousel.case-card.tool-split.cards-grid.equation-split.start-band",
+    hash: "#void.comp-editorial.align-left.width-standard.space-regular.nav-bar.rule-hairline.numbers-off.btn-outline.hero-video.thesis-under.meaning-aside.circles-nested.aspire-columns.research-statement.voices-carousel.case-card.tool-split.cards-gallery.equation-split.start-band",
   },
   {
     id: "b",
@@ -340,6 +341,12 @@ export interface Feedback {
 }
 
 export const FEEDBACK: Feedback[] = [
+  {
+    date: "27 September",
+    title: "Editorial it is",
+    quote:
+      "1. We like editorial\n2. Testimonial should auto scroll\n3. Metaphor cards:\n    a. Remove text\n    b. Desired functionality: click > zoom in to the image > reflection prompts > option to submit answers to us > see what others said?",
+  },
   {
     date: "25 September",
     title: "Style locked",

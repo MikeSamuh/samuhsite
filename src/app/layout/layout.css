@@ -963,3 +963,51 @@
   .L-page[data-comp="comp-keynote"] .L-sec { min-height: 0; padding: calc(64px * var(--space, 1)) 0; }
   .L-page[data-comp="comp-cinema"] .L-n { font-size: 40px; }
 }
+
+/* ---------- metaphor gallery: image tiles, click to zoom ---------- */
+
+.L-gallery { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+.L-gal-tile { padding: 0; border: 0; background: transparent; cursor: pointer; display: block; }
+.L-gal-tile .ph { aspect-ratio: 3 / 5; min-height: 0; transition: transform var(--dur) var(--ease), border-color var(--dur) var(--ease); }
+.L-gal-tile:hover .ph { transform: translateY(-4px); border-color: var(--accent); }
+
+.L-zoom {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: color-mix(in srgb, var(--base) 88%, transparent);
+  backdrop-filter: blur(14px);
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  animation: L-drop calc(var(--dur) * 1.2) var(--ease) backwards;
+}
+.L-zoom-in {
+  position: relative;
+  width: min(1100px, 100%);
+  max-height: 92vh;
+  overflow: auto;
+  display: grid;
+  grid-template-columns: minmax(260px, 420px) 1fr;
+  gap: 32px;
+  padding: 32px;
+  background: var(--surface);
+  border: var(--rule-thin) solid var(--border);
+  border-radius: min(var(--radius), 22px);
+}
+.L-zoom-x { position: absolute; top: 16px; right: 16px; }
+.L-zoom-art .ph { aspect-ratio: 3 / 5; min-height: 0; width: 100%; }
+.L-zoom-side { display: grid; gap: 16px; align-content: start; padding-top: 8px; }
+.L-zoom-title { margin: 0; font-family: var(--font-display); font-weight: var(--display-weight); font-size: clamp(26px, 3cqw, 40px); }
+.L-zoom-form { gap: 12px; }
+.L-zoom-form textarea { resize: vertical; }
+.L-zoom-thanks { display: grid; gap: 14px; }
+.L-others { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.L-others li { display: grid; gap: 4px; border-top: var(--rule-thin) solid var(--border); padding-top: 10px; font-size: 14px; line-height: 1.5; color: var(--muted); }
+
+@container page (max-width: 900px) {
+  .L-gallery { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 900px) {
+  .L-zoom-in { grid-template-columns: 1fr; }
+}
