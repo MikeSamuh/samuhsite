@@ -306,6 +306,30 @@ export function Carousel() {
   );
 }
 
+/**
+ * The hero video. A muted loop; click for the full video with sound and
+ * controls, click again to go back to the loop. /hero-test.mp4 is a stock
+ * clip for testing the flow, not committed (video is never committed).
+ */
+export function HeroVideo() {
+  const [full, setFull] = useState(false);
+  return (
+    <div className={`ph ph-tall L-video${full ? " is-full" : ""}`} onClick={() => setFull((f) => !f)} role="button" aria-label={full ? "Back to the loop" : "Play the full video"}>
+      <video
+        key={full ? "full" : "loop"}
+        src="/hero-test.mp4"
+        muted={!full}
+        loop={!full}
+        autoPlay
+        playsInline
+        controls={full}
+        preload="metadata"
+      />
+      {!full ? <span className="L-video-hint">Play the full video</span> : null}
+    </div>
+  );
+}
+
 export function Frame({ label, tall }: { label: string; tall?: boolean }) {
   return <div className={`ph${tall ? " ph-tall" : ""}`}>{label}</div>;
 }
@@ -327,7 +351,7 @@ export function Section({ def, variant, go }: { def: (typeof SECTIONS)[number]; 
                 <button className="btn btn-secondary" onClick={() => go("contact")}>Book a call</button>
               </div>
             </div>
-            <Frame label="Hero video · muted loop, full video on click" tall />
+            <HeroVideo />
           </div>
         )}
 

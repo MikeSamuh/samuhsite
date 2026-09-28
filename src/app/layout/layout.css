@@ -1011,3 +1011,28 @@
 @media (max-width: 900px) {
   .L-zoom-in { grid-template-columns: 1fr; }
 }
+
+/* ---------- hero video ---------- */
+
+.L-video { position: relative; padding: 0; overflow: hidden; cursor: pointer; place-items: stretch; border-style: solid; }
+.L-video video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.L-video.is-full { cursor: default; }
+.L-video-hint {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  padding: 10px 18px;
+  border: var(--rule-thin) solid color-mix(in srgb, var(--text) 60%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--base) 55%, transparent);
+  backdrop-filter: blur(8px);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  transition: all var(--dur) var(--ease);
+}
+.L-video:hover .L-video-hint { border-color: var(--accent); color: var(--accent); }
+.L-s-hero[data-v="cinema"] .L-video, .L-s-hero[data-v="over"] .L-video { background: none; }
