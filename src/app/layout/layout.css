@@ -1039,57 +1039,56 @@
 
 /* ---------- nav: icons that become logos on scroll, stuck to the top ---------- */
 
+.L-navbar { width: 100%; }
 .L-nav-icons {
   position: sticky;
   top: 0;
   z-index: 40;
   background: color-mix(in srgb, var(--base) 82%, transparent);
   backdrop-filter: blur(14px) saturate(140%);
-  transition: padding var(--dur) var(--ease);
+  border-bottom: var(--rule-thin) solid var(--border);
 }
-.L-nav-icons[data-scrolled="true"] { padding-top: 14px; padding-bottom: 14px; }
-.L-brand { display: inline-flex; align-items: center; gap: 14px; }
-.L-brand-samuh, .L-brand-sapien { position: relative; display: inline-grid; align-items: center; height: 30px; }
-.L-brand-samuh > *, .L-brand-sapien > * { grid-area: 1 / 1; }
-.L-brand img { height: 30px; width: auto; filter: brightness(0) invert(1); transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease); }
-.L-brand-sapien img { height: 26px; opacity: 0.85; }
-.L-brand-rule { width: var(--rule-thin); height: 26px; background: var(--border); }
-/* at rest the marks show; scrolled, the full logos */
-.L-brand-full { opacity: 0; transform: translateY(4px); pointer-events: none; }
-.L-nav-icons[data-scrolled="true"] .L-brand-mark { opacity: 0; transform: translateY(-4px); position: absolute; }
-.L-nav-icons[data-scrolled="true"] .L-brand-full { opacity: 1; transform: none; position: static; }
-.L-nav-icons:not([data-scrolled="true"]) .L-brand-full { position: absolute; }
+.L-nav-icons .L-nav { border-bottom: 0; transition: padding var(--dur) var(--ease); }
+.L-nav-icons[data-scrolled="true"] .L-nav { padding-top: 12px; padding-bottom: 12px; }
+.L-brand { display: inline-flex; align-items: center; gap: 16px; }
+.L-brand-samuh, .L-brand-sapien { position: relative; display: inline-grid; align-items: center; justify-items: start; }
+.L-brand-samuh > *, .L-brand-sapien > img { grid-area: 1 / 1; }
+.L-brand img { width: auto; filter: brightness(0) invert(1); transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease); }
+/* Samuh a quarter larger than the tool's logo, Sapien a tenth smaller */
+.L-brand-samuh .L-brand-full { height: 38px; }
+.L-brand-samuh .L-brand-mark { height: 34px; }
+.L-brand-sapien .L-brand-full { height: 23px; opacity: 0.9; }
+.L-brand-sapien .L-brand-mark { height: 26px; opacity: 0.9; }
+.L-brand-sapien { grid-template-rows: auto auto; row-gap: 3px; }
+.L-brand-sapien > img { grid-row: 2; }
+.L-brand-powered {
+  grid-row: 1;
+  font-family: var(--font-caption);
+  font-size: 8.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  transition: opacity var(--dur) var(--ease);
+}
+.L-brand-rule { width: var(--rule-thin); height: 30px; background: var(--border); }
+/* at rest the full logos show; once scrolled, only the two marks */
+.L-brand-mark { opacity: 0; transform: translateY(-4px); pointer-events: none; }
+.L-nav-icons[data-scrolled="true"] .L-brand-full { opacity: 0; transform: translateY(4px); }
+.L-nav-icons[data-scrolled="true"] .L-brand-mark { opacity: 1; transform: none; }
+.L-nav-icons[data-scrolled="true"] .L-brand-powered { opacity: 0; }
+.L-nav-icons[data-scrolled="true"] .L-brand-sapien { grid-template-rows: 0 auto; row-gap: 0; }
 
 /* ---------- circles: hover notes ---------- */
 
-.L-c-g { cursor: pointer; transition: transform 320ms var(--ease); }
+.L-c-g { cursor: pointer; transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1); }
+/* callouts and their leaders stay hidden until a circle is hovered */
+.L-c-call, .L-c-leaders { opacity: 0; transition: opacity var(--dur) var(--ease); }
+.L-circ[data-side="left"] .L-c-left, .L-circ[data-side="left"] .L-c-leaders-left,
+.L-circ[data-side="right"] .L-c-right, .L-circ[data-side="right"] .L-c-leaders-right { opacity: 1; }
+@media (hover: none) { .L-c-call, .L-c-leaders { opacity: 1; } }
 .L-c-g[data-on="true"] circle { filter: drop-shadow(0 0 10px color-mix(in srgb, currentColor 60%, transparent)); }
 .L-c-g[data-on="true"] .L-c-org, .L-c-g[data-on="true"] .L-c-ind { stroke: var(--text); }
 .L-c-g[data-on="true"] .L-c-t-org, .L-c-g[data-on="true"] .L-c-t-ind { fill: var(--text); }
-.L-c-info { grid-column: 1 / -1; display: grid; justify-items: center; min-height: 64px; margin-top: 8px; }
-.L-c-note {
-  display: none;
-  grid-template-columns: auto 1fr;
-  gap: 4px 14px;
-  align-items: baseline;
-  max-width: 52ch;
-  padding: 12px 18px;
-  border: var(--rule-thin) solid var(--border);
-  border-radius: min(var(--radius), 12px);
-  background: var(--surface);
-  animation: L-drop calc(var(--dur) * 1.2) var(--ease) backwards;
-}
-.L-c-note[data-show="true"] { display: grid; }
-.L-c-note-k { font-family: var(--font-display); font-weight: var(--display-weight); font-size: 16px; }
-.L-c-note-team .L-c-note-k { color: var(--accent); }
-.L-c-note-org .L-c-note-k, .L-c-note-ind .L-c-note-k { color: var(--accent-2); }
-.L-c-note-v { font-size: 14px; color: var(--muted); line-height: 1.5; }
-/* no hover: show all three */
-@media (hover: none) {
-  .L-c-note { display: grid; animation: none; }
-  .L-c-info { gap: 8px; }
-}
-
 /* ---------- draft B (Wilfred's 28 September edits) ---------- */
 
 .D-stage[data-draft="b"] .L-dict { max-width: 72ch; }

@@ -41,7 +41,8 @@ export function Nav({ page, go, menu, explore, links: order, brand = "wordmark" 
   }, [brand]);
   return (
     <>
-      <header className={`L-nav L-wrap${brand === "icons" ? " L-nav-icons" : ""}`} data-scrolled={scrolled}>
+      <header className={`L-navbar${brand === "icons" ? " L-nav-icons" : ""}`} data-scrolled={scrolled}>
+      <div className="L-nav L-wrap">
         {menu ? (
           <button className="L-burger" onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-controls="L-overlay" aria-label="Menu">
             <span /><span /><span />
@@ -55,6 +56,7 @@ export function Nav({ page, go, menu, explore, links: order, brand = "wordmark" 
             </span>
             <span className="L-brand-rule" aria-hidden />
             <span className="L-brand-sapien">
+              <span className="L-brand-powered">Powered by</span>
               <Image className="L-brand-mark" src="/sapien-icon.png" alt="" width={240} height={240} />
               <Image className="L-brand-full" src="/sapien-labs.png" alt="Sapien Labs" width={820} height={240} />
             </span>
@@ -71,6 +73,7 @@ export function Nav({ page, go, menu, explore, links: order, brand = "wordmark" 
         </nav>
         <button className="btn btn-secondary btn-small L-menu" onClick={() => setOpen(true)} aria-expanded={open} aria-controls="L-overlay">Explore</button>
         <button className="btn btn-small" onClick={() => jump("start")}>Get started <span className="arrow">&rarr;</span></button>
+      </div>
       </header>
       {overlay && open ? (
         <div className="L-overlay" id="L-overlay" role="dialog" aria-label="Site menu">
@@ -121,26 +124,31 @@ export function Head({ def }: { def: (typeof SECTIONS)[number] }) {
  * people experience their work life, the individual and the organization
  * are where organizations focus. Only the team circle carries the accent.
  */
-const CIRCLE_NOTES: Record<"org" | "team" | "ind", [string, string]> = {
-  org: ["Organization", "Where transformations and organization-wide programs land."],
-  team: ["Team", "Where the work gets done, and where capacity is won or lost."],
-  ind: ["Individual", "Where evaluation and development are aimed."],
-};
-
+/**
+ * The three circles. All three are drawn toward the pointer and tethered,
+ * so none moves more than five percent of the frame. The callouts stay
+ * hidden until a circle is hovered: the team shows where people experience
+ * their work life, the individual and the organization show where
+ * organizations focus.
+ */
 export function Circles() {
   const sq = (x: number, y: number, cls: string) => <rect x={x - 5} y={y - 5} width={10} height={10} className={`L-c-sq ${cls}`} />;
-  // the pointer nudges each circle by a different amount, so they move
-  // independently; hovering one shows its note. Touch shows all three.
-  const [off, setOff] = useState({ x: 0, y: 0 });
+  const [pull, setPull] = useState({ x: 0, y: 0 });
   const [hot, setHot] = useState<"org" | "team" | "ind" | null>(null);
+  const LIMIT = 32; // five percent of the 640 frame
   const onMove = (e: React.MouseEvent<SVGSVGElement>) => {
     const r = e.currentTarget.getBoundingClientRect();
-    setOff({ x: (e.clientX - r.left) / r.width - 0.5, y: (e.clientY - r.top) / r.height - 0.5 });
+    // pointer in frame units, relative to the centre of the picture
+    const px = ((e.clientX - r.left) / r.width) * 640 - 320;
+    const py = ((e.clientY - r.top) / r.height) * 440 - 220;
+    const d = Math.hypot(px, py) || 1;
+    const k = Math.min(1, d / 260); // farther pointer, firmer pull, until the tether
+    setPull({ x: (px / d) * LIMIT * k, y: (py / d) * LIMIT * k });
   };
-  const shift = (k: number) => `translate(${(off.x * k).toFixed(1)} ${(off.y * k).toFixed(1)})`;
-  const shown = hot ? [hot] : [];
+  const at = (share: number) => `translate(${(pull.x * share).toFixed(1)} ${(pull.y * share).toFixed(1)})`;
+  const side = hot === "team" ? "left" : hot ? "right" : "";
   return (
-    <div className="L-circ" data-hot={hot ?? ""}>
+    <div className="L-circ" data-side={side}>
       <p className="L-c-call L-c-left L-c-hi">Where people experience their work life</p>
       <svg
         className="L-c-svg"
@@ -148,50 +156,36 @@ export function Circles() {
         role="img"
         aria-label="Three nested circles: organization, team, individual"
         onMouseMove={onMove}
-        onMouseLeave={() => { setOff({ x: 0, y: 0 }); setHot(null); }}
+        onMouseLeave={() => { setPull({ x: 0, y: 0 }); setHot(null); }}
       >
-        {/* leader lines run to the edges, where the callouts sit. The left
-            one lands inside the team, the right pair inside the individual
-            and inside the organization ring */}
-        <line x1={0} y1={220} x2={215} y2={220} className="L-c-line L-c-hi" />
-        {sq(215, 220, "L-c-hi")}
-        <polyline points="640,220 352,98" className="L-c-line L-c-alt" />
-        <polyline points="640,220 440,352" className="L-c-line L-c-alt" />
-        {sq(352, 98, "L-c-alt")}
-        {sq(440, 352, "L-c-alt")}
-        {/* circles, each on its own drift */}
-        <g className="L-c-g" transform={shift(8)} onMouseEnter={() => setHot("org")} data-on={hot === "org"}>
+        <g className="L-c-leaders L-c-leaders-left">
+          <line x1={0} y1={220} x2={215} y2={220} className="L-c-line L-c-hi" />
+          {sq(215, 220, "L-c-hi")}
+        </g>
+        <g className="L-c-leaders L-c-leaders-right">
+          <polyline points="640,220 352,98" className="L-c-line L-c-alt" />
+          <polyline points="640,220 440,352" className="L-c-line L-c-alt" />
+          {sq(352, 98, "L-c-alt")}
+          {sq(440, 352, "L-c-alt")}
+        </g>
+        <g className="L-c-g" transform={at(0.6)} onMouseEnter={() => setHot("org")} data-on={hot === "org"}>
           <circle cx={320} cy={220} r={190} className="L-c-org" />
           <text x={320} y={362} className="L-c-t L-c-t-org">Organization</text>
         </g>
-        <g className="L-c-g" transform={shift(16)} onMouseEnter={() => setHot("team")} data-on={hot === "team"}>
+        <g className="L-c-g" transform={at(0.8)} onMouseEnter={() => setHot("team")} data-on={hot === "team"}>
           <circle cx={320} cy={182} r={128} className="L-c-team" />
           <text x={320} y={246} className="L-c-t L-c-t-team">Team</text>
         </g>
-        <g className="L-c-g" transform={shift(26)} onMouseEnter={() => setHot("ind")} data-on={hot === "ind"}>
+        <g className="L-c-g" transform={at(1)} onMouseEnter={() => setHot("ind")} data-on={hot === "ind"}>
           <circle cx={320} cy={120} r={46} className="L-c-ind" />
           <text x={320} y={126} className="L-c-t L-c-t-ind">Individual</text>
         </g>
       </svg>
       <p className="L-c-call L-c-right L-c-alt">Where organizations focus</p>
-      <div className="L-c-info" aria-live="polite">
-        {(["org", "team", "ind"] as const).map((k) => (
-          <div className={`L-c-note L-c-note-${k}`} key={k} data-show={shown.includes(k)}>
-            <span className="L-c-note-k">{CIRCLE_NOTES[k][0]}</span>
-            <span className="L-c-note-v">{CIRCLE_NOTES[k][1]}</span>
-          </div>
-        ))}
-      </div>
     </div>
   );
 }
 
-/**
- * "What SAMUH means", set like a dictionary entry: headword, a speaker
- * that says it, pronunciation, part of speech and origin, then the
- * definition. The audio is a placeholder made with the Mac speech engine
- * until SAMUH records the word; the browser's own voice is the fallback.
- */
 export function Dictionary() {
   const say = () => {
     const a = new Audio("/samuh.m4a");
@@ -398,7 +392,6 @@ export function HeroVideo() {
         controls={full}
         preload="metadata"
       />
-      {!full ? <span className="L-video-hint">Play the full video</span> : null}
     </div>
   );
 }
