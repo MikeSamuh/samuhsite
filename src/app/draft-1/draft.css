@@ -1,8 +1,0 @@
-/* Draft 1: the site without the tool. The frame is the viewport. */
-
-.D-stage { min-height: 100vh; }
-.D-page { min-height: 100vh; }
-.D-body { margin-top: 0; }
-
-/* the tool's overlay menu is positioned to its frame; here the frame is the page */
-.D-page .L-overlay { position: fixed; }

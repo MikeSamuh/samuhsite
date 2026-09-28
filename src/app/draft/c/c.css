@@ -1,0 +1,38 @@
+/* Draft C. Only what its merged sections need beyond layout.css. No values,
+   only the custom properties from tokens.ts and layout.ts. */
+
+/* hero: the partner credit sits under the calls to action */
+.L-s-hero .C-credit { display: block; margin-top: 22px; }
+
+/* circles: the lead sentence is centred with the head, the dictionary
+   becomes the aside it was in Draft A, under the diagram */
+.L-s-circles .C-lead { text-align: center; margin: 0 auto 8px; max-width: 40ch; }
+.C-aside { width: 100%; display: grid; justify-items: center; margin-top: 8px; }
+.C-aside .L-dict {
+  max-width: 44ch;
+  padding: 0 0 0 18px;
+  border-top: 0;
+  border-bottom: 0;
+  border-left: var(--rule-fat) solid var(--accent-2);
+}
+.C-aside .L-dict-word { font-size: 26px; }
+.C-aside .L-dict-defs { font-size: 15px; color: var(--muted); }
+
+/* equation: the terms sit between the statement and the factors */
+.L-s-equation .L-eq { margin: 18px 0 22px; }
+.L-s-equation .C-factors { margin-bottom: 8px; }
+
+/* proof: the carousel, then the case, one beat apart */
+.C-proof { display: grid; gap: calc(48px * var(--space, 1)); }
+.L-s-proof .L-case {
+  background: var(--surface);
+  border: var(--rule-thin) solid var(--border);
+  border-radius: min(var(--radius), 22px);
+  padding: 28px;
+  grid-template-columns: 220px 1fr;
+}
+.L-s-research .L-research .L-cap { display: block; }
+
+@container page (max-width: 900px) {
+  .L-s-proof .L-case { grid-template-columns: 1fr; }
+}

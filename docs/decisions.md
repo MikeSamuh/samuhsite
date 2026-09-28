@@ -192,3 +192,12 @@ Real routes (home, solutions, process, insights, about, contact,
 get-started), the locked style, the Editorial preset read from layout.ts so
 the tool and the draft cannot drift. Wilfred edits the draft directly from
 here; the tools stay as reference. — Wilfred
+
+**2026-09-28 — Drafts live under /draft, lettered A, B and C.**
+/draft is the index: the style guide the drafts share, the three steps
+(design, layout, drafts) and each draft in a frame at desktop, tablet and
+phone width. /draft/a is what was /draft-1, /draft/b starts as a copy for
+Wilfred to sculpt, /draft/c is the eight-section restructure from the
+homepage review (thesis once, model before proof, one taxonomy, one ask).
+Wilfred works A and B, Claude works C. /draft-1 redirects. Supersedes the
+earlier entry today. — Wilfred

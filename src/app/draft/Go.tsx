@@ -4,33 +4,24 @@ import { useRouter } from "next/navigation";
 import { SECTIONS, OFF, type PageId } from "@/lib/layout";
 import { Page } from "../layout/pages";
 import { Section } from "../layout/sections";
-import { DRAFT, DRAFT_BASE } from "./DraftShell";
+import { ROUTES, draftBase, getDraft, type DraftId } from "./drafts";
 
-const ROUTES: Record<PageId, string> = {
-  home: "",
-  solutions: "/solutions",
-  process: "/process",
-  insights: "/insights",
-  about: "/about",
-  contact: "/contact",
-  start: "/get-started",
-};
-
-function useGo() {
+export function useGo(draft: DraftId) {
   const router = useRouter();
   return (p: PageId) => {
-    router.push(`${DRAFT_BASE}${ROUTES[p]}`);
+    router.push(`${draftBase(draft)}${ROUTES[p]}`);
     window.scrollTo({ top: 0 });
   };
 }
 
-/** The home page: the twelve sections in the Editorial composition. */
-export function DraftHome() {
-  const go = useGo();
+/** The twelve-section home, composed from the draft's layout in drafts.ts. Drafts A and B start here. */
+export function DraftHome({ draft }: { draft: DraftId }) {
+  const go = useGo(draft);
+  const d = getDraft(draft);
   return (
     <>
       {SECTIONS.map((s) => {
-        const v = DRAFT.sections[s.id];
+        const v = d.layout.sections[s.id];
         if (v === `${s.id}-${OFF}`) return null;
         return <Section key={s.id} def={s} variant={v} go={go} />;
       })}
@@ -39,7 +30,7 @@ export function DraftHome() {
 }
 
 /** Any other page, from pages.tsx, with real navigation. */
-export function DraftPage({ id }: { id: PageId }) {
-  const go = useGo();
+export function DraftPage({ draft, id }: { draft: DraftId; id: PageId }) {
+  const go = useGo(draft);
   return <Page id={id} go={go} />;
 }
