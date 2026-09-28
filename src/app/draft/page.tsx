@@ -5,6 +5,7 @@ import Link from "next/link";
 import { cssVars, bodyName } from "@/lib/tokens";
 import { VIEWS, PRESETS, lockedCombo, type ViewId } from "@/lib/layout";
 import { DRAFTS, draftBase, type DraftId } from "./drafts";
+import { Steps } from "../steps";
 import "../design/design.css";
 import "./draft.css";
 
@@ -40,11 +41,6 @@ export default function DraftIndex() {
   const px = VIEWS.find((v) => v.id === view)?.px ?? 1440;
   const cur = DRAFTS.find((d) => d.id === draft) ?? DRAFTS[0];
 
-  const steps = [
-    { n: "01", name: "Style", href: "/design", note: "Background, accents, type, lines, motion. Locked 25 September." },
-    { n: "02", name: "Layout", href: "/layout", note: "Frame and a variant per section. Editorial, 27 September." },
-    { n: "03", name: "Drafts", href: "/draft", note: "The site, sculpted. Three passes, one style.", here: true },
-  ];
 
   const guide: { k: string; rows: [string, string][] }[] = [
     {
@@ -91,14 +87,7 @@ export default function DraftIndex() {
       <div className="I-wrap">
         <header className="I-top">
           <span className="L-cap">Samuh &middot; drafts &middot; in partnership with Sapien Labs</span>
-          <nav className="I-steps" aria-label="Where this sits">
-            {steps.map((s) => (
-              <Link key={s.n} href={s.href} className="I-step" aria-current={s.here ? "page" : undefined} title={s.note}>
-                <span className="I-step-n">{s.n}</span>
-                <span className="I-step-name">{s.name}</span>
-              </Link>
-            ))}
-          </nav>
+          <Steps here="draft" />
         </header>
 
         <section className="I-intro">

@@ -24,23 +24,6 @@
   padding: 22px 0 18px;
   border-bottom: var(--rule-thin) solid var(--border);
 }
-.I-steps { display: flex; gap: 6px; }
-.I-step {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 8px;
-  padding: 7px 12px;
-  border: var(--rule-thin) solid var(--border);
-  border-radius: min(var(--radius), 999px);
-  color: var(--muted);
-  text-decoration: none;
-  font-family: var(--font-ui);
-  font-size: 13px;
-  transition: all var(--dur) var(--ease);
-}
-.I-step:hover { color: var(--text); border-color: var(--accent); }
-.I-step[aria-current="page"] { color: var(--text); border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
-.I-step-n { font-family: var(--font-caption); font-size: 10px; letter-spacing: 0.12em; color: var(--accent-2); }
 
 .I-intro { padding: 56px 0 36px; max-width: 760px; }
 .I-title { font-size: clamp(38px, 5vw, 68px); max-width: 14ch; }

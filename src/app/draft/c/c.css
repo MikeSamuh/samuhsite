@@ -1,15 +1,31 @@
-/* Draft C. Only what its merged sections need beyond layout.css. No values,
+/* Draft C. Only what its composition needs beyond layout.css. No values,
    only the custom properties from tokens.ts and layout.ts. */
 
-/* hero: the partner credit sits under the calls to action */
-.L-s-hero .C-credit { display: block; margin-top: 22px; }
+/* 01 hero: the film fills the stop, the copy sits on it lower left, a
+   scrim rises from the base colour so the type reads over any frame */
+.L-s-hero[data-v="over"] .L-hero-grid { min-height: min(82vh, 780px); }
+.L-s-hero[data-v="over"] .L-video { border: 0; border-radius: 0; background: var(--base); }
+.L-s-hero[data-v="over"] .L-video::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, transparent 30%, color-mix(in srgb, var(--base) 82%, transparent) 100%),
+    linear-gradient(90deg, color-mix(in srgb, var(--base) 55%, transparent) 0%, transparent 60%);
+}
+.L-s-hero[data-v="over"] .L-video-hint { top: auto; left: auto; right: 24px; bottom: 24px; transform: none; z-index: 1; }
+.L-s-hero[data-v="over"] .L-hero-copy { padding: 40px 0; max-width: 60ch; }
+.L-s-hero[data-v="over"] .eyebrow { color: var(--text); }
+.L-page[data-comp="comp-editorial"] .L-s-hero[data-v="over"] > .L-wrap { max-width: none; padding: 0; }
+.L-page[data-comp="comp-editorial"] .L-s-hero[data-v="over"] .L-hero-copy { padding-left: 24px; padding-right: 24px; margin-left: max(24px, calc((100cqw - var(--width-px, 1120px)) / 2)); }
 
-/* circles: the lead sentence is centred with the head, the dictionary
-   becomes the aside it was in Draft A, under the diagram */
-.L-s-circles .C-lead { text-align: center; margin: 0 auto 8px; max-width: 40ch; }
+/* 02 the gap: the lead is centred with the head, the dictionary is the
+   aside under the diagram */
+.L-s-circles .C-lead { text-align: center; margin: 0 auto 8px; max-width: 44ch; }
 .C-aside { width: 100%; display: grid; justify-items: center; margin-top: 8px; }
 .C-aside .L-dict {
-  max-width: 44ch;
+  max-width: 48ch;
   padding: 0 0 0 18px;
   border-top: 0;
   border-bottom: 0;
@@ -18,11 +34,15 @@
 .C-aside .L-dict-word { font-size: 26px; }
 .C-aside .L-dict-defs { font-size: 15px; color: var(--muted); }
 
-/* equation: the terms sit between the statement and the factors */
+/* 03 the model: statement, the terms, then the four questions */
 .L-s-equation .L-eq { margin: 18px 0 22px; }
-.L-s-equation .C-factors { margin-bottom: 8px; }
+.L-s-equation .C-factors { grid-template-columns: 1fr 1fr; margin-bottom: 14px; }
+.L-s-equation .C-factors .L-col-title { font-size: 16px; }
 
-/* proof: the carousel, then the case, one beat apart */
+/* 04 the evidence: a panel with the credit, like the research card */
+.L-s-research .L-research .L-cap { display: block; }
+
+/* 05 proof: the carousel, then the case, one beat apart */
 .C-proof { display: grid; gap: calc(48px * var(--space, 1)); }
 .L-s-proof .L-case {
   background: var(--surface);
@@ -31,8 +51,23 @@
   padding: 28px;
   grid-template-columns: 220px 1fr;
 }
-.L-s-research .L-research .L-cap { display: block; }
+
+/* 06 try it: the intro line above the sliders */
+.L-s-tool .L-tool > div > .L-mid { margin-bottom: 22px; }
+
+/* 07 which team: the line, then the tiles */
+.L-s-cards .L-mid { margin-bottom: 22px; }
+
+/* 08 the ask: a contrast band, statement one side, the two buttons the other */
+.L-s-start[data-v="split"] { background: var(--surface); }
+.L-s-start .L-start-actions { justify-items: end; }
+.L-s-start .inline-link { display: inline-block; margin-top: 4px; }
 
 @container page (max-width: 900px) {
   .L-s-proof .L-case { grid-template-columns: 1fr; }
+  .L-s-start .L-start-actions { justify-items: start; }
+  .L-s-hero[data-v="over"] .L-hero-copy { padding: 24px; margin-left: 0; }
+}
+@container page (max-width: 560px) {
+  .L-s-equation .C-factors { grid-template-columns: 1fr; }
 }

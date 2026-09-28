@@ -5,19 +5,22 @@ import { useGo } from "../Go";
 import "./c.css";
 
 /**
- * Draft C. Eight sections, from the 28 September review of Draft A:
+ * Draft C. The homepage review of 28 September, built.
  *
- * - the thesis is said once, in the hero, not four times
- * - the model (the equation) comes before the evidence for it
- * - one taxonomy on the page: the four environment factors. The four
- *   capacities go to Process or Insights
- * - one primary ask, Get started, with Book a call second, in the hero and
- *   the close only
+ * Eight sections that read as one argument:
  *
- * Copy is Draft A's, trimmed, plus section titles. Same primitives as the
- * other drafts so the style and the Editorial frame apply unchanged. Nothing
- * here is approved copy; the research line and the factor set are SAMUH's
- * to land.
+ *   01 the promise, said once, over the film
+ *   02 the gap: the team is the level in between
+ *   03 the model, before any proof of it
+ *   04 the evidence, credited to Sapien Labs
+ *   05 the proof: voices, then a case, one section
+ *   06 try it: the same four factors the model named
+ *   07 which team is yours
+ *   08 one ask, and its second
+ *
+ * Same style, same Editorial frame, same primitives as A and B, so only
+ * the argument and its composition differ. Copy is draft. The research
+ * line and the factor set are SAMUH's to land; both carry a visible note.
  */
 
 const stay = (e: React.MouseEvent) => e.preventDefault();
@@ -46,7 +49,13 @@ function Sec({
   );
 }
 
-const FACTORS = ["Social", "Autonomous", "Meaningful", "Healthy"];
+/** the four team environment factors, as Draft A's tool named them. Not confirmed. */
+const FACTORS: [string, string][] = [
+  ["Social", "Is the work social?"],
+  ["Autonomous", "Is it autonomous?"],
+  ["Meaningful", "Is it meaningful?"],
+  ["Healthy", "Is it healthy?"],
+];
 
 export default function HomeC() {
   const go = useGo("c");
@@ -58,35 +67,34 @@ export default function HomeC() {
   );
   return (
     <>
-      {/* 01 hero. The thesis lives here and nowhere else. */}
-      <Sec id="hero" n={1} v="video" headed={false}>
+      {/* 01 the promise, once, over the film */}
+      <Sec id="hero" n={1} v="over" headed={false}>
         <div className="L-hero-grid">
           <div className="L-hero-copy">
-            <p className="eyebrow">Organizational and high-performance consulting</p>
+            <p className="eyebrow">In partnership with Sapien Labs</p>
             <h1 className="display">High performance <em>without</em> the cost to people.</h1>
-            <p className="lede">Most teams leak performance through their environment, not their effort. Samuh finds where yours is leaking, and gives you the practices to close it.</p>
+            <p className="lede">Teams leak performance through their environment, not their effort. Samuh shows a team where it is leaking, and gives it the practices that close the gap.</p>
             {ctas}
-            <span className="L-cap C-credit">In partnership with Sapien Labs</span>
           </div>
           <HeroVideo />
         </div>
       </Sec>
 
-      {/* 02 circles. The gap the whole argument rests on, with the word explained beside it. */}
-      <Sec id="circles" n={2} v="nested" kicker="Teams, individuals, organizations" title="Where work life happens">
-        <p className="L-big C-lead">Organizations invest in the individual and in the organization. People experience their work in the team, and that is where performance is won or lost.</p>
+      {/* 02 the gap */}
+      <Sec id="circles" n={2} v="nested" kicker="Teams, individuals, organizations" title="The level in between">
+        <p className="L-big C-lead">Organizations develop the individual and transform the organization. In between sits the team, where people actually experience their work, and where performance is won or lost.</p>
         <Circles />
         <div className="C-aside">
           <Dictionary />
         </div>
       </Sec>
 
-      {/* 03 equation. The model, before any proof of it. */}
-      <Sec id="equation" n={3} v="split" kicker="The model" title="The SAMUH equation">
+      {/* 03 the model */}
+      <Sec id="equation" n={3} v="split" kicker="The model" title="How performance is made">
         <div className="L-equation">
-          <Frame label="The SAMUH equation · video, plays in place" tall />
+          <Frame label="The SAMUH equation · film, plays in place" tall />
           <div>
-            <p className="L-big">Team practices shape the team environment. The environment sets the capacity people can bring. Capacity turns into performance.</p>
+            <p className="L-big">Practices shape the environment. The environment sets capacity. Capacity becomes performance.</p>
             <div className="L-eq" aria-label="Team environment plus team practices equals capacity, which becomes performance">
               <span className="L-eq-term">Team environment</span>
               <span className="L-eq-op">+</span>
@@ -96,16 +104,19 @@ export default function HomeC() {
               <span className="L-eq-op">becomes</span>
               <span className="L-eq-term">Performance</span>
             </div>
-            <p className="L-mid C-factors">
-              Team environment, in four factors: {FACTORS.join(", ")}. The tool below runs on the same four.
-            </p>
+            <p className="L-mid">The environment is four questions. The tool below asks the same four about your team.</p>
+            <ul className="L-cols C-factors">
+              {FACTORS.map(([f, q]) => (
+                <li key={f}><span className="L-col-title">{f}</span><span className="L-col-note">{q}</span></li>
+              ))}
+            </ul>
             <span className="L-cap">Draft. Factor set to be confirmed by SAMUH.</span>
           </div>
         </div>
       </Sec>
 
-      {/* 04 research. Evidence for the model. Wording not landed. */}
-      <Sec id="research" n={4} v="statement" kicker="The research" title="The evidence">
+      {/* 04 the evidence */}
+      <Sec id="research" n={4} v="card" kicker="The research" title="Measured, not inferred">
         <blockquote className="L-research">
           <p className="L-big">The environment inside a team shapes how much capacity its people can bring to the work. What was previously inferred can now be measured.</p>
           <a href="#" className="inline-link" onClick={stay}>Sapien Labs Work Culture Report</a>
@@ -113,14 +124,14 @@ export default function HomeC() {
         </blockquote>
       </Sec>
 
-      {/* 05 proof. Trust first, then the case. One section. */}
-      <Sec id="proof" n={5} v="card" kicker="In their words, and in practice" title="Proof">
+      {/* 05 the proof: voices, then a case */}
+      <Sec id="proof" n={5} v="card" kicker="In their words, and in practice" title="What changes">
         <div className="C-proof">
           <Carousel />
           <div className="L-case">
             <Frame label="Case study image or client mark · contract check first" />
             <div>
-              <span className="card-tag">Case study · a Fortune 10 leadership team</span>
+              <span className="card-tag">Case study &middot; a Fortune 10 leadership team</span>
               <p className="L-mid">A business unit president wanted more rigor in how the team challenged and strengthened its biggest strategic bets. The team chose feedback on strategic initiatives as the practice to improve, and built one ritual around it.</p>
               <a href="#" className="inline-link" onClick={stay}>Read the case study</a>
             </div>
@@ -128,36 +139,41 @@ export default function HomeC() {
         </div>
       </Sec>
 
-      {/* 06 tool. The same four factors the equation named. */}
-      <Sec id="tool" n={6} v="split" kicker="Try it on your own team" title="Where is your team leaking?">
+      {/* 06 try it, on the four factors the model named */}
+      <Sec id="tool" n={6} v="split" kicker="Try it" title="Where is your team leaking?">
         <div className="L-tool">
-          <div className="L-sliders">
-            {FACTORS.map((f) => (
-              <label className="L-slider" key={f}>
-                <span>{f}</span>
-                <span className="L-track"><span className="L-thumb" /></span>
-              </label>
-            ))}
+          <div>
+            <p className="L-mid">One slider per factor. Move each to where your team sits and watch the estimate change.</p>
+            <div className="L-sliders">
+              {FACTORS.map(([f]) => (
+                <label className="L-slider" key={f}>
+                  <span>{f}</span>
+                  <span className="L-track"><span className="L-thumb" /></span>
+                </label>
+              ))}
+            </div>
           </div>
           <div className="L-result">
             <span className="L-cap">Estimated productive days lost per month</span>
             <span className="L-number">&mdash;</span>
-            <span className="L-cap">Your estimate appears here as you move the sliders. Our own intake tool, not TeamQ, not diagnostic.</span>
+            <span className="L-cap">Our own intake tool, not TeamQ, not diagnostic. The estimate is a prompt for a conversation.</span>
           </div>
         </div>
       </Sec>
 
-      {/* 07 cards. As the client asked on 27 September. */}
-      <Sec id="cards" n={7} v="gallery" kicker="Which team are you?" title="Four teams you might recognize">
+      {/* 07 which team is yours. As the client asked on 27 September. */}
+      <Sec id="cards" n={7} v="gallery" kicker="Four teams" title="Which one is yours?">
+        <p className="L-mid">Four teams you have probably sat in. Open one and tell us where you see yours.</p>
         <MetaphorGallery />
       </Sec>
 
-      {/* 08 start. One ask, and its second. No inline field. */}
-      <Sec id="start" n={8} v="band" headed={false}>
+      {/* 08 one ask, and its second */}
+      <Sec id="start" n={8} v="split" headed={false}>
         <div className="L-start">
           <div>
-            <h2 className="sec">What could stronger performance look like for your team?</h2>
-            <p className="L-mid">Free and ungated. The first insight lands before the first ask.</p>
+            <h2 className="sec">See where your team is leaking.</h2>
+            <p className="L-mid">Free and ungated. The first insight lands before the first ask. From there, three ways to work with us: Self-guided, Supported, or Guided in person.</p>
+            <a href="#" className="inline-link" onClick={(e) => { stay(e); go("solutions"); }}>Compare the three</a>
           </div>
           <div className="L-start-actions">{ctas}</div>
         </div>

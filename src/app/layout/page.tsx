@@ -14,6 +14,7 @@ import { Nav, Section, Footer } from "./sections";
 import Backdrop from "../design/Backdrop";
 import "../design/backdrops.css";
 import "../design/design.css";
+import { Steps } from "../steps";
 import "./layout.css";
 
 
@@ -111,6 +112,7 @@ export default function LayoutTool() {
         {railOpen ? (
           <>
             <div className="rail-pin" ref={topRef}>
+            <div className="rail-steps"><Steps here="layout" /></div>
             <div className="rail-preview" role="group" aria-label="Preview device">
               <span className="rail-preview-k">Preview:</span>
               {VIEWS.map((x) => (
