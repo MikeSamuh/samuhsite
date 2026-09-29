@@ -587,6 +587,10 @@ export interface CopyOverrides {
   /** null removes the hero lede */
   heroLede?: string | null;
   thesis?: string;
+  /** the dictionary entry sits beside the thesis on desktop, and the meaning section is not rendered on its own */
+  thesisWithMeaning?: boolean;
+  /** drop the partner line under the thesis */
+  noPartnerLine?: boolean;
 }
 
 export function Section({ def, variant, go, copy = {} }: { def: (typeof SECTIONS)[number]; variant: string; go: (p: PageId) => void; copy?: CopyOverrides }) {
@@ -615,13 +619,14 @@ export function Section({ def, variant, go, copy = {} }: { def: (typeof SECTIONS
         )}
 
         {def.id === "thesis" && (
-          <div className="L-thesis-in">
+          <div className={`L-thesis-in${copy.thesisWithMeaning ? " L-thesis-duo" : ""}`}>
             <p className="L-big">{copy.thesis ?? "Every leadership team leaks performance. Few can see where. You have already paid for the talent. The question is whether the team\u2019s conditions let you get the full return."}</p>
-            <span className="L-cap">In partnership with Sapien Labs</span>
+            {copy.thesisWithMeaning ? <Dictionary /> : null}
+            {copy.noPartnerLine ? null : <span className="L-cap">In partnership with Sapien Labs</span>}
           </div>
         )}
 
-        {def.id === "meaning" && <Dictionary />}
+        {def.id === "meaning" && !copy.thesisWithMeaning && <Dictionary />}
 
         {def.id === "circles" && v === "nested" && (
           <>

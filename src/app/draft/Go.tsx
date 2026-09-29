@@ -23,6 +23,7 @@ export function DraftHome({ draft }: { draft: DraftId }) {
       {SECTIONS.map((s) => {
         const v = d.layout.sections[s.id];
         if (v === `${s.id}-${OFF}`) return null;
+        if (s.id === "meaning" && d.copy?.thesisWithMeaning) return null;
         return <Section key={s.id} def={s} variant={v} go={go} copy={d.copy} />;
       })}
     </>
