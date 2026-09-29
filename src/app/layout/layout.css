@@ -354,6 +354,7 @@
 .L-dict-pos i { font-style: italic; }
 .L-dict-pos [lang="sa"] { font-style: normal; }
 .L-dict-defs { list-style: decimal; margin: 0; padding: 0 0 0 1.6em; font-size: clamp(17px, 1.7cqw, 21px); line-height: 1.5; color: var(--text); }
+.L-dict-hi { font-style: normal; color: var(--accent); }
 .L-dict-defs li::marker { font-family: var(--font-caption); color: var(--accent-2); font-size: 0.85em; }
 .L-sec[data-v="line"] .L-dict { margin-left: auto; margin-right: auto; text-align: center; }
 .L-sec[data-v="line"] .L-dict-head { justify-content: center; }
@@ -471,52 +472,49 @@
 .L-sec[data-v="single"] .L-quote blockquote { font-family: var(--font-display); font-weight: var(--display-weight); font-size: clamp(22px, 2.6cqw, 32px); line-height: 1.3; }
 .L-sec[data-v="strip"] .L-voices { grid-auto-flow: column; grid-auto-columns: minmax(300px, 1fr); overflow-x: auto; padding-bottom: 8px; }
 
-/* the carousel: one quote, arrows either side, dots below */
-.L-carousel {
+/* the carousel: the client's mark in the margin column, one bold quote,
+   a fixed height so the page does not jump between slides */
+.L-car2 {
   display: grid;
-  grid-template-columns: 48px 1fr 48px;
-  align-items: center;
-  gap: 18px 24px;
-  max-width: 960px;
-  margin: 0 auto;
+  grid-template-columns: minmax(180px, 240px) 1fr;
+  column-gap: clamp(28px, 5cqw, 72px);
+  align-items: start;
 }
-.L-car-slide {
-  margin: 0;
-  text-align: center;
-  display: grid;
-  gap: 26px;
-  animation: L-drop calc(var(--dur) * 1.4) var(--ease) backwards;
-}
-.L-car-slide blockquote {
-  margin: 0;
-  font-family: var(--font-display);
-  font-weight: var(--display-weight);
-  font-style: italic;
-  letter-spacing: var(--display-tracking);
-  font-size: clamp(24px, 3cqw, 40px);
-  line-height: 1.3;
-  max-width: 30ch;
-  margin: 0 auto;
-}
-.L-car-slide figcaption { display: grid; gap: 6px; justify-items: center; }
-.L-car-who { font-family: var(--font-display); font-weight: var(--display-weight); font-size: 18px; }
-.L-car-mark {
-  margin-top: 14px;
-  width: 120px;
-  height: 40px;
+.L-car2-logo {
+  width: 112px;
+  aspect-ratio: 1;
   display: grid;
   place-items: center;
-  border: var(--rule-thin) dashed color-mix(in srgb, var(--muted) 60%, transparent);
-  border-radius: min(var(--radius), 8px);
-  font-family: var(--font-caption);
-  font-size: 9px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--muted);
+  border: var(--rule-thin) solid var(--border);
+  border-radius: min(var(--radius), 16px);
+  color: var(--accent-2);
+  animation: L-drop calc(var(--dur) * 1.2) var(--ease) backwards;
 }
+.L-car2-mark { fill: none; stroke: currentColor; stroke-width: 3; }
+.L-car2-slide {
+  margin: 0;
+  min-height: 300px;
+  display: grid;
+  grid-template-rows: 1fr auto auto;
+  gap: 22px;
+  animation: L-drop calc(var(--dur) * 1.2) var(--ease) backwards;
+}
+.L-car2-slide blockquote {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-style: italic;
+  letter-spacing: var(--display-tracking);
+  font-size: clamp(24px, 2.8cqw, 38px);
+  line-height: 1.3;
+  max-width: 30ch;
+}
+.L-car2-slide figcaption { display: grid; gap: 4px; }
+.L-car-who { font-family: var(--font-display); font-weight: var(--display-weight); font-size: 18px; }
+.L-car2-nav { display: flex; align-items: center; gap: 10px; }
 .L-car-arrow {
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   display: grid;
   place-items: center;
   border: 0;
@@ -526,10 +524,9 @@
   transition: all var(--dur) var(--ease);
 }
 .L-car-arrow:hover { color: var(--text); transform: scale(1.12); }
-.L-page[data-comp="comp-editorial"] .L-carousel { margin: 0; }
-.L-page[data-comp="comp-editorial"] .L-car-slide { text-align: left; }
-.L-page[data-comp="comp-editorial"] .L-car-slide blockquote { margin: 0; }
-.L-page[data-comp="comp-editorial"] .L-car-slide figcaption { justify-items: start; }
+.L-page[data-comp="comp-keynote"] .L-car2 { grid-template-columns: 1fr; justify-items: center; row-gap: 20px; }
+.L-page[data-comp="comp-keynote"] .L-car2-slide { justify-items: center; text-align: center; }
+.L-page[data-comp="comp-cinema"] .L-car2 { grid-template-columns: 160px 1fr; }
 
 /* ---------- 08 case ---------- */
 
@@ -664,8 +661,8 @@
 @container page (max-width: 560px) {
   .L-s-hero[data-v="over"] .L-hero-copy { padding: 20px; }
   .L-arche-rot { grid-template-columns: 1fr; }
-  .L-carousel { grid-template-columns: 1fr; }
-  .L-car-arrow { display: none; }
+  .L-car2 { grid-template-columns: 1fr; row-gap: 16px; }
+  .L-car2-slide { min-height: 0; }
   .L-cols, .L-sec[data-v="grid"] .L-cards { grid-template-columns: 1fr; }
   .L-sec[data-v="list"] .L-arche { grid-template-columns: 1fr; }
   .L-sec[data-v="list"] .L-arche .ph { grid-row: auto; }

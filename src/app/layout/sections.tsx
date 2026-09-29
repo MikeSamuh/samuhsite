@@ -339,7 +339,7 @@ export function Dictionary() {
         <span className="L-dict-pos">noun &middot; Sanskrit <span lang="sa">&#2360;&#2350;&#2370;&#2361;</span>, <i>sam&#363;ha</i></span>
       </div>
       <ol className="L-dict-defs">
-        <li>A group of people who come together for a purpose larger than themselves.</li>
+        <li>A group of people who come together <em className="L-dict-hi">for a purpose larger than themselves.</em></li>
       </ol>
       <span className="L-cap">Placeholder voice. SAMUH to confirm the pronunciation and record it.</span>
     </div>
@@ -486,36 +486,58 @@ export const QUOTES = [
   { q: "A third sample, so the arrows and the dots have somewhere to go.", who: "Name", role: "Role, Organization" },
 ];
 
-/** One elegant italic quote at a time, attribution under it, the client's mark under that. */
+/** Temporary marks standing in for client logos, one shape per testimonial. */
+function TempMark({ i }: { i: number }) {
+  const shapes = [
+    <circle key="c" cx={32} cy={32} r={22} />,
+    <polygon key="t" points="32,9 56,53 8,53" />,
+    <polygon key="h" points="32,8 53,20 53,44 32,56 11,44 11,20" />,
+    <rect key="r" x={12} y={12} width={40} height={40} />,
+  ];
+  return (
+    <svg viewBox="0 0 64 64" width="64" height="64" aria-hidden className="L-car2-mark">
+      {shapes[i % shapes.length]}
+    </svg>
+  );
+}
+
+/**
+ * One bold italic quote at a time, the client's mark in the margin column
+ * where the section head would sit, changing every 3.33 seconds. The
+ * quote block keeps one height from slide to slide.
+ */
 export function Carousel({ quotes = QUOTES }: { quotes?: typeof QUOTES }) {
   const [i, setI] = useState(0);
   const [paused, setPaused] = useState(false);
   const n = quotes.length;
   const go = (d: number) => setI((x) => (x + d + n) % n);
   const cur = quotes[i];
-  // auto-advances (client feedback, 27 September). Pauses while hovered
-  // and under reduced motion.
   useEffect(() => {
     if (paused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const t = window.setInterval(() => setI((x) => (x + 1) % n), 6500);
+    const t = window.setInterval(() => setI((x) => (x + 1) % n), 3330);
     return () => window.clearInterval(t);
   }, [paused, n]);
   return (
-    <div className="L-carousel" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
-      <button className="L-car-arrow" onClick={() => go(-1)} aria-label="Previous testimonial">
-        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
-      </button>
-      <figure className="L-car-slide" key={i}>
+    <div className="L-car2" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
+      <div className="L-car2-logo" key={`m${i}`} aria-label="Client mark, temporary">
+        <TempMark i={i} />
+      </div>
+      <figure className="L-car2-slide" key={i}>
         <blockquote>&ldquo;{cur.q}&rdquo;</blockquote>
         <figcaption>
           <span className="L-car-who">{cur.who}</span>
           <span className="L-cap">{cur.role}</span>
-          <span className="L-car-mark" aria-label="Client mark">Client mark</span>
         </figcaption>
+        <div className="L-car2-nav">
+          <button className="L-car-arrow" onClick={() => go(-1)} aria-label="Previous testimonial">
+            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+          </button>
+          <span className="L-cap">{i + 1} / {n}</span>
+          <button className="L-car-arrow" onClick={() => go(1)} aria-label="Next testimonial">
+            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
+          </button>
+        </div>
       </figure>
-      <button className="L-car-arrow" onClick={() => go(1)} aria-label="Next testimonial">
-        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
-      </button>
     </div>
   );
 }
@@ -555,7 +577,7 @@ export interface CopyOverrides {
 
 export function Section({ def, variant, go, copy = {} }: { def: (typeof SECTIONS)[number]; variant: string; go: (p: PageId) => void; copy?: CopyOverrides }) {
   const v = variant.replace(`${def.id}-`, "");
-  const headed = !["hero", "thesis", "meaning", "start"].includes(def.id);
+  const headed = !["hero", "thesis", "meaning", "start"].includes(def.id) && !(def.id === "voices" && v === "carousel");
   return (
     <section className={`L-sec L-s-${def.id}${headed ? " L-sec-h" : ""}`} data-v={v} data-n={String(def.n).padStart(2, "0")} id={def.id}>
       <div className="L-wrap">
@@ -640,12 +662,7 @@ export function Section({ def, variant, go, copy = {} }: { def: (typeof SECTIONS
           </>
         )}
 
-        {def.id === "voices" && v === "carousel" && (
-          <>
-            <Head def={def} />
-            <Carousel />
-          </>
-        )}
+        {def.id === "voices" && v === "carousel" && <Carousel />}
 
         {def.id === "voices" && v !== "carousel" && (
           <>

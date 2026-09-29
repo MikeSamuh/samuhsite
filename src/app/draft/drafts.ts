@@ -41,7 +41,7 @@ export const DRAFTS: Draft[] = [
     owner: "Wilfred",
     note: "Starts as A, then Wilfred's 28 September edits: copy over the hero video, the leak line as the thesis, a bigger dictionary, pointer-active circles, icon nav that grows into the logos on scroll.",
     layout: parseLayoutHash(PRESETS[0].hash.replace(".hero-video.", ".hero-cinema.")),
-    nav: { links: ["about", "solutions", "process", "contact"], brand: "icons" },
+    nav: { links: ["about", "solutions", "process", "insights", "contact"], brand: "icons" },
     copy: {
       heroLede: null,
       thesis: "Most teams leak performance through their environment, not their effort. Samuh finds where yours is leaking, and gives you the practices to close it.",
