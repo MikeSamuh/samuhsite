@@ -46,7 +46,8 @@ export const DRAFTS: Draft[] = [
       heroLede: null,
       thesis: "Most teams leak performance through their environment, not their effort. Samuh finds where yours is leaking, and gives you the practices to close it.",
       noPartnerLine: true,
-      eyebrowOnThesis: true,
+      noEyebrow: true,
+      noHeroCtas: true,
     },
   },
   {

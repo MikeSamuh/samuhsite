@@ -614,6 +614,10 @@ export interface CopyOverrides {
   noPartnerLine?: boolean;
   /** the hero eyebrow moves down to sit above the thesis rule */
   eyebrowOnThesis?: boolean;
+  /** no eyebrow line anywhere */
+  noEyebrow?: boolean;
+  /** no buttons in the hero */
+  noHeroCtas?: boolean;
 }
 
 export function Section({ def, variant, go, copy = {} }: { def: (typeof SECTIONS)[number]; variant: string; go: (p: PageId) => void; copy?: CopyOverrides }) {
@@ -627,15 +631,17 @@ export function Section({ def, variant, go, copy = {} }: { def: (typeof SECTIONS
         {def.id === "hero" && (
           <div className="L-hero-grid">
             <div className="L-hero-copy">
-              {copy.eyebrowOnThesis ? null : <p className="eyebrow">Organizational and high-performance consulting</p>}
+              {copy.eyebrowOnThesis || copy.noEyebrow ? null : <p className="eyebrow">Organizational and high-performance consulting</p>}
               <h1 className="display">High performance <em>without</em> the cost to people.</h1>
               {copy.heroLede === null ? null : (
                 <p className="lede">{copy.heroLede ?? "Most teams leak performance through their environment, not their effort. Samuh finds where yours is leaking, and gives you the practices to close it."}</p>
               )}
-              <div className="cta-row">
-                <button className="btn" onClick={() => go("start")}>Get started <span className="arrow">&rarr;</span></button>
-                <button className="btn btn-secondary" onClick={() => go("contact")}>Talk to us</button>
-              </div>
+              {copy.noHeroCtas ? null : (
+                <div className="cta-row">
+                  <button className="btn" onClick={() => go("start")}>Get started <span className="arrow">&rarr;</span></button>
+                  <button className="btn btn-secondary" onClick={() => go("contact")}>Talk to us</button>
+                </div>
+              )}
             </div>
             <HeroVideo />
           </div>
@@ -643,7 +649,7 @@ export function Section({ def, variant, go, copy = {} }: { def: (typeof SECTIONS
 
         {def.id === "thesis" && (
           <>
-          {copy.eyebrowOnThesis ? <p className="eyebrow L-thesis-eyebrow">Organizational and high-performance consulting</p> : null}
+          {copy.eyebrowOnThesis && !copy.noEyebrow ? <p className="eyebrow L-thesis-eyebrow">Organizational and high-performance consulting</p> : null}
           <div className={`L-thesis-in${copy.thesisWithMeaning ? " L-thesis-duo" : ""}`}>
             <p className="L-big">{copy.thesis ?? "Every leadership team leaks performance. Few can see where. You have already paid for the talent. The question is whether the team\u2019s conditions let you get the full return."}</p>
             {copy.thesisWithMeaning ? <Dictionary /> : null}

@@ -194,8 +194,7 @@ export const SECTIONS: SectionDef[] = [
     ],
   },
   {
-    id: "circles", kicker: "Three circles", n: 4, title: "Work happens in teams",
-    sub: "Not the person. Not the company. The *team*.",
+    id: "circles", kicker: "Where organizations focus", n: 4, title: "Where we focus",
     intent: "Team, individual, organization. Establishes teams as the subject.",
     variants: [
       { id: "circles-nested", name: "Nested", note: "The organization houses the team, the team houses the individual." },
