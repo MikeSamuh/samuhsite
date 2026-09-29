@@ -891,6 +891,13 @@
   margin-bottom: calc(40px * var(--space, 1));
 }
 .L-page[data-comp="comp-keynote"] .L-head .L-eyebrow { justify-content: center; margin: 0; }
+/* B: the equation is the film alone. The copy goes, the video takes the
+   height left under the head */
+.L-page[data-comp="comp-keynote"] .L-s-equation { align-content: stretch; }
+.L-page[data-comp="comp-keynote"] .L-s-equation > .L-wrap { display: grid; grid-template-rows: auto 1fr; width: 100%; }
+.L-page[data-comp="comp-keynote"] .L-s-equation .L-equation { grid-template-columns: 1fr; height: 100%; }
+.L-page[data-comp="comp-keynote"] .L-s-equation .L-equation > div { display: none; }
+.L-page[data-comp="comp-keynote"] .L-s-equation .L-equation .ph { width: 100%; height: 100%; }
 .L-page[data-comp="comp-keynote"] .L-eyebrow::after { display: none; }
 .L-page[data-comp="comp-keynote"] h2.sec { font-size: clamp(34px, 5cqw, 64px); max-width: 18ch; }
 .L-page[data-comp="comp-keynote"] .L-big { font-size: clamp(28px, 4cqw, 52px); max-width: 22ch; line-height: 1.12; }
