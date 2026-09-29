@@ -368,7 +368,7 @@ function Process({ go }: { go: (p: PageId) => void }) {
     <>
       <PageHead n="01" kicker="The methodology across all three tiers" title="The team process." lede="See the team clearly. Choose the practice together. Ritualize it in the flow of work." />
       <ArcRun>
-      <Sec n="02" kicker="Six moves · icons to come" title="From baseline to standing ritual">
+      <Sec n="02" kicker="Six moves" title="From baseline to standing ritual">
         <ArcMoves />
         <p className="L-cap">Step names from the kickoff. Structure to confirm with SAMUH.</p>
       </Sec>
