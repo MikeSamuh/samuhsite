@@ -38,7 +38,15 @@ export function Nav({ page, go, menu, explore, links: order, brand = "wordmark",
   const barRef = useRef<HTMLElement>(null);
   useEffect(() => {
     if (brand !== "icons") return;
-    const on = () => setScrolled(window.scrollY > 40);
+    // two thresholds, not one: the swap shrinks the nav, which moves the
+    // scroll position a little, and with a single threshold that could
+    // flip the state straight back and leave the logos flickering between
+    // the two. Past 80 it is scrolled, under 20 it is not, in between it
+    // keeps whatever it was.
+    const on = () => {
+      const y = window.scrollY;
+      setScrolled((was) => (y > 80 ? true : y < 20 ? false : was));
+    };
     on();
     window.addEventListener("scroll", on, { passive: true });
     return () => window.removeEventListener("scroll", on);
