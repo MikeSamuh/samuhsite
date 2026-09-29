@@ -1,0 +1,150 @@
+/* Draft A. Only what its sections need beyond layout.css, scoped to the
+   draft so nothing leaks into B or C. No values: everything reads the
+   custom properties from tokens.ts and layout.ts. */
+
+/* a visible placeholder, never a plausible fake */
+.D-stage[data-draft="a"] .A-todo {
+  display: inline-block;
+  color: var(--accent-2);
+  border: var(--rule-thin) dashed var(--accent-2);
+  border-radius: min(var(--radius), 8px);
+  padding: 6px 10px;
+  line-height: 1.5;
+  max-width: 60ch;
+}
+.D-stage[data-draft="a"] .A-note { display: block; margin-top: 14px; }
+
+/* 05 the aspiration: statement, the three lines, then what the team has */
+.D-stage[data-draft="a"] .A-aspire { gap: 18px; }
+.D-stage[data-draft="a"] .A-aspire .L-mid { margin: 0; }
+.D-stage[data-draft="a"] .A-cols-cap { margin-top: 18px; }
+.D-stage[data-draft="a"] .A-cols { grid-template-columns: repeat(3, 1fr); }
+
+/* 06 the research: link, credit and the note stack under the statement */
+.D-stage[data-draft="a"] .A-research { gap: 14px; justify-items: start; }
+.D-stage[data-draft="a"] .A-research .inline-link { margin-top: 6px; }
+
+/* 09 the tool: real sliders, a picture that moves, the ask after */
+.D-stage[data-draft="a"] .A-tool { align-items: start; }
+.D-stage[data-draft="a"] .A-tool > div > .L-mid { margin-bottom: 22px; }
+.D-stage[data-draft="a"] .A-sliders { margin-bottom: 18px; }
+.D-stage[data-draft="a"] .A-slider > span { display: flex; justify-content: space-between; align-items: baseline; }
+.D-stage[data-draft="a"] .A-val {
+  font-family: var(--font-caption);
+  font-weight: normal;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+}
+.D-stage[data-draft="a"] .A-range {
+  width: 100%;
+  min-width: 0;
+  height: var(--rule-fat);
+  appearance: none;
+  background: var(--border);
+  border-radius: 999px;
+  cursor: pointer;
+  outline: none;
+}
+.D-stage[data-draft="a"] .A-range::-webkit-slider-thumb {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 0;
+  transition: box-shadow var(--dur) var(--ease);
+}
+.D-stage[data-draft="a"] .A-range::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 0;
+}
+.D-stage[data-draft="a"] .A-range:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent-4) 35%, transparent); }
+.D-stage[data-draft="a"] .A-range:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent-4) 35%, transparent); }
+.D-stage[data-draft="a"] .A-result { gap: 12px; }
+.D-stage[data-draft="a"] .A-number { color: var(--muted); }
+.D-stage[data-draft="a"] .A-gauge {
+  height: var(--rule-fat);
+  background: var(--border);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.D-stage[data-draft="a"] .A-gauge > span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  border-radius: 999px;
+  transition: width var(--dur) var(--ease);
+}
+.D-stage[data-draft="a"] .A-breakdown { display: grid; gap: 8px; margin-top: 10px; }
+/* the shared split rule hides .field for the start section; this one is the tool's */
+.D-stage[data-draft="a"] .A-breakdown .field { display: flex; max-width: none; }
+.D-stage[data-draft="a"] .A-sent { margin: 10px 0 0; }
+
+/* 11 the equation: terms are buttons, the hovered term is defined beside */
+.D-stage[data-draft="a"] .A-equation { grid-template-columns: 1.25fr 1fr; align-items: start; }
+.D-stage[data-draft="a"] .A-eq { margin-bottom: 14px; }
+.D-stage[data-draft="a"] .A-eq-pair { display: contents; }
+.D-stage[data-draft="a"] .A-eq-term {
+  cursor: pointer;
+  color: var(--text);
+  background: transparent;
+  text-align: left;
+  transition: border-color var(--dur) var(--ease), background var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+.D-stage[data-draft="a"] .A-eq-term:hover,
+.D-stage[data-draft="a"] .A-eq-term[aria-pressed="true"] { border-color: var(--accent); }
+.D-stage[data-draft="a"] .A-eq-term:focus-visible { outline: 0; box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-4) 30%, transparent); }
+/* the fifth child is the capacity term, the last is performance: the shared
+   rules paint those, and the button reset above must not undo them */
+.D-stage[data-draft="a"] .A-eq .A-eq-pair:nth-child(3) .A-eq-term { border: var(--rule-fat) solid var(--accent); }
+.D-stage[data-draft="a"] .A-eq .A-eq-pair:last-child .A-eq-term { background: var(--accent); color: var(--on-accent); border-color: var(--accent); }
+.D-stage[data-draft="a"] .A-def {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+  padding: 24px;
+  border: var(--rule-thin) solid var(--border);
+  border-radius: min(var(--radius), 18px);
+  background: var(--surface);
+  min-height: 300px;
+}
+.D-stage[data-draft="a"] .A-def .L-mid { margin: 0; }
+.D-stage[data-draft="a"] .A-parts {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.D-stage[data-draft="a"] .A-parts li {
+  font-family: var(--font-caption);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text);
+  padding: 6px 10px;
+  border: var(--rule-thin) solid var(--border);
+  border-radius: 999px;
+}
+.D-stage[data-draft="a"] .A-credit { padding-top: 12px; border-top: var(--rule-thin) solid var(--border); }
+
+/* 12 the ask: the intake entry, then a person */
+.D-stage[data-draft="a"] .A-start { grid-template-columns: 1.2fr 1fr; align-items: center; }
+.D-stage[data-draft="a"] .A-start .L-mid { margin: 14px 0 12px; }
+.D-stage[data-draft="a"] .A-start-actions { gap: 12px; justify-items: start; }
+.D-stage[data-draft="a"] .A-start-actions .L-cap { margin-top: 8px; }
+
+@container page (max-width: 900px) {
+  .D-stage[data-draft="a"] .A-cols { grid-template-columns: 1fr 1fr; }
+  .D-stage[data-draft="a"] .A-equation,
+  .D-stage[data-draft="a"] .A-start { grid-template-columns: 1fr; }
+  .D-stage[data-draft="a"] .A-def { min-height: 0; }
+}
+@container page (max-width: 560px) {
+  .D-stage[data-draft="a"] .A-cols { grid-template-columns: 1fr; }
+}

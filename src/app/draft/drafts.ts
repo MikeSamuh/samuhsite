@@ -19,7 +19,7 @@ export interface Draft {
   /** the frame and section variants, from layout.ts so the tool and the draft cannot drift */
   layout: Layout;
   /** nav link order and brand treatment, when they differ from the default */
-  nav?: Pick<NavProps, "links" | "brand">;
+  nav?: Pick<NavProps, "links" | "brand" | "partner">;
   /** copy that differs from the shared sections */
   copy?: CopyOverrides;
 }
@@ -30,8 +30,9 @@ export const DRAFTS: Draft[] = [
     letter: "A",
     name: "Twelve sections",
     owner: "Wilfred",
-    note: "The scope order as sent on 28 September, with Mike's 27 September notes. The baseline.",
+    note: "The scope order, sculpted from the signed scope and the decks: the partner credit by the logo, the equation as a visual with hover definitions, working sliders with the estimate left visibly to SAMUH, the one published testimonial, and a close that asks for the assessment first and a call second.",
     layout: parseLayoutHash(PRESETS[0].hash),
+    nav: { partner: true },
   },
   {
     id: "b",
@@ -51,7 +52,7 @@ export const DRAFTS: Draft[] = [
     letter: "C",
     name: "Eight sections",
     owner: "Claude",
-    note: "The thesis said once, the model before the proof, one taxonomy, one ask. Hero and thesis merge, circles carry the meaning, testimonials and the case study share a section, the aspirational moment folds into the imagery.",
+    note: "The homepage review, built: the thesis said once over the video, the team as the missing level, the model before the evidence, one taxonomy carried from the equation into the tool, proof in one section, one ask at the close.",
     layout: parseLayoutHash(PRESETS[0].hash),
   },
 ];

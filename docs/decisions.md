@@ -201,3 +201,16 @@ Wilfred to sculpt, /draft/c is the eight-section restructure from the
 homepage review (thesis once, model before proof, one taxonomy, one ask).
 Wilfred works A and B, Claude works C. /draft-1 redirects. Supersedes the
 earlier entry today. — Wilfred
+
+**2026-09-28 — Draft A is sculpted from the signed scope.**
+/draft/a keeps the twelve sections, the scope order and the Editorial
+frame, and gets its own Home.tsx like C so it can be edited directly.
+Per section, what the scope asks for that the baseline did not show: the
+partner credit beside the header logo, the equation as a visual with hover
+definitions and the Sapien Labs credit, the data tool with working sliders
+and the optional email for the breakdown offered after, the closing call to
+action with the assessment first then booking before the form, the one
+testimonial and the case snippet SAMUH has published in its own decks, and
+visible TODO(content) where the research claim, the estimate and the
+remaining testimonials are theirs to supply. The word and the circles stay
+shared with B and C. B stays on the shared sections. — Wilfred and Claude

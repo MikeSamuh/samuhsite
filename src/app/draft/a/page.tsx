@@ -1,5 +1,5 @@
-import { DraftHome } from "../Go";
+import HomeA from "./Home";
 
 export default function DraftAHome() {
-  return <DraftHome draft="a" />;
+  return <HomeA />;
 }

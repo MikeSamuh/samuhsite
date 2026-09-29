@@ -22,9 +22,11 @@ export interface NavProps {
    *  Sapien Labs mark at rest and swaps to both full logos once the page has
    *  scrolled, with the nav stuck to the top */
   brand?: "wordmark" | "icons";
+  /** "in partnership with Sapien Labs" beside the wordmark, per the scope */
+  partner?: boolean;
 }
 
-export function Nav({ page, go, menu, explore, links: order, brand = "wordmark" }: NavProps) {
+export function Nav({ page, go, menu, explore, links: order, brand = "wordmark", partner = false }: NavProps) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const overlay = menu || explore;
@@ -66,6 +68,7 @@ export function Nav({ page, go, menu, explore, links: order, brand = "wordmark" 
             <Image src="/samuh-logo.png" alt="SAMUH" width={960} height={LOGO_H} priority />
           </a>
         )}
+        {partner && brand !== "icons" ? <span className="nav-partner">in partnership with Sapien Labs</span> : null}
         <nav className="nav-links L-links" aria-label="Primary">
           {links.map((x) => (
             <a key={x.id} href="#" onClick={(e) => { stay(e); jump(x.id); }} aria-current={x.id === page ? "page" : undefined}>{x.name}</a>
@@ -484,12 +487,12 @@ export const QUOTES = [
 ];
 
 /** One elegant italic quote at a time, attribution under it, the client's mark under that. */
-export function Carousel() {
+export function Carousel({ quotes = QUOTES }: { quotes?: typeof QUOTES }) {
   const [i, setI] = useState(0);
   const [paused, setPaused] = useState(false);
-  const n = QUOTES.length;
+  const n = quotes.length;
   const go = (d: number) => setI((x) => (x + d + n) % n);
-  const cur = QUOTES[i];
+  const cur = quotes[i];
   // auto-advances (client feedback, 27 September). Pauses while hovered
   // and under reduced motion.
   useEffect(() => {

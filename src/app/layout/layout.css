@@ -650,6 +650,7 @@
     padding-bottom: 18px;
   }
   .L-nav .nav-logo { grid-column: 1 / -1; justify-self: start; }
+  .L-nav .nav-partner { display: none; }
   .L-page[data-nav="nav-menu"] .L-nav .nav-logo { grid-column: 2; justify-self: start; }
   .L-page[data-nav="nav-menu"] .L-burger { grid-column: 1; grid-row: 1; }
   .L-links { display: none; }
@@ -1056,12 +1057,21 @@
 .L-brand { display: inline-flex; align-items: center; gap: 16px; }
 .L-brand-samuh, .L-brand-sapien { position: relative; display: inline-grid; align-items: center; justify-items: start; }
 .L-brand-samuh > *, .L-brand-sapien > img { grid-area: 1 / 1; }
-.L-brand img { width: auto; filter: brightness(0) invert(1); transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease); }
+.L-brand img { width: auto; max-width: none; filter: brightness(0) invert(1); transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease); }
 /* Samuh a quarter larger than the tool's logo, Sapien a tenth smaller */
 .L-brand-samuh .L-brand-full { height: 38px; }
 .L-brand-samuh .L-brand-mark { height: 34px; }
 .L-brand-sapien .L-brand-full { height: 23px; opacity: 0.9; }
 .L-brand-sapien .L-brand-mark { height: 26px; }
+/* each cell is as wide as the logo it is showing, and the width eases, so
+   the rule and the Sapien mark glide left to sit an even 16px from the
+   Samuh mark once the page has scrolled. Widths come from the PNG aspect
+   ratios: samuh-logo 960x285, samuh-icon 181x240, sapien-labs 820x240,
+   sapien-icon 243x240 */
+.L-brand-samuh { width: calc(38px * 960 / 285); transition: width var(--dur) var(--ease); }
+.L-brand-sapien { width: calc(23px * 820 / 240); transition: width var(--dur) var(--ease), row-gap var(--dur) var(--ease); }
+.L-nav-icons[data-scrolled="true"] .L-brand-samuh { width: calc(34px * 181 / 240); }
+.L-nav-icons[data-scrolled="true"] .L-brand-sapien { width: calc(26px * 243 / 240); }
 .L-brand-sapien { grid-template-rows: auto auto; row-gap: 3px; }
 .L-brand-sapien > img { grid-row: 2; }
 .L-brand-powered {
@@ -1070,13 +1080,18 @@
   font-size: 8.5px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
+  white-space: nowrap;
   color: var(--muted);
   transition: opacity var(--dur) var(--ease);
 }
-.L-brand-rule { width: var(--rule-thin); height: 30px; background: var(--border); }
-/* at rest the full logos show; once scrolled, only the two marks */
+.L-brand-rule { width: var(--rule-thin); height: 30px; flex: none; background: var(--border); }
+/* at rest the full logos show; once scrolled, only the two marks. The Samuh
+   mark stays put and fades up in place; the Sapien mark arrives from the
+   right, out of where its wordmark was */
 .L-brand-mark { opacity: 0; transform: translateY(-4px); pointer-events: none; }
+.L-brand-sapien .L-brand-mark { transform: translateX(28px); }
 .L-nav-icons[data-scrolled="true"] .L-brand-full { opacity: 0; transform: translateY(4px); }
+.L-nav-icons[data-scrolled="true"] .L-brand-sapien .L-brand-full { transform: translateX(-12px); }
 .L-nav-icons[data-scrolled="true"] .L-brand-mark { opacity: 1; transform: none; }
 .L-nav-icons[data-scrolled="true"] .L-brand-sapien .L-brand-mark { opacity: 0.9; }
 .L-nav-icons[data-scrolled="true"] .L-brand-powered { opacity: 0; }
