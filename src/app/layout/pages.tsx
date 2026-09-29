@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import Image from "next/image";
 import type { PageId } from "@/lib/layout";
 
 /**
@@ -402,11 +403,13 @@ function Insights() {
 
 /* ------------------------------------------------------------------ */
 
-const TEAM = [
-  ["Rahul Varma", "Co-Founder & CEO", "Former CHRO, Accenture Technology."],
-  ["Calina Mircea", "Co-Founder & Methodology Lead", "Systemic coach, learning and leadership expert."],
-  ["Mike Gabour", "Co-Founder & CTO", "Global analytics strategy and design leader."],
-  ["Dr. Tara Thiagarajan", "Chief Scientific Advisor", "Founder, Sapien Labs. Ph.D., Stanford."],
+// photos: the 141px headshots from the current samuh.work, until the
+// client sends proper ones. Jake has none there
+const TEAM: [string, string, string, string?][] = [
+  ["Rahul Varma", "Co-Founder & CEO", "Former CHRO, Accenture Technology.", "/team/rahul-varma.webp"],
+  ["Calina Mircea", "Co-Founder & Methodology Lead", "Systemic coach, learning and leadership expert.", "/team/calina-mircea.webp"],
+  ["Mike Gabour", "Co-Founder & CTO", "Global analytics strategy and design leader.", "/team/mike-gabour.webp"],
+  ["Dr. Tara Thiagarajan", "Chief Scientific Advisor", "Founder, Sapien Labs. Ph.D., Stanford.", "/team/tara-thiagarajan.webp"],
   ["Jake DeBerry", "Lead, Enterprise Growth", "CEB/Gartner, Deloitte, NeuroLeadership Institute."],
 ];
 
@@ -430,9 +433,9 @@ function About() {
       </Sec>
       <Sec n="04" kicker="The people you would be working with" title="Team">
         <div className="L-team">
-          {TEAM.map(([name, role, bio]) => (
+          {TEAM.map(([name, role, bio, photo]) => (
             <article className="L-person" key={name}>
-              <Frame label="Photo" />
+              {photo ? <Image className="L-person-photo" src={photo} alt={name} width={141} height={141} /> : <Frame label="Photo" />}
               <span className="L-person-name">{name}</span>
               <span className="L-cap">{role}</span>
               <p>{bio}</p>

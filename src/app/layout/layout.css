@@ -793,6 +793,8 @@
 .L-team { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-bottom: 20px; }
 .L-person { display: grid; gap: 6px; }
 .L-person .ph { min-height: 180px; }
+.L-person-photo { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; margin-bottom: 8px; }
+.L-person:has(.L-person-photo) .ph, .L-person .ph { align-self: start; }
 .L-person-name { font-family: var(--font-display); font-weight: var(--display-weight); font-size: 18px; }
 .L-person p { margin: 6px 0 0; font-size: 13px; color: var(--muted); line-height: 1.5; }
 .L-logos { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
