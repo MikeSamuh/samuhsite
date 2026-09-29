@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState, type TouchEvent } from "react";
 import Image from "next/image";
 import { PAGES, SECTIONS, type PageId } from "@/lib/layout";
 
@@ -115,6 +115,11 @@ export function Head({ def }: { def: (typeof SECTIONS)[number] }) {
       <div>
         {def.kicker ? <p className="eyebrow L-eyebrow">{def.kicker}</p> : null}
         <h2 className="sec">{def.title}</h2>
+        {def.sub ? (
+          <p className="L-sub">
+            {def.sub.split(/\*([^*]+)\*/).map((part, i) => (i % 2 ? <em className="L-hl" key={i}>{part}</em> : part))}
+          </p>
+        ) : null}
       </div>
     </div>
   );
@@ -512,13 +517,22 @@ export function Carousel({ quotes = QUOTES }: { quotes?: typeof QUOTES }) {
   const n = quotes.length;
   const go = (d: number) => setI((x) => (x + d + n) % n);
   const cur = quotes[i];
+  // a swipe on touch moves one slide, arrows stay for everyone
+  const touch = useRef<number | null>(null);
+  const onTouchStart = (e: TouchEvent) => { touch.current = e.touches[0].clientX; };
+  const onTouchEnd = (e: TouchEvent) => {
+    if (touch.current === null) return;
+    const dx = e.changedTouches[0].clientX - touch.current;
+    touch.current = null;
+    if (Math.abs(dx) > 40) go(dx < 0 ? 1 : -1);
+  };
   useEffect(() => {
     if (paused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const t = window.setInterval(() => setI((x) => (x + 1) % n), 3330);
     return () => window.clearInterval(t);
   }, [paused, n]);
   return (
-    <div className="L-car2" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
+    <div className="L-car2" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
       <div className="L-car2-logo" key={`m${i}`} aria-label="Client mark, temporary">
         <TempMark i={i} />
       </div>
@@ -532,7 +546,6 @@ export function Carousel({ quotes = QUOTES }: { quotes?: typeof QUOTES }) {
           <button className="L-car-arrow" onClick={() => go(-1)} aria-label="Previous testimonial">
             <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
           </button>
-          <span className="L-cap">{i + 1} / {n}</span>
           <button className="L-car-arrow" onClick={() => go(1)} aria-label="Next testimonial">
             <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>
           </button>
@@ -684,8 +697,20 @@ export function Section({ def, variant, go, copy = {} }: { def: (typeof SECTIONS
             <div className="L-case">
               <Frame label="Case study image or client mark · contract check first" />
               <div>
-                <span className="card-tag">Case study · a Fortune 10 leadership team</span>
-                <p className="L-mid">A business unit president wanted more rigor in how the team challenged and strengthened its biggest strategic bets. The team chose feedback on strategic initiatives as the practice to improve, and built one ritual around it.</p>
+                <span className="card-tag">Case study · Senior leadership team, Fortune 10 healthcare company</span>
+                <p className="L-big L-case-line">1 high-performance ritual. 90 days. Measurable change.</p>
+                <dl className="L-case-stats">
+                  {[
+                    ["+39%", "most improved practice"],
+                    ["12/13", "team practices improved"],
+                    ["Embedded", "a new way of working that has stuck"],
+                  ].map(([n, l]) => (
+                    <div className="L-stat" key={n}>
+                      <dt className="L-stat-n">{n}</dt>
+                      <dd className="L-cap">{l}</dd>
+                    </div>
+                  ))}
+                </dl>
                 <a href="#" className="inline-link" onClick={stay}>Read the case study</a>
               </div>
             </div>

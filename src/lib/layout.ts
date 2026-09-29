@@ -158,6 +158,8 @@ export interface SectionDef {
   intent: string;
   /** the eyebrow above the title, on the page. Site copy, draft */
   kicker?: string;
+  /** one line under the title. Site copy, draft. *word* takes the accent */
+  sub?: string;
   /** every variant id is prefixed with the section id so hashes stay unique */
   variants: Opt[];
 }
@@ -191,7 +193,8 @@ export const SECTIONS: SectionDef[] = [
     ],
   },
   {
-    id: "circles", kicker: "Three circles", n: 4, title: "Where we focus our effort",
+    id: "circles", kicker: "Three circles", n: 4, title: "Work happens in teams",
+    sub: "Not the person. Not the company. The *team*.",
     intent: "Team, individual, organization. Establishes teams as the subject.",
     variants: [
       { id: "circles-nested", name: "Nested", note: "The organization houses the team, the team houses the individual." },
