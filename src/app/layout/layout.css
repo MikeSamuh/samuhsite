@@ -1222,7 +1222,8 @@
 /* thesis and dictionary side by side on desktop */
 .L-thesis-duo { grid-template-columns: 1.1fr 1fr; column-gap: clamp(32px, 5cqw, 80px); align-items: start; }
 .L-thesis-duo .L-dict { max-width: none; border-top: 0; border-bottom: 0; border-left: var(--rule-fat) solid var(--accent-2); padding: 4px 0 4px 22px; }
-.L-page[data-comp="comp-editorial"] .L-s-thesis[data-v="under"] .L-thesis-duo { grid-template-columns: 1.1fr 1fr; }
+.L-page[data-comp="comp-editorial"] .L-s-thesis[data-v="under"] .L-thesis-duo { grid-template-columns: 1.1fr 1fr; align-items: start; }
+.L-page[data-comp="comp-editorial"] .L-s-thesis[data-v="under"] .L-thesis-duo .L-cap { text-align: left; }
 @container page (max-width: 900px) { .L-thesis-duo { grid-template-columns: 1fr; row-gap: 32px; } }
 /* the thesis under the hero carries the leak line, so it reads as the argument, not a caption */
 .D-stage[data-draft="b"] .L-s-thesis .L-big { font-size: clamp(30px, 3.6cqw, 50px); max-width: 26ch; line-height: 1.15; }
