@@ -1057,21 +1057,18 @@
 .L-brand { display: inline-flex; align-items: center; gap: 16px; }
 .L-brand-samuh, .L-brand-sapien { position: relative; display: inline-grid; align-items: center; justify-items: start; }
 .L-brand-samuh > *, .L-brand-sapien > img { grid-area: 1 / 1; }
+/* every logo is 30px tall, set by .L-nav .nav-logo img above */
 .L-brand img { width: auto; max-width: none; filter: brightness(0) invert(1); transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease); }
-/* Samuh a quarter larger than the tool's logo, Sapien a tenth smaller */
-.L-brand-samuh .L-brand-full { height: 38px; }
-.L-brand-samuh .L-brand-mark { height: 34px; }
-.L-brand-sapien .L-brand-full { height: 23px; opacity: 0.9; }
-.L-brand-sapien .L-brand-mark { height: 26px; }
+.L-brand-sapien .L-brand-full { opacity: 0.9; }
 /* each cell is as wide as the logo it is showing, and the width eases, so
    the rule and the Sapien mark glide left to sit an even 16px from the
-   Samuh mark once the page has scrolled. Widths come from the PNG aspect
-   ratios: samuh-logo 960x285, samuh-icon 181x240, sapien-labs 820x240,
-   sapien-icon 243x240 */
-.L-brand-samuh { width: calc(38px * 960 / 285); transition: width var(--dur) var(--ease); }
-.L-brand-sapien { width: calc(23px * 820 / 240); transition: width var(--dur) var(--ease), row-gap var(--dur) var(--ease); }
-.L-nav-icons[data-scrolled="true"] .L-brand-samuh { width: calc(34px * 181 / 240); }
-.L-nav-icons[data-scrolled="true"] .L-brand-sapien { width: calc(26px * 243 / 240); }
+   Samuh mark once the page has scrolled. Widths are 30px tall by the PNG
+   aspect ratios: samuh-logo 960x285, samuh-icon 181x240, sapien-labs
+   820x240, sapien-icon 243x240 */
+.L-brand-samuh { width: calc(30px * 960 / 285); transition: width var(--dur) var(--ease); }
+.L-brand-sapien { width: calc(30px * 820 / 240); transition: width var(--dur) var(--ease), row-gap var(--dur) var(--ease); }
+.L-nav-icons[data-scrolled="true"] .L-brand-samuh { width: calc(30px * 181 / 240); }
+.L-nav-icons[data-scrolled="true"] .L-brand-sapien { width: calc(30px * 243 / 240); }
 .L-brand-sapien { grid-template-rows: auto auto; row-gap: 3px; }
 .L-brand-sapien > img { grid-row: 2; }
 .L-brand-powered {
