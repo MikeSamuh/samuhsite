@@ -725,11 +725,33 @@
 /* the arc timeline: copy | lane | art, the lane is where the line winds.
    Rows alternate which side the copy is on, and each side always keeps
    room for the art, which is a small piece of illustration to come */
+.L-arc-run { position: relative; }
+.L-arc-run > .L-sec:first-of-type { border-top: 0; }
+/* the first section in the run loses its rule to :first-of-type, so the
+   run draws it back, and the line starts right under it */
+.L-arc-run::before { content: ""; position: absolute; inset: 0 0 auto; height: var(--rule-thin); background: var(--border); }
+.L-page[data-rule="rule-none"] .L-arc-run::before { display: none; }
 .L-arc { --arc-lane: 200px; --arc-art: 112px; position: relative; list-style: none; margin: 0 0 28px; padding: 0; display: grid; gap: 8px; }
-.L-arc-svg { position: absolute; inset: 0; pointer-events: none; overflow: visible; }
+.L-arc-svg { position: absolute; inset: 0; z-index: 2; pointer-events: none; overflow: visible; }
 .L-arc-path { fill: none; stroke: url(#L-arc-fade); stroke-width: var(--rule-thin); vector-effect: non-scaling-stroke; opacity: 0.85; }
-.L-arc-dot { fill: var(--accent); stroke: var(--base); stroke-width: 3px; }
+.L-arc-dot { fill: var(--accent); stroke: var(--base); stroke-width: 3px; transform-box: fill-box; transform-origin: center; transition: transform var(--dur) var(--ease), fill var(--dur) var(--ease); }
 .L-arc-dot:first-of-type { fill: var(--accent-2); }
+.L-arc-dot[data-on] { transform: scale(1.6); fill: var(--accent-2); }
+/* the ball that rides the line at the pointer's height */
+.L-arc-ball-core { fill: var(--accent-2); }
+.L-arc-ball-glow { fill: var(--accent-2); opacity: 0.16; }
+/* what the ball is level with lights up */
+.L-arc-item .L-arc-what, .L-arc-item .L-arc-note, .L-arc-item .L-arc-art { transition: color var(--dur) var(--ease), box-shadow var(--dur) var(--ease), transform var(--dur) var(--ease); }
+.L-arc-item[data-on] .L-arc-what { color: var(--accent-2); }
+.L-arc-item[data-on] .L-arc-note { color: var(--text); }
+.L-arc-item[data-on] .L-arc-art { box-shadow: 0 0 0 2px var(--accent-2); transform: translateY(-4px); }
+.L-step[data-on] { background: var(--surface-alt); border-color: var(--accent); transform: translateY(-4px); }
+.L-step[data-on]::after { transform: scaleX(1); }
+.L-step[data-on] .step-name { color: var(--accent-2); }
+.L-page[data-comp="comp-editorial"] .L-step[data-on] { background: transparent; transform: none; border-top-color: var(--accent); }
+.L-page[data-comp="comp-keynote"] .L-step[data-on] { background: transparent; transform: none; }
+/* the note under the moves stays in the first column, left of the line */
+.L-arc-run .L-steps + .L-cap { max-width: 30ch; }
 .L-arc-item { position: relative; display: grid; grid-template-columns: 1fr var(--arc-lane) 1fr; align-items: center; min-height: 168px; }
 .L-arc-copy { display: grid; gap: 6px; text-align: right; justify-items: end; padding: 12px 0; }
 .L-arc-art {

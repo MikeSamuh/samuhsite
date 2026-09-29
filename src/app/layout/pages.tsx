@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import type { PageId } from "@/lib/layout";
 
 /**
@@ -118,65 +118,186 @@ const ARC = [
 
 
 /**
- * The arc as a timeline. One line winds down the page like a backwards S:
- * the upper half bows right, the lower half bows left. Each point is a dot
- * on that line, its copy on one side and a spot for a small piece of art on
- * the other, swapping sides as the line goes. The curve is drawn in pixels
- * from the list's own measurements, so the dots stay on it whatever the
- * copy wraps to. Art is a white placeholder for now.
+ * The arc run: sections 02 and 03 of the process page share one line. It
+ * starts at the very top of 02, runs down the gap between the first two
+ * columns of moves, then sweeps into the arc and winds down it like a
+ * backwards S, bowing right then left. Everything is measured from the
+ * DOM, so the line and its dots sit right whatever the copy wraps to.
+ *
+ * A ball rides the line at the pointer's height (the middle of the view
+ * when there is no pointer), eased a little behind it. Whatever it passes
+ * lights up: the row of moves it is level with, or the arc point it is
+ * nearest. Reduced motion drops the easing.
  */
-function ArcTimeline() {
-  const listRef = useRef<HTMLOListElement>(null);
-  const [geo, setGeo] = useState<{ w: number; h: number; cx: number; amp: number; ys: number[] } | null>(null);
+function ArcRun({ children }: { children: React.ReactNode }) {
+  const runRef = useRef<HTMLDivElement>(null);
+  const svgRef = useRef<SVGSVGElement>(null);
+  const pathRef = useRef<SVGPathElement>(null);
+  const ballRef = useRef<SVGGElement>(null);
+  const dotsRef = useRef<SVGGElement>(null);
 
   useEffect(() => {
-    const list = listRef.current;
-    if (!list) return;
-    const measure = () => {
-      const box = list.getBoundingClientRect();
-      const lane = list.querySelector<HTMLElement>(".L-arc-lane");
-      if (!lane) return;
-      const l = lane.getBoundingClientRect();
-      const ys = Array.from(list.querySelectorAll<HTMLElement>(".L-arc-lane")).map((el) => {
-        const r = el.getBoundingClientRect();
-        return r.top - box.top + r.height / 2;
-      });
-      setGeo({ w: box.width, h: box.height, cx: l.left - box.left + l.width / 2, amp: Math.max(0, l.width / 2 - 14), ys });
+    const run = runRef.current;
+    const svg = svgRef.current;
+    const path = pathRef.current;
+    const ball = ballRef.current;
+    const dots = dotsRef.current;
+    if (!run || !svg || !path || !ball || !dots) return;
+    const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    // geometry, in run pixels
+    let H = 0;
+    let top = 0;            // where the line starts
+    let gapX = 0;           // the lane through the moves
+    let stepsEnd = 0;       // bottom of the moves grid
+    let listTop = 0;        // top of the arc list
+    let listH = 1;
+    let cx = 0;
+    let amp = 0;
+    let ys: number[] = [];  // arc point centres
+    let rows: { top: number; bottom: number; els: HTMLElement[] }[] = [];
+    let items: HTMLElement[] = [];
+
+    // the S is a cosine from its first crest, a quarter of the way down
+    // the list: it is at its rightmost there, level, then bows left. The
+    // sweep in from the moves eases into that crest, level too, so the two
+    // meet without a corner.
+    const xAt = (y: number) => {
+      const crest = listTop + listH / 4;
+      if (y >= crest) return cx + amp * Math.cos((2 * Math.PI * (y - crest)) / listH);
+      if (y <= stepsEnd) return gapX;
+      const t = (y - stepsEnd) / Math.max(1, crest - stepsEnd);
+      const e = t * t * (3 - 2 * t);
+      return gapX + (cx + amp - gapX) * e;
     };
+
+    const measure = () => {
+      const box = run.getBoundingClientRect();
+      const rel = (r: DOMRect) => ({ top: r.top - box.top, bottom: r.bottom - box.top, left: r.left - box.left, right: r.right - box.left });
+      const list = run.querySelector<HTMLElement>(".L-arc");
+      const lane = run.querySelector<HTMLElement>(".L-arc-lane");
+      if (!list || !lane) return;
+      const lr = rel(list.getBoundingClientRect());
+      // the line ends with the list, not the section
+      H = lr.bottom;
+      const la = rel(lane.getBoundingClientRect());
+      listTop = lr.top;
+      listH = Math.max(1, lr.bottom - lr.top);
+      cx = (la.left + la.right) / 2;
+      amp = Math.max(0, (la.right - la.left) / 2 - 14);
+      items = Array.from(run.querySelectorAll<HTMLElement>(".L-arc-item"));
+      ys = Array.from(run.querySelectorAll<HTMLElement>(".L-arc-lane")).map((el) => { const r = rel(el.getBoundingClientRect()); return (r.top + r.bottom) / 2; });
+
+      // the moves: the line runs between column one and two when there are
+      // two or more columns, and the run starts at the top of the section.
+      // Stacked on a phone, the line starts with the arc instead.
+      const steps = Array.from(run.querySelectorAll<HTMLElement>(".L-step"));
+      const s0 = steps[0] && rel(steps[0].getBoundingClientRect());
+      const s1 = steps[1] && rel(steps[1].getBoundingClientRect());
+      if (s0 && s1 && s1.left > s0.right) {
+        gapX = (s0.right + s1.left) / 2;
+        top = 0;
+        const grid = run.querySelector<HTMLElement>(".L-steps");
+        stepsEnd = grid ? rel(grid.getBoundingClientRect()).bottom : s0.bottom;
+        rows = [];
+        steps.forEach((el) => {
+          const r = rel(el.getBoundingClientRect());
+          const row = rows.find((q) => Math.abs(q.top - r.top) < 4);
+          if (row) row.els.push(el); else rows.push({ top: r.top, bottom: r.bottom, els: [el] });
+        });
+      } else {
+        gapX = cx; top = listTop; stepsEnd = listTop; rows = [];
+      }
+
+      svg.setAttribute("viewBox", `0 0 ${box.width} ${H}`);
+      svg.setAttribute("width", String(box.width));
+      svg.setAttribute("height", String(H));
+      const n = Math.max(24, Math.round((H - top) / 5));
+      path.setAttribute("d", Array.from({ length: n + 1 }, (_, i) => { const y = top + ((H - top) * i) / n; return `${i ? "L" : "M"} ${xAt(y).toFixed(1)} ${y.toFixed(1)}`; }).join(" "));
+      Array.from(dots.children).forEach((c, i) => {
+        if (ys[i] == null) return;
+        c.setAttribute("cx", xAt(ys[i]).toFixed(1));
+        c.setAttribute("cy", ys[i].toFixed(1));
+      });
+      svg.style.setProperty("--arc-top", `${top / Math.max(1, H)}`);
+    };
+
+    // the ball: a target from the pointer, a position that eases to it
+    let pointerY: number | null = null;
+    let y = -1;
+    let raf = 0;
+    let lastOn = "";
+    const tick = () => {
+      raf = 0;
+      const box = run.getBoundingClientRect();
+      const want = pointerY != null ? pointerY - box.top : window.innerHeight / 2 - box.top;
+      const target = Math.min(H, Math.max(top, want));
+      if (y < 0) y = target;
+      y += (target - y) * (still ? 1 : 0.16);
+      if (Math.abs(target - y) < 0.2) y = target;
+      ball.setAttribute("transform", `translate(${xAt(y).toFixed(1)} ${y.toFixed(1)})`);
+      // what the ball is level with
+      const near = ys.reduce((best, py, i) => (Math.abs(py - y) < 46 && (best < 0 || Math.abs(py - y) < Math.abs(ys[best] - y)) ? i : best), -1);
+      const row = rows.findIndex((r) => y >= r.top - 8 && y <= r.bottom + 8);
+      const key = `${near}:${row}`;
+      if (key !== lastOn) {
+        lastOn = key;
+        items.forEach((el, i) => el.toggleAttribute("data-on", i === near));
+        Array.from(dots.children).forEach((c, i) => c.toggleAttribute("data-on", i === near));
+        rows.forEach((r, i) => r.els.forEach((el) => el.toggleAttribute("data-on", i === row)));
+      }
+      if (Math.abs(target - y) > 0.2) raf = requestAnimationFrame(tick);
+    };
+    const kick = () => { if (!raf) raf = requestAnimationFrame(tick); };
+    const onMove = (e: PointerEvent) => { pointerY = e.clientY; kick(); };
+    const onLeave = () => { pointerY = null; kick(); };
+    const onScroll = () => kick();
+    const ro = new ResizeObserver(() => { measure(); kick(); });
+    ro.observe(run);
     measure();
-    const ro = new ResizeObserver(measure);
-    ro.observe(list);
-    return () => ro.disconnect();
+    kick();
+    window.addEventListener("pointermove", onMove, { passive: true });
+    document.addEventListener("mouseleave", onLeave);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      ro.disconnect();
+      cancelAnimationFrame(raf);
+      window.removeEventListener("pointermove", onMove);
+      document.removeEventListener("mouseleave", onLeave);
+      window.removeEventListener("scroll", onScroll);
+    };
   }, []);
 
-  // x along the line for a given y: a full sine over the height, bowing
-  // right first, so it reads as a backwards S
-  const xAt = (y: number) => (geo ? geo.cx + geo.amp * Math.sin((2 * Math.PI * y) / geo.h) : 0);
-  const path = geo
-    ? Array.from({ length: 73 }, (_, i) => {
-        const y = (geo.h * i) / 72;
-        return `${i ? "L" : "M"} ${xAt(y).toFixed(1)} ${y.toFixed(1)}`;
-      }).join(" ")
-    : "";
-
   return (
-    <ol className="L-arc" ref={listRef}>
-      {geo && (
-        <svg className="L-arc-svg" viewBox={`0 0 ${geo.w} ${geo.h}`} width={geo.w} height={geo.h} aria-hidden>
-          <defs>
-            <linearGradient id="L-arc-fade" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stopColor="var(--accent)" stopOpacity="0" />
-              <stop offset="0.12" stopColor="var(--accent)" stopOpacity="1" />
-              <stop offset="0.88" stopColor="var(--accent)" stopOpacity="1" />
-              <stop offset="1" stopColor="var(--accent)" stopOpacity="0" />
-            </linearGradient>
-          </defs>
-          <path className="L-arc-path" d={path} />
-          {geo.ys.map((y, i) => (
-            <circle key={i} className="L-arc-dot" cx={xAt(y)} cy={y} r={6} />
-          ))}
-        </svg>
-      )}
+    <div className="L-arc-run" ref={runRef}>
+      <svg ref={svgRef} className="L-arc-svg" aria-hidden>
+        <defs>
+          <linearGradient id="L-arc-fade" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="var(--accent)" stopOpacity="1" />
+            <stop offset="0.9" stopColor="var(--accent)" stopOpacity="1" />
+            <stop offset="1" stopColor="var(--accent)" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        <path ref={pathRef} className="L-arc-path" />
+        <g ref={dotsRef}>
+          {ARC.map(([when]) => <circle key={when} className="L-arc-dot" r={6} />)}
+        </g>
+        <g ref={ballRef} className="L-arc-ball">
+          <circle className="L-arc-ball-glow" r={22} />
+          <circle className="L-arc-ball-core" r={7} />
+        </g>
+      </svg>
+      {children}
+    </div>
+  );
+}
+
+/** The arc's four points: copy one side of the line, a spot for a small
+ *  piece of art the other, swapping sides each row. Art is a white
+ *  placeholder for now. The line itself is drawn by ArcRun. */
+function ArcTimeline() {
+  return (
+    <ol className="L-arc">
       {ARC.map(([when, what, note]) => (
         <li key={when} className="L-arc-item">
           <div className="L-arc-copy">
@@ -196,6 +317,7 @@ function Process({ go }: { go: (p: PageId) => void }) {
   return (
     <>
       <PageHead n="01" kicker="The methodology across all three tiers" title="The team process." lede="See the team clearly. Choose the practice together. Ritualize it in the flow of work." />
+      <ArcRun>
       <Sec n="02" kicker="Six moves · icons to come" title="From baseline to standing ritual">
         <div className="L-steps">
           {STEPS.map(([name, note], i) => (
@@ -213,6 +335,7 @@ function Process({ go }: { go: (p: PageId) => void }) {
         <ArcTimeline />
         <p className="L-mid">Two ritual keepers are coached every two weeks, and the ritual runs inside work the team already does.</p>
       </Sec>
+      </ArcRun>
       <Sec n="04" kicker="Why it holds" title="Elite teams ritualize high-performance practices">
         <p className="L-big">A ritual turns an important behavior into a specific, repeatable practice the team owns and runs.</p>
         <p className="L-mid">Repeated over weeks, it converts intent into the way the team actually operates. The team creates its ritual from its own data, its own context, and its own commitment, which is why it holds.</p>
