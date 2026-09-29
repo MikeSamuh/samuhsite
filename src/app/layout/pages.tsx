@@ -66,19 +66,18 @@ function Solutions({ go }: { go: (p: PageId) => void }) {
         <Sec key={t.name} n={`0${i + 2}`} kicker={t.tag} title={t.name} id={t.name.toLowerCase()}>
           <div className="L-tier">
             <div>
-              <span className="L-cap">What it is</span>
+              <span className="L-cap L-tier-k">What it is</span>
               <p className="L-mid">{t.what}</p>
             </div>
             <div>
-              <span className="L-cap">Who it is for</span>
+              <span className="L-cap L-tier-k">Who it is for</span>
               <p className="L-mid">{t.who}</p>
             </div>
             <div>
-              <span className="L-cap">What you get</span>
+              <span className="L-cap L-tier-k">What you get</span>
               <p className="L-mid">{t.get}</p>
             </div>
             <div className="L-tier-cta">
-              {t.name === "Self-guided" ? <span className="L-cap">Price to confirm</span> : null}
               <a href="#" className="inline-link L-text-cta" onClick={(e) => { stay(e); go("contact"); }}>Talk to us <span className="arrow">&rarr;</span></a>
             </div>
           </div>

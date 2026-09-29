@@ -703,7 +703,8 @@
 
 /* solutions */
 .L-tier { display: grid; grid-template-columns: repeat(3, 1fr) auto; gap: 28px; align-items: start; }
-.L-tier .L-mid { margin-top: 8px; }
+.L-tier .L-mid { margin-top: 10px; }
+.L-tier-k { font-size: 21px; font-weight: 700; color: var(--text); letter-spacing: 0.06em; }
 .L-tier-cta { align-self: end; display: grid; gap: 8px; justify-items: start; }
 .L-text-cta { font-size: 15px; display: inline-flex; align-items: center; gap: 8px; }
 .L-text-cta .arrow { transition: transform var(--dur) var(--ease); }
