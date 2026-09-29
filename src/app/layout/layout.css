@@ -369,7 +369,7 @@
 /* block: the full entry beside a rule, as it sat next to the thesis, now
    in its own section straight under it */
 .L-sec[data-v="block"] .L-dict { max-width: 64ch; border-top: 0; border-bottom: 0; border-left: var(--rule-fat) solid var(--accent-2); padding: 4px 0 4px 22px; }
-.L-s-thesis:has(+ .L-s-meaning[data-v="block"]) { padding-bottom: calc(40px * var(--space, 1)); }
+.L-s-thesis:has(+ .L-s-meaning[data-v="block"]) { padding-bottom: calc(88px * var(--space, 1)); }
 .L-s-meaning[data-v="block"] { border-top: 0; padding-top: 0; }
 
 /* ---------- 04 circles ---------- */
