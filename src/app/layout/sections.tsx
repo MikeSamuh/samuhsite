@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { PAGES, SECTIONS, type PageId } from "@/lib/layout";
 
@@ -120,66 +120,162 @@ export function Head({ def }: { def: (typeof SECTIONS)[number] }) {
 /**
  * The three circles, after the client's sketch of 25 September: the
  * organization houses the team, the team houses the individual, and the
- * individual sits at the top of the team. Two callouts: the team is where
- * people experience their work life, the individual and the organization
- * are where organizations focus. Only the team circle carries the accent.
+ * individual sits at the top of the team. Only the team circle carries the
+ * accent, because the team is the subject.
+ *
+ * Motion. Each circle floats on its own slow cycle, and all three are drawn
+ * toward the pointer and tethered, so none moves more than five percent of
+ * the frame. Deeper circles follow with more lag, which is what gives the
+ * picture depth. The pointer is smoothed on a requestAnimationFrame loop
+ * that writes transforms straight to the DOM, so nothing re-renders while
+ * the mouse moves, and the follow speed reads --dur so it matches the rest
+ * of the page. Hover is a geometric test against the live circle positions,
+ * so it works anywhere inside a ring, not only on its stroke. The callouts
+ * stay hidden until a circle is hovered: the team shows where people
+ * experience their work life, the individual and the organization show
+ * where organizations focus. Reduced motion holds the circles still and
+ * keeps the hover.
  */
-/**
- * The three circles. All three are drawn toward the pointer and tethered,
- * so none moves more than five percent of the frame. The callouts stay
- * hidden until a circle is hovered: the team shows where people experience
- * their work life, the individual and the organization show where
- * organizations focus.
- */
+type Ring = "org" | "team" | "ind";
+const RINGS: { id: Ring; cx: number; cy: number; r: number; share: number; lag: number; float: number; cycle: number; phase: number }[] = [
+  // share: how much of the tether the ring takes. lag: follow time in --dur units.
+  // float: idle drift in frame units. cycle: radians per second, all slow.
+  { id: "org", cx: 320, cy: 220, r: 190, share: 0.6, lag: 2.4, float: 3, cycle: 0.21, phase: 0.0 },
+  { id: "team", cx: 320, cy: 182, r: 128, share: 0.8, lag: 1.6, float: 4, cycle: 0.27, phase: 2.1 },
+  { id: "ind", cx: 320, cy: 120, r: 46, share: 1.0, lag: 1.0, float: 6, cycle: 0.34, phase: 4.2 },
+];
+const FRAME = { w: 640, h: 440 };
+/* where each leader meets its ring, in that ring's own coordinates, so the
+   end of the line and its square travel with the circle */
+const ANCHOR: Record<Ring, { x: number; y: number }> = { team: { x: -105, y: 38 }, ind: { x: 32, y: -22 }, org: { x: 120, y: 132 } };
+const EDGE: Record<Ring, { x: number; y: number }> = { team: { x: 0, y: 220 }, ind: { x: 640, y: 220 }, org: { x: 640, y: 220 } };
+const TETHER = 32; // five percent of the frame
+
 export function Circles() {
   const sq = (x: number, y: number, cls: string) => <rect x={x - 5} y={y - 5} width={10} height={10} className={`L-c-sq ${cls}`} />;
-  const [pull, setPull] = useState({ x: 0, y: 0 });
-  const [hot, setHot] = useState<"org" | "team" | "ind" | null>(null);
-  const LIMIT = 32; // five percent of the 640 frame
-  const onMove = (e: React.MouseEvent<SVGSVGElement>) => {
-    const r = e.currentTarget.getBoundingClientRect();
-    // pointer in frame units, relative to the centre of the picture
-    const px = ((e.clientX - r.left) / r.width) * 640 - 320;
-    const py = ((e.clientY - r.top) / r.height) * 440 - 220;
-    const d = Math.hypot(px, py) || 1;
-    const k = Math.min(1, d / 260); // farther pointer, firmer pull, until the tether
-    setPull({ x: (px / d) * LIMIT * k, y: (py / d) * LIMIT * k });
+  const svgRef = useRef<SVGSVGElement>(null);
+  const gRefs = useRef<(SVGGElement | null)[]>([]);
+  const lineRefs = useRef<(SVGLineElement | null)[]>([]);
+  const [hot, setHot] = useState<Ring | null>(null);
+  // everything the loop touches lives outside React state
+  const m = useRef({
+    pointer: null as { x: number; y: number } | null, // frame units, from the centre
+    target: { x: 0, y: 0 },
+    cur: RINGS.map(() => ({ x: 0, y: 0 })),
+    hot: null as Ring | null,
+  });
+
+  const hit = (p: { x: number; y: number } | null): Ring | null => {
+    if (!p) return null;
+    const half = { x: FRAME.w / 2, y: FRAME.h / 2 };
+    // innermost first, so the individual wins over the team, the team over the organization
+    for (let i = RINGS.length - 1; i >= 0; i--) {
+      const r = RINGS[i];
+      const c = m.current.cur[i];
+      const d = Math.hypot(p.x + half.x - (r.cx + c.x), p.y + half.y - (r.cy + c.y));
+      if (d <= r.r + 4) return r.id;
+    }
+    return null;
   };
-  const at = (share: number) => `translate(${(pull.x * share).toFixed(1)} ${(pull.y * share).toFixed(1)})`;
+  const setHotIfChanged = (h: Ring | null) => {
+    if (h !== m.current.hot) { m.current.hot = h; setHot(h); }
+  };
+
+  const onMove = (e: React.PointerEvent<SVGSVGElement>) => {
+    if (e.pointerType === "touch") return; // a finger is for scrolling; touch shows both callouts
+    const b = e.currentTarget.getBoundingClientRect();
+    const p = {
+      x: ((e.clientX - b.left) / b.width) * FRAME.w - FRAME.w / 2,
+      y: ((e.clientY - b.top) / b.height) * FRAME.h - FRAME.h / 2,
+    };
+    m.current.pointer = p;
+    const d = Math.hypot(p.x, p.y) || 1;
+    const k = Math.min(1, d / 260); // farther pointer, firmer pull, until the tether
+    m.current.target = { x: (p.x / d) * TETHER * k, y: (p.y / d) * TETHER * k };
+    setHotIfChanged(hit(p)); // immediate, so the hover never waits on a frame
+  };
+  const onLeave = () => {
+    m.current.pointer = null;
+    m.current.target = { x: 0, y: 0 };
+    setHotIfChanged(null);
+  };
+
+  useEffect(() => {
+    const svg = svgRef.current;
+    if (!svg) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return; // still picture, hover only
+    const dur = parseFloat(getComputedStyle(svg).getPropertyValue("--dur")) || 300;
+    let raf = 0;
+    let last = 0;
+    const tick = (now: number) => {
+      const dt = last ? Math.min(64, now - last) : 16; // clamp so a background tab does not lurch on return
+      last = now;
+      const t = now / 1000;
+      const s = m.current;
+      RINGS.forEach((r, i) => {
+        const g = gRefs.current[i];
+        if (!g) return;
+        const c = s.cur[i];
+        // exponential follow: the deeper the ring, the longer it takes, frame-rate independent
+        const k = 1 - Math.exp(-dt / (dur * r.lag));
+        c.x += (s.target.x * r.share - c.x) * k;
+        c.y += (s.target.y * r.share - c.y) * k;
+        const fx = Math.sin(t * r.cycle + r.phase) * r.float;
+        const fy = Math.cos(t * r.cycle * 0.8 + r.phase) * r.float;
+        const ox = c.x + fx, oy = c.y + fy;
+        g.setAttribute("transform", `translate(${ox.toFixed(2)} ${oy.toFixed(2)})`);
+        const l = lineRefs.current[i];
+        if (l) {
+          l.setAttribute("x2", (r.cx + ANCHOR[r.id].x + ox).toFixed(2));
+          l.setAttribute("y2", (r.cy + ANCHOR[r.id].y + oy).toFixed(2));
+        }
+      });
+      if (s.pointer) setHotIfChanged(hit(s.pointer)); // circles drift under a still pointer
+      raf = requestAnimationFrame(tick);
+    };
+    const start = () => { if (!raf) { last = 0; raf = requestAnimationFrame(tick); } };
+    const stop = () => { cancelAnimationFrame(raf); raf = 0; };
+    // only spend frames while the picture is on screen
+    const io = new IntersectionObserver(([en]) => (en.isIntersecting ? start() : stop()), { rootMargin: "80px" });
+    io.observe(svg);
+    return () => { stop(); io.disconnect(); };
+  }, []);
+
   const side = hot === "team" ? "left" : hot ? "right" : "";
   return (
     <div className="L-circ" data-side={side}>
       <p className="L-c-call L-c-left L-c-hi">Where people experience their work life</p>
       <svg
+        ref={svgRef}
         className="L-c-svg"
-        viewBox="0 0 640 440"
+        viewBox={`0 0 ${FRAME.w} ${FRAME.h}`}
         role="img"
         aria-label="Three nested circles: organization, team, individual"
-        onMouseMove={onMove}
-        onMouseLeave={() => { setPull({ x: 0, y: 0 }); setHot(null); }}
+        data-hot={hot ?? undefined}
+        onPointerMove={onMove}
+        onPointerLeave={onLeave}
       >
-        <g className="L-c-leaders L-c-leaders-left">
-          <line x1={0} y1={220} x2={215} y2={220} className="L-c-line L-c-hi" />
-          {sq(215, 220, "L-c-hi")}
-        </g>
-        <g className="L-c-leaders L-c-leaders-right">
-          <polyline points="640,220 352,98" className="L-c-line L-c-alt" />
-          <polyline points="640,220 440,352" className="L-c-line L-c-alt" />
-          {sq(352, 98, "L-c-alt")}
-          {sq(440, 352, "L-c-alt")}
-        </g>
-        <g className="L-c-g" transform={at(0.6)} onMouseEnter={() => setHot("org")} data-on={hot === "org"}>
-          <circle cx={320} cy={220} r={190} className="L-c-org" />
-          <text x={320} y={362} className="L-c-t L-c-t-org">Organization</text>
-        </g>
-        <g className="L-c-g" transform={at(0.8)} onMouseEnter={() => setHot("team")} data-on={hot === "team"}>
-          <circle cx={320} cy={182} r={128} className="L-c-team" />
-          <text x={320} y={246} className="L-c-t L-c-t-team">Team</text>
-        </g>
-        <g className="L-c-g" transform={at(1)} onMouseEnter={() => setHot("ind")} data-on={hot === "ind"}>
-          <circle cx={320} cy={120} r={46} className="L-c-ind" />
-          <text x={320} y={126} className="L-c-t L-c-t-ind">Individual</text>
-        </g>
+        {/* leaders: from the edge of the frame to the ring. The ends follow the rings */}
+        {RINGS.map((r, i) => (
+          <line
+            key={r.id}
+            ref={(el) => { lineRefs.current[i] = el; }}
+            x1={EDGE[r.id].x} y1={EDGE[r.id].y}
+            x2={r.cx + ANCHOR[r.id].x} y2={r.cy + ANCHOR[r.id].y}
+            pathLength={1}
+            className={`L-c-line L-c-leader-${r.id === "team" ? "left" : "right"} ${r.id === "team" ? "L-c-hi" : "L-c-alt"}`}
+          />
+        ))}
+        {RINGS.map((r, i) => (
+          <g key={r.id} className="L-c-g" ref={(el) => { gRefs.current[i] = el; }} data-on={hot === r.id}>
+            <circle cx={r.cx} cy={r.cy} r={r.r} className={`L-c-halo L-c-halo-${r.id}`} />
+            <circle cx={r.cx} cy={r.cy} r={r.r} className={`L-c-${r.id}`} />
+            {sq(r.cx + ANCHOR[r.id].x, r.cy + ANCHOR[r.id].y, `L-c-sq-${r.id === "team" ? "left" : "right"} ${r.id === "team" ? "L-c-hi" : "L-c-alt"}`)}
+            {r.id === "org" && <text x={320} y={362} className="L-c-t L-c-t-org">Organization</text>}
+            {r.id === "team" && <text x={320} y={246} className="L-c-t L-c-t-team">Team</text>}
+            {r.id === "ind" && <text x={320} y={126} className="L-c-t L-c-t-ind">Individual</text>}
+          </g>
+        ))}
       </svg>
       <p className="L-c-call L-c-right L-c-alt">Where organizations focus</p>
     </div>

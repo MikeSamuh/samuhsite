@@ -402,10 +402,10 @@
 .L-c-line { fill: none; stroke: var(--text); stroke-width: var(--c-line); vector-effect: non-scaling-stroke; }
 .L-c-sq { fill: var(--text); }
 /* the team is the subject: highlighted in the primary. The individual and
-   the organization, where organizations focus, sit in the secondary */
-.L-c-org { fill: none; stroke: var(--accent-2); stroke-width: var(--c-stroke); vector-effect: non-scaling-stroke; }
+   the organization rest in white and take the secondary on hover */
+.L-c-org { fill: none; stroke: var(--text); stroke-width: var(--c-stroke); vector-effect: non-scaling-stroke; }
 .L-c-team { fill: color-mix(in srgb, var(--accent-4) 8%, transparent); stroke: var(--accent); stroke-width: var(--c-stroke); vector-effect: non-scaling-stroke; }
-.L-c-ind { fill: none; stroke: var(--accent-2); stroke-width: var(--c-stroke); vector-effect: non-scaling-stroke; }
+.L-c-ind { fill: none; stroke: var(--text); stroke-width: var(--c-stroke); vector-effect: non-scaling-stroke; }
 .L-c-line.L-c-hi, .L-c-hi.L-c-sq { stroke: var(--accent); fill: var(--accent); }
 .L-c-line.L-c-alt, .L-c-alt.L-c-sq { stroke: var(--accent-2); fill: var(--accent-2); }
 .L-c-line.L-c-hi { fill: none; }
@@ -420,9 +420,9 @@
   font-style: var(--display-style, normal);
   letter-spacing: var(--display-tracking);
 }
-.L-c-t-ind { font-size: 16px; fill: var(--accent-2); }
+.L-c-t-ind { font-size: 16px; fill: var(--text); }
 .L-c-t-team { font-size: 44px; fill: var(--accent); }
-.L-c-t-org { font-size: 20px; fill: var(--accent-2); }
+.L-c-t-org { font-size: 20px; fill: var(--text); }
 .L-c-call {
   margin: 0;
   font-family: var(--font-display);
@@ -1081,17 +1081,37 @@
 .L-nav-icons[data-scrolled="true"] .L-brand-powered { opacity: 0; }
 .L-nav-icons[data-scrolled="true"] .L-brand-sapien { grid-template-rows: 0 auto; row-gap: 0; }
 
-/* ---------- circles: hover notes ---------- */
+/* ---------- circles: motion and hover notes ---------- */
 
-.L-c-g { cursor: pointer; transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1); }
-/* callouts and their leaders stay hidden until a circle is hovered */
-.L-c-call, .L-c-leaders { opacity: 0; transition: opacity var(--dur) var(--ease); }
-.L-circ[data-side="left"] .L-c-left, .L-circ[data-side="left"] .L-c-leaders-left,
-.L-circ[data-side="right"] .L-c-right, .L-circ[data-side="right"] .L-c-leaders-right { opacity: 1; }
-@media (hover: none) { .L-c-call, .L-c-leaders { opacity: 1; } }
-.L-c-g[data-on="true"] circle { filter: drop-shadow(0 0 10px color-mix(in srgb, currentColor 60%, transparent)); }
-.L-c-g[data-on="true"] .L-c-org, .L-c-g[data-on="true"] .L-c-ind { stroke: var(--text); }
-.L-c-g[data-on="true"] .L-c-t-org, .L-c-g[data-on="true"] .L-c-t-ind { fill: var(--text); }
+/* the transform is written by the component every frame, so no transition
+   here: a transition restarting on every pointer move is what stutters */
+.L-c-g { transition: none; }
+.L-c-svg[data-hot] { cursor: pointer; }
+.L-c-g circle, .L-c-g text { transition: stroke var(--dur) var(--ease), fill var(--dur) var(--ease); }
+/* a soft halo instead of a filter: a wide, faint second stroke, cheap to paint */
+.L-c-halo { fill: none; stroke-width: 14px; vector-effect: non-scaling-stroke; opacity: 0; transition: opacity var(--dur) var(--ease); }
+.L-c-halo-org, .L-c-halo-ind { stroke: var(--accent-2); }
+.L-c-halo-team { stroke: var(--accent); }
+.L-c-g[data-on="true"] .L-c-halo { opacity: 0.28; }
+.L-c-g[data-on="true"] .L-c-org, .L-c-g[data-on="true"] .L-c-ind { stroke: var(--accent-2); }
+.L-c-g[data-on="true"] .L-c-t-org, .L-c-g[data-on="true"] .L-c-t-ind { fill: var(--accent-2); }
+/* callouts and their leaders stay hidden until a circle is hovered. The
+   callout rises in, the leader draws from the edge toward the circle, then
+   its square lands */
+.L-c-call { opacity: 0; transform: translateY(6px); transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease); }
+.L-c-line { stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset var(--dur) var(--ease); }
+.L-c-sq-left, .L-c-sq-right { opacity: 0; transition: opacity var(--dur) var(--ease); }
+.L-circ[data-side="left"] .L-c-left, .L-circ[data-side="right"] .L-c-right { opacity: 1; transform: none; }
+.L-circ[data-side="left"] .L-c-leader-left, .L-circ[data-side="right"] .L-c-leader-right { stroke-dashoffset: 0; }
+.L-circ[data-side="left"] .L-c-sq-left, .L-circ[data-side="right"] .L-c-sq-right { opacity: 1; transition-delay: var(--dur); }
+@media (hover: none) {
+  .L-c-call, .L-c-sq-left, .L-c-sq-right { opacity: 1; transform: none; }
+  .L-c-line { stroke-dashoffset: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .L-c-call { transform: none; }
+  .L-c-call, .L-c-sq-left, .L-c-sq-right, .L-c-line, .L-c-halo, .L-c-g circle, .L-c-g text { transition: none; }
+}
 /* ---------- draft B (Wilfred's 28 September edits) ---------- */
 
 .D-stage[data-draft="b"] .L-dict { max-width: 72ch; }
