@@ -213,12 +213,26 @@ export function Dictionary() {
   );
 }
 
-export const ARCHETYPES = [
-  ["The Fire Brigade", "Brilliant in a crisis, exhausted by Thursday. Nothing gets planned because everything gets rescued."],
-  ["The Silo Farm", "Six strong people, six separate plans. Information travels by rumour."],
-  ["The Quiet Room", "Meetings end in agreement and nothing changes. The real conversation happens afterwards, in pairs."],
-  ["The Flywheel", "Feedback is a habit, not an event. The team knows what it is working on and why."],
+// The six team metaphors SAMUH already uses, drawn for the Bangalore keynote
+// (July 2026, pages 33 and 34). The captions are theirs; the one-liners are
+// draft. Pulled from the deck PDF at 509 by 720, so originals are wanted.
+export const ARCHETYPES: [string, string, string][] = [
+  ["Bottom of the mountain", "The summit is agreed. The route is not.", "/metaphor/bottom-of-the-mountain.jpg"],
+  ["In a labyrinth with different maps", "Everyone is moving. Nobody is on the same page.", "/metaphor/labyrinth-different-maps.jpg"],
+  ["Sometimes it\u2019s like pulling teeth", "Every decision hurts, and it still has to be pulled.", "/metaphor/pulling-teeth.jpg"],
+  ["Same boat, different directions", "All rowing hard. Not the same way.", "/metaphor/same-boat-different-directions.jpg"],
+  ["Firefighting vs. preventing", "Heroic every day, because nothing gets fixed at the source.", "/metaphor/firefighting-vs-preventing.jpg"],
+  ["Unique chaos", "Busy, tangled, and somehow still shipping.", "/metaphor/unique-chaos.jpg"],
 ];
+
+/** one metaphor drawing, on its white card */
+export function Art({ src, name }: { src: string; name: string }) {
+  return (
+    <span className="L-art">
+      <Image src={src} alt={name} width={509} height={720} sizes="(max-width: 900px) 50vw, 300px" />
+    </span>
+  );
+}
 
 /** One archetype at a time, rotating on a timer. A click on the card skips ahead. */
 export function Rotator() {
@@ -229,11 +243,11 @@ export function Rotator() {
     const t = window.setInterval(() => setI((x) => (x + 1) % n), 4200);
     return () => window.clearInterval(t);
   }, [n]);
-  const [name, line] = ARCHETYPES[i];
+  const [name, line, src] = ARCHETYPES[i];
   return (
     <div className="L-rotator">
       <article className="card L-arche L-arche-rot" key={i} onClick={() => setI((x) => (x + 1) % n)}>
-        <Frame label="Illustration" />
+        <Art src={src} name={name} />
         <div>
           <span className="card-tag">{String(i + 1).padStart(2, "0")} / {String(n).padStart(2, "0")}</span>
           <h3>{name}</h3>
@@ -272,9 +286,9 @@ export function MetaphorGallery() {
   return (
     <>
       <div className="L-gallery">
-        {ARCHETYPES.map(([n], i) => (
+        {ARCHETYPES.map(([n, , src], i) => (
           <button className="L-gal-tile" key={n} onClick={() => setOpen(i)} aria-label={`Open ${n}`}>
-            <Frame label="Illustration" />
+            <Art src={src} name={n} />
           </button>
         ))}
       </div>
@@ -283,7 +297,7 @@ export function MetaphorGallery() {
           <div className="L-zoom-in" onClick={(e) => e.stopPropagation()}>
             <button className="L-zoom-x tbtn" onClick={close} aria-label="Close">Close</button>
             <div className="L-zoom-art">
-              <Frame label={`Illustration · ${name}`} tall />
+              {open !== null ? <Art src={ARCHETYPES[open][2]} name={name} /> : null}
             </div>
             <div className="L-zoom-side">
               <span className="card-tag">{String(open + 1).padStart(2, "0")} / {String(ARCHETYPES.length).padStart(2, "0")}</span>
@@ -567,9 +581,9 @@ export function Section({ def, variant, go, copy = {} }: { def: (typeof SECTIONS
           <>
             <Head def={def} />
             <div className="L-cards">
-              {ARCHETYPES.map(([name, line]) => (
+              {ARCHETYPES.map(([name, line, src]) => (
                 <article className="card L-arche" key={name}>
-                  <Frame label="Illustration" />
+                  <Art src={src} name={name} />
                   <h3>{name}</h3>
                   <p>{line}</p>
                 </article>
