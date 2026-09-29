@@ -145,14 +145,14 @@ const RINGS: { id: Ring; cx: number; cy: number; r: number; share: number; lag: 
   { id: "ind", cx: 320, cy: 120, r: 46, share: 1.0, lag: 1.0, float: 6, cycle: 0.34, phase: 4.2 },
 ];
 const FRAME = { w: 640, h: 440 };
-/* where each leader meets its ring, in that ring's own coordinates, so the
-   end of the line and its square travel with the circle */
-const ANCHOR: Record<Ring, { x: number; y: number }> = { team: { x: -105, y: 38 }, ind: { x: 32, y: -22 }, org: { x: 120, y: 132 } };
+/* where each leader meets its ring: a point on the rim, in the ring's own
+   coordinates, so the end of the line travels with the circle */
+const rim = (r: number, dx: number, dy: number) => { const d = Math.hypot(dx, dy); return { x: (dx / d) * r, y: (dy / d) * r }; };
+const ANCHOR: Record<Ring, { x: number; y: number }> = { team: rim(128, -105, 38), ind: rim(46, 32, -22), org: rim(190, 120, 132) };
 const EDGE: Record<Ring, { x: number; y: number }> = { team: { x: 0, y: 220 }, ind: { x: 640, y: 220 }, org: { x: 640, y: 220 } };
 const TETHER = 32; // five percent of the frame
 
 export function Circles() {
-  const sq = (x: number, y: number, cls: string) => <rect x={x - 5} y={y - 5} width={10} height={10} className={`L-c-sq ${cls}`} />;
   const svgRef = useRef<SVGSVGElement>(null);
   const gRefs = useRef<(SVGGElement | null)[]>([]);
   const lineRefs = useRef<(SVGLineElement | null)[]>([]);
@@ -270,7 +270,6 @@ export function Circles() {
           <g key={r.id} className="L-c-g" ref={(el) => { gRefs.current[i] = el; }} data-on={hot === r.id}>
             <circle cx={r.cx} cy={r.cy} r={r.r} className={`L-c-halo L-c-halo-${r.id}`} />
             <circle cx={r.cx} cy={r.cy} r={r.r} className={`L-c-${r.id}`} />
-            {sq(r.cx + ANCHOR[r.id].x, r.cy + ANCHOR[r.id].y, `L-c-sq-${r.id === "team" ? "left" : "right"} ${r.id === "team" ? "L-c-hi" : "L-c-alt"}`)}
             {r.id === "org" && <text x={320} y={362} className="L-c-t L-c-t-org">Organization</text>}
             {r.id === "team" && <text x={320} y={246} className="L-c-t L-c-t-team">Team</text>}
             {r.id === "ind" && <text x={320} y={126} className="L-c-t L-c-t-ind">Individual</text>}
