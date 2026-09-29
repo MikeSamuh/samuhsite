@@ -35,6 +35,7 @@ export function Nav({ page, go, menu, explore, links: order, brand = "wordmark",
     ? order.map((id) => PAGES.find((x) => x.id === id)!).filter(Boolean)
     : PAGES.filter((x) => x.nav && x.id !== "home");
   const jump = (p: PageId) => { setOpen(false); go(p); };
+  const barRef = useRef<HTMLElement>(null);
   useEffect(() => {
     if (brand !== "icons") return;
     const on = () => setScrolled(window.scrollY > 40);
@@ -42,9 +43,21 @@ export function Nav({ page, go, menu, explore, links: order, brand = "wordmark",
     window.addEventListener("scroll", on, { passive: true });
     return () => window.removeEventListener("scroll", on);
   }, [brand]);
+  // the stuck nav's height, for anything else that sticks below it (the
+  // section heads). Zero when the nav scrolls away with the page.
+  useEffect(() => {
+    const root = document.documentElement;
+    const bar = barRef.current;
+    if (brand !== "icons" || !bar) { root.style.setProperty("--nav-h", "0px"); return; }
+    const set = () => root.style.setProperty("--nav-h", `${bar.offsetHeight}px`);
+    set();
+    const ro = new ResizeObserver(set);
+    ro.observe(bar);
+    return () => { ro.disconnect(); root.style.setProperty("--nav-h", "0px"); };
+  }, [brand]);
   return (
     <>
-      <header className={`L-navbar${brand === "icons" ? " L-nav-icons" : ""}`} data-scrolled={scrolled}>
+      <header ref={barRef} className={`L-navbar${brand === "icons" ? " L-nav-icons" : ""}`} data-scrolled={scrolled}>
       <div className="L-nav L-wrap">
         {menu ? (
           <button className="L-burger" onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-controls="L-overlay" aria-label="Menu">

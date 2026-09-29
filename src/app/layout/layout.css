@@ -893,8 +893,10 @@
 .L-page[data-comp="comp-editorial"] .L-sec-h > .L-wrap > :not(.L-head) { grid-column: 2; }
 .L-page[data-comp="comp-editorial"] .L-sec-h .L-head {
   grid-column: 1;
+  /* sticks for the length of its section, clear of the stuck nav */
   position: sticky;
-  top: 28px;
+  top: calc(var(--nav-h, 0px) + 28px);
+  transition: top var(--dur) var(--ease);
   flex-direction: column;
   align-items: flex-start;
   gap: 10px;
