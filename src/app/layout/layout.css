@@ -1217,7 +1217,10 @@
 .D-stage[data-draft="b"] .L-dict-word { font-size: clamp(44px, 5.2cqw, 76px); }
 .D-stage[data-draft="b"] .L-dict-pron { font-size: 18px; }
 .D-stage[data-draft="b"] .L-dict-pos { font-size: 16px; }
-.D-stage[data-draft="b"] .L-dict-defs { font-size: clamp(22px, 2.4cqw, 30px); }
+.D-stage[data-draft="b"] .L-dict-defs { font-size: clamp(18px, 1.7cqw, 22px); }
+.D-stage[data-draft="b"] .L-dict-hi { color: var(--accent-2); }
+/* the thesis under the hero carries the leak line, so it reads as the argument, not a caption */
+.D-stage[data-draft="b"] .L-s-thesis .L-big { font-size: clamp(30px, 3.6cqw, 50px); max-width: 26ch; line-height: 1.15; }
 /* copy over the hero video, editorial alignment, a scrim so it reads */
 .D-stage[data-draft="b"] .L-s-hero[data-v="cinema"] .L-video { position: absolute; inset: 0; border: 0; border-radius: 0; z-index: 0; background: var(--base); }
 .D-stage[data-draft="b"] .L-s-hero[data-v="cinema"] .L-video::after {
