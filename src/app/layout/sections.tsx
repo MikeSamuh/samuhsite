@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import Image from "next/image";
 import { PAGES, SECTIONS, type PageId } from "@/lib/layout";
 
@@ -146,6 +146,12 @@ const RINGS: { id: Ring; cx: number; cy: number; r: number; share: number; lag: 
   { id: "ind", cx: 320, cy: 120, r: 46, share: 1.0, lag: 1.0, float: 6, cycle: 0.34, phase: 4.2 },
 ];
 const FRAME = { w: 640, h: 440 };
+/* the glow: a stroke painted with a radial gradient that peaks on the rim
+   and fades to nothing on both sides. Smooth without a blur filter, which
+   would repaint the whole circle every frame. GLOW is the stroke width per
+   ring in frame units, the gradient reaches 1.2 radii from the centre */
+const GLOW: Record<Ring, number> = { org: 26, team: 24, ind: 18 };
+const REACH = 1.2;
 /* where each leader meets its ring: a point on the rim, in the ring's own
    coordinates, so the end of the line travels with the circle */
 const rim = (r: number, dx: number, dy: number) => { const d = Math.hypot(dx, dy); return { x: (dx / d) * r, y: (dy / d) * r }; };
@@ -154,6 +160,7 @@ const EDGE: Record<Ring, { x: number; y: number }> = { team: { x: 0, y: 220 }, i
 const TETHER = 32; // five percent of the frame
 
 export function Circles() {
+  const uid = useId().replace(/:/g, "");
   const svgRef = useRef<SVGSVGElement>(null);
   const gRefs = useRef<(SVGGElement | null)[]>([]);
   const lineRefs = useRef<(SVGLineElement | null)[]>([]);
@@ -258,6 +265,22 @@ export function Circles() {
         onPointerMove={onMove}
         onPointerLeave={onLeave}
       >
+        <defs>
+          {RINGS.map((r) => {
+            const w = GLOW[r.id] / 2 / r.r; // half the glow, as a fraction of the radius
+            const at = (k: number) => (k / REACH).toFixed(4);
+            const stop = r.id === "team" ? "L-c-glow-hi" : "L-c-glow-alt";
+            return (
+              <radialGradient key={r.id} id={`${uid}-glow-${r.id}`} cx="50%" cy="50%" r={`${REACH * 50}%`}>
+                <stop offset={at(1 - w)} className={stop} stopOpacity={0} />
+                <stop offset={at(1 - w * 0.45)} className={stop} stopOpacity={0.35} />
+                <stop offset={at(1)} className={stop} stopOpacity={1} />
+                <stop offset={at(1 + w * 0.45)} className={stop} stopOpacity={0.35} />
+                <stop offset={at(1 + w)} className={stop} stopOpacity={0} />
+              </radialGradient>
+            );
+          })}
+        </defs>
         {/* leaders: from the edge of the frame to the ring. The ends follow the rings */}
         {RINGS.map((r, i) => (
           <line
@@ -271,7 +294,7 @@ export function Circles() {
         ))}
         {RINGS.map((r, i) => (
           <g key={r.id} className="L-c-g" ref={(el) => { gRefs.current[i] = el; }} data-on={hot === r.id || (r.id === "team" && hot !== null)}>
-            <circle cx={r.cx} cy={r.cy} r={r.r} className={`L-c-halo L-c-halo-${r.id}`} />
+            <circle cx={r.cx} cy={r.cy} r={r.r} className="L-c-halo" stroke={`url(#${uid}-glow-${r.id})`} strokeWidth={GLOW[r.id]} />
             <circle cx={r.cx} cy={r.cy} r={r.r} className={`L-c-${r.id}`} />
             {r.id === "org" && <text x={320} y={362} className="L-c-t L-c-t-org">Organization</text>}
             {r.id === "team" && <text x={320} y={246} className="L-c-t L-c-t-team">Team</text>}

@@ -1089,11 +1089,12 @@
 .L-c-g { transition: none; }
 .L-c-svg[data-hot] { cursor: pointer; }
 .L-c-g circle, .L-c-g text { transition: stroke var(--dur) var(--ease), fill var(--dur) var(--ease); }
-/* a soft halo instead of a filter: a wide, faint second stroke, cheap to paint */
-.L-c-halo { fill: none; stroke-width: 14px; vector-effect: non-scaling-stroke; opacity: 0; transition: opacity var(--dur) var(--ease); }
-.L-c-halo-org, .L-c-halo-ind { stroke: var(--accent-2); }
-.L-c-halo-team { stroke: var(--accent); }
-.L-c-g[data-on="true"] .L-c-halo { opacity: 0.28; }
+/* a soft halo instead of a filter: a second stroke painted with a radial
+   gradient that fades either side of the rim, cheap to paint */
+.L-c-halo { fill: none; opacity: 0; transition: opacity var(--dur) var(--ease); }
+.L-c-glow-hi { stop-color: var(--accent); }
+.L-c-glow-alt { stop-color: var(--accent-2); }
+.L-c-g[data-on="true"] .L-c-halo { opacity: 0.55; }
 .L-c-g[data-on="true"] .L-c-org, .L-c-g[data-on="true"] .L-c-ind { stroke: var(--accent-2); }
 .L-c-g[data-on="true"] .L-c-t-org, .L-c-g[data-on="true"] .L-c-t-ind { fill: var(--accent-2); }
 /* callouts and their leaders stay hidden until a circle is hovered. The
