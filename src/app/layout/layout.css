@@ -939,7 +939,8 @@
 .L-page[data-comp="comp-editorial"] .card::before, .L-page[data-comp="comp-editorial"] .step::after { display: none; }
 .L-page[data-comp="comp-editorial"] .L-foot { flex-direction: column; align-items: flex-start; }
 /* the circles keep the margin column like every other section; the diagram fills the content column */
-.L-page[data-comp="comp-editorial"] .L-s-circles .L-circ { grid-template-columns: minmax(140px, 1fr) minmax(260px, 560px) minmax(140px, 1fr); }
+.L-page[data-comp="comp-editorial"] .L-s-circles .L-circ { grid-template-columns: minmax(170px, 1fr) minmax(260px, 520px) minmax(170px, 1fr); }
+.L-page[data-comp="comp-editorial"] .L-s-circles .L-c-call { font-size: clamp(16px, 1.7cqw, 22px); padding: 0 8px; }
 .L-page[data-comp="comp-editorial"] .L-s-hero[data-v="video"] > .L-wrap { max-width: none; padding: 0; }
 .L-page[data-comp="comp-editorial"] .L-s-hero[data-v="video"] .L-hero-copy { padding: 36px 24px 0; max-width: var(--width-px); margin: 0 auto; }
 .L-page[data-comp="comp-editorial"] .L-s-hero[data-v="video"] .ph { border: 0; border-radius: 0; min-height: min(62vh, 680px); }
