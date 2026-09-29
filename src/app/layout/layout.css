@@ -431,6 +431,10 @@
   text-align: center;
   padding: 0 12px;
 }
+.L-c-sub { display: block; margin-top: 10px; font-family: var(--font-body); font-weight: 400; font-style: normal; letter-spacing: 0; font-size: 15px; line-height: 1.45; color: var(--muted); }
+/* the two right-hand callouts share one cell: only the hovered one shows */
+.L-c-right { display: grid; }
+.L-c-right > .L-c-call { grid-area: 1 / 1; }
 .L-page[data-align="align-center"] .L-c-call { margin-left: auto; margin-right: auto; }
 
 /* ---------- 05 aspire ---------- */
@@ -1096,10 +1100,12 @@
    callout rises in, the leader draws from the edge to the rim of the circle */
 .L-c-call { opacity: 0; transform: translateY(6px); transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease); }
 .L-c-line { stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset var(--dur) var(--ease); }
-.L-circ[data-side="left"] .L-c-left, .L-circ[data-side="right"] .L-c-right { opacity: 1; transform: none; }
-.L-circ[data-side="left"] .L-c-leader-left, .L-circ[data-side="right"] .L-c-leader-right { stroke-dashoffset: 0; }
+.L-circ[data-hot="team"] .L-c-call-team, .L-circ[data-hot="ind"] .L-c-call-ind, .L-circ[data-hot="org"] .L-c-call-org { opacity: 1; transform: none; }
+.L-circ[data-hot="team"] .L-c-leader-team, .L-circ[data-hot="ind"] .L-c-leader-ind, .L-circ[data-hot="org"] .L-c-leader-org { stroke-dashoffset: 0; }
 @media (hover: none) {
   .L-c-call { opacity: 1; transform: none; }
+  .L-c-right { gap: 18px; }
+  .L-c-right > .L-c-call { grid-area: auto; }
   .L-c-line { stroke-dashoffset: 0; }
 }
 @media (prefers-reduced-motion: reduce) {

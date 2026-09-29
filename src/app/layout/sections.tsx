@@ -133,8 +133,9 @@ export function Head({ def }: { def: (typeof SECTIONS)[number] }) {
  * so it works anywhere inside a ring, not only on its stroke. The callouts
  * stay hidden until a circle is hovered: the team shows where people
  * experience their work life, the individual and the organization show
- * where organizations focus. Reduced motion holds the circles still and
- * keeps the hover.
+ * where organizations focus, each in its own words. The team stays lit
+ * whichever circle is hovered, because the team is the subject. Reduced
+ * motion holds the circles still and keeps the hover.
  */
 type Ring = "org" | "team" | "ind";
 const RINGS: { id: Ring; cx: number; cy: number; r: number; share: number; lag: number; float: number; cycle: number; phase: number }[] = [
@@ -241,10 +242,12 @@ export function Circles() {
     return () => { stop(); io.disconnect(); };
   }, []);
 
-  const side = hot === "team" ? "left" : hot ? "right" : "";
   return (
-    <div className="L-circ" data-side={side}>
-      <p className="L-c-call L-c-left L-c-hi">Where people experience their work life</p>
+    <div className="L-circ" data-hot={hot ?? undefined}>
+      <p className="L-c-call L-c-left L-c-call-team L-c-hi">
+        Where people experience their work life
+        <span className="L-c-sub">Every day, in the room, with the same few people.</span>
+      </p>
       <svg
         ref={svgRef}
         className="L-c-svg"
@@ -263,11 +266,11 @@ export function Circles() {
             x1={EDGE[r.id].x} y1={EDGE[r.id].y}
             x2={r.cx + ANCHOR[r.id].x} y2={r.cy + ANCHOR[r.id].y}
             pathLength={1}
-            className={`L-c-line L-c-leader-${r.id === "team" ? "left" : "right"} ${r.id === "team" ? "L-c-hi" : "L-c-alt"}`}
+            className={`L-c-line L-c-leader-${r.id} ${r.id === "team" ? "L-c-hi" : "L-c-alt"}`}
           />
         ))}
         {RINGS.map((r, i) => (
-          <g key={r.id} className="L-c-g" ref={(el) => { gRefs.current[i] = el; }} data-on={hot === r.id}>
+          <g key={r.id} className="L-c-g" ref={(el) => { gRefs.current[i] = el; }} data-on={hot === r.id || (r.id === "team" && hot !== null)}>
             <circle cx={r.cx} cy={r.cy} r={r.r} className={`L-c-halo L-c-halo-${r.id}`} />
             <circle cx={r.cx} cy={r.cy} r={r.r} className={`L-c-${r.id}`} />
             {r.id === "org" && <text x={320} y={362} className="L-c-t L-c-t-org">Organization</text>}
@@ -276,7 +279,16 @@ export function Circles() {
           </g>
         ))}
       </svg>
-      <p className="L-c-call L-c-right L-c-alt">Where organizations focus</p>
+      <div className="L-c-right">
+        <p className="L-c-call L-c-call-ind L-c-alt">
+          Where organizations invest
+          <span className="L-c-sub">Hiring, coaching, training: one person at a time.</span>
+        </p>
+        <p className="L-c-call L-c-call-org L-c-alt">
+          Where organizations look
+          <span className="L-c-sub">Strategy, structure, culture: the whole at once.</span>
+        </p>
+      </div>
     </div>
   );
 }
