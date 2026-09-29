@@ -522,7 +522,7 @@ function TempMark({ i }: { i: number }) {
 
 /**
  * One bold italic quote at a time, the client's mark in the margin column
- * where the section head would sit, changing every 3.33 seconds. The
+ * where the section head would sit, changing every 5.55 seconds. The
  * quote block keeps one height from slide to slide.
  */
 export function Carousel({ quotes = QUOTES }: { quotes?: typeof QUOTES }) {
@@ -542,7 +542,7 @@ export function Carousel({ quotes = QUOTES }: { quotes?: typeof QUOTES }) {
   };
   useEffect(() => {
     if (paused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const t = window.setInterval(() => setI((x) => (x + 1) % n), 3330);
+    const t = window.setInterval(() => setI((x) => (x + 1) % n), 5550);
     return () => window.clearInterval(t);
   }, [paused, n]);
   return (
