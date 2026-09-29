@@ -20,20 +20,6 @@
 .L-page[data-comp="comp-editorial"] .L-s-hero[data-v="over"] > .L-wrap { max-width: none; padding: 0; }
 .L-page[data-comp="comp-editorial"] .L-s-hero[data-v="over"] .L-hero-copy { padding-left: 24px; padding-right: 24px; margin-left: max(24px, calc((100cqw - var(--width-px, 1120px)) / 2)); }
 
-/* 02 the gap: the lead is centred with the head, the dictionary is the
-   aside under the diagram */
-.L-s-circles .C-lead { text-align: center; margin: 0 auto 8px; max-width: 44ch; }
-.C-aside { width: 100%; display: grid; justify-items: center; margin-top: 8px; }
-.C-aside .L-dict {
-  max-width: 48ch;
-  padding: 0 0 0 18px;
-  border-top: 0;
-  border-bottom: 0;
-  border-left: var(--rule-fat) solid var(--accent-2);
-}
-.C-aside .L-dict-word { font-size: 26px; }
-.C-aside .L-dict-defs { font-size: 15px; color: var(--muted); }
-
 /* 03 the model: statement, the terms, then the four questions */
 .L-s-equation .L-eq { margin: 18px 0 22px; }
 .L-s-equation .C-factors { grid-template-columns: 1fr 1fr; margin-bottom: 14px; }

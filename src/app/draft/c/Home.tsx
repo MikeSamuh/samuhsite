@@ -1,6 +1,7 @@
 "use client";
 
-import { HeroVideo, Circles, Dictionary, Carousel, MetaphorGallery, Frame } from "../../layout/sections";
+import { SECTIONS } from "@/lib/layout";
+import { HeroVideo, Carousel, MetaphorGallery, Frame, Section } from "../../layout/sections";
 import { useGo } from "../Go";
 import "./c.css";
 
@@ -10,7 +11,7 @@ import "./c.css";
  * Eight sections that read as one argument:
  *
  *   01 the promise, said once, over the film
- *   02 the gap: the team is the level in between
+ *   02 the word, then the gap: the three circles, as in A and B
  *   03 the model, before any proof of it
  *   04 the evidence, credited to Sapien Labs
  *   05 the proof: voices, then a case, one section
@@ -24,6 +25,8 @@ import "./c.css";
  */
 
 const stay = (e: React.MouseEvent) => e.preventDefault();
+const MEANING = SECTIONS.find((x) => x.id === "meaning")!;
+const CIRCLES = SECTIONS.find((x) => x.id === "circles")!;
 const pad = (n: number) => String(n).padStart(2, "0");
 
 function Sec({
@@ -80,14 +83,10 @@ export default function HomeC() {
         </div>
       </Sec>
 
-      {/* 02 the gap */}
-      <Sec id="circles" n={2} v="nested" kicker="Teams, individuals, organizations" title="The level in between">
-        <p className="L-big C-lead">Organizations develop the individual and transform the organization. In between sits the team, where people actually experience their work, and where performance is won or lost.</p>
-        <Circles />
-        <div className="C-aside">
-          <Dictionary />
-        </div>
-      </Sec>
+      {/* 02 the word, then the gap. The same two sections as A and B, from
+          sections.tsx, so the circles look and move the same in every draft. */}
+      <Section def={MEANING} variant="meaning-aside" go={go} />
+      <Section def={CIRCLES} variant="circles-nested" go={go} />
 
       {/* 03 the model */}
       <Sec id="equation" n={3} v="split" kicker="The model" title="How performance is made">
