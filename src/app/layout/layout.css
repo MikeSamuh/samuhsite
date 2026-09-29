@@ -731,13 +731,9 @@
    run draws it back */
 .L-arc-run::before { content: ""; position: absolute; inset: 0 0 auto; height: var(--rule-thin); background: var(--border); }
 .L-page[data-rule="rule-none"] .L-arc-run::before { display: none; }
-/* the moves make room for the line: a channel above, a wide one between
-   the rows, one below before the note. No rules of their own, the line is
-   the only line here */
-.L-arc-run .L-steps { padding-top: 44px; row-gap: 72px; margin-bottom: 0; }
-.L-arc-run .L-steps + .L-cap { display: block; margin-top: 64px; max-width: 30ch; }
-.L-page .L-arc-run .L-steps .step, .L-page .L-arc-run .L-steps .step:hover { border-top-color: transparent; }
-.L-arc-run .L-step .ph { transition: border-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease), color var(--dur) var(--ease); }
+/* the note under the moves stays in the first column, left of the line */
+.L-arc-run .L-arc + .L-cap { display: block; max-width: 30ch; }
+.L-arc-moves .step-n { margin: 0; }
 .L-arc { --arc-lane: 200px; --arc-art: 112px; position: relative; list-style: none; margin: 0 0 28px; padding: 0; display: grid; gap: 8px; }
 .L-arc-svg { position: absolute; inset: 0 0 auto; z-index: 2; pointer-events: none; overflow: visible; }
 .L-arc-path { mask: url(#L-arc-end); fill: none; stroke: var(--arc-gold); stroke-width: 1.5px; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; opacity: 0.9; }
@@ -749,9 +745,6 @@
 .L-arc-item[data-on] .L-arc-what { color: var(--arc-gold); }
 .L-arc-item[data-on] .L-arc-note { color: var(--text); }
 .L-arc-item[data-on] .L-arc-art { box-shadow: 0 0 0 1.5px var(--arc-gold), 0 0 28px color-mix(in srgb, var(--arc-gold) 55%, transparent); }
-.L-step[data-on] .step-name { color: var(--arc-gold); }
-.L-step[data-on] .ph { border-color: var(--arc-gold); border-style: solid; color: var(--arc-gold); box-shadow: 0 0 28px color-mix(in srgb, var(--arc-gold) 40%, transparent), inset 0 0 24px color-mix(in srgb, var(--arc-gold) 12%, transparent); }
-.L-page .L-arc-run .L-steps .L-step[data-on] { background: transparent; transform: none; border-top-color: transparent; }
 .L-arc-item { position: relative; display: grid; grid-template-columns: 1fr var(--arc-lane) 1fr; align-items: center; min-height: 168px; }
 .L-arc-copy { display: grid; gap: 6px; text-align: right; justify-items: end; padding: 12px 0; }
 .L-arc-art {

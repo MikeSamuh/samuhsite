@@ -120,17 +120,15 @@ const ARC = [
 
 /**
  * The arc run: sections 02 and 03 of the process page share one line, in
- * gold. It comes in from the left above the first row of moves, runs
- * across, turns down and comes back between the rows, turns down the left
- * side, comes back under the second row to the gap between the first two
- * columns, and drops into the arc, where it winds down like a backwards S,
- * bowing right then left. Corners are rounded, so it reads as one fluid
- * line. Everything is measured from the DOM.
+ * gold, that winds down both like a backwards S. The wavelength is the
+ * arc's four rows, so the six moves above get the same curve at the same
+ * scale, and the arc is one S from its top. Everything is measured from the
+ * DOM, and the line fades in at its start and out at its end.
  *
  * One ball rides the line: the point of the line nearest the pointer (the
  * middle of the view when there is no pointer), eased a little behind it.
- * Whatever it is beside lights up, the move or the arc point, and the icon
- * there glows. No other marks on the line. Reduced motion drops the easing.
+ * The point it is level with lights up and its icon glows. No other marks
+ * on the line. Reduced motion drops the easing.
  */
 function ArcRun({ children }: { children: React.ReactNode }) {
   const runRef = useRef<HTMLDivElement>(null);
@@ -148,83 +146,47 @@ function ArcRun({ children }: { children: React.ReactNode }) {
 
     // the line, sampled every few pixels, in run coordinates
     let pts: { x: number; y: number }[] = [];
-    let listTop = 0;
     let ys: number[] = [];
     let items: HTMLElement[] = [];
-    let steps: { el: HTMLElement; cx: number; cy: number; r: DOMRect }[] = [];
+
+    const setRect = (sel: string, x: number, y: number, w: number, h: number) => {
+      const el = svg.querySelector<SVGRectElement>(sel);
+      if (!el) return;
+      el.setAttribute("x", String(x)); el.setAttribute("y", String(y));
+      el.setAttribute("width", String(Math.max(0, w))); el.setAttribute("height", String(Math.max(0, h)));
+    };
 
     const measure = () => {
       const box = run.getBoundingClientRect();
       const rel = (r: DOMRect) => new DOMRect(r.left - box.left, r.top - box.top, r.width, r.height);
-      const list = run.querySelector<HTMLElement>(".L-arc");
-      const lane = run.querySelector<HTMLElement>(".L-arc-lane");
-      if (!list || !lane) return;
-      const lr = rel(list.getBoundingClientRect());
+      const lists = Array.from(run.querySelectorAll<HTMLElement>(".L-arc"));
+      const arc = lists[lists.length - 1];
+      const lane = arc?.querySelector<HTMLElement>(".L-arc-lane");
+      if (!arc || !lane) return;
+      const first = rel(lists[0].getBoundingClientRect());
+      const ar = rel(arc.getBoundingClientRect());
       const la = rel(lane.getBoundingClientRect());
-      listTop = lr.top;
-      const listH = Math.max(1, lr.height);
+      const top = first.top;
+      const bottom = ar.bottom;
       const cx = la.left + la.width / 2;
       const amp = Math.max(0, la.width / 2 - 14);
+      const wave = Math.max(1, ar.height);
       items = Array.from(run.querySelectorAll<HTMLElement>(".L-arc-item"));
       ys = Array.from(run.querySelectorAll<HTMLElement>(".L-arc-lane")).map((el) => { const r = rel(el.getBoundingClientRect()); return r.top + r.height / 2; });
 
-      // the S: a cosine from its first crest, a quarter of the way down the
-      // list, where it is rightmost and level
-      const crest = listTop + listH / 4;
-      const sAt = (y: number) => cx + amp * Math.cos((2 * Math.PI * (y - crest)) / listH);
+      // one sine, phase zero at the arc's top so the arc bows right first
+      const xAt = (y: number) => cx + amp * Math.sin((2 * Math.PI * (y - ar.top)) / wave);
+      const n = Math.max(24, Math.round((bottom - top) / 5));
+      const d = Array.from({ length: n + 1 }, (_, i) => { const y = top + ((bottom - top) * i) / n; return `${i ? "L" : "M"} ${xAt(y).toFixed(1)} ${y.toFixed(1)}`; }).join(" ");
 
-      const stepEls = Array.from(run.querySelectorAll<HTMLElement>(".L-step"));
-      const rects = stepEls.map((el) => rel(el.getBoundingClientRect()));
-      steps = stepEls.map((el, i) => ({ el, r: rects[i], cx: rects[i].left + rects[i].width / 2, cy: rects[i].top + rects[i].height / 2 }));
-      const grid = run.querySelector<HTMLElement>(".L-steps");
-      const g = grid ? rel(grid.getBoundingClientRect()) : null;
-      const twoCols = rects.length > 1 && rects[1].left > rects[0].right;
-
-      let d = "";
-      let sweepFrom = listTop;   // where the line hands over to the S
-      let fromX = cx;
-      if (g && twoCols) {
-        // channels: above row one, between the rows, below row two
-        const rows: { top: number; bottom: number }[] = [];
-        rects.forEach((r) => { const row = rows.find((q) => Math.abs(q.top - r.top) < 4); if (row) row.bottom = Math.max(row.bottom, r.bottom); else rows.push({ top: r.top, bottom: r.bottom }); });
-        rows.sort((a, b) => a.top - b.top);
-        const yTop = Math.max(g.top + 2, rows[0].top - 22);
-        const yMid = rows.length > 1 ? (rows[0].bottom + rows[1].top) / 2 : rows[0].bottom + 30;
-        const yBot = rows[rows.length - 1].bottom + 30;
-        // the turns sit in the gutters, and never past the run's edges
-        const xl = Math.max(14, g.left - 36);
-        const xr = Math.min(box.width - 14, g.right + 36);
-        const gapX = (rects[0].right + rects[1].left) / 2;
-        const corners = [[xl, yTop], [xr, yTop], [xr, yMid], [xl, yMid], [xl, yBot], [gapX, yBot], [gapX, yBot + 60]];
-        d = rounded(corners, 30);
-        sweepFrom = yBot + 60;
-        fromX = gapX;
-      }
-      // the sweep from the moves to the crest eases in, level at both ends,
-      // then the S takes over
-      const n = Math.max(12, Math.round((crest - sweepFrom) / 6));
-      for (let i = 0; i <= n; i++) {
-        const t = i / n;
-        const e = t * t * (3 - 2 * t);
-        const y = sweepFrom + (crest - sweepFrom) * t;
-        const x = fromX + (sAt(crest) - fromX) * e;
-        d += `${d ? " L" : "M"} ${x.toFixed(1)} ${y.toFixed(1)}`;
-      }
-      const m = Math.max(12, Math.round((lr.bottom - crest) / 5));
-      for (let i = 1; i <= m; i++) {
-        const y = crest + (lr.bottom - crest) * (i / m);
-        d += ` L ${sAt(y).toFixed(1)} ${y.toFixed(1)}`;
-      }
-      // the line fades out over its last stretch
-      const fade = svg.querySelector<SVGRectElement>(".L-arc-end-fade");
-      if (fade) { fade.setAttribute("y", String(lr.bottom - 120)); fade.setAttribute("height", "120"); fade.setAttribute("width", String(box.width)); }
-      const solid = svg.querySelector<SVGRectElement>(".L-arc-end-solid");
-      if (solid) { solid.setAttribute("width", String(box.width)); solid.setAttribute("height", String(Math.max(0, lr.bottom - 120))); }
-      svg.setAttribute("viewBox", `0 0 ${box.width} ${lr.bottom}`);
+      const F = 120; // the fade at either end
+      setRect(".L-arc-fade-in", 0, top, box.width, F);
+      setRect(".L-arc-fade-solid", 0, top + F, box.width, bottom - top - 2 * F);
+      setRect(".L-arc-fade-out", 0, bottom - F, box.width, F);
+      svg.setAttribute("viewBox", `0 0 ${box.width} ${bottom}`);
       svg.setAttribute("width", String(box.width));
-      svg.setAttribute("height", String(lr.bottom));
+      svg.setAttribute("height", String(bottom));
       path.setAttribute("d", d);
-      // sample it for the ball
       const L = path.getTotalLength();
       const k = Math.max(2, Math.round(L / 4));
       pts = Array.from({ length: k + 1 }, (_, i) => { const q = path.getPointAtLength((L * i) / k); return { x: q.x, y: q.y }; });
@@ -247,7 +209,7 @@ function ArcRun({ children }: { children: React.ReactNode }) {
     let pointer: { x: number; y: number } | null = null;
     let at = -1;
     let raf = 0;
-    let lastOn = "";
+    let lastOn = -2;
     const tick = () => {
       raf = 0;
       if (!pts.length) return;
@@ -258,25 +220,12 @@ function ArcRun({ children }: { children: React.ReactNode }) {
       if (at < 0) at = target;
       at += (target - at) * (still ? 1 : 0.14);
       if (Math.abs(target - at) < 0.05) at = target;
-      const i = Math.min(pts.length - 1, Math.max(0, Math.round(at)));
-      const q = pts[i];
+      const q = pts[Math.min(pts.length - 1, Math.max(0, Math.round(at)))];
       ball.setAttribute("transform", `translate(${q.x.toFixed(1)} ${q.y.toFixed(1)})`);
-
-      // what the ball is beside: the nearest move whose reach it is in, or
-      // the arc point it is level with
-      let step = -1;
-      let sd = Infinity;
-      steps.forEach((st, j) => {
-        const inside = q.x > st.r.left - 44 && q.x < st.r.right + 44 && q.y > st.r.top - 44 && q.y < st.r.bottom + 44;
-        if (!inside) return;
-        const dd = (st.cx - q.x) ** 2 + (st.cy - q.y) ** 2;
-        if (dd < sd) { sd = dd; step = j; }
-      });
-      const near = q.y >= listTop - 20 ? ys.reduce((best, py2, j) => (Math.abs(py2 - q.y) < 46 && (best < 0 || Math.abs(py2 - q.y) < Math.abs(ys[best] - q.y)) ? j : best), -1) : -1;
-      const key = `${step}:${near}`;
-      if (key !== lastOn) {
-        lastOn = key;
-        steps.forEach((st, j) => st.el.toggleAttribute("data-on", j === step));
+      // the point the ball is level with
+      const near = ys.reduce((best, y, j) => (Math.abs(y - q.y) < 56 && (best < 0 || Math.abs(y - q.y) < Math.abs(ys[best] - q.y)) ? j : best), -1);
+      if (near !== lastOn) {
+        lastOn = near;
         items.forEach((el, j) => el.toggleAttribute("data-on", j === near));
       }
       if (Math.abs(target - at) > 0.05) raf = requestAnimationFrame(tick);
@@ -308,13 +257,18 @@ function ArcRun({ children }: { children: React.ReactNode }) {
           <filter id="L-arc-blur" x="-100%" y="-100%" width="300%" height="300%">
             <feGaussianBlur stdDeviation="10" />
           </filter>
-          <linearGradient id="L-arc-end-grad" x1="0" y1="0" x2="0" y2="1">
+          <linearGradient id="L-arc-grad-in" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stopColor="#fff" stopOpacity="0" />
+            <stop offset="1" stopColor="#fff" />
+          </linearGradient>
+          <linearGradient id="L-arc-grad-out" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0" stopColor="#fff" />
             <stop offset="1" stopColor="#fff" stopOpacity="0" />
           </linearGradient>
           <mask id="L-arc-end" maskUnits="userSpaceOnUse" x="0" y="0" width="100000" height="100000">
-            <rect className="L-arc-end-solid" x="0" y="0" width="0" height="0" fill="#fff" />
-            <rect className="L-arc-end-fade" x="0" y="0" width="0" height="0" fill="url(#L-arc-end-grad)" />
+            <rect className="L-arc-fade-in" fill="url(#L-arc-grad-in)" />
+            <rect className="L-arc-fade-solid" fill="#fff" />
+            <rect className="L-arc-fade-out" fill="url(#L-arc-grad-out)" />
           </mask>
         </defs>
         <path ref={pathRef} className="L-arc-path" />
@@ -328,26 +282,25 @@ function ArcRun({ children }: { children: React.ReactNode }) {
   );
 }
 
-/** A polyline through the corners with each corner rounded to radius r:
- *  straight to r short of the corner, a quadratic through it, on. */
-function rounded(corners: number[][], r: number) {
-  let d = `M ${corners[0][0].toFixed(1)} ${corners[0][1].toFixed(1)}`;
-  for (let i = 1; i < corners.length - 1; i++) {
-    const [px, py] = corners[i - 1];
-    const [x, y] = corners[i];
-    const [nx, ny] = corners[i + 1];
-    const inL = Math.hypot(x - px, y - py) || 1;
-    const outL = Math.hypot(nx - x, ny - y) || 1;
-    const rr = Math.min(r, inL / 2, outL / 2);
-    const ax = x - ((x - px) / inL) * rr;
-    const ay = y - ((y - py) / inL) * rr;
-    const bx = x + ((nx - x) / outL) * rr;
-    const by = y + ((ny - y) / outL) * rr;
-    d += ` L ${ax.toFixed(1)} ${ay.toFixed(1)} Q ${x.toFixed(1)} ${y.toFixed(1)} ${bx.toFixed(1)} ${by.toFixed(1)}`;
-  }
-  const [lx, ly] = corners[corners.length - 1];
-  d += ` L ${lx.toFixed(1)} ${ly.toFixed(1)}`;
-  return d;
+/** The six moves, in order, on the line: number, name and note one side,
+ *  a spot for the icon the other, swapping sides each row. The icon spot is
+ *  the same white placeholder as the arc's art until the icons arrive. */
+function ArcMoves() {
+  return (
+    <ol className="L-arc L-arc-moves">
+      {STEPS.map(([name, note], i) => (
+        <li key={name} className="L-arc-item">
+          <div className="L-arc-copy">
+            <span className="step-n">0{i + 1}</span>
+            <span className="L-arc-what">{name}</span>
+            <span className="L-arc-note">{note}</span>
+          </div>
+          <span className="L-arc-lane" aria-hidden />
+          <span className="L-arc-art">Icon</span>
+        </li>
+      ))}
+    </ol>
+  );
 }
 
 /** The arc's four points: copy one side of the line, a spot for a small
@@ -377,16 +330,7 @@ function Process({ go }: { go: (p: PageId) => void }) {
       <PageHead n="01" kicker="The methodology across all three tiers" title="The team process." lede="See the team clearly. Choose the practice together. Ritualize it in the flow of work." />
       <ArcRun>
       <Sec n="02" kicker="Six moves · icons to come" title="From baseline to standing ritual">
-        <div className="L-steps">
-          {STEPS.map(([name, note], i) => (
-            <div className="step L-step" key={name}>
-              <span className="step-n">0{i + 1}</span>
-              <Frame label="Icon" />
-              <span className="step-name">{name}</span>
-              <span className="step-note">{note}</span>
-            </div>
-          ))}
-        </div>
+        <ArcMoves />
         <p className="L-cap">Step names from the kickoff. Structure to confirm with SAMUH.</p>
       </Sec>
       <Sec n="03" kicker="About four months, end to end" title="The arc">
