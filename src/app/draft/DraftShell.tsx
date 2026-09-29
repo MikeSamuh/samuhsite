@@ -6,6 +6,7 @@ import { layoutVars, lockedCombo, type PageId } from "@/lib/layout";
 import { Nav, Footer } from "../layout/sections";
 import { ROUTES, draftBase, getDraft, pageFromPath, type DraftId } from "./drafts";
 import "../design/design.css";
+import "../design/backdrops.css";
 import "../layout/layout.css";
 import "./draft.css";
 

@@ -194,6 +194,23 @@
   );
 }
 
+/* section scope: the layer is half again as tall as its section and slides
+   against the copy as the section crosses the view. --sec-p is written by
+   the component, 0 entering from below, 1 leaving at the top. The pass
+   moves the layer by half the section's height, so it always covers. */
+.bd-synapse-local {
+  position: absolute;
+  inset: -25% 0;
+  z-index: 0;
+  background: radial-gradient(
+    ellipse 70% 55% at 50% 50%,
+    color-mix(in srgb, var(--accent-4) 7%, transparent) 0%,
+    transparent 70%
+  );
+  transform: translate3d(0, calc((0.5 - var(--sec-p, 0.5)) * 33.3%), 0);
+  will-change: transform;
+}
+
 .bd-net {
   position: absolute;
   inset: -4%;

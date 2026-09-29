@@ -3,6 +3,7 @@
 import { useEffect, useId, useRef, useState, type TouchEvent } from "react";
 import Image from "next/image";
 import { PAGES, SECTIONS, type PageId } from "@/lib/layout";
+import Synapse from "../design/Synapse";
 
 const stay = (e: React.MouseEvent) => e.preventDefault();
 const LOGO_H = 285;
@@ -593,6 +594,8 @@ export function Section({ def, variant, go, copy = {} }: { def: (typeof SECTIONS
   const headed = !["hero", "thesis", "meaning", "start"].includes(def.id) && !(def.id === "voices" && v === "carousel");
   return (
     <section className={`L-sec L-s-${def.id}${headed ? " L-sec-h" : ""}`} data-v={v} data-n={String(def.n).padStart(2, "0")} id={def.id}>
+      {/* the close carries the synapse field, parallaxed against the band */}
+      {def.id === "start" && <Synapse scope="section" />}
       <div className="L-wrap">
         {def.id === "hero" && (
           <div className="L-hero-grid">

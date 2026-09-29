@@ -611,6 +611,9 @@
 
 /* ---------- 12 start ---------- */
 
+/* the section is the frame for its synapse layer: clipped, copy above */
+.L-s-start { position: relative; overflow: hidden; isolation: isolate; }
+.L-s-start > .L-wrap { position: relative; z-index: 1; }
 .L-start { display: grid; gap: 28px; }
 .L-start-actions { display: grid; gap: 18px; }
 .L-sec[data-v="band"] { background: var(--surface); }
