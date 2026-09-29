@@ -1219,6 +1219,10 @@
 .D-stage[data-draft="b"] .L-dict-pos { font-size: 16px; }
 .D-stage[data-draft="b"] .L-dict-defs { font-size: clamp(18px, 1.7cqw, 22px); }
 .D-stage[data-draft="b"] .L-dict-hi { color: var(--accent-2); }
+.L-thesis-eyebrow { margin: 0 0 14px; }
+.L-thesis-eyebrow::after { display: none; }
+.D-stage[data-draft="b"] .L-dict-say { width: 48px; height: 48px; }
+.D-stage[data-draft="b"] .L-dict-say svg { width: 27px; height: 27px; }
 /* thesis and dictionary side by side on desktop */
 .L-thesis-duo { grid-template-columns: 1.1fr 1fr; column-gap: clamp(32px, 5cqw, 80px); align-items: start; }
 .L-thesis-duo .L-dict { max-width: none; border-top: 0; border-bottom: 0; border-left: var(--rule-fat) solid var(--accent-2); padding: 4px 0 4px 22px; }

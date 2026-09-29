@@ -213,7 +213,7 @@ export default function HomeA() {
             <p className="lede">Samuh shows a team where its capacity is leaking. The team chooses one practice to close the gap, and the change is measured.</p>
             <div className="cta-row">
               <button className="btn" onClick={() => go("start")}>Get started <span className="arrow">&rarr;</span></button>
-              <button className="btn btn-secondary" onClick={() => go("contact")}>Book a call</button>
+              <button className="btn btn-secondary" onClick={() => go("contact")}>Talk to us</button>
             </div>
           </div>
           <HeroVideo />
@@ -315,7 +315,7 @@ export default function HomeA() {
             </div>
             <span className="L-cap">Or talk to a person</span>
             <div className="cta-row">
-              <button className="btn btn-secondary" onClick={() => go("contact")}>Book a call</button>
+              <button className="btn btn-secondary" onClick={() => go("contact")}>Talk to us</button>
               <a href="#" className="inline-link" onClick={(e) => { stay(e); go("contact"); }}>Send a message</a>
             </div>
           </div>

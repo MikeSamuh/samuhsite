@@ -473,7 +473,7 @@ function Contact() {
             </form>
             <aside className="L-contact-side">
               <div className="card L-book">
-                <span className="card-tag">Book a call</span>
+                <span className="card-tag">Talk to us</span>
                 <Frame label="Calendar embed" tall />
               </div>
               <div className="L-details">

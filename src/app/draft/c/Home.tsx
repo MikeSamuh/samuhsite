@@ -65,7 +65,7 @@ export default function HomeC() {
   const ctas = (
     <div className="cta-row">
       <button className="btn" onClick={() => go("start")}>Get started <span className="arrow">&rarr;</span></button>
-      <button className="btn btn-secondary" onClick={() => go("contact")}>Book a call</button>
+      <button className="btn btn-secondary" onClick={() => go("contact")}>Talk to us</button>
     </div>
   );
   return (
