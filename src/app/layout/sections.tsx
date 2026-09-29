@@ -254,7 +254,6 @@ export function Circles() {
     <div className="L-circ" data-hot={hot ?? undefined}>
       <p className="L-c-call L-c-left L-c-call-team L-c-hi">
         Where people experience their work life
-        <span className="L-c-sub">Every day, in the room, with the same few people.</span>
       </p>
       <svg
         ref={svgRef}
