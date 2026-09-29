@@ -190,6 +190,7 @@ export const SECTIONS: SectionDef[] = [
     variants: [
       { id: "meaning-line", name: "One line", note: "A single centred sentence." },
       { id: "meaning-aside", name: "Aside", note: "Small, beside a rule, like a footnote that got promoted." },
+      { id: "meaning-block", name: "Block", note: "The full entry beside a rule, its own section right under the thesis." },
     ],
   },
   {

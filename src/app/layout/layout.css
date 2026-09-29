@@ -366,6 +366,11 @@
 .L-sec[data-v="aside"] .L-dict-word { font-size: 26px; }
 .L-sec[data-v="aside"] .L-dict-defs { font-size: 15px; color: var(--muted); }
 .L-sec[data-v="aside"].L-sec { padding: calc(40px * var(--space, 1)) 0; }
+/* block: the full entry beside a rule, as it sat next to the thesis, now
+   in its own section straight under it */
+.L-sec[data-v="block"] .L-dict { max-width: 64ch; border-top: 0; border-bottom: 0; border-left: var(--rule-fat) solid var(--accent-2); padding: 4px 0 4px 22px; }
+.L-s-thesis:has(+ .L-s-meaning[data-v="block"]) { padding-bottom: calc(40px * var(--space, 1)); }
+.L-s-meaning[data-v="block"] { border-top: 0; padding-top: 0; }
 
 /* ---------- 04 circles ---------- */
 
@@ -924,6 +929,8 @@
   align-items: end;
 }
 .L-page[data-comp="comp-editorial"] .L-s-thesis[data-v="under"] .L-cap { text-align: right; }
+/* no partner line: the thesis takes the whole width */
+.L-page[data-comp="comp-editorial"] .L-s-thesis[data-v="under"] .L-thesis-in > .L-big:only-child { grid-column: 1 / -1; }
 .L-page[data-comp="comp-editorial"] .L-s-meaning .L-dict { max-width: 60ch; }
 .L-page[data-comp="comp-editorial"] .L-page-head .L-head { align-items: flex-start; flex-direction: column; gap: 10px; }
 .L-page[data-comp="comp-editorial"] .L-page-head .L-n { font-size: 34px; color: var(--text); }
