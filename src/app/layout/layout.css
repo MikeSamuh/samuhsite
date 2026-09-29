@@ -534,7 +534,12 @@
 /* ---------- 08 case ---------- */
 
 .L-case { display: grid; gap: 28px; align-items: center; }
-.L-sec[data-v="card"] .L-case { background: var(--surface); border: var(--rule-thin) solid var(--border); border-radius: min(var(--radius), 22px); padding: 28px; grid-template-columns: 220px 1fr; }
+/* the case study card, a 16:9 export on black, kept inside a hairline */
+.L-case-img { display: block; aspect-ratio: 2490 / 1404; overflow: hidden; border-radius: min(var(--radius), 14px); border: var(--rule-thin) solid var(--border); background: #000; }
+.L-case-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* the image column was 220px for a client mark; the case card export needs
+   room to be read, so it takes a little under half the card */
+.L-sec[data-v="card"] .L-case { background: var(--surface); border: var(--rule-thin) solid var(--border); border-radius: min(var(--radius), 22px); padding: 28px; grid-template-columns: minmax(260px, 0.95fr) 1.05fr; }
 .L-sec[data-v="split"] .L-case { grid-template-columns: 1fr 1fr; }
 .L-case-line { margin-bottom: 20px; }
 .L-case-stats { margin: 0 0 22px; display: grid; grid-template-columns: repeat(3, auto); justify-content: start; gap: 12px 32px; }

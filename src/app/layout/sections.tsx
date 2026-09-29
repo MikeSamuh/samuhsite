@@ -698,7 +698,9 @@ export function Section({ def, variant, go, copy = {} }: { def: (typeof SECTIONS
           <>
             <Head def={def} />
             <div className="L-case">
-              <Frame label="Case study image or client mark · contract check first" />
+              <span className="L-case-img">
+                <Image src="/case-study.png" alt="Samuh case study: 1 high-performance practice. 90 days. Measurable change." width={2490} height={1404} sizes="(max-width: 900px) 100vw, 560px" />
+              </span>
               <div>
                 <span className="card-tag">Case study · Senior leadership team, Fortune 10 healthcare company</span>
                 <p className="L-big L-case-line">1 high-performance ritual. 90 days. Measurable change.</p>
