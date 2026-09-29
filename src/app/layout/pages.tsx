@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 import { useEffect, useRef } from "react";
 import Image from "next/image";
 import type { PageId } from "@/lib/layout";
@@ -61,31 +63,68 @@ const TIERS = [
 ];
 
 function Solutions({ go }: { go: (p: PageId) => void }) {
+  const [tier, setTier] = useState(TIERS[1].name);
+  const [sent, setSent] = useState(false);
+  const rows: [string, string, string, string][] = [
+    ["What it is", ...TIERS.map((t) => t.what) as [string, string, string]],
+    ["Who it is for", ...TIERS.map((t) => t.who) as [string, string, string]],
+    ["What you get", ...TIERS.map((t) => t.get) as [string, string, string]],
+    ["Support calls", "Not included", "Scheduled", "Ongoing"],
+    ["In-person delivery", "Not included", "Not included", "Included"],
+    ["TeamQ baseline and re-measure", "Included", "Included", "Included"],
+    ["Ritual keeper coaching", "Self-directed", "At check-ins", "Every two weeks"],
+  ];
   return (
     <>
       <PageHead n="01" kicker="Three ways to engage" title="Same process, three levels of support." lede="One methodology, the team process, delivered with as much or as little of us in the room as the team needs. Organization-wide work layers on top of it." />
-      {TIERS.map((t, i) => (
-        <Sec key={t.name} n={`0${i + 2}`} kicker={t.tag} title={t.name} id={t.name.toLowerCase()} cls="L-tier-sec">
-          <div className="L-tier">
-            <div>
-              <span className="L-cap L-tier-k">What it is</span>
-              <p className="L-mid">{t.what}</p>
+      <Sec n="02" kicker="Side by side" title="The three tiers">
+        <table className="L-table L-tiers" data-tier={tier}>
+          <thead>
+            <tr>
+              <th />
+              {TIERS.map((t) => (
+                <th key={t.name} data-on={t.name === tier}>
+                  <button className="L-tier-pick" onClick={() => setTier(t.name)} aria-pressed={t.name === tier}>
+                    <span className="L-cap">{t.tag}</span>
+                    <span>{t.name}</span>
+                  </button>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map(([row, ...cells]) => (
+              <tr key={row}>
+                <th>{row}</th>
+                {cells.map((c, i) => <td key={i} data-on={TIERS[i].name === tier}>{c}</td>)}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <p className="L-cap">Draft, to confirm with SAMUH. Organization-wide engagements layer on top of the team process, not beside it.</p>
+      </Sec>
+      <Sec n="03" kicker="Talk to us" title="Tell us which one, and where to reach you">
+        {!sent ? (
+          <form className="L-talk" onSubmit={(e) => { e.preventDefault(); setSent(true); }}>
+            <div className="L-talk-tiers" role="radiogroup" aria-label="Which tier">
+              {TIERS.map((t) => (
+                <button key={t.name} type="button" className="opt" aria-pressed={t.name === tier} onClick={() => setTier(t.name)}>{t.name}</button>
+              ))}
             </div>
-            <div>
-              <span className="L-cap L-tier-k">Who it is for</span>
-              <p className="L-mid">{t.who}</p>
+            <div className="field L-talk-field">
+              <input type="email" required placeholder="you@company.com" aria-label="Your email" />
+              <button className="btn" type="submit">Talk to us <span className="arrow">&rarr;</span></button>
             </div>
-            <div>
-              <span className="L-cap L-tier-k">What you get</span>
-              <p className="L-mid">{t.get}</p>
-            </div>
-            <div className="L-tier-cta">
-              <a href="#" className="inline-link L-text-cta" onClick={(e) => { stay(e); go("contact"); }}>Talk to us <span className="arrow">&rarr;</span></a>
-            </div>
+            <span className="L-cap">A person replies. Tagged {tier}, so we come prepared.</span>
+          </form>
+        ) : (
+          <div className="L-talk-thanks">
+            <p className="L-big">Thank you. We&rsquo;ll be in touch about {tier}.</p>
+            <a href="#" className="inline-link L-text-cta" onClick={(e) => { stay(e); go("process"); }}>Read about the team process while you wait <span className="arrow">&rarr;</span></a>
           </div>
-        </Sec>
-      ))}
-      <Sec n="05" kicker="Trust before proof" title="What teams say">
+        )}
+      </Sec>
+      <Sec n="04" kicker="Trust before proof" title="What teams say">
         <div className="L-voices L-voices-grid">
           {[0, 1, 2].map((i) => (
             <figure className="card L-quote" key={i}>
