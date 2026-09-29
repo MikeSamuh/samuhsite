@@ -34,9 +34,9 @@ function PageHead({ n, kicker, title, lede }: { n: string; kicker: string; title
   );
 }
 
-function Sec({ n, kicker, title, children, id }: { n: string; kicker: string; title: string; children: React.ReactNode; id?: string }) {
+function Sec({ n, kicker, title, children, id, cls }: { n: string; kicker: string; title: string; children: React.ReactNode; id?: string; cls?: string }) {
   return (
-    <section className="L-sec L-sec-h" id={id} data-n={n}>
+    <section className={`L-sec L-sec-h${cls ? ` ${cls}` : ""}`} id={id} data-n={n}>
       <div className="L-wrap">
         <div className="L-head">
           <span className="L-n">{n}</span>
@@ -64,7 +64,7 @@ function Solutions({ go }: { go: (p: PageId) => void }) {
     <>
       <PageHead n="01" kicker="Three ways to engage" title="Same process, three levels of support." lede="One methodology, the team process, delivered with as much or as little of us in the room as the team needs. Organization-wide work layers on top of it." />
       {TIERS.map((t, i) => (
-        <Sec key={t.name} n={`0${i + 2}`} kicker={t.tag} title={t.name} id={t.name.toLowerCase()}>
+        <Sec key={t.name} n={`0${i + 2}`} kicker={t.tag} title={t.name} id={t.name.toLowerCase()} cls="L-tier-sec">
           <div className="L-tier">
             <div>
               <span className="L-cap L-tier-k">What it is</span>
@@ -84,30 +84,7 @@ function Solutions({ go }: { go: (p: PageId) => void }) {
           </div>
         </Sec>
       ))}
-      <Sec n="05" kicker="Side by side" title="Compare the tiers">
-        <table className="L-table">
-          <thead>
-            <tr><th />{TIERS.map((t) => <th key={t.name}>{t.name}</th>)}</tr>
-          </thead>
-          <tbody>
-            {[
-              ["The team process", "Included", "Included", "Included"],
-              ["Support calls", "Not included", "Scheduled", "Ongoing"],
-              ["In-person delivery", "Not included", "Not included", "Included"],
-              ["TeamQ baseline and re-measure", "Included", "Included", "Included"],
-              ["Ritual keeper coaching", "Self-directed", "At check-ins", "Every two weeks"],
-              ["Price", "To confirm", "Talk to us", "Talk to us"],
-            ].map(([row, ...cells]) => (
-              <tr key={row}>
-                <th>{row}</th>
-                {cells.map((c, i) => <td key={i}>{c}</td>)}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        <p className="L-cap">Draft, to confirm with SAMUH. Organization-wide engagements layer on top of the team process, not beside it.</p>
-      </Sec>
-      <Sec n="06" kicker="Trust before proof" title="What teams say">
+      <Sec n="05" kicker="Trust before proof" title="What teams say">
         <div className="L-voices L-voices-grid">
           {[0, 1, 2].map((i) => (
             <figure className="card L-quote" key={i}>
