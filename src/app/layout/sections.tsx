@@ -133,8 +133,9 @@ export function Head({ def }: { def: (typeof SECTIONS)[number] }) {
  * so it works anywhere inside a ring, not only on its stroke. The callouts
  * stay hidden until a circle is hovered: the team shows where people
  * experience their work life, the individual and the organization show
- * where organizations focus, each in its own words. The team stays lit
- * whichever circle is hovered, because the team is the subject. Reduced
+ * where organizations focus, each in its own words. The team callout is
+ * always on and the team stays lit whichever circle is hovered, because
+ * the team is the subject. Reduced
  * motion holds the circles still and keeps the hover.
  */
 type Ring = "org" | "team" | "ind";

@@ -1097,12 +1097,13 @@
 .L-c-g[data-on="true"] .L-c-halo { opacity: 0.55; }
 .L-c-g[data-on="true"] .L-c-org, .L-c-g[data-on="true"] .L-c-ind { stroke: var(--accent-2); }
 .L-c-g[data-on="true"] .L-c-t-org, .L-c-g[data-on="true"] .L-c-t-ind { fill: var(--accent-2); }
-/* callouts and their leaders stay hidden until a circle is hovered. The
-   callout rises in, the leader draws from the edge to the rim of the circle */
+/* the team callout and its leader are always on: the team is the focus.
+   The other two stay hidden until their circle is hovered. A callout rises
+   in, its leader draws from the edge to the rim of the circle */
 .L-c-call { opacity: 0; transform: translateY(6px); transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease); }
 .L-c-line { stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset var(--dur) var(--ease); }
-.L-circ[data-hot="team"] .L-c-call-team, .L-circ[data-hot="ind"] .L-c-call-ind, .L-circ[data-hot="org"] .L-c-call-org { opacity: 1; transform: none; }
-.L-circ[data-hot="team"] .L-c-leader-team, .L-circ[data-hot="ind"] .L-c-leader-ind, .L-circ[data-hot="org"] .L-c-leader-org { stroke-dashoffset: 0; }
+.L-c-call-team, .L-circ[data-hot="ind"] .L-c-call-ind, .L-circ[data-hot="org"] .L-c-call-org { opacity: 1; transform: none; }
+.L-c-leader-team, .L-circ[data-hot="ind"] .L-c-leader-ind, .L-circ[data-hot="org"] .L-c-leader-org { stroke-dashoffset: 0; }
 @media (hover: none) {
   .L-c-call { opacity: 1; transform: none; }
   .L-c-right { gap: 18px; }
