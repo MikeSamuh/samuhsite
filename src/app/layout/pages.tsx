@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import type { PageId } from "@/lib/layout";
 
 /**
@@ -138,6 +139,82 @@ const ARC = [
   ["Day 90", "Re-measure and close", "TeamQ is repeated and change is measured against the baseline."],
 ];
 
+
+/**
+ * The arc as a timeline. One line winds down the page like a backwards S:
+ * the upper half bows right, the lower half bows left. Each point is a dot
+ * on that line, its copy on one side and a spot for a small piece of art on
+ * the other, swapping sides as the line goes. The curve is drawn in pixels
+ * from the list's own measurements, so the dots stay on it whatever the
+ * copy wraps to. Art is a white placeholder for now.
+ */
+function ArcTimeline() {
+  const listRef = useRef<HTMLOListElement>(null);
+  const [geo, setGeo] = useState<{ w: number; h: number; cx: number; amp: number; ys: number[] } | null>(null);
+
+  useEffect(() => {
+    const list = listRef.current;
+    if (!list) return;
+    const measure = () => {
+      const box = list.getBoundingClientRect();
+      const lane = list.querySelector<HTMLElement>(".L-arc-lane");
+      if (!lane) return;
+      const l = lane.getBoundingClientRect();
+      const ys = Array.from(list.querySelectorAll<HTMLElement>(".L-arc-lane")).map((el) => {
+        const r = el.getBoundingClientRect();
+        return r.top - box.top + r.height / 2;
+      });
+      setGeo({ w: box.width, h: box.height, cx: l.left - box.left + l.width / 2, amp: Math.max(0, l.width / 2 - 14), ys });
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(list);
+    return () => ro.disconnect();
+  }, []);
+
+  // x along the line for a given y: a full sine over the height, bowing
+  // right first, so it reads as a backwards S
+  const xAt = (y: number) => (geo ? geo.cx + geo.amp * Math.sin((2 * Math.PI * y) / geo.h) : 0);
+  const path = geo
+    ? Array.from({ length: 73 }, (_, i) => {
+        const y = (geo.h * i) / 72;
+        return `${i ? "L" : "M"} ${xAt(y).toFixed(1)} ${y.toFixed(1)}`;
+      }).join(" ")
+    : "";
+
+  return (
+    <ol className="L-arc" ref={listRef}>
+      {geo && (
+        <svg className="L-arc-svg" viewBox={`0 0 ${geo.w} ${geo.h}`} width={geo.w} height={geo.h} aria-hidden>
+          <defs>
+            <linearGradient id="L-arc-fade" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stopColor="var(--accent)" stopOpacity="0" />
+              <stop offset="0.12" stopColor="var(--accent)" stopOpacity="1" />
+              <stop offset="0.88" stopColor="var(--accent)" stopOpacity="1" />
+              <stop offset="1" stopColor="var(--accent)" stopOpacity="0" />
+            </linearGradient>
+          </defs>
+          <path className="L-arc-path" d={path} />
+          {geo.ys.map((y, i) => (
+            <circle key={i} className="L-arc-dot" cx={xAt(y)} cy={y} r={6} />
+          ))}
+        </svg>
+      )}
+      {ARC.map(([when, what, note]) => (
+        <li key={when} className="L-arc-item">
+          <div className="L-arc-copy">
+            <span className="L-cap">{when}</span>
+            <span className="L-arc-what">{what}</span>
+            <span className="L-arc-note">{note}</span>
+          </div>
+          <span className="L-arc-lane" aria-hidden />
+          <span className="L-arc-art">Art</span>
+        </li>
+      ))}
+    </ol>
+  );
+}
+
 function Process({ go }: { go: (p: PageId) => void }) {
   return (
     <>
@@ -156,15 +233,7 @@ function Process({ go }: { go: (p: PageId) => void }) {
         <p className="L-cap">Step names from the kickoff. Structure to confirm with SAMUH.</p>
       </Sec>
       <Sec n="03" kicker="About four months, end to end" title="The arc">
-        <ol className="L-arc">
-          {ARC.map(([when, what, note]) => (
-            <li key={when}>
-              <span className="L-cap">{when}</span>
-              <span className="L-arc-what">{what}</span>
-              <span className="L-arc-note">{note}</span>
-            </li>
-          ))}
-        </ol>
+        <ArcTimeline />
         <p className="L-mid">Two ritual keepers are coached every two weeks, and the ritual runs inside work the team already does.</p>
       </Sec>
       <Sec n="04" kicker="Why it holds" title="Elite teams ritualize high-performance practices">

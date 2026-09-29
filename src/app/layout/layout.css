@@ -720,11 +720,38 @@
 .L-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 14px; }
 .L-step { display: grid; gap: 10px; }
 .L-step .ph { min-height: 72px; }
-.L-arc { list-style: none; margin: 0 0 20px; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
-.L-arc li { display: grid; gap: 6px; border-top: var(--rule-fat) solid var(--accent); padding-top: 14px; }
-.L-arc li:first-child { border-top-color: var(--accent-2); }
+/* the arc timeline: copy | lane | art, the lane is where the line winds.
+   Rows alternate which side the copy is on, and each side always keeps
+   room for the art, which is a small piece of illustration to come */
+.L-arc { --arc-lane: 200px; --arc-art: 112px; position: relative; list-style: none; margin: 0 0 28px; padding: 0; display: grid; gap: 8px; }
+.L-arc-svg { position: absolute; inset: 0; pointer-events: none; overflow: visible; }
+.L-arc-path { fill: none; stroke: url(#L-arc-fade); stroke-width: var(--rule-thin); vector-effect: non-scaling-stroke; opacity: 0.85; }
+.L-arc-dot { fill: var(--accent); stroke: var(--base); stroke-width: 3px; }
+.L-arc-dot:first-of-type { fill: var(--accent-2); }
+.L-arc-item { position: relative; display: grid; grid-template-columns: 1fr var(--arc-lane) 1fr; align-items: center; min-height: 168px; }
+.L-arc-copy { display: grid; gap: 6px; text-align: right; justify-items: end; padding: 12px 0; }
+.L-arc-art {
+  width: var(--arc-art);
+  height: var(--arc-art);
+  display: grid;
+  place-items: center;
+  border-radius: min(var(--radius), 18px);
+  background: #fff;
+  color: #000;
+  font-family: var(--font-caption);
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  justify-self: start;
+}
+/* odd rows swap sides: art left, copy right. nth-of-type, because the svg
+   is the list's first child */
+.L-arc-item:nth-of-type(odd) .L-arc-copy { order: 3; text-align: left; justify-items: start; }
+.L-arc-item:nth-of-type(odd) .L-arc-lane { order: 2; }
+.L-arc-item:nth-of-type(odd) .L-arc-art { order: 1; justify-self: end; }
 .L-arc-what { font-family: var(--font-display); font-weight: var(--display-weight); font-size: 19px; }
-.L-arc-note { font-size: 13px; color: var(--muted); line-height: 1.5; }
+.L-arc-note { font-size: 13px; color: var(--muted); line-height: 1.5; max-width: 34ch; }
+.L-page[data-align="align-center"] .L-arc-copy { text-align: inherit; }
 
 /* insights */
 .L-filters { display: grid; gap: 12px; }
@@ -782,11 +809,18 @@
 .L-insight p { margin: 0; }
 
 @container page (max-width: 900px) {
-  .L-tier, .L-steps, .L-arc, .L-feed, .L-team, .L-logos, .L-contact, .L-voices-grid { grid-template-columns: 1fr 1fr; }
+  .L-tier, .L-steps, .L-feed, .L-team, .L-logos, .L-contact, .L-voices-grid { grid-template-columns: 1fr 1fr; }
+  .L-arc { --arc-lane: 140px; --arc-art: 96px; }
   .L-research-card, .L-partner { grid-template-columns: 1fr; }
 }
 @container page (max-width: 560px) {
-  .L-tier, .L-steps, .L-arc, .L-feed, .L-team, .L-logos, .L-contact, .L-voices-grid { grid-template-columns: 1fr; }
+  .L-tier, .L-steps, .L-feed, .L-team, .L-logos, .L-contact, .L-voices-grid { grid-template-columns: 1fr; }
+  /* one column on a phone: the line runs down the left, art above the copy */
+  .L-arc { --arc-lane: 56px; --arc-art: 80px; }
+  .L-arc-item, .L-arc-item:nth-of-type(odd) { grid-template-columns: var(--arc-lane) 1fr; min-height: 0; }
+  .L-arc-item .L-arc-lane, .L-arc-item:nth-of-type(odd) .L-arc-lane { order: 1; grid-row: 1 / 3; }
+  .L-arc-item .L-arc-art, .L-arc-item:nth-of-type(odd) .L-arc-art { order: 2; justify-self: start; margin-top: 12px; }
+  .L-arc-item .L-arc-copy, .L-arc-item:nth-of-type(odd) .L-arc-copy { order: 3; text-align: left; justify-items: start; }
   .L-scale { grid-template-columns: repeat(7, 1fr); gap: 4px; }
   .L-scale-opt { padding: 12px 0; font-size: 15px; }
   .L-table { font-size: 12px; }
