@@ -27,15 +27,21 @@ export interface NavProps {
   partner?: boolean;
 }
 
-export function Nav({ page, go, menu, explore, links: order, brand = "wordmark", partner = false }: NavProps) {
+export function Nav({ page, go, menu, links: order, brand = "wordmark", partner = false }: NavProps) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const overlay = menu || explore;
   const links = order
     ? order.map((id) => PAGES.find((x) => x.id === id)!).filter(Boolean)
     : PAGES.filter((x) => x.nav && x.id !== "home");
   const jump = (p: PageId) => { setOpen(false); go(p); };
   const barRef = useRef<HTMLElement>(null);
+  // the page does not scroll under the open menu
+  useEffect(() => {
+    if (!open) return;
+    const was = document.documentElement.style.overflow;
+    document.documentElement.style.overflow = "hidden";
+    return () => { document.documentElement.style.overflow = was; };
+  }, [open]);
   useEffect(() => {
     if (brand !== "icons") return;
     // two thresholds, not one: the swap shrinks the nav, which moves the
@@ -97,10 +103,17 @@ export function Nav({ page, go, menu, explore, links: order, brand = "wordmark",
           ))}
         </nav>
         <button className="btn btn-secondary btn-small L-menu" onClick={() => setOpen(true)} aria-expanded={open} aria-controls="L-overlay">Explore</button>
-        <button className="btn btn-small" onClick={() => jump("start")}>Get started <span className="arrow">&rarr;</span></button>
+        <button className="btn btn-small L-cta" onClick={() => jump("start")}>Get started <span className="arrow">&rarr;</span></button>
+        {/* on small screens every nav collapses to this: the links and the
+            Explore button hide, and the burger opens the full menu */}
+        {!menu ? (
+          <button className="L-burger L-burger-m" onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-controls="L-overlay" aria-label="Menu">
+            <span /><span /><span />
+          </button>
+        ) : null}
       </div>
       </header>
-      {overlay && open ? (
+      {open ? (
         <div className="L-overlay" id="L-overlay" role="dialog" aria-label="Site menu">
           <div className="L-overlay-head L-wrap">
             <button className="L-burger is-x" onClick={() => setOpen(false)} aria-label="Close menu"><span /><span /><span /></button>
@@ -430,7 +443,7 @@ const PROMPTS = [
  * send answers to Samuh, and a look at what others said. Submission and
  * the others' answers are placeholders until the lead capture exists.
  */
-export function MetaphorGallery() {
+export function MetaphorGallery({ cards = ARCHETYPES }: { cards?: [string, string, string][] }) {
   const [open, setOpen] = useState<number | null>(null);
   const [sent, setSent] = useState(false);
   const [others, setOthers] = useState(false);
@@ -441,11 +454,11 @@ export function MetaphorGallery() {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
-  const name = open !== null ? ARCHETYPES[open][0] : "";
+  const name = open !== null ? cards[open][0] : "";
   return (
     <>
       <div className="L-gallery">
-        {ARCHETYPES.map(([n, , src], i) => (
+        {cards.map(([n, , src], i) => (
           <button className="L-gal-tile" key={n} onClick={() => setOpen(i)} aria-label={`Open ${n}`}>
             <Art src={src} name={n} />
           </button>
@@ -456,10 +469,10 @@ export function MetaphorGallery() {
           <div className="L-zoom-in" onClick={(e) => e.stopPropagation()}>
             <button className="L-zoom-x tbtn" onClick={close} aria-label="Close">Close</button>
             <div className="L-zoom-art">
-              {open !== null ? <Art src={ARCHETYPES[open][2]} name={name} /> : null}
+              {open !== null ? <Art src={cards[open][2]} name={name} /> : null}
             </div>
             <div className="L-zoom-side">
-              <span className="card-tag">{String(open + 1).padStart(2, "0")} / {String(ARCHETYPES.length).padStart(2, "0")}</span>
+              <span className="card-tag">{String(open + 1).padStart(2, "0")} / {String(cards.length).padStart(2, "0")}</span>
               <h3 className="L-zoom-title">{name}</h3>
               {!sent ? (
                 <form className="L-form L-zoom-form" onSubmit={(e) => { e.preventDefault(); setSent(true); }}>
@@ -617,6 +630,8 @@ export interface CopyOverrides {
   noEyebrow?: boolean;
   /** no buttons in the hero */
   noHeroCtas?: boolean;
+  /** which metaphor cards to show, in order; default is every card */
+  cards?: [string, string, string][];
 }
 
 export function Section({ def, variant, go, copy = {} }: { def: (typeof SECTIONS)[number]; variant: string; go: (p: PageId) => void; copy?: CopyOverrides }) {
@@ -789,7 +804,7 @@ export function Section({ def, variant, go, copy = {} }: { def: (typeof SECTIONS
         {def.id === "cards" && v === "gallery" && (
           <>
             <Head def={def} />
-            <MetaphorGallery />
+            <MetaphorGallery cards={copy.cards} />
           </>
         )}
 

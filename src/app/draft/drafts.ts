@@ -48,6 +48,11 @@ export const DRAFTS: Draft[] = [
       noPartnerLine: true,
       noEyebrow: true,
       noHeroCtas: true,
+      // the two redrawn cards Wilfred added on 30 September; the rest wait
+      cards: [
+        ["In a labyrinth with different maps", "Everyone is moving. Nobody is on the same page.", "/metaphor/maze.png"],
+        ["Bottom of the mountain", "The summit is agreed. The route is not.", "/metaphor/mountain.png"],
+      ],
     },
   },
   {

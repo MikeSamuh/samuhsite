@@ -188,6 +188,11 @@ function ArcRun({ children }: { children: React.ReactNode }) {
     let pts: { x: number; y: number }[] = [];
     let ys: number[] = [];
     let items: HTMLElement[] = [];
+    let span = { top: 0, bottom: 0 }; // the line's extent, in run coordinates
+    // the ball runs ahead of the pointer: pointer travel is scaled by this
+    // about the middle of the part of the line on screen, so a modest move
+    // carries the ball down the journey without the pointer straying off
+    const LEAD = 1.7;
 
     const setRect = (sel: string, x: number, y: number, w: number, h: number) => {
       const el = svg.querySelector<SVGRectElement>(sel);
@@ -227,6 +232,7 @@ function ArcRun({ children }: { children: React.ReactNode }) {
       svg.setAttribute("width", String(box.width));
       svg.setAttribute("height", String(bottom));
       path.setAttribute("d", d);
+      span = { top, bottom };
       const L = path.getTotalLength();
       const k = Math.max(2, Math.round(L / 4));
       pts = Array.from({ length: k + 1 }, (_, i) => { const q = path.getPointAtLength((L * i) / k); return { x: q.x, y: q.y }; });
@@ -247,6 +253,8 @@ function ArcRun({ children }: { children: React.ReactNode }) {
     // the ball: an index along the line that eases toward the nearest
     // point to the pointer
     let pointer: { x: number; y: number } | null = null;
+    let overItem = false; // the pointer is on one of the moves: the ball eases a quarter slower
+    const EASE = 0.1;
     let at = -1;
     let raf = 0;
     let lastOn = -2;
@@ -254,11 +262,18 @@ function ArcRun({ children }: { children: React.ReactNode }) {
       raf = 0;
       if (!pts.length) return;
       const box = run.getBoundingClientRect();
-      const px = pointer ? pointer.x - box.left : window.innerWidth / 2 - box.left;
-      const py = pointer ? pointer.y - box.top : window.innerHeight / 2 - box.top;
+      let px = window.innerWidth / 2 - box.left;
+      let py = window.innerHeight / 2 - box.top;
+      if (pointer) {
+        px = pointer.x - box.left;
+        const vTop = Math.max(span.top, -box.top);
+        const vBottom = Math.min(span.bottom, window.innerHeight - box.top);
+        const mid = vBottom > vTop ? (vTop + vBottom) / 2 : (span.top + span.bottom) / 2;
+        py = mid + (pointer.y - box.top - mid) * LEAD;
+      }
       const target = nearest(px, py);
       if (at < 0) at = target;
-      at += (target - at) * (still ? 1 : 0.14);
+      at += (target - at) * (still ? 1 : overItem ? EASE * 0.75 : EASE);
       if (Math.abs(target - at) < 0.05) at = target;
       const q = pts[Math.min(pts.length - 1, Math.max(0, Math.round(at)))];
       ball.setAttribute("transform", `translate(${q.x.toFixed(1)} ${q.y.toFixed(1)})`);
@@ -271,8 +286,12 @@ function ArcRun({ children }: { children: React.ReactNode }) {
       if (Math.abs(target - at) > 0.05) raf = requestAnimationFrame(tick);
     };
     const kick = () => { if (!raf) raf = requestAnimationFrame(tick); };
-    const onMove = (e: PointerEvent) => { pointer = { x: e.clientX, y: e.clientY }; kick(); };
-    const onLeave = () => { pointer = null; kick(); };
+    const onMove = (e: PointerEvent) => {
+      pointer = { x: e.clientX, y: e.clientY };
+      overItem = !!(e.target as Element | null)?.closest?.(".L-arc-item");
+      kick();
+    };
+    const onLeave = () => { pointer = null; overItem = false; kick(); };
     const onScroll = () => kick();
     const ro = new ResizeObserver(() => { measure(); kick(); });
     ro.observe(run);
@@ -466,7 +485,7 @@ function About() {
       </Sec>
       <Sec n="03" kicker="In partnership with Sapien Labs" title="The research behind the work">
         <div className="L-partner">
-          <Frame label="Sapien Labs mark" />
+          <Image className="L-partner-logo" src="/sapien-labs.png" alt="Sapien Labs" width={820} height={240} sizes="200px" />
           <div>
             <p className="L-mid">Sapien Labs is the primary partner and the source of the research the site leans on. The Work Culture Report is the research spine, and the intake assessment is built on Sapien Labs team environment factors.</p>
             <p className="L-mid">Sapien Labs&rsquo; MHQ measures mental wellbeing across aspects of functioning and feeling, gathered through the Global Mind Project. TeamQ reads the team environment through it, so what was previously inferred about a team can now be measured.</p>

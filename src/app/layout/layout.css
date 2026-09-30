@@ -452,7 +452,31 @@
 
 .L-aspire { display: grid; gap: 28px; }
 .L-cols { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
-.L-cols li { border-top: var(--rule-thin) solid var(--border); padding-top: 14px; display: grid; gap: 6px; }
+.L-cols li {
+  border-top: var(--rule-thin) solid var(--border);
+  padding-top: 14px;
+  display: grid;
+  gap: 6px;
+  position: relative;
+  cursor: default;
+  transition: transform var(--dur) var(--ease);
+}
+/* hover: the rule turns to the primary and grows heavy, the copy comes up to full, the column lifts */
+.L-cols li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: calc(var(--rule-thin) * -1);
+  width: 0;
+  height: var(--rule-fat);
+  background: var(--accent);
+  transition: width calc(var(--dur) * 1.4) var(--ease);
+}
+.L-cols li:hover { transform: translateY(-4px); }
+.L-cols li:hover::before { width: 100%; }
+.L-cols li:hover .L-col-title { color: var(--accent); }
+.L-cols li:hover .L-col-note { color: var(--text); }
+.L-col-title, .L-col-note { transition: color var(--dur) var(--ease); }
 .L-col-title { font-family: var(--font-display); font-weight: var(--display-weight); font-size: 18px; }
 .L-col-note { font-size: 13px; color: var(--muted); }
 
@@ -776,7 +800,8 @@
 .L-arc-run > .L-sec:first-of-type { border-top: 0; }
 /* the first section in the run loses its rule to :first-of-type, so the
    run draws it back */
-.L-arc-run::before { content: ""; position: absolute; inset: 0 0 auto; height: var(--rule-thin); background: var(--border); }
+/* no rule between the page head and the six moves: the arc runs straight out of the intro */
+.L-arc-run::before { display: none; }
 .L-page[data-rule="rule-none"] .L-arc-run::before { display: none; }
 /* the note under the moves stays in the first column, left of the line */
 .L-arc-run .L-arc + .L-cap { display: block; max-width: 30ch; }
@@ -835,6 +860,7 @@
 /* about */
 .L-partner { display: grid; grid-template-columns: 200px 1fr; gap: 28px; align-items: start; }
 .L-partner .ph { min-height: 140px; }
+.L-partner-logo { width: 100%; max-width: 200px; height: auto; margin-top: 4px; }
 .L-team { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-bottom: 20px; }
 .L-person { display: grid; gap: 6px; }
 .L-person .ph { min-height: 180px; }
