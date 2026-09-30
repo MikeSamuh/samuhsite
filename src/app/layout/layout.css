@@ -759,7 +759,7 @@
 /* the arc timeline: copy | lane | art, the lane is where the line winds.
    Rows alternate which side the copy is on, and each side always keeps
    room for the art, which is a small piece of illustration to come */
-.L-arc-run { --arc-gold: #F5A524; position: relative; } /* the palette's Amber */
+.L-arc-run { --arc-gold: #F5D547; position: relative; } /* the palette's Butter, the lighter of its golds */
 .L-arc-run > .L-sec:first-of-type { border-top: 0; }
 /* the first section in the run loses its rule to :first-of-type, so the
    run draws it back */
