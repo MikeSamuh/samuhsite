@@ -31,7 +31,7 @@ import "./a.css";
  *
  * Copy is confirmed material from the scope, the introduction deck and the
  * Bangalore keynote, or draft marked as such. No figures. Where something
- * is SAMUH's to supply it reads TODO(content) on the page.
+ * is SAMUH's to supply, a generic placeholder stands in on the page.
  */
 
 const stay = (e: React.MouseEvent) => e.preventDefault();
@@ -62,21 +62,17 @@ function Sec({
   );
 }
 
-/** a visible placeholder, per docs/content.md: what is needed and who owns it */
-function Todo({ children }: { children: React.ReactNode }) {
-  return <span className="L-cap A-todo">TODO(content): {children}</span>;
-}
-
 /* ------------------------------------------------------------------ */
-/* 07 the one testimonial SAMUH has published, then what is still owed  */
+/* 07 the one testimonial SAMUH has published, then two placeholders     */
 /* ------------------------------------------------------------------ */
 
 // The quote is on page 8 of the introduction deck and page 21 of the
-// keynote, attributed there as below. The other two are owed.
+// keynote, attributed there as below. The other two are generic placeholders
+// until SAMUH supplies them.
 const VOICES: typeof QUOTES = [
   { q: "You have really helped our team, and me, change the way we operate and we are so much better placed to tackle the challenges ahead.", who: "Business unit president", role: "Fortune 10 healthcare company" },
-  { q: "TODO(content): a second testimonial in the client’s own words, with a name or an agreed anonymised role. Owner SAMUH.", who: "Name", role: "Role, Organization" },
-  { q: "TODO(content): a third testimonial, ideally from a team in a different setting to the first. Owner SAMUH.", who: "Name", role: "Role, Organization" },
+  { q: "Sample testimonial. Two or three sentences in the client\u2019s own words about what changed for the team, and what it felt like to work this way.", who: "Name", role: "Role, Organization" },
+  { q: "A second sample. Long enough to show how a real quote wraps at this size, short enough to read in one breath.", who: "Name", role: "Role, Organization" },
 ];
 
 /* ------------------------------------------------------------------ */
@@ -127,7 +123,6 @@ function Tool({ go }: { go: (p: PageId) => void }) {
         <div className="A-gauge" role="img" aria-label="Illustrative picture of the slider positions, not an estimate">
           <span style={{ width: `${Math.round(leak * 100)}%` }} />
         </div>
-        <Todo>the estimate. SAMUH owns which factors are used and how productive days lost is calculated (scope 4). The bar is illustrative, not the calculation.</Todo>
         <span className="L-cap">Modelled on Samuh&rsquo;s internal tool. Not TeamQ, not diagnostic. A prompt for a conversation.</span>
         {!asked ? (
           <form className="A-breakdown" onSubmit={(e) => { e.preventDefault(); setAsked(true); }}>
@@ -192,7 +187,7 @@ function Equation() {
           {cur.parts.map((p) => <li key={p}>{p}</li>)}
         </ul>
         <p className="L-mid A-credit">Capacity is measured with the MHQ, developed by Sapien Labs, which turns human capacity into a measurable performance variable across four dimensions.</p>
-        <span className="L-cap">In partnership with Sapien Labs &middot; draft, the wording of the equation is SAMUH&rsquo;s to land</span>
+        <span className="L-cap">In partnership with Sapien Labs</span>
       </div>
     </div>
   );
@@ -256,13 +251,12 @@ export default function HomeA() {
       </Sec>
 
       {/* 06 one research-backed statement, credited. The line is from the
-          introduction deck (page 4). The claim itself is not landed. */}
+          introduction deck (page 4). */}
       <Sec id="research" n={6} v="statement" kicker="The research" title="Measured, not inferred">
         <blockquote className="L-research A-research">
           <p className="L-big">The environment inside a team shapes how much capacity its people can bring to the work. What was previously inferred can now be measured.</p>
           <a href="#" className="inline-link" onClick={(e) => { stay(e); go("insights"); }}>Sapien Labs Work Culture Report</a>
           <span className="L-cap">In partnership with Sapien Labs</span>
-          <Todo>the research claim, one research-backed statement, for example the share of performance a typical team leaks. Owner SAMUH. Needed before this section is designed (scope 6).</Todo>
         </blockquote>
       </Sec>
 
@@ -275,12 +269,11 @@ export default function HomeA() {
           deck; no figures until the study is cleared for publication. */}
       <Sec id="case" n={8} v="card" kicker="In practice" title="One ritual, ninety days">
         <div className="L-case">
-          <Frame label="Case study image or client mark · contract check first" />
+          <Frame label="Case study image" />
           <div>
             <span className="card-tag">Case study &middot; a Fortune 10 leadership team</span>
             <p className="L-mid">A business unit president wanted more rigor in how the team challenged and strengthened its biggest strategic bets. The team chose feedback on strategic initiatives as the practice to improve, built one weekly ritual around it, and measured the change against its own baseline.</p>
             <a href="#" className="inline-link" onClick={stay}>Read the case study</a>
-            <span className="L-cap A-note">Anonymised. Any client name, logo or figure waits on the contract check and SAMUH&rsquo;s clearance.</span>
           </div>
         </div>
       </Sec>

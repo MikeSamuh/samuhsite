@@ -109,7 +109,6 @@ export default function HomeC() {
                 <li key={f}><span className="L-col-title">{f}</span><span className="L-col-note">{q}</span></li>
               ))}
             </ul>
-            <span className="L-cap">Draft. Factor set to be confirmed by SAMUH.</span>
           </div>
         </div>
       </Sec>
@@ -119,7 +118,7 @@ export default function HomeC() {
         <blockquote className="L-research">
           <p className="L-big">The environment inside a team shapes how much capacity its people can bring to the work. What was previously inferred can now be measured.</p>
           <a href="#" className="inline-link" onClick={stay}>Sapien Labs Work Culture Report</a>
-          <span className="L-cap">In partnership with Sapien Labs &middot; wording to be confirmed by SAMUH</span>
+          <span className="L-cap">In partnership with Sapien Labs</span>
         </blockquote>
       </Sec>
 
@@ -128,7 +127,7 @@ export default function HomeC() {
         <div className="C-proof">
           <Carousel />
           <div className="L-case">
-            <Frame label="Case study image or client mark · contract check first" />
+            <Frame label="Case study image" />
             <div>
               <span className="card-tag">Case study &middot; a Fortune 10 leadership team</span>
               <p className="L-mid">A business unit president wanted more rigor in how the team challenged and strengthened its biggest strategic bets. The team chose feedback on strategic initiatives as the practice to improve, and built one ritual around it.</p>

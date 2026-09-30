@@ -57,7 +57,7 @@ function Sec({ n, kicker, title, children, id, cls }: { n: string; kicker: strin
 /* ------------------------------------------------------------------ */
 
 const TIERS = [
-  { tag: "Tier 01", name: "Self-guided", what: "Fully automated. The team works through the material on its own.", who: "Teams with a strong leader who want the method without the meetings, and organizations rolling it out across many teams.", get: "The team process, the baseline and the re-measure, and the material to run one ritual for ninety days.", cta: "Price to confirm · or talk to us" },
+  { tag: "Tier 01", name: "Self-guided", what: "Fully automated. The team works through the material on its own.", who: "Teams with a strong leader who want the method without the meetings, and organizations rolling it out across many teams.", get: "The team process, the baseline and the re-measure, and the material to run one ritual for ninety days.", cta: "Talk to us" },
   { tag: "Tier 02", name: "Supported", what: "Self-guided plus periodic support calls from the Samuh team.", who: "Teams that want a second pair of eyes at the moments that matter: choosing the practice, and the check-in at day 45.", get: "Everything in Self-guided, with scheduled calls to read the data together and keep the ritual on track.", cta: "Talk to us" },
   { tag: "Tier 03", name: "Guided", what: "In person. The Samuh team delivers the work hands on.", who: "Leadership teams and mission-critical teams where the stakes justify having us in the room.", get: "Confidential interviews, a facilitated day one, coaching for two ritual keepers every two weeks, and the close.", cta: "Talk to us" },
 ];
@@ -101,7 +101,7 @@ function Solutions({ go }: { go: (p: PageId) => void }) {
             ))}
           </tbody>
         </table>
-        <p className="L-cap">Draft, to confirm with SAMUH. Organization-wide engagements layer on top of the team process, not beside it.</p>
+        <p className="L-cap">Organization-wide engagements layer on top of the team process, not beside it.</p>
       </Sec>
       <Sec n="03" kicker="Talk to us" title="Tell us which one, and where to reach you">
         {!sent ? (
@@ -373,7 +373,6 @@ function Process({ go }: { go: (p: PageId) => void }) {
       <ArcRun>
       <Sec n="02" kicker="Six moves" title="From baseline to standing ritual">
         <ArcMoves />
-        <p className="L-cap">Step names from the kickoff. Structure to confirm with SAMUH.</p>
       </Sec>
       <Sec n="03" kicker="About four months, end to end" title="The arc">
         <ArcTimeline />
@@ -487,8 +486,8 @@ function About() {
         </div>
         <p className="L-mid">An interdisciplinary team spanning enterprise transformation, team practice, data science and human performance research.</p>
       </Sec>
-      <Sec n="05" kicker="TBA" title="Channel partners and coaching teams">
-        <div className="L-logos">{[0, 1, 2, 3, 4].map((i) => <Frame key={i} label="Partner mark · contract check first" />)}</div>
+      <Sec n="05" kicker="Partners" title="Channel partners and coaching teams">
+        <div className="L-logos">{[0, 1, 2, 3, 4].map((i) => <Frame key={i} label="Partner mark" />)}</div>
       </Sec>
     </>
   );

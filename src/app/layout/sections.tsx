@@ -368,7 +368,6 @@ export function Dictionary() {
       <ol className="L-dict-defs">
         <li>A group of people who come together <em className="L-dict-hi">for a purpose larger than themselves.</em></li>
       </ol>
-      <span className="L-cap">Placeholder voice. SAMUH to confirm the pronunciation and record it.</span>
     </div>
   );
 }

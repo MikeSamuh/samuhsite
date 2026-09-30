@@ -2,18 +2,6 @@
    draft so nothing leaks into B or C. No values: everything reads the
    custom properties from tokens.ts and layout.ts. */
 
-/* a visible placeholder, never a plausible fake */
-.D-stage[data-draft="a"] .A-todo {
-  display: inline-block;
-  color: var(--accent-2);
-  border: var(--rule-thin) dashed var(--accent-2);
-  border-radius: min(var(--radius), 8px);
-  padding: 6px 10px;
-  line-height: 1.5;
-  max-width: 60ch;
-}
-.D-stage[data-draft="a"] .A-note { display: block; margin-top: 14px; }
-
 /* 05 the aspiration: statement, the three lines, then what the team has */
 .D-stage[data-draft="a"] .A-aspire { gap: 18px; }
 .D-stage[data-draft="a"] .A-aspire .L-mid { margin: 0; }
