@@ -140,13 +140,14 @@ function Solutions({ go }: { go: (p: PageId) => void }) {
 
 /* ------------------------------------------------------------------ */
 
-const STEPS = [
-  ["Prepare", "Baseline the team before anything changes."],
-  ["Launch", "Put the practices into the working week."],
-  ["Discover", "Surface what the team does under load."],
-  ["Awareness", "Name the patterns nobody could see."],
-  ["Belonging", "Build the conditions people stay for."],
-  ["Action", "Turn insight into standing rituals."],
+// name, note, icon (Wilfred's, public/icons, 30 September; file names as supplied)
+const STEPS: [string, string, string][] = [
+  ["Prepare", "Baseline the team before anything changes.", "/icons/prepare.png"],
+  ["Launch", "Put the practices into the working week.", "/icons/Launch.png"],
+  ["Discover", "Surface what the team does under load.", "/icons/Discover.png"],
+  ["Awareness", "Name the patterns nobody could see.", "/icons/Awareness.png"],
+  ["Belonging", "Build the conditions people stay for.", "/icons/Belonging.png"],
+  ["Action", "Turn insight into standing rituals.", "/icons/Action.png"],
 ];
 
 const ARC = [
@@ -322,12 +323,12 @@ function ArcRun({ children }: { children: React.ReactNode }) {
 }
 
 /** The six moves, in order, on the line: number, name and note one side,
- *  a spot for the icon the other, swapping sides each row. The icon spot is
- *  the same white placeholder as the arc's art until the icons arrive. */
+ *  the icon the other, swapping sides each row. The icon the ball is level
+ *  with grows and comes to full strength; the rest sit at 30 percent. */
 function ArcMoves() {
   return (
     <ol className="L-arc L-arc-moves">
-      {STEPS.map(([name, note], i) => (
+      {STEPS.map(([name, note, icon], i) => (
         <li key={name} className="L-arc-item">
           <div className="L-arc-copy">
             <span className="step-n">0{i + 1}</span>
@@ -335,7 +336,9 @@ function ArcMoves() {
             <span className="L-arc-note">{note}</span>
           </div>
           <span className="L-arc-lane" aria-hidden />
-          <span className="L-arc-art">Icon</span>
+          <span className="L-arc-art L-arc-icon">
+            <Image src={icon} alt="" width={2048} height={2048} sizes="160px" />
+          </span>
         </li>
       ))}
     </ol>

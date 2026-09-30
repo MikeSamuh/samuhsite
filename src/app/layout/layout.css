@@ -779,6 +779,11 @@
 .L-arc-item[data-on] .L-arc-what { color: var(--arc-gold); }
 .L-arc-item[data-on] .L-arc-note { color: var(--text); }
 .L-arc-item[data-on] .L-arc-art { box-shadow: 0 0 0 1.5px var(--arc-gold), 0 0 28px color-mix(in srgb, var(--arc-gold) 55%, transparent); }
+/* the six icons: 30 percent until the ball is level with them, then full and a step larger */
+.L-arc-art.L-arc-icon { background: transparent; box-shadow: none; border: 0; padding: 0; display: grid; place-items: center; color: transparent; overflow: visible; }
+.L-arc-icon img { width: 100%; height: 100%; object-fit: contain; opacity: 0.3; transform: scale(1); transition: opacity var(--dur) var(--ease), transform calc(var(--dur) * 1.4) var(--ease); }
+.L-arc-item[data-on] .L-arc-art.L-arc-icon { box-shadow: none; }
+.L-arc-item[data-on] .L-arc-icon img { opacity: 1; transform: scale(1.28); }
 .L-arc-item { position: relative; display: grid; grid-template-columns: 1fr var(--arc-lane) 1fr; align-items: center; min-height: 168px; }
 .L-arc-copy { display: grid; gap: 6px; text-align: right; justify-items: end; padding: 12px 0; }
 .L-arc-art {
