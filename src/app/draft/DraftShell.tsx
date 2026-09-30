@@ -5,7 +5,6 @@ import { cssVars } from "@/lib/tokens";
 import { layoutVars, lockedCombo, type PageId } from "@/lib/layout";
 import { Nav, Footer } from "../layout/sections";
 import { ROUTES, draftBase, getDraft, pageFromPath, type DraftId } from "./drafts";
-import Notes from "./Notes";
 import "../design/design.css";
 import "../design/backdrops.css";
 import "../layout/layout.css";
@@ -51,7 +50,6 @@ export default function DraftShell({ draft, children }: { draft: DraftId; childr
           {children}
           <Footer go={go} />
         </div>
-        <Notes draft={draft} page={path} />
       </div>
     </div>
   );

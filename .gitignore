@@ -52,6 +52,3 @@ next-env.d.ts
 *.sketch
 *.mp4
 *.mov
-
-# notes left on the drafts, when running locally (Vercel keeps them in Blob)
-/.notes

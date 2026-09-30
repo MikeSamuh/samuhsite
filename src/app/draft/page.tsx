@@ -5,7 +5,6 @@ import Link from "next/link";
 import { cssVars, bodyName } from "@/lib/tokens";
 import { VIEWS, PRESETS, lockedCombo, type ViewId } from "@/lib/layout";
 import { DRAFTS, draftBase, type DraftId } from "./drafts";
-import { NotesList, useNotes } from "./Notes";
 import { Steps } from "../steps";
 import "../design/design.css";
 import "./draft.css";
@@ -41,8 +40,6 @@ export default function DraftIndex() {
   const preset = PRESETS[0];
   const px = VIEWS.find((v) => v.id === view)?.px ?? 1440;
   const cur = DRAFTS.find((d) => d.id === draft) ?? DRAFTS[0];
-  const { notes, mark } = useNotes(draft);
-  const openCount = notes?.filter((n) => !n.done).length ?? 0;
 
 
   const guide: { k: string; rows: [string, string][] }[] = [
@@ -164,18 +161,6 @@ export default function DraftIndex() {
             />
           </div>
           <p className="I-under">Draft {cur.letter} &middot; {px}px &middot; the frame scrolls on its own</p>
-        </section>
-
-        <section className="I-notes" aria-label="Notes">
-          <div className="I-notes-head">
-            <div>
-              <p className="eyebrow">Notes</p>
-              <h2 className="I-notes-title">Draft {cur.letter} &middot; {cur.name}</h2>
-            </div>
-            <span className="L-cap">{openCount ? `${openCount} open` : "nothing open"}</span>
-          </div>
-          <p className="I-notes-lede">Left from the Notes button on the draft itself. Tick a note once it is done.</p>
-          <NotesList draft={draft} notes={notes} mark={mark} />
         </section>
       </div>
     </div>
