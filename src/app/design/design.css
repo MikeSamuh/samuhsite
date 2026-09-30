@@ -902,7 +902,7 @@
 
 .eyebrow {
   font-family: var(--font-eyebrow);
-  font-size: 11px;
+  font-size: 13px;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--accent-2);
@@ -1681,3 +1681,36 @@ a.inline-link:hover { color: var(--accent-2); background-size: 100% var(--rule-f
     animation-duration: 1ms !important;
   }
 }
+
+/* ---------- the steps strip: style, layout, drafts ---------- */
+/* shared by /design, /layout and /draft (see src/app/steps.tsx) */
+
+.stepnav { display: flex; gap: 6px; }
+.stepnav-item {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 7px 12px;
+  border: var(--rule-thin) solid var(--border);
+  border-radius: min(var(--radius), 999px);
+  color: var(--muted);
+  text-decoration: none;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  white-space: nowrap;
+  transition: all var(--dur) var(--ease);
+}
+.stepnav-item:hover { color: var(--text); border-color: var(--accent); }
+.stepnav-item[aria-current="page"] { color: var(--text); border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.stepnav-n { font-family: var(--font-caption); font-size: 10px; letter-spacing: 0.12em; color: var(--accent-2); }
+
+/* in the tools it is the first row of the pinned rail head */
+.rail-steps {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px 18px;
+  border-bottom: var(--rule-thin) solid var(--border);
+  background: var(--surface);
+}
+.rail .stepnav-item { font-size: 12px; padding: 5px 9px; font-family: var(--f-inter); }
+.rail .stepnav-n { font-family: var(--f-plex-mono); }

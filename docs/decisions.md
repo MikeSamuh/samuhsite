@@ -181,3 +181,36 @@ the content, hairlines, boxless cards. Keynote: every section fills the
 view, centred, slide counter, no rules, menu nav. Cinema: alternating
 full-bleed bands tinted by the wash, big accent numbers, imagery to the
 edges, heavy left strokes. Presets set it; the client can mix. — Wilfred and Claude
+
+**2026-09-27 — Editorial is the layout.**
+Client feedback: "We like editorial. Testimonial should auto scroll.
+Metaphor cards: remove text; click > zoom in to the image > reflection
+prompts > option to submit answers to us > see what others said." — Mike Gabour
+
+**2026-09-28 — Draft 1 lives at /draft-1 and is sculpted, not configured.**
+Real routes (home, solutions, process, insights, about, contact,
+get-started), the locked style, the Editorial preset read from layout.ts so
+the tool and the draft cannot drift. Wilfred edits the draft directly from
+here; the tools stay as reference. — Wilfred
+
+**2026-09-28 — Drafts live under /draft, lettered A, B and C.**
+/draft is the index: the style guide the drafts share, the three steps
+(design, layout, drafts) and each draft in a frame at desktop, tablet and
+phone width. /draft/a is what was /draft-1, /draft/b starts as a copy for
+Wilfred to sculpt, /draft/c is the eight-section restructure from the
+homepage review (thesis once, model before proof, one taxonomy, one ask).
+Wilfred works A and B, Claude works C. /draft-1 redirects. Supersedes the
+earlier entry today. — Wilfred
+
+**2026-09-28 — Draft A is sculpted from the signed scope.**
+/draft/a keeps the twelve sections, the scope order and the Editorial
+frame, and gets its own Home.tsx like C so it can be edited directly.
+Per section, what the scope asks for that the baseline did not show: the
+partner credit beside the header logo, the equation as a visual with hover
+definitions and the Sapien Labs credit, the data tool with working sliders
+and the optional email for the breakdown offered after, the closing call to
+action with the assessment first then booking before the form, the one
+testimonial and the case snippet SAMUH has published in its own decks, and
+visible TODO(content) where the research claim, the estimate and the
+remaining testimonials are theirs to supply. The word and the circles stay
+shared with B and C. B stays on the shared sections. — Wilfred and Claude

@@ -158,6 +158,8 @@ export interface SectionDef {
   intent: string;
   /** the eyebrow above the title, on the page. Site copy, draft */
   kicker?: string;
+  /** one line under the title. Site copy, draft. *word* takes the accent */
+  sub?: string;
   /** every variant id is prefixed with the section id so hashes stay unique */
   variants: Opt[];
 }
@@ -188,10 +190,11 @@ export const SECTIONS: SectionDef[] = [
     variants: [
       { id: "meaning-line", name: "One line", note: "A single centred sentence." },
       { id: "meaning-aside", name: "Aside", note: "Small, beside a rule, like a footnote that got promoted." },
+      { id: "meaning-block", name: "Block", note: "The full entry beside a rule, its own section right under the thesis." },
     ],
   },
   {
-    id: "circles", kicker: "Teams, individuals, organizations", n: 4, title: "Three circles",
+    id: "circles", kicker: "Where others focus", n: 4, title: "Where we focus",
     intent: "Team, individual, organization. Establishes teams as the subject.",
     variants: [
       { id: "circles-nested", name: "Nested", note: "The organization houses the team, the team houses the individual." },
@@ -252,6 +255,7 @@ export const SECTIONS: SectionDef[] = [
       { id: "cards-strip", name: "Strip", note: "A row that scrolls sideways." },
       { id: "cards-list", name: "List", note: "One per row, illustration beside the text." },
       { id: "cards-rotate", name: "One at a time", note: "A single card, illustration beside the text, rotating through the set every few seconds." },
+      { id: "cards-gallery", name: "Gallery", note: "Image only. Click to zoom in, answer three reflection prompts, send them to Samuh, see what others said." },
     ],
   },
   {
@@ -313,7 +317,7 @@ export const PRESETS: Preset[] = [
     letter: "A",
     name: "Editorial",
     note: "Left aligned, standard column, a hairline between sections. Reads like a well-set report.",
-    hash: "#void.comp-editorial.align-left.width-standard.space-regular.nav-bar.rule-hairline.numbers-off.btn-outline.hero-video.thesis-under.meaning-aside.circles-nested.aspire-columns.research-statement.voices-carousel.case-card.tool-split.cards-grid.equation-split.start-band",
+    hash: "#void.comp-editorial.align-left.width-standard.space-regular.nav-bar.rule-hairline.numbers-off.btn-outline.hero-video.thesis-under.meaning-aside.circles-nested.aspire-columns.research-statement.voices-carousel.case-card.tool-split.cards-gallery.equation-split.start-band",
   },
   {
     id: "b",
@@ -340,6 +344,12 @@ export interface Feedback {
 }
 
 export const FEEDBACK: Feedback[] = [
+  {
+    date: "27 September",
+    title: "Editorial it is",
+    quote:
+      "1. We like editorial\n2. Testimonial should auto scroll\n3. Metaphor cards:\n    a. Remove text\n    b. Desired functionality: click > zoom in to the image > reflection prompts > option to submit answers to us > see what others said?",
+  },
   {
     date: "25 September",
     title: "Style locked",

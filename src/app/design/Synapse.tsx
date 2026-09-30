@@ -18,15 +18,28 @@ import type { PointerId } from "@/lib/tokens";
  * Links follow because they are rebuilt from node positions.
  *
  * Reduced motion: one static frame, no loop, no pointer.
+ *
+ * Scope "page" is the fixed, full-window field. Scope "section" sits inside
+ * one positioned section: the field parallaxes against that section's own
+ * pass through the viewport, the whole layer drifts slower than the copy
+ * (--sec-p, read by the CSS transform), and the loop only runs while the
+ * section is on screen.
  */
-export default function Synapse({ mode = "well" }: { mode?: PointerId }) {
+export default function Synapse({ mode = "well", scope = "page" }: { mode?: PointerId; scope?: "page" | "section" }) {
   const svgRef = useRef<SVGSVGElement>(null);
+  const wrapRef = useRef<HTMLDivElement>(null);
   const modeRef = useRef<PointerId>(mode);
   modeRef.current = mode;
 
   useEffect(() => {
     const svg = svgRef.current;
-    if (!svg) return;
+    const wrap = wrapRef.current;
+    if (!svg || !wrap) return;
+    const local = scope === "section";
+    // the section is the layer's offset parent; its pass through the view
+    // is the parallax input in section scope
+    const host = local ? wrap.parentElement ?? wrap : null;
+    const vb = local ? SECTION_VIEW : PAGE_VIEW;
     const nodeEls = Array.from(svg.querySelectorAll<SVGCircleElement>(".net-node"));
     const lineEls = Array.from(svg.querySelectorAll<SVGPathElement>(".net-line"));
     const signalEls = Array.from(svg.querySelectorAll<SVGPathElement>(".net-signal"));
@@ -47,10 +60,10 @@ export default function Synapse({ mode = "well" }: { mode?: PointerId }) {
       const r = svg.getBoundingClientRect();
       // preserveAspectRatio slice: the 100x100 box is scaled to cover and
       // centred, so undo that
-      const k = Math.max(r.width / 100, r.height / 100);
+      const k = Math.max(r.width / vb.size, r.height / vb.size);
       return {
-        x: (clientX - r.left - (r.width - 100 * k) / 2) / k,
-        y: (clientY - r.top - (r.height - 100 * k) / 2) / k,
+        x: vb.origin + (clientX - r.left - (r.width - vb.size * k) / 2) / k,
+        y: vb.origin + (clientY - r.top - (r.height - vb.size * k) / 2) / k,
       };
     };
     const onMove = (e: PointerEvent) => {
@@ -73,8 +86,19 @@ export default function Synapse({ mode = "well" }: { mode?: PointerId }) {
 
     const frame = (now: number) => {
       const t = (now - t0) / 1000;
-      const max = document.documentElement.scrollHeight - window.innerHeight;
-      const p = max > 0 ? window.scrollY / max : 0;
+      let p = 0;
+      if (host) {
+        // 0 as the section's top enters at the bottom of the view, 1 as
+        // its bottom leaves at the top
+        const r = host.getBoundingClientRect();
+        const vh = window.innerHeight;
+        p = Math.min(1, Math.max(0, (vh - r.top) / (vh + r.height)));
+        wrap.style.setProperty("--sec-p", p.toFixed(4));
+      } else {
+        const max = document.documentElement.scrollHeight - window.innerHeight;
+        p = max > 0 ? window.scrollY / max : 0;
+      }
+      const travel = local ? SECTION_TRAVEL : SCROLL_TRAVEL;
 
       // gather strength decays when the pointer rests
       energy *= GATHER_DECAY;
@@ -87,7 +111,7 @@ export default function Synapse({ mode = "well" }: { mode?: PointerId }) {
         const y =
           n.y +
           drift * n.ay * Math.cos(t * n.fy + n.py) -
-          p * SCROLL_TRAVEL * n.depth;
+          p * travel * n.depth;
         return [x, y] as const;
       });
 
@@ -110,7 +134,7 @@ export default function Synapse({ mode = "well" }: { mode?: PointerId }) {
         const y =
           n.y +
           drift * n.ay * Math.cos(t * n.fy + n.py) -
-          p * SCROLL_TRAVEL * n.depth;
+          p * travel * n.depth;
 
         // the well: target displacement toward the pointer, falling off
         // with distance, stronger for near nodes, with a quarter turn of
@@ -162,30 +186,41 @@ export default function Synapse({ mode = "well" }: { mode?: PointerId }) {
         signalEls[i].setAttribute("d", d);
       });
 
-      if (!still) raf = requestAnimationFrame(frame);
+      if (!still && running) raf = requestAnimationFrame(frame);
     };
 
-    raf = requestAnimationFrame(frame);
+    // in section scope the loop only runs while the section is near the
+    // view; the page field runs whenever it is mounted
+    let running = !local;
+    const start = () => { if (!running) { running = true; raf = requestAnimationFrame(frame); } };
+    const stop = () => { running = false; cancelAnimationFrame(raf); };
+    const io = host
+      ? new IntersectionObserver(([en]) => (en.isIntersecting ? start() : stop()), { rootMargin: "120px" })
+      : null;
+    if (io && host) io.observe(host);
+    else raf = requestAnimationFrame(frame);
     // reduced motion still needs to follow scroll, just without drift
     const onScroll = () => {
-      if (still) raf = requestAnimationFrame(frame);
+      if (still && (running || !local)) raf = requestAnimationFrame(frame);
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => {
       cancelAnimationFrame(raf);
+      io?.disconnect();
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerleave", onLeave);
       document.removeEventListener("mouseleave", onLeave);
     };
-  }, []);
+  }, [scope]);
 
+  const view = scope === "section" ? SECTION_VIEW : PAGE_VIEW;
   return (
-    <div className="bd bd-synapse" aria-hidden>
+    <div ref={wrapRef} className={`bd bd-synapse${scope === "section" ? " bd-synapse-local" : ""}`} aria-hidden>
       <svg
         ref={svgRef}
         className="bd-net"
-        viewBox="0 0 100 100"
+        viewBox={`${view.origin} ${view.origin} ${view.size} ${view.size}`}
         preserveAspectRatio="xMidYMid slice"
       >
         {LINKS.map((l, i) => (
@@ -218,8 +253,17 @@ export default function Synapse({ mode = "well" }: { mode?: PointerId }) {
   );
 }
 
+// The window onto the field. The page shows the 100-unit field as drawn; a
+// section shows a wider window on the same field, centred, so the network
+// sits closer in a short band and a pass through the view reveals more of it.
+const PAGE_VIEW = { origin: 0, size: 100 };
+const SECTION_VIEW = { origin: -20, size: 140 };
+
 // How far, in viewBox units, the nearest nodes travel over the whole page.
 const SCROLL_TRAVEL = 69;
+// The same, over one section's pass through the view. Shorter, because the
+// pass is a couple of screens rather than the whole page.
+const SECTION_TRAVEL = 38;
 
 // The gravity well under the pointer, in viewBox units (100 = the short
 // side of the view). Reach is how far it is felt, pull is the most a node

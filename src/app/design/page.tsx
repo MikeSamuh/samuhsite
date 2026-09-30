@@ -35,6 +35,7 @@ import Backdrop from "./Backdrop";
 import ColorWheel from "./ColorWheel";
 import "./backdrops.css";
 import "./design.css";
+import { Steps } from "../steps";
 
 const NAV = ["Solutions", "Process", "Insights", "About", "Contact"];
 const stay = (e: React.MouseEvent) => e.preventDefault();
@@ -198,6 +199,7 @@ export default function DesignDirections() {
         {railOpen ? (
           <>
             <div className="rail-pin" ref={topRef}>
+            <div className="rail-steps"><Steps here="design" /></div>
             <div className="rail-preview" role="group" aria-label="Preview device">
               <span className="rail-preview-k">Preview:</span>
               {DEVICES.map((d) => (

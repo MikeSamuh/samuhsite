@@ -89,7 +89,9 @@
 }
 .L-nav .nav-logo img { height: 30px; width: auto; filter: brightness(0) invert(1); }
 .L-links { margin-left: auto; }
-.L-menu { display: none; }
+/* the small-screen burger is hidden on desktop; the selector outranks the
+   generic .L-burger rule below, which sets display: grid */
+.L-menu, .L-nav .L-burger-m { display: none; }
 
 .L-page[data-nav="nav-centered"] .L-nav { justify-content: center; }
 .L-page[data-nav="nav-centered"] .L-links { margin-left: 0; order: -1; }
@@ -127,10 +129,10 @@
 .L-burger.is-x span:nth-child(3) { transform: translateY(calc(-1 * (var(--rule-fat) + 5px))) rotate(-45deg); }
 
 .L-overlay {
-  position: absolute;
-  inset: 0 0 auto 0;
-  min-height: 100vh;
-  z-index: 5;
+  position: fixed;
+  inset: 0;
+  overflow-y: auto;
+  z-index: 50;
   background: color-mix(in srgb, var(--base) 94%, transparent);
   backdrop-filter: blur(18px) saturate(140%);
   display: grid;
@@ -206,6 +208,8 @@
 .L-page[data-heads="heads-off"][data-comp="comp-editorial"] .L-sec-h > .L-wrap > :not(.L-head) { grid-column: 1; }
 .L-eyebrow { margin-bottom: 10px; }
 .L-eyebrow::after { display: none; }
+.L-sub { margin: 10px 0 0; font-size: 17px; line-height: 1.5; color: var(--muted); max-width: 40ch; }
+.L-hl { font-style: normal; color: var(--accent); }
 
 .L-cap {
   font-family: var(--font-caption);
@@ -247,7 +251,8 @@
 /* centered alignment */
 .L-page[data-align="align-center"] .L-sec { text-align: center; }
 .L-page[data-align="align-center"] .L-head { justify-content: center; }
-.L-page[data-align="align-center"] :is(.L-big, .L-mid, h1.display, .lede, h2.sec, .L-dict, .L-research) { margin-left: auto; margin-right: auto; }
+.L-page[data-align="align-center"] :is(.L-big, .L-mid, h1.display, .lede, h2.sec, .L-dict, .L-research, .L-sub) { margin-left: auto; margin-right: auto; }
+.L-page[data-align="align-center"] .L-case-stats { justify-content: center; }
 .L-page[data-align="align-center"] .L-dict-head { justify-content: center; }
 .L-page[data-align="align-center"] :is(.cta-row, .L-eq, .field) { justify-content: center; }
 .L-page[data-align="align-center"] .eyebrow { justify-content: center; }
@@ -354,6 +359,7 @@
 .L-dict-pos i { font-style: italic; }
 .L-dict-pos [lang="sa"] { font-style: normal; }
 .L-dict-defs { list-style: decimal; margin: 0; padding: 0 0 0 1.6em; font-size: clamp(17px, 1.7cqw, 21px); line-height: 1.5; color: var(--text); }
+.L-dict-hi { font-style: normal; color: var(--accent); }
 .L-dict-defs li::marker { font-family: var(--font-caption); color: var(--accent-2); font-size: 0.85em; }
 .L-sec[data-v="line"] .L-dict { margin-left: auto; margin-right: auto; text-align: center; }
 .L-sec[data-v="line"] .L-dict-head { justify-content: center; }
@@ -362,6 +368,11 @@
 .L-sec[data-v="aside"] .L-dict-word { font-size: 26px; }
 .L-sec[data-v="aside"] .L-dict-defs { font-size: 15px; color: var(--muted); }
 .L-sec[data-v="aside"].L-sec { padding: calc(40px * var(--space, 1)) 0; }
+/* block: the full entry beside a rule, as it sat next to the thesis, now
+   in its own section straight under it */
+.L-sec[data-v="block"] .L-dict { max-width: 64ch; border-top: 0; border-bottom: 0; border-left: var(--rule-fat) solid var(--accent-2); padding: 4px 0 4px 22px; }
+.L-s-thesis:has(+ .L-s-meaning[data-v="block"]) { padding-bottom: calc(88px * var(--space, 1)); }
+.L-s-meaning[data-v="block"] { border-top: 0; padding-top: 0; }
 
 /* ---------- 04 circles ---------- */
 
@@ -400,16 +411,13 @@
    Deliberately not tied to the line-weight dial. */
 .L-circ { --c-stroke: 3px; --c-line: 1.5px; }
 .L-c-line { fill: none; stroke: var(--text); stroke-width: var(--c-line); vector-effect: non-scaling-stroke; }
-.L-c-sq { fill: var(--text); }
 /* the team is the subject: highlighted in the primary. The individual and
-   the organization, where organizations focus, sit in the secondary */
-.L-c-org { fill: none; stroke: var(--accent-2); stroke-width: var(--c-stroke); vector-effect: non-scaling-stroke; }
+   the organization rest in white and take the secondary on hover */
+.L-c-org { fill: none; stroke: var(--text); stroke-width: var(--c-stroke); vector-effect: non-scaling-stroke; }
 .L-c-team { fill: color-mix(in srgb, var(--accent-4) 8%, transparent); stroke: var(--accent); stroke-width: var(--c-stroke); vector-effect: non-scaling-stroke; }
-.L-c-ind { fill: none; stroke: var(--accent-2); stroke-width: var(--c-stroke); vector-effect: non-scaling-stroke; }
-.L-c-line.L-c-hi, .L-c-hi.L-c-sq { stroke: var(--accent); fill: var(--accent); }
-.L-c-line.L-c-alt, .L-c-alt.L-c-sq { stroke: var(--accent-2); fill: var(--accent-2); }
-.L-c-line.L-c-hi { fill: none; }
-.L-c-line.L-c-alt { fill: none; }
+.L-c-ind { fill: none; stroke: var(--text); stroke-width: var(--c-stroke); vector-effect: non-scaling-stroke; }
+.L-c-line.L-c-hi { stroke: var(--accent); }
+.L-c-line.L-c-alt { stroke: var(--accent-2); }
 .L-c-call.L-c-hi { color: var(--accent); }
 .L-c-call.L-c-alt { color: var(--accent-2); }
 .L-c-t {
@@ -420,9 +428,9 @@
   font-style: var(--display-style, normal);
   letter-spacing: var(--display-tracking);
 }
-.L-c-t-ind { font-size: 16px; fill: var(--accent-2); }
+.L-c-t-ind { font-size: 16px; fill: var(--text); }
 .L-c-t-team { font-size: 44px; fill: var(--accent); }
-.L-c-t-org { font-size: 20px; fill: var(--accent-2); }
+.L-c-t-org { font-size: 20px; fill: var(--text); }
 .L-c-call {
   margin: 0;
   font-family: var(--font-display);
@@ -434,13 +442,41 @@
   text-align: center;
   padding: 0 12px;
 }
+.L-c-sub { display: block; margin-top: 10px; font-family: var(--font-body); font-weight: 400; font-style: normal; letter-spacing: 0; font-size: 15px; line-height: 1.45; color: var(--muted); }
+/* the two right-hand callouts share one cell: only the hovered one shows */
+.L-c-right { display: grid; }
+.L-c-right > .L-c-call { grid-area: 1 / 1; }
 .L-page[data-align="align-center"] .L-c-call { margin-left: auto; margin-right: auto; }
 
 /* ---------- 05 aspire ---------- */
 
 .L-aspire { display: grid; gap: 28px; }
 .L-cols { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
-.L-cols li { border-top: var(--rule-thin) solid var(--border); padding-top: 14px; display: grid; gap: 6px; }
+.L-cols li {
+  border-top: var(--rule-thin) solid var(--border);
+  padding-top: 14px;
+  display: grid;
+  gap: 6px;
+  position: relative;
+  cursor: default;
+  transition: transform var(--dur) var(--ease);
+}
+/* hover: the rule turns to the primary and grows heavy, the copy comes up to full, the column lifts */
+.L-cols li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: calc(var(--rule-thin) * -1);
+  width: 0;
+  height: var(--rule-fat);
+  background: var(--accent);
+  transition: width calc(var(--dur) * 1.4) var(--ease);
+}
+.L-cols li:hover { transform: translateY(-4px); }
+.L-cols li:hover::before { width: 100%; }
+.L-cols li:hover .L-col-title { color: var(--accent); }
+.L-cols li:hover .L-col-note { color: var(--text); }
+.L-col-title, .L-col-note { transition: color var(--dur) var(--ease); }
 .L-col-title { font-family: var(--font-display); font-weight: var(--display-weight); font-size: 18px; }
 .L-col-note { font-size: 13px; color: var(--muted); }
 
@@ -470,52 +506,49 @@
 .L-sec[data-v="single"] .L-quote blockquote { font-family: var(--font-display); font-weight: var(--display-weight); font-size: clamp(22px, 2.6cqw, 32px); line-height: 1.3; }
 .L-sec[data-v="strip"] .L-voices { grid-auto-flow: column; grid-auto-columns: minmax(300px, 1fr); overflow-x: auto; padding-bottom: 8px; }
 
-/* the carousel: one quote, arrows either side, dots below */
-.L-carousel {
+/* the carousel: the client's mark in the margin column, one bold quote,
+   a fixed height so the page does not jump between slides */
+.L-car2 {
   display: grid;
-  grid-template-columns: 48px 1fr 48px;
-  align-items: center;
-  gap: 18px 24px;
-  max-width: 960px;
-  margin: 0 auto;
+  grid-template-columns: minmax(180px, 240px) 1fr;
+  column-gap: clamp(28px, 5cqw, 72px);
+  align-items: start;
 }
-.L-car-slide {
-  margin: 0;
-  text-align: center;
-  display: grid;
-  gap: 26px;
-  animation: L-drop calc(var(--dur) * 1.4) var(--ease) backwards;
-}
-.L-car-slide blockquote {
-  margin: 0;
-  font-family: var(--font-display);
-  font-weight: var(--display-weight);
-  font-style: italic;
-  letter-spacing: var(--display-tracking);
-  font-size: clamp(24px, 3cqw, 40px);
-  line-height: 1.3;
-  max-width: 30ch;
-  margin: 0 auto;
-}
-.L-car-slide figcaption { display: grid; gap: 6px; justify-items: center; }
-.L-car-who { font-family: var(--font-display); font-weight: var(--display-weight); font-size: 18px; }
-.L-car-mark {
-  margin-top: 14px;
-  width: 120px;
-  height: 40px;
+.L-car2-logo {
+  width: 112px;
+  aspect-ratio: 1;
   display: grid;
   place-items: center;
-  border: var(--rule-thin) dashed color-mix(in srgb, var(--muted) 60%, transparent);
-  border-radius: min(var(--radius), 8px);
-  font-family: var(--font-caption);
-  font-size: 9px;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--muted);
+  border: var(--rule-thin) solid var(--border);
+  border-radius: min(var(--radius), 16px);
+  color: var(--accent-2);
+  animation: L-drop calc(var(--dur) * 1.2) var(--ease) backwards;
 }
+.L-car2-mark { fill: none; stroke: currentColor; stroke-width: 3; }
+.L-car2-slide {
+  margin: 0;
+  min-height: 300px;
+  display: grid;
+  grid-template-rows: 1fr auto auto;
+  gap: 22px;
+  animation: L-drop calc(var(--dur) * 1.2) var(--ease) backwards;
+}
+.L-car2-slide blockquote {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-style: italic;
+  letter-spacing: var(--display-tracking);
+  font-size: clamp(24px, 2.8cqw, 38px);
+  line-height: 1.3;
+  max-width: 30ch;
+}
+.L-car2-slide figcaption { display: grid; gap: 4px; }
+.L-car-who { font-family: var(--font-display); font-weight: var(--display-weight); font-size: 18px; }
+.L-car2-nav { display: flex; align-items: center; gap: 4px; justify-self: end; }
 .L-car-arrow {
-  width: 48px;
-  height: 48px;
+  width: 40px;
+  height: 40px;
   display: grid;
   place-items: center;
   border: 0;
@@ -525,16 +558,25 @@
   transition: all var(--dur) var(--ease);
 }
 .L-car-arrow:hover { color: var(--text); transform: scale(1.12); }
-.L-page[data-comp="comp-editorial"] .L-carousel { margin: 0; }
-.L-page[data-comp="comp-editorial"] .L-car-slide { text-align: left; }
-.L-page[data-comp="comp-editorial"] .L-car-slide blockquote { margin: 0; }
-.L-page[data-comp="comp-editorial"] .L-car-slide figcaption { justify-items: start; }
+.L-page[data-comp="comp-keynote"] .L-car2 { grid-template-columns: 1fr; justify-items: center; row-gap: 20px; }
+.L-page[data-comp="comp-keynote"] .L-car2-slide { justify-items: center; text-align: center; }
+.L-page[data-comp="comp-cinema"] .L-car2 { grid-template-columns: 160px 1fr; }
 
 /* ---------- 08 case ---------- */
 
 .L-case { display: grid; gap: 28px; align-items: center; }
-.L-sec[data-v="card"] .L-case { background: var(--surface); border: var(--rule-thin) solid var(--border); border-radius: min(var(--radius), 22px); padding: 28px; grid-template-columns: 220px 1fr; }
+/* the case study card, a 16:9 export on black, kept inside a hairline */
+.L-case-img { display: block; aspect-ratio: 2490 / 1404; overflow: hidden; border-radius: min(var(--radius), 14px); border: var(--rule-thin) solid var(--border); background: #000; }
+.L-case-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* the image column was 220px for a client mark; the case card export needs
+   room to be read, so it takes a little under half the card */
+.L-sec[data-v="card"] .L-case { background: var(--surface); border: var(--rule-thin) solid var(--border); border-radius: min(var(--radius), 22px); padding: 28px; grid-template-columns: minmax(260px, 0.95fr) 1.05fr; }
 .L-sec[data-v="split"] .L-case { grid-template-columns: 1fr 1fr; }
+.L-case-line { margin-bottom: 20px; }
+.L-case-stats { margin: 0 0 22px; display: grid; grid-template-columns: repeat(3, auto); justify-content: start; gap: 12px 32px; }
+.L-stat { display: grid; gap: 4px; }
+.L-stat-n { font-family: var(--font-display); font-weight: var(--display-weight); font-size: clamp(26px, 3cqw, 40px); line-height: 1; color: var(--accent); }
+.L-stat dd { margin: 0; max-width: 16ch; }
 .L-sec[data-v="split"] .ph { min-height: 300px; }
 .L-sec[data-v="inline"] .ph { display: none; }
 .L-sec[data-v="inline"].L-sec { padding: calc(40px * var(--space, 1)) 0; }
@@ -562,7 +604,7 @@
 
 .L-cards { display: grid; gap: 16px; }
 .L-arche { display: grid; gap: 12px; }
-.L-arche .ph { min-height: 140px; }
+.L-arche .L-art { max-width: 100%; }
 .L-arche h3 { margin: 0; }
 .L-arche p { margin: 0; }
 .L-sec[data-v="grid"] .L-cards { grid-template-columns: repeat(4, 1fr); }
@@ -580,7 +622,7 @@
   cursor: pointer;
   animation: L-drop calc(var(--dur) * 1.6) var(--ease) backwards;
 }
-.L-arche-rot .ph { aspect-ratio: 3 / 5; min-height: 0; grid-row: auto; width: 100%; max-width: 300px; }
+.L-arche-rot .L-art { grid-row: auto; width: 100%; max-width: 300px; }
 .L-arche-rot h3 { font-size: clamp(24px, 2.8cqw, 36px); margin: 8px 0 10px; }
 .L-arche-rot p { font-size: 16px; line-height: 1.6; }
 .L-rot-bar { height: var(--rule-thin); background: var(--border); overflow: hidden; border-radius: 99px; }
@@ -605,6 +647,9 @@
 
 /* ---------- 12 start ---------- */
 
+/* the section is the frame for its synapse layer: clipped, copy above */
+.L-s-start { position: relative; overflow: hidden; isolation: isolate; }
+.L-s-start > .L-wrap { position: relative; z-index: 1; }
 .L-start { display: grid; gap: 28px; }
 .L-start-actions { display: grid; gap: 18px; }
 .L-sec[data-v="band"] { background: var(--surface); }
@@ -638,32 +683,47 @@
   .L-sec[data-v="stack"] .L-circle { grid-template-columns: 1fr; gap: 6px; }
   .L-circ { grid-template-columns: 1fr; gap: 18px; }
   .L-c-left { order: -1; }
-  .L-c-line, .L-c-sq { display: none; }
-  /* two lines: the logo, then the menu button and the call to action */
-  .L-nav, .L-page[data-nav="nav-menu"] .L-nav {
-    display: grid;
-    grid-template-columns: auto 1fr;
+  .L-c-line { display: none; }
+  /* one line on small screens, whatever the nav variant: logos at the
+     left, the call to action and a burger at the right. The links and the
+     Explore button go behind the burger */
+  .L-nav, .L-page[data-nav="nav-menu"] .L-nav, .L-page[data-nav="nav-centered"] .L-nav {
+    display: flex;
+    justify-content: flex-start;
     align-items: center;
-    gap: 16px 12px;
-    padding-top: 18px;
-    padding-bottom: 18px;
+    gap: 12px;
+    padding-top: 14px;
+    padding-bottom: 14px;
   }
-  .L-nav .nav-logo { grid-column: 1 / -1; justify-self: start; }
-  .L-page[data-nav="nav-menu"] .L-nav .nav-logo { grid-column: 2; justify-self: start; }
-  .L-page[data-nav="nav-menu"] .L-burger { grid-column: 1; grid-row: 1; }
-  .L-links { display: none; }
-  .L-menu, .L-page[data-nav="nav-minimal"] .L-menu { display: inline-flex; grid-column: 1; margin: 0; }
-  .L-nav .btn-small { grid-column: 2; justify-self: end; }
-  .L-page[data-nav="nav-menu"] .L-nav .btn-small { grid-column: 1 / -1; justify-self: start; }
-  .L-page[data-nav="nav-menu"] .L-menu { display: none; }
+  .L-nav .nav-logo, .L-page[data-nav="nav-menu"] .L-nav .nav-logo { order: 0; margin-right: auto; justify-self: auto; }
+  .L-nav .nav-partner, .L-links, .L-menu, .L-page[data-nav="nav-minimal"] .L-menu { display: none; }
+  .L-nav .L-cta, .L-page[data-nav="nav-menu"] .L-nav .L-cta, .L-page[data-nav="nav-centered"] .L-cta { order: 1; margin: 0; flex: none; justify-self: auto; }
+  .L-nav .L-burger { order: 2; flex: none; margin: 0; }
+  .L-page[data-nav="nav-menu"] .L-nav .L-burger { order: -1; }
+  .L-nav .L-burger-m { display: grid; }
   .L-sec { padding: calc(56px * var(--space, 1)) 0; }
 }
 
 @container page (max-width: 560px) {
+  /* the bar shows the two marks at every scroll position: the full
+     wordmarks do not fit beside the call to action and the burger */
+  .L-nav .L-brand { gap: 12px; }
+  .L-nav .L-brand-samuh { width: calc(30px * 181 / 240); }
+  .L-nav .L-brand-sapien { width: calc(30px * 243 / 240); grid-template-rows: 0 auto; row-gap: 0; }
+  .L-nav .L-brand-samuh .L-brand-full, .L-nav .L-brand-sapien .L-brand-full, .L-nav .L-brand-sapien .L-brand-powered { opacity: 0; }
+  .L-nav .L-brand-sapien .L-brand-full { transform: translateX(-12px); }
+  .L-nav .L-brand-samuh .L-brand-mark, .L-nav .L-brand-sapien .L-brand-mark { opacity: 1; transform: none; }
+  .L-nav .L-brand-sapien .L-brand-mark { opacity: 0.9; }
+  .L-overlay-foot { flex-direction: column; align-items: flex-start; gap: 20px; }
+  .L-nav .L-cta { padding: 10px 14px; font-size: 13px; }
+  .L-nav-icons[data-scrolled="true"] .L-nav { padding-top: 10px; padding-bottom: 10px; }
   .L-s-hero[data-v="over"] .L-hero-copy { padding: 20px; }
   .L-arche-rot { grid-template-columns: 1fr; }
-  .L-carousel { grid-template-columns: 1fr; }
-  .L-car-arrow { display: none; }
+  .L-car2 { grid-template-columns: 1fr; row-gap: 16px; }
+  .L-car2-slide { min-height: 0; }
+  .L-car2-nav { justify-self: start; gap: 12px; margin-left: -2px; }
+  .L-car-arrow { width: 44px; height: 44px; }
+  .L-case-stats { grid-template-columns: 1fr 1fr; }
   .L-cols, .L-sec[data-v="grid"] .L-cards { grid-template-columns: 1fr; }
   .L-sec[data-v="list"] .L-arche { grid-template-columns: 1fr; }
   .L-sec[data-v="list"] .L-arche .ph { grid-row: auto; }
@@ -685,7 +745,10 @@
 
 /* solutions */
 .L-tier { display: grid; grid-template-columns: repeat(3, 1fr) auto; gap: 28px; align-items: start; }
-.L-tier .L-mid { margin-top: 8px; }
+.L-tier .L-mid { margin-top: 10px; }
+.L-tier-sec { transition: background var(--dur) var(--ease); }
+.L-tier-sec:hover { background: color-mix(in srgb, var(--accent-2) 50%, var(--base)); }
+.L-tier-k { font-size: 21px; font-weight: 700; color: var(--text); letter-spacing: 0.06em; }
 .L-tier-cta { align-self: end; display: grid; gap: 8px; justify-items: start; }
 .L-text-cta { font-size: 15px; display: inline-flex; align-items: center; gap: 8px; }
 .L-text-cta .arrow { transition: transform var(--dur) var(--ease); }
@@ -697,15 +760,92 @@
 .L-table td { color: var(--muted); }
 .L-voices-grid { grid-template-columns: repeat(3, 1fr); }
 
+/* the tiers table: pick a column, it lights; the form below carries the pick */
+.L-tiers thead th { vertical-align: bottom; padding: 0 14px 12px; }
+.L-tier-pick {
+  display: grid;
+  gap: 4px;
+  justify-items: start;
+  padding: 10px 12px;
+  background: transparent;
+  border: var(--rule-thin) solid var(--border);
+  border-radius: min(var(--radius), 10px);
+  color: var(--text);
+  font-family: var(--font-display);
+  font-weight: var(--display-weight);
+  font-size: 18px;
+  cursor: pointer;
+  transition: all var(--dur) var(--ease);
+  width: 100%;
+  text-align: left;
+}
+.L-tier-pick:hover { border-color: var(--accent-2); }
+.L-tier-pick[aria-pressed="true"] { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.L-tiers td { vertical-align: top; line-height: 1.5; transition: background var(--dur) var(--ease), color var(--dur) var(--ease); }
+.L-tiers td[data-on="true"] { background: color-mix(in srgb, var(--accent-2) 14%, transparent); color: var(--text); }
+.L-tiers tbody th { vertical-align: top; }
+.L-talk { display: grid; gap: 16px; max-width: 640px; }
+.L-talk-tiers { display: flex; gap: 8px; flex-wrap: wrap; }
+.L-talk-field { max-width: none; }
+.L-talk-thanks { display: grid; gap: 14px; }
+
 /* process */
 .L-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 14px; }
 .L-step { display: grid; gap: 10px; }
 .L-step .ph { min-height: 72px; }
-.L-arc { list-style: none; margin: 0 0 20px; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
-.L-arc li { display: grid; gap: 6px; border-top: var(--rule-fat) solid var(--accent); padding-top: 14px; }
-.L-arc li:first-child { border-top-color: var(--accent-2); }
+/* the arc timeline: copy | lane | art, the lane is where the line winds.
+   Rows alternate which side the copy is on, and each side always keeps
+   room for the art, which is a small piece of illustration to come */
+.L-arc-run { --arc-gold: #F5D547; position: relative; } /* the palette's Butter, the lighter of its golds */
+.L-arc-run > .L-sec:first-of-type { border-top: 0; }
+/* the first section in the run loses its rule to :first-of-type, so the
+   run draws it back */
+/* no rule between the page head and the six moves: the arc runs straight out of the intro */
+.L-arc-run::before { display: none; }
+.L-page[data-rule="rule-none"] .L-arc-run::before { display: none; }
+/* the note under the moves stays in the first column, left of the line */
+.L-arc-run .L-arc + .L-cap { display: block; max-width: 30ch; }
+.L-arc-moves .step-n { margin: 0; }
+.L-arc { --arc-lane: 200px; --arc-art: 112px; position: relative; list-style: none; margin: 0 0 28px; padding: 0; display: grid; gap: 8px; }
+.L-arc-svg { position: absolute; inset: 0 0 auto; z-index: 2; pointer-events: none; overflow: visible; }
+.L-arc-path { mask: url(#L-arc-end); fill: none; stroke: var(--arc-gold); stroke-width: 1.5px; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; opacity: 0.9; }
+/* the one ball that rides the line */
+.L-arc-ball-core { fill: var(--arc-gold); }
+.L-arc-ball-glow { fill: var(--arc-gold); opacity: 0.55; }
+/* what the ball is beside lights up, and its icon glows gold */
+.L-arc-item .L-arc-what, .L-arc-item .L-arc-note, .L-arc-item .L-arc-art { transition: color var(--dur) var(--ease), box-shadow var(--dur) var(--ease), transform var(--dur) var(--ease); }
+.L-arc-item[data-on] .L-arc-what { color: var(--arc-gold); }
+.L-arc-item[data-on] .L-arc-note { color: var(--text); }
+.L-arc-item[data-on] .L-arc-art { box-shadow: 0 0 0 1.5px var(--arc-gold), 0 0 28px color-mix(in srgb, var(--arc-gold) 55%, transparent); }
+/* the six icons: 30 percent until the ball is level with them, then full and a step larger */
+.L-arc-art.L-arc-icon { background: transparent; box-shadow: none; border: 0; padding: 0; display: grid; place-items: center; color: transparent; overflow: visible; }
+.L-arc-icon img { width: 100%; height: 100%; object-fit: contain; opacity: 0.3; transform: scale(1); transition: opacity var(--dur) var(--ease), transform calc(var(--dur) * 1.4) var(--ease); }
+.L-arc-item[data-on] .L-arc-art.L-arc-icon { box-shadow: none; }
+.L-arc-item[data-on] .L-arc-icon img { opacity: 1; transform: scale(1.28); }
+.L-arc-item { position: relative; display: grid; grid-template-columns: 1fr var(--arc-lane) 1fr; align-items: center; min-height: 168px; }
+.L-arc-copy { display: grid; gap: 6px; text-align: right; justify-items: end; padding: 12px 0; }
+.L-arc-art {
+  width: var(--arc-art);
+  height: var(--arc-art);
+  display: grid;
+  place-items: center;
+  border-radius: min(var(--radius), 18px);
+  background: #fff;
+  color: #000;
+  font-family: var(--font-caption);
+  font-size: 10.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  justify-self: start;
+}
+/* odd rows swap sides: art left, copy right. nth-of-type, because the svg
+   is the list's first child */
+.L-arc-item:nth-of-type(odd) .L-arc-copy { order: 3; text-align: left; justify-items: start; }
+.L-arc-item:nth-of-type(odd) .L-arc-lane { order: 2; }
+.L-arc-item:nth-of-type(odd) .L-arc-art { order: 1; justify-self: end; }
 .L-arc-what { font-family: var(--font-display); font-weight: var(--display-weight); font-size: 19px; }
-.L-arc-note { font-size: 13px; color: var(--muted); line-height: 1.5; }
+.L-arc-note { font-size: 13px; color: var(--muted); line-height: 1.5; max-width: 34ch; }
+.L-page[data-align="align-center"] .L-arc-copy { text-align: inherit; }
 
 /* insights */
 .L-filters { display: grid; gap: 12px; }
@@ -720,9 +860,12 @@
 /* about */
 .L-partner { display: grid; grid-template-columns: 200px 1fr; gap: 28px; align-items: start; }
 .L-partner .ph { min-height: 140px; }
+.L-partner-logo { width: 100%; max-width: 200px; height: auto; margin-top: 4px; }
 .L-team { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-bottom: 20px; }
 .L-person { display: grid; gap: 6px; }
 .L-person .ph { min-height: 180px; }
+.L-person-photo { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; margin-bottom: 8px; }
+.L-person:has(.L-person-photo) .ph, .L-person .ph { align-self: start; }
 .L-person-name { font-family: var(--font-display); font-weight: var(--display-weight); font-size: 18px; }
 .L-person p { margin: 6px 0 0; font-size: 13px; color: var(--muted); line-height: 1.5; }
 .L-logos { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
@@ -763,11 +906,19 @@
 .L-insight p { margin: 0; }
 
 @container page (max-width: 900px) {
-  .L-tier, .L-steps, .L-arc, .L-feed, .L-team, .L-logos, .L-contact, .L-voices-grid { grid-template-columns: 1fr 1fr; }
+  .L-tier, .L-steps, .L-feed, .L-team, .L-logos, .L-contact, .L-voices-grid { grid-template-columns: 1fr 1fr; }
+  .L-arc { --arc-lane: 140px; --arc-art: 96px; }
   .L-research-card, .L-partner { grid-template-columns: 1fr; }
 }
 @container page (max-width: 560px) {
-  .L-tier, .L-steps, .L-arc, .L-feed, .L-team, .L-logos, .L-contact, .L-voices-grid { grid-template-columns: 1fr; }
+  .L-tier, .L-steps, .L-feed, .L-team, .L-logos, .L-contact, .L-voices-grid { grid-template-columns: 1fr; }
+  /* one row per move on a phone: the line runs down the left, the art
+     sits beside it, the copy to the right */
+  .L-arc { --arc-lane: 44px; --arc-art: 72px; }
+  .L-arc-item, .L-arc-item:nth-of-type(odd) { grid-template-columns: var(--arc-lane) var(--arc-art) 1fr; column-gap: 16px; min-height: 0; }
+  .L-arc-item .L-arc-lane, .L-arc-item:nth-of-type(odd) .L-arc-lane { order: 1; grid-row: auto; }
+  .L-arc-item .L-arc-art, .L-arc-item:nth-of-type(odd) .L-arc-art { order: 2; justify-self: start; margin-top: 0; }
+  .L-arc-item .L-arc-copy, .L-arc-item:nth-of-type(odd) .L-arc-copy { order: 3; text-align: left; justify-items: start; }
   .L-scale { grid-template-columns: repeat(7, 1fr); gap: 4px; }
   .L-scale-opt { padding: 12px 0; font-size: 15px; }
   .L-table { font-size: 12px; }
@@ -792,8 +943,10 @@
 .L-page[data-comp="comp-editorial"] .L-sec-h > .L-wrap > :not(.L-head) { grid-column: 2; }
 .L-page[data-comp="comp-editorial"] .L-sec-h .L-head {
   grid-column: 1;
+  /* sticks for the length of its section, clear of the stuck nav */
   position: sticky;
-  top: 28px;
+  top: calc(var(--nav-h, 0px) + 28px);
+  transition: top var(--dur) var(--ease);
   flex-direction: column;
   align-items: flex-start;
   gap: 10px;
@@ -804,6 +957,7 @@
 .L-page[data-comp="comp-editorial"] .L-sec-h .L-head .L-eyebrow { order: 1; }
 .L-page[data-comp="comp-editorial"] .L-sec-h .L-head .L-n { order: 2; width: 100%; border-top: var(--rule-fat) solid var(--accent); padding-top: 12px; }
 .L-page[data-comp="comp-editorial"] .L-sec-h .L-head h2.sec { order: 3; width: 100%; }
+.L-page[data-comp="comp-editorial"] .L-sec-h .L-head .L-sub { order: 4; width: 100%; margin-top: 0; font-size: 15px; }
 .L-page[data-comp="comp-editorial"][data-numbers="numbers-off"] .L-sec-h .L-head h2.sec { border-top: var(--rule-fat) solid var(--accent); padding-top: 12px; }
 .L-page[data-comp="comp-editorial"] .L-sec-h .L-n {
   font-size: 34px;
@@ -811,7 +965,7 @@
   color: var(--text);
 }
 .L-page[data-comp="comp-editorial"] .L-sec-h h2.sec { font-size: clamp(22px, 2.2cqw, 28px); line-height: 1.2; }
-.L-page[data-comp="comp-editorial"] .L-sec-h .L-eyebrow { margin: 0; font-size: 10px; letter-spacing: 0.12em; }
+.L-page[data-comp="comp-editorial"] .L-sec-h .L-eyebrow { margin: 0; font-size: 12px; letter-spacing: 0.12em; }
 .L-page[data-comp="comp-editorial"] .L-eyebrow::after { display: none; }
 .L-page[data-comp="comp-editorial"] .L-big { font-size: clamp(22px, 2.4cqw, 30px); }
 .L-page[data-comp="comp-editorial"] .L-s-thesis[data-v="under"] .L-thesis-in {
@@ -820,6 +974,8 @@
   align-items: end;
 }
 .L-page[data-comp="comp-editorial"] .L-s-thesis[data-v="under"] .L-cap { text-align: right; }
+/* no partner line: the thesis takes the whole width */
+.L-page[data-comp="comp-editorial"] .L-s-thesis[data-v="under"] .L-thesis-in > .L-big:only-child { grid-column: 1 / -1; }
 .L-page[data-comp="comp-editorial"] .L-s-meaning .L-dict { max-width: 60ch; }
 .L-page[data-comp="comp-editorial"] .L-page-head .L-head { align-items: flex-start; flex-direction: column; gap: 10px; }
 .L-page[data-comp="comp-editorial"] .L-page-head .L-n { font-size: 34px; color: var(--text); }
@@ -827,11 +983,9 @@
 .L-page[data-comp="comp-editorial"] :is(.card, .step):hover { background: transparent; box-shadow: none; transform: none; border-top-color: var(--accent); }
 .L-page[data-comp="comp-editorial"] .card::before, .L-page[data-comp="comp-editorial"] .step::after { display: none; }
 .L-page[data-comp="comp-editorial"] .L-foot { flex-direction: column; align-items: flex-start; }
-.L-page[data-comp="comp-editorial"] .L-s-circles > .L-wrap { grid-template-columns: 1fr; justify-items: center; row-gap: 28px; }
-.L-page[data-comp="comp-editorial"] .L-s-circles > .L-wrap > :not(.L-head) { grid-column: 1; width: 100%; }
-.L-page[data-comp="comp-editorial"] .L-s-circles .L-head { position: static; align-items: center; text-align: center; }
-.L-page[data-comp="comp-editorial"] .L-s-circles .L-head .L-eyebrow { justify-content: center; }
-.L-page[data-comp="comp-editorial"] .L-s-circles .L-head :is(.L-n, h2.sec) { width: auto; min-width: 220px; }
+/* the circles keep the margin column like every other section; the diagram fills the content column */
+.L-page[data-comp="comp-editorial"] .L-s-circles .L-circ { grid-template-columns: minmax(170px, 1fr) minmax(260px, 520px) minmax(170px, 1fr); }
+.L-page[data-comp="comp-editorial"] .L-s-circles .L-c-call { font-size: clamp(16px, 1.7cqw, 22px); padding: 0 8px; }
 .L-page[data-comp="comp-editorial"] .L-s-hero[data-v="video"] > .L-wrap { max-width: none; padding: 0; }
 .L-page[data-comp="comp-editorial"] .L-s-hero[data-v="video"] .L-hero-copy { padding: 36px 24px 0; max-width: var(--width-px); margin: 0 auto; }
 .L-page[data-comp="comp-editorial"] .L-s-hero[data-v="video"] .ph { border: 0; border-radius: 0; min-height: min(62vh, 680px); }
@@ -880,6 +1034,13 @@
   margin-bottom: calc(40px * var(--space, 1));
 }
 .L-page[data-comp="comp-keynote"] .L-head .L-eyebrow { justify-content: center; margin: 0; }
+/* B: the equation is the film alone. The copy goes, the video takes the
+   height left under the head */
+.L-page[data-comp="comp-keynote"] .L-s-equation { align-content: stretch; }
+.L-page[data-comp="comp-keynote"] .L-s-equation > .L-wrap { display: grid; grid-template-rows: auto 1fr; width: 100%; }
+.L-page[data-comp="comp-keynote"] .L-s-equation .L-equation { grid-template-columns: 1fr; height: 100%; }
+.L-page[data-comp="comp-keynote"] .L-s-equation .L-equation > div { display: none; }
+.L-page[data-comp="comp-keynote"] .L-s-equation .L-equation .ph { width: 100%; height: 100%; }
 .L-page[data-comp="comp-keynote"] .L-eyebrow::after { display: none; }
 .L-page[data-comp="comp-keynote"] h2.sec { font-size: clamp(34px, 5cqw, 64px); max-width: 18ch; }
 .L-page[data-comp="comp-keynote"] .L-big { font-size: clamp(28px, 4cqw, 52px); max-width: 22ch; line-height: 1.12; }
@@ -898,7 +1059,7 @@
 .L-page[data-comp="comp-keynote"] .card::before, .L-page[data-comp="comp-keynote"] .step::after { display: none; }
 .L-page[data-comp="comp-keynote"] .L-quote blockquote { font-family: var(--font-display); font-weight: var(--display-weight); font-size: clamp(20px, 2.4cqw, 30px); line-height: 1.3; }
 .L-page[data-comp="comp-keynote"] .L-circ { grid-template-columns: 1fr; gap: 20px; }
-.L-page[data-comp="comp-keynote"] .L-c-line, .L-page[data-comp="comp-keynote"] .L-c-sq { display: none; }
+.L-page[data-comp="comp-keynote"] .L-c-line { display: none; }
 .L-page[data-comp="comp-keynote"] .L-c-left { order: -1; }
 .L-page[data-comp="comp-keynote"] .L-tier { grid-template-columns: 1fr; max-width: 52ch; margin: 0 auto; gap: 18px; }
 .L-page[data-comp="comp-keynote"] .L-table { max-width: 720px; margin-left: auto; margin-right: auto; }
@@ -963,3 +1124,199 @@
   .L-page[data-comp="comp-keynote"] .L-sec { min-height: 0; padding: calc(64px * var(--space, 1)) 0; }
   .L-page[data-comp="comp-cinema"] .L-n { font-size: 40px; }
 }
+
+/* ---------- metaphor gallery: image tiles, click to zoom ---------- */
+
+.L-gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 300px)); gap: 16px; }
+/* the deck's cards carry their own white; the redrawn ones are white line on transparent */
+.L-art { display: block; aspect-ratio: 4 / 5; overflow: hidden; border-radius: min(var(--radius), 14px); background: transparent; }
+.L-art img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.L-gal-tile { padding: 0; border: 0; background: transparent; cursor: pointer; display: block; }
+.L-gal-tile .L-art { transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease); }
+.L-gal-tile:hover .L-art { transform: translateY(-4px); box-shadow: 0 0 0 2px var(--accent); }
+
+.L-zoom {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: color-mix(in srgb, var(--base) 88%, transparent);
+  backdrop-filter: blur(14px);
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  animation: L-drop calc(var(--dur) * 1.2) var(--ease) backwards;
+}
+.L-zoom-in {
+  position: relative;
+  width: min(1100px, 100%);
+  max-height: 92vh;
+  overflow: auto;
+  display: grid;
+  grid-template-columns: minmax(260px, 420px) 1fr;
+  gap: 32px;
+  padding: 32px;
+  background: var(--surface);
+  border: var(--rule-thin) solid var(--border);
+  border-radius: min(var(--radius), 22px);
+}
+.L-zoom-x { position: absolute; top: 16px; right: 16px; }
+.L-zoom-art .L-art { width: 100%; }
+.L-zoom-side { display: grid; gap: 16px; align-content: start; padding-top: 8px; }
+.L-zoom-title { margin: 0; font-family: var(--font-display); font-weight: var(--display-weight); font-size: clamp(26px, 3cqw, 40px); }
+.L-zoom-form { gap: 12px; }
+.L-zoom-form textarea { resize: vertical; }
+.L-zoom-thanks { display: grid; gap: 14px; }
+.L-others { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.L-others li { display: grid; gap: 4px; border-top: var(--rule-thin) solid var(--border); padding-top: 10px; font-size: 14px; line-height: 1.5; color: var(--muted); }
+
+@container page (max-width: 900px) {
+  .L-gallery { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+}
+@media (max-width: 900px) {
+  .L-zoom-in { grid-template-columns: 1fr; }
+}
+
+/* ---------- hero video ---------- */
+
+.L-video { position: relative; padding: 0; overflow: hidden; cursor: pointer; place-items: stretch; border-style: solid; }
+.L-video video { width: 100%; height: 100%; object-fit: cover; display: block; }
+.L-video.is-full { cursor: default; }
+.L-video-hint {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  padding: 10px 18px;
+  border: var(--rule-thin) solid color-mix(in srgb, var(--text) 60%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--base) 55%, transparent);
+  backdrop-filter: blur(8px);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  transition: all var(--dur) var(--ease);
+}
+.L-video:hover .L-video-hint { border-color: var(--accent); color: var(--accent); }
+.L-s-hero[data-v="cinema"] .L-video, .L-s-hero[data-v="over"] .L-video { background: none; padding: 0; }
+
+/* ---------- nav: icons that become logos on scroll, stuck to the top ---------- */
+
+.L-navbar { width: 100%; }
+.L-nav-icons {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: color-mix(in srgb, var(--base) 82%, transparent);
+  backdrop-filter: blur(14px) saturate(140%);
+  border-bottom: var(--rule-thin) solid var(--border);
+}
+.L-nav-icons .L-nav { border-bottom: 0; transition: padding var(--dur) var(--ease); }
+.L-nav-icons[data-scrolled="true"] .L-nav { padding-top: 12px; padding-bottom: 12px; }
+.L-brand { display: inline-flex; align-items: center; gap: 16px; }
+.L-brand-samuh, .L-brand-sapien { position: relative; display: inline-grid; align-items: center; justify-items: start; }
+.L-brand-samuh > *, .L-brand-sapien > img { grid-area: 1 / 1; }
+/* every logo is 30px tall, set by .L-nav .nav-logo img above */
+.L-brand img { width: auto; max-width: none; filter: brightness(0) invert(1); transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease); }
+.L-brand-sapien .L-brand-full { opacity: 0.9; }
+/* each cell is as wide as the logo it is showing, and the width eases, so
+   the rule and the Sapien mark glide left to sit an even 16px from the
+   Samuh mark once the page has scrolled. Widths are 30px tall by the PNG
+   aspect ratios: samuh-logo 960x285, samuh-icon 181x240, sapien-labs
+   820x240, sapien-icon 243x240 */
+.L-brand-samuh { width: calc(30px * 960 / 285); transition: width var(--dur) var(--ease); }
+.L-brand-sapien { width: calc(30px * 820 / 240); transition: width var(--dur) var(--ease), row-gap var(--dur) var(--ease); }
+.L-nav-icons[data-scrolled="true"] .L-brand-samuh { width: calc(30px * 181 / 240); }
+.L-nav-icons[data-scrolled="true"] .L-brand-sapien { width: calc(30px * 243 / 240); }
+.L-brand-sapien { grid-template-rows: auto auto; row-gap: 3px; }
+.L-brand-sapien > img { grid-row: 2; }
+.L-brand-powered {
+  grid-row: 1;
+  font-family: var(--font-caption);
+  font-size: 8.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--muted);
+  transition: opacity var(--dur) var(--ease);
+}
+.L-brand-rule { width: var(--rule-thin); height: 30px; flex: none; background: var(--border); }
+/* at rest the full logos show; once scrolled, only the two marks. The Samuh
+   mark stays put and fades up in place; the Sapien mark arrives from the
+   right, out of where its wordmark was */
+.L-brand-mark { opacity: 0; transform: translateY(-4px); pointer-events: none; }
+.L-brand-sapien .L-brand-mark { transform: translateX(28px); }
+.L-nav-icons[data-scrolled="true"] .L-brand-full { opacity: 0; transform: translateY(4px); }
+.L-nav-icons[data-scrolled="true"] .L-brand-sapien .L-brand-full { transform: translateX(-12px); }
+.L-nav-icons[data-scrolled="true"] .L-brand-mark { opacity: 1; transform: none; }
+.L-nav-icons[data-scrolled="true"] .L-brand-sapien .L-brand-mark { opacity: 0.9; }
+.L-nav-icons[data-scrolled="true"] .L-brand-powered { opacity: 0; }
+.L-nav-icons[data-scrolled="true"] .L-brand-sapien { grid-template-rows: 0 auto; row-gap: 0; }
+
+/* ---------- circles: motion and hover notes ---------- */
+
+/* the transform is written by the component every frame, so no transition
+   here: a transition restarting on every pointer move is what stutters */
+.L-c-g { transition: none; }
+.L-c-svg[data-hot] { cursor: pointer; }
+.L-c-g circle, .L-c-g text { transition: stroke var(--dur) var(--ease), fill var(--dur) var(--ease); }
+/* a soft halo instead of a filter: a second stroke painted with a radial
+   gradient that fades either side of the rim, cheap to paint */
+.L-c-halo { fill: none; opacity: 0; transition: opacity var(--dur) var(--ease); }
+.L-c-glow-hi { stop-color: var(--accent); }
+.L-c-glow-alt { stop-color: var(--accent-2); }
+.L-c-g[data-on="true"] .L-c-halo { opacity: 0.55; }
+.L-c-g[data-on="true"] .L-c-org, .L-c-g[data-on="true"] .L-c-ind { stroke: var(--accent-2); }
+.L-c-g[data-on="true"] .L-c-t-org, .L-c-g[data-on="true"] .L-c-t-ind { fill: var(--accent-2); }
+/* the team callout and its leader are always on: the team is the focus.
+   The other two stay hidden until their circle is hovered. A callout rises
+   in, its leader draws from the edge to the rim of the circle */
+.L-c-call { opacity: 0; transform: translateY(6px); transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease); }
+.L-c-line { stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset var(--dur) var(--ease); }
+.L-c-call-team, .L-circ[data-hot="ind"] .L-c-call-ind, .L-circ[data-hot="org"] .L-c-call-org { opacity: 1; transform: none; }
+.L-c-leader-team, .L-circ[data-hot="ind"] .L-c-leader-ind, .L-circ[data-hot="org"] .L-c-leader-org { stroke-dashoffset: 0; }
+@media (hover: none) {
+  .L-c-call { opacity: 1; transform: none; }
+  .L-c-right { gap: 18px; }
+  .L-c-right > .L-c-call { grid-area: auto; }
+  .L-c-line { stroke-dashoffset: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .L-c-call { transform: none; }
+  .L-c-call, .L-c-line, .L-c-halo, .L-c-g circle, .L-c-g text { transition: none; }
+}
+/* ---------- draft B (Wilfred's 28 September edits) ---------- */
+
+.D-stage[data-draft="b"] .L-dict { max-width: 72ch; }
+.D-stage[data-draft="b"] .L-dict-word { font-size: clamp(44px, 5.2cqw, 76px); }
+.D-stage[data-draft="b"] .L-dict-pron { font-size: 18px; }
+.D-stage[data-draft="b"] .L-dict-pos { font-size: 16px; }
+.D-stage[data-draft="b"] .L-dict-defs { font-size: clamp(18px, 1.7cqw, 22px); }
+.D-stage[data-draft="b"] .L-dict-hi { color: var(--accent-2); }
+.L-thesis-eyebrow { margin: 0 0 14px; }
+.L-thesis-eyebrow::after { display: none; }
+.D-stage[data-draft="b"] .L-dict-say { width: 48px; height: 48px; }
+.D-stage[data-draft="b"] .L-dict-say svg { width: 27px; height: 27px; }
+/* thesis and dictionary side by side on desktop */
+.L-thesis-duo { grid-template-columns: 1.1fr 1fr; column-gap: clamp(32px, 5cqw, 80px); align-items: start; }
+.L-thesis-duo .L-dict { max-width: none; border-top: 0; border-bottom: 0; border-left: var(--rule-fat) solid var(--accent-2); padding: 4px 0 4px 22px; }
+.L-page[data-comp="comp-editorial"] .L-s-thesis[data-v="under"] .L-thesis-duo { grid-template-columns: 1.1fr 1fr; align-items: start; }
+.L-page[data-comp="comp-editorial"] .L-s-thesis[data-v="under"] .L-thesis-duo .L-cap { text-align: left; }
+@container page (max-width: 900px) { .L-thesis-duo { grid-template-columns: 1fr; row-gap: 32px; } }
+/* the thesis under the hero carries the leak line, so it reads as the argument, not a caption */
+.D-stage[data-draft="b"] .L-s-thesis .L-big { font-size: clamp(30px, 3.6cqw, 50px); max-width: 26ch; line-height: 1.15; }
+/* copy over the hero video, editorial alignment, a scrim so it reads */
+.D-stage[data-draft="b"] .L-s-hero[data-v="cinema"] .L-video { position: absolute; inset: 0; border: 0; border-radius: 0; z-index: 0; background: var(--base); }
+.D-stage[data-draft="b"] .L-s-hero[data-v="cinema"] .L-video::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--base) 78%, transparent) 0%, color-mix(in srgb, var(--base) 45%, transparent) 55%, color-mix(in srgb, var(--base) 20%, transparent) 100%),
+              linear-gradient(180deg, transparent 50%, var(--base) 100%);
+  pointer-events: none;
+}
+.D-stage[data-draft="b"] .L-s-hero[data-v="cinema"] .L-video-hint { top: auto; left: auto; right: 24px; bottom: 24px; transform: none; z-index: 1; }
+.D-stage[data-draft="b"] .L-s-hero[data-v="cinema"] .L-hero-grid { min-height: min(86vh, 820px); }
+.D-stage[data-draft="b"] .L-s-hero[data-v="cinema"] .L-hero-copy { padding-top: calc(140px * var(--space, 1)); }
+.D-stage[data-draft="b"] .L-s-hero[data-v="cinema"] h1.display { font-size: clamp(42px, 6.4cqw, 92px); }
