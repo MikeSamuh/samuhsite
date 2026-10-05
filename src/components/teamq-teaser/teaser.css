@@ -1,0 +1,424 @@
+/* /teamq: the intro, the readout, the eleven inputs and the ask. Also the
+   pitch that stands in for the tool on the home page. Every design value is
+   a custom property from src/lib/tokens.ts. */
+
+/* ---------- home section 9 ---------- */
+
+.teaser-pitch {
+  display: grid;
+  gap: 24px;
+  justify-items: start;
+}
+
+/* ---------- intro ---------- */
+
+.teaser-intro {
+  padding-bottom: calc(48px * var(--space, 1));
+}
+
+.teaser-intro .L-page-title {
+  max-width: none;
+}
+
+.teaser-intro-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px;
+  margin: 28px 0 24px;
+  max-width: 980px;
+}
+
+.teaser-intro-head {
+  margin: 0 0 10px;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.teaser-intro-cols p {
+  margin: 0 0 12px;
+  color: var(--muted);
+  font-size: 16.5px;
+  line-height: 1.6;
+}
+
+.teaser-intro-note {
+  margin: 0 0 28px;
+  padding-left: 14px;
+  border-left: var(--rule-fat) solid var(--accent);
+  color: var(--text);
+  font-size: 15px;
+  max-width: 60ch;
+}
+
+/* ---------- the tool ---------- */
+
+.teaser-sec {
+  scroll-margin-top: var(--nav-h, 0px);
+}
+
+.teaser {
+  display: grid;
+  gap: 28px;
+}
+
+.teaser-team {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: var(--display-weight);
+  font-style: var(--display-style);
+  letter-spacing: var(--display-tracking);
+  font-size: 26px;
+  color: var(--text);
+}
+
+.teaser-team-base {
+  display: block;
+  margin-top: 6px;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-style: normal;
+  letter-spacing: 0;
+  font-size: 15px;
+  color: var(--muted);
+}
+
+/* the readout stays in view while the inputs scroll under it */
+.teaser-readout {
+  position: sticky;
+  top: var(--nav-h, 0px);
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1.6fr 1fr 1fr;
+  gap: 8px 32px;
+  align-items: end;
+  padding: 20px 24px;
+  background: var(--surface);
+  border: var(--rule-thin) solid var(--border);
+  border-radius: min(var(--radius), 22px);
+}
+
+.teaser-headline,
+.teaser-minor {
+  display: grid;
+  gap: 2px;
+}
+
+.teaser-label {
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.teaser-days,
+.teaser-figure {
+  font-family: var(--font-display);
+  font-weight: var(--display-weight);
+  letter-spacing: var(--display-tracking);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  color: var(--text);
+  transition: opacity var(--dur) var(--ease);
+}
+
+.teaser-days {
+  font-size: clamp(48px, 8cqw, 84px);
+  color: var(--accent);
+}
+
+.teaser-figure {
+  font-size: 32px;
+}
+
+/* a figure that is about to be replaced dims until the new one lands */
+.teaser-readout[data-stale="true"] :is(.teaser-days, .teaser-figure) {
+  opacity: 0.55;
+}
+
+.teaser-delta {
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+
+.teaser-failed {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: 14px;
+  color: var(--accent);
+}
+
+.teaser-gauge {
+  display: block;
+  height: var(--rule-fat);
+  margin: 18px 0 10px;
+  background: var(--border);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.teaser-gauge span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transition: width var(--dur) var(--ease);
+}
+
+.teaser-pending {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* ---------- inputs ---------- */
+
+.teaser-inputs {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 56px;
+  align-items: start;
+}
+
+.teaser-group {
+  display: grid;
+  gap: 22px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.teaser-group legend {
+  padding: 0;
+  margin-bottom: 20px;
+  font-family: var(--font-display);
+  font-weight: var(--display-weight);
+  font-style: var(--display-style);
+  letter-spacing: var(--display-tracking);
+  font-size: 22px;
+  color: var(--text);
+}
+
+.teaser-input {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4px 16px;
+  align-items: baseline;
+}
+
+.teaser-input label {
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.teaser-value {
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent);
+}
+
+.teaser-note {
+  grid-column: 1 / -1;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.teaser-choice select {
+  grid-column: 1 / -1;
+  width: 100%;
+  margin-top: 4px;
+  background: var(--surface);
+  border: var(--rule-thin) solid var(--border);
+  border-radius: min(var(--radius), 12px);
+  padding: 12px 14px;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 16px;
+}
+
+.teaser-choice select:focus-visible {
+  border-color: var(--accent);
+  outline: var(--rule-fat) solid var(--accent);
+  outline-offset: 2px;
+}
+
+.teaser-reset {
+  justify-self: start;
+  margin-top: 8px;
+}
+
+.teaser-reset:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+/* the native range, drawn from tokens. --fill is how far along the value is */
+.teaser-range {
+  grid-column: 1 / -1;
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 28px;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.teaser-range::-webkit-slider-runnable-track {
+  height: var(--rule-fat);
+  border-radius: 99px;
+  background: linear-gradient(to right, var(--accent) var(--fill), var(--border) var(--fill));
+}
+
+.teaser-range::-moz-range-track {
+  height: var(--rule-fat);
+  border-radius: 99px;
+  background: var(--border);
+}
+
+.teaser-range::-moz-range-progress {
+  height: var(--rule-fat);
+  border-radius: 99px;
+  background: var(--accent);
+}
+
+.teaser-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  margin-top: calc((var(--rule-fat) - 22px) / 2);
+  border-radius: 50%;
+  background: var(--accent);
+  border: var(--rule-fat) solid var(--base);
+  transition: transform var(--dur) var(--ease);
+}
+
+.teaser-range::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: var(--rule-fat) solid var(--base);
+  box-sizing: border-box;
+}
+
+.teaser-range:hover::-webkit-slider-thumb {
+  transform: scale(1.12);
+}
+
+.teaser-range:focus-visible {
+  outline: var(--rule-fat) solid var(--accent);
+  outline-offset: 4px;
+  border-radius: 99px;
+}
+
+/* ---------- the ask ---------- */
+
+.teaser-ask {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 40px;
+  align-items: start;
+  padding-top: 40px;
+  border-top: var(--rule-thin) solid var(--border);
+}
+
+.teaser-ask-title {
+  margin: 0 0 12px;
+  font-family: var(--font-display);
+  font-weight: var(--display-weight);
+  font-style: var(--display-style);
+  letter-spacing: var(--display-tracking);
+  font-size: 28px;
+  color: var(--text);
+}
+
+.teaser-ask p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.teaser-done {
+  grid-template-columns: 1fr;
+  gap: 16px;
+  justify-items: start;
+}
+
+.teaser-done .teaser-ask-title {
+  margin: 0;
+}
+
+.teaser-done:focus {
+  outline: none;
+}
+
+/* ---------- narrow ---------- */
+
+@container page (max-width: 760px) {
+  .teaser-intro-cols,
+  .teaser-inputs,
+  .teaser-ask {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .teaser-intro-cols {
+    gap: 12px;
+  }
+
+  .teaser-readout {
+    grid-template-columns: 1fr 1fr;
+    gap: 6px 20px;
+    padding: 12px 16px;
+  }
+
+  .teaser-headline {
+    grid-column: 1 / -1;
+    grid-template-columns: 1fr auto;
+    align-items: baseline;
+  }
+
+  .teaser-headline .teaser-label {
+    grid-column: 1 / -1;
+  }
+
+  .teaser-days {
+    font-size: 44px;
+  }
+
+  .teaser-figure {
+    font-size: 22px;
+  }
+
+  .teaser-minor {
+    grid-template-columns: auto 1fr;
+    column-gap: 8px;
+    align-items: baseline;
+  }
+
+  .teaser-minor .teaser-label {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .teaser-days,
+  .teaser-figure,
+  .teaser-gauge span,
+  .teaser-range::-webkit-slider-thumb {
+    transition: none;
+  }
+
+  .teaser-range:hover::-webkit-slider-thumb {
+    transform: none;
+  }
+}

@@ -33,6 +33,9 @@ export interface Lead {
   submittedAt: string;
 }
 
+/** Enough to catch a typo before posting. The server validates properly. */
+export const EMAIL_SHAPE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 /** What a form hands to useLeadSubmit. The hook adds flow and UTM, the server
  *  adds page and submittedAt. The last two never reach a Lead: the honeypot
  *  and the Turnstile token are checked by the route and dropped. */

@@ -1,5 +1,6 @@
-import { DraftPage } from "../../Go";
+import { redirect } from "next/navigation";
 
+// Get Started became Explore TeamQ, which is live at the root.
 export default function DraftBStart() {
-  return <DraftPage draft="b" id="start" />;
+  redirect("/teamq");
 }

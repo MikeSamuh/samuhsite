@@ -7,7 +7,7 @@ import { Honeypot } from "@/components/lead/Honeypot";
 import { Turnstile } from "@/components/lead/Turnstile";
 import { useLeadSubmit } from "@/components/lead/useLeadSubmit";
 import { CONTACT_EMAIL } from "@/lib/contact-details";
-import type { Lead } from "@/lib/lead";
+import { EMAIL_SHAPE, type Lead } from "@/lib/lead";
 import "./contact.css";
 
 const REASONS: { value: NonNullable<Lead["reason"]>; label: string }[] = [
@@ -16,8 +16,6 @@ const REASONS: { value: NonNullable<Lead["reason"]>; label: string }[] = [
   { value: "partnership", label: "Partnership opportunity" },
   { value: "other", label: "Something else" },
 ];
-
-const EMAIL_SHAPE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 type Errors = Partial<Record<"name" | "email" | "message", string>>;
 

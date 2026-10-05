@@ -81,6 +81,9 @@ export const ROUTES: Record<PageId, string> = {
  *  shell, and Draft B links straight to them. */
 export const LIVE: Partial<Record<PageId, string>> = {
   contact: "/contact",
+  // "Explore TeamQ". The intake assessment that used to sit behind Get
+  // Started is a later sprint
+  start: "/teamq",
 };
 
 export const draftBase = (id: DraftId) => `${DRAFT_ROOT}/${id}`;

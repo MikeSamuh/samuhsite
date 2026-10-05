@@ -3,6 +3,8 @@
 import { useEffect, useId, useRef, useState, type TouchEvent } from "react";
 import Image from "next/image";
 import { PAGES, SECTIONS, type PageId } from "@/lib/layout";
+import { TEAM_SIZE } from "@/components/teamq-teaser/model";
+import "@/components/teamq-teaser/teaser.css";
 import Synapse from "../design/Synapse";
 
 const stay = (e: React.MouseEvent) => e.preventDefault();
@@ -103,7 +105,7 @@ export function Nav({ page, go, menu, links: order, brand = "wordmark", partner 
           ))}
         </nav>
         <button className="btn btn-secondary btn-small L-menu" onClick={() => setOpen(true)} aria-expanded={open} aria-controls="L-overlay">Explore</button>
-        <button className="btn btn-small L-cta" onClick={() => jump("start")}>Get started <span className="arrow">&rarr;</span></button>
+        <button className="btn btn-small L-cta" onClick={() => jump("start")}>Explore TeamQ <span className="arrow">&rarr;</span></button>
         {/* on small screens every nav collapses to this: the links and the
             Explore button hide, and the burger opens the full menu */}
         {!menu ? (
@@ -126,7 +128,7 @@ export function Nav({ page, go, menu, links: order, brand = "wordmark", partner 
             ))}
           </nav>
           <div className="L-overlay-foot L-wrap">
-            <button className="btn" onClick={() => jump("start")}>Get started <span className="arrow">&rarr;</span></button>
+            <button className="btn" onClick={() => jump("start")}>Explore TeamQ <span className="arrow">&rarr;</span></button>
             <span className="L-cap">In partnership with Sapien Labs</span>
           </div>
         </div>
@@ -652,7 +654,7 @@ export function Section({ def, variant, go, copy = {} }: { def: (typeof SECTIONS
               )}
               {copy.noHeroCtas ? null : (
                 <div className="cta-row">
-                  <button className="btn" onClick={() => go("start")}>Get started <span className="arrow">&rarr;</span></button>
+                  <button className="btn" onClick={() => go("start")}>Explore TeamQ <span className="arrow">&rarr;</span></button>
                   <button className="btn btn-secondary" onClick={() => go("contact")}>Talk to us</button>
                 </div>
               )}
@@ -776,19 +778,11 @@ export function Section({ def, variant, go, copy = {} }: { def: (typeof SECTIONS
         {def.id === "tool" && (
           <>
             <Head def={def} />
-            <div className="L-tool">
-              <div className="L-sliders">
-                {["Social", "Autonomous", "Meaningful", "Healthy"].map((f) => (
-                  <label className="L-slider" key={f}>
-                    <span>{f}</span>
-                    <span className="L-track"><span className="L-thumb" /></span>
-                  </label>
-                ))}
-              </div>
-              <div className="L-result">
-                <span className="L-cap">Estimated productive days lost per month</span>
-                <span className="L-number">&mdash;</span>
-                <span className="L-cap">Your estimate appears here as you move the sliders. Our own intake tool, not TeamQ, not diagnostic.</span>
+            {/* TODO(content): draft pitch, for SAMUH to replace */}
+            <div className="teaser-pitch">
+              <p className="L-mid">Take a demonstration team of {TEAM_SIZE}. Change what their work is like, and watch their productive days move.</p>
+              <div className="cta-row">
+                <button className="btn" onClick={() => go("start")}>Explore TeamQ <span className="arrow">&rarr;</span></button>
               </div>
             </div>
           </>
@@ -848,7 +842,7 @@ export function Section({ def, variant, go, copy = {} }: { def: (typeof SECTIONS
                 <button className="btn">Start</button>
               </div>
               <div className="cta-row">
-                <button className="btn" onClick={() => go("start")}>Get started <span className="arrow">&rarr;</span></button>
+                <button className="btn" onClick={() => go("start")}>Explore TeamQ <span className="arrow">&rarr;</span></button>
                 <button className="btn btn-secondary" onClick={() => go("contact")}>Talk to us</button>
               </div>
             </div>

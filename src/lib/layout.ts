@@ -239,7 +239,7 @@ export const SECTIONS: SectionDef[] = [
     ],
   },
   {
-    id: "tool", kicker: "Try it on your own team", n: 9, title: "Interactive data tool",
+    id: "tool", kicker: "Explore TeamQ", n: 9, title: "See how TeamQ thinks",
     intent: "Visitor adjusts team environment factors, sees estimated productive days lost update live.",
     variants: [
       { id: "tool-card", name: "Card", note: "Sliders and result in one panel." },

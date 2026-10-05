@@ -404,7 +404,7 @@ function Process({ go }: { go: (p: PageId) => void }) {
         <p className="L-big">A ritual turns an important behavior into a specific, repeatable practice the team owns and runs.</p>
         <p className="L-mid">Repeated over weeks, it converts intent into the way the team actually operates. The team creates its ritual from its own data, its own context, and its own commitment, which is why it holds.</p>
         <div className="cta-row">
-          <button className="btn" onClick={() => go("start")}>Get started <span className="arrow">&rarr;</span></button>
+          <button className="btn" onClick={() => go("start")}>Explore TeamQ <span className="arrow">&rarr;</span></button>
           <button className="btn btn-secondary" onClick={() => go("solutions")}>Ways to engage</button>
         </div>
       </Sec>
