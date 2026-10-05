@@ -7,7 +7,7 @@ import DraftShell from "../draft/DraftShell";
 
 export const metadata: Metadata = {
   title: "Explore TeamQ · SAMUH",
-  description: "See how TeamQ thinks. Change what work is like for a demonstration team and watch their productive days move.",
+  description: "Optimize your team, with science. Change what work is like for a demonstration team and watch their productive days move.",
 };
 
 // A production route. It borrows Draft B's shell until Draft B is promoted to
