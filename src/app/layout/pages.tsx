@@ -519,8 +519,8 @@ function About() {
 function Contact() {
   return (
     <>
-      <PageHead n="01" kicker="Contact" title={"Let\u2019s talk human to human"} />
-      <section className="L-sec">
+      <PageHead n="01" kicker="Contact" title={"Let\u2019s talk, human to human."} />
+      <section className="L-sec contact-sec">
         <div className="L-wrap">
           <div className="contact-grid">
             <ContactForm />

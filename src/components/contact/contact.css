@@ -1,6 +1,25 @@
 /* /contact. Form left, direct contact right, stacked on a narrow page.
    Every design value is a custom property from src/lib/tokens.ts. */
 
+/* the heading and the form read as one block: no rule and one short gap
+   between them, where two full section paddings used to be */
+.L-page-head:has(+ .contact-sec) {
+  padding-bottom: 0;
+}
+
+/* the heading is one sentence, a step smaller than other page titles so it
+   holds one line on a desktop, and balanced where it has to wrap */
+.L-page-head:has(+ .contact-sec) .L-page-title {
+  max-width: none;
+  font-size: clamp(34px, 4.2cqw, 56px);
+  text-wrap: balance;
+}
+
+.L-page .L-sec.contact-sec {
+  border-top: 0;
+  padding-top: 0;
+}
+
 .contact-grid {
   display: grid;
   grid-template-columns: 1.2fr 1fr;
