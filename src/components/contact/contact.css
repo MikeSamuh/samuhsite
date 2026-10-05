@@ -1,0 +1,84 @@
+/* /contact. Form left, direct contact right, stacked on a narrow page.
+   Every design value is a custom property from src/lib/tokens.ts. */
+
+.contact-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 56px;
+  align-items: start;
+}
+
+.contact-aside {
+  display: grid;
+  gap: 20px;
+  padding-left: 32px;
+  border-left: var(--rule-thin) solid var(--border);
+}
+
+.contact-aside-title,
+.contact-done-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: var(--display-weight);
+  font-style: var(--display-style);
+  letter-spacing: var(--display-tracking);
+  font-size: 24px;
+  color: var(--text);
+}
+
+.contact-details {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px 18px;
+  align-items: baseline;
+  margin: 0;
+  font-size: 15px;
+}
+
+.contact-details dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.contact-todo {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.contact-done {
+  display: grid;
+  gap: 16px;
+  justify-items: start;
+  padding: 28px 26px 32px;
+  background: var(--surface);
+  border: var(--rule-thin) solid var(--border);
+  border-radius: min(var(--radius), 22px);
+}
+
+.contact-done:focus {
+  outline: none;
+}
+
+.contact-done p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.contact-failed {
+  font-size: 15px;
+}
+
+@container page (max-width: 760px) {
+  .contact-grid {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+
+  .contact-aside {
+    padding-left: 0;
+    padding-top: 32px;
+    border-left: 0;
+    border-top: var(--rule-thin) solid var(--border);
+  }
+}

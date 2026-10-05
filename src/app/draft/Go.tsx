@@ -4,12 +4,12 @@ import { useRouter } from "next/navigation";
 import { SECTIONS, OFF, type PageId } from "@/lib/layout";
 import { Page } from "../layout/pages";
 import { Section } from "../layout/sections";
-import { ROUTES, draftBase, getDraft, type DraftId } from "./drafts";
+import { getDraft, hrefFor, type DraftId } from "./drafts";
 
 export function useGo(draft: DraftId) {
   const router = useRouter();
   return (p: PageId) => {
-    router.push(`${draftBase(draft)}${ROUTES[p]}`);
+    router.push(hrefFor(draft, p));
     window.scrollTo({ top: 0 });
   };
 }

@@ -77,13 +77,27 @@ export const ROUTES: Record<PageId, string> = {
   start: "/get-started",
 };
 
+/** Pages that are no longer drafts. They live at the root, in Draft B's
+ *  shell, and Draft B links straight to them. */
+export const LIVE: Partial<Record<PageId, string>> = {
+  contact: "/contact",
+};
+
 export const draftBase = (id: DraftId) => `${DRAFT_ROOT}/${id}`;
+
+/** Where a draft's link to a page goes: the live route when Draft B has one,
+ *  otherwise the draft's own copy. */
+export function hrefFor(id: DraftId, page: PageId): string {
+  return (id === "b" && LIVE[page]) || `${draftBase(id)}${ROUTES[page]}`;
+}
 
 export function getDraft(id: string): Draft {
   return DRAFTS.find((d) => d.id === id) ?? DRAFTS[0];
 }
 
 export function pageFromPath(path: string, id: DraftId): PageId {
+  const live = (Object.keys(LIVE) as PageId[]).find((k) => LIVE[k] === path.replace(/\/$/, ""));
+  if (live) return live;
   const rest = path.replace(draftBase(id), "").replace(/\/$/, "");
   return (Object.keys(ROUTES) as PageId[]).find((k) => ROUTES[k] === rest) ?? "home";
 }

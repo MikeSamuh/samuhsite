@@ -5,6 +5,8 @@ import { useState } from "react";
 import { useEffect, useRef } from "react";
 import Image from "next/image";
 import type { PageId } from "@/lib/layout";
+import { ContactAside } from "@/components/contact/ContactAside";
+import { ContactForm } from "@/components/contact/ContactForm";
 
 /**
  * The pages behind the nav, composed from docs/scope.md and docs/brief.md.
@@ -520,29 +522,9 @@ function Contact() {
       <PageHead n="01" kicker="Contact" title="Tell us about your team." lede="A short form or a call. Either way a person reads it, not a funnel." />
       <section className="L-sec">
         <div className="L-wrap">
-          <div className="L-contact">
-            <form className="L-form" onSubmit={(e) => e.preventDefault()}>
-              <label><span className="L-cap">Name</span><input type="text" placeholder="Your name" /></label>
-              <label><span className="L-cap">Email</span><input type="email" placeholder="you@company.com" /></label>
-              <label><span className="L-cap">Organization</span><input type="text" placeholder="Where the team works" /></label>
-              <label><span className="L-cap">What are you hoping to change?</span><textarea rows={4} placeholder="A sentence or two is plenty" /></label>
-              <label><span className="L-cap">Goal</span>
-                <select defaultValue=""><option value="" disabled>Choose one</option><option>Understand the model</option><option>Assess a team</option><option>Talk about a 90-day sprint</option><option>Something else</option></select>
-              </label>
-              <button className="btn" type="submit">Send <span className="arrow">&rarr;</span></button>
-              <span className="L-cap">A person reads every message. No newsletter, no drip.</span>
-            </form>
-            <aside className="L-contact-side">
-              <div className="card L-book">
-                <span className="card-tag">Talk to us</span>
-                <Frame label="Calendar embed" tall />
-              </div>
-              <div className="L-details">
-                <span className="L-cap">Email</span><span>jake@samuh.work</span>
-                <span className="L-cap">Partner</span><span>Sapien Labs</span>
-                <span className="L-cap">Where</span><span>Working with teams across time zones.</span>
-              </div>
-            </aside>
+          <div className="contact-grid">
+            <ContactForm />
+            <ContactAside />
           </div>
         </div>
       </section>

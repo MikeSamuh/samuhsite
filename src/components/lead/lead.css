@@ -1,15 +1,32 @@
 /* Lead form primitives. Every design value is a custom property from
    src/lib/tokens.ts. Carries the same look as .L-form in layout.css. */
 
+.lead-form {
+  display: grid;
+  gap: 18px;
+  justify-items: start;
+}
+
+.lead-form > .lead-field {
+  width: 100%;
+}
+
+.lead-form .btn:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
 .lead-field {
   display: grid;
   gap: 6px;
 }
 
 .lead-field label {
-  color: var(--text);
-  font-family: var(--font-body);
-  font-size: 14.5px;
+  color: var(--muted);
+  font-family: var(--font-caption);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
 .lead-optional {
