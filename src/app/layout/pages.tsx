@@ -519,7 +519,7 @@ function About() {
 function Contact() {
   return (
     <>
-      <PageHead n="01" kicker="Contact" title="Tell us about your team." lede="A short form or a call. Either way a person reads it, not a funnel." />
+      <PageHead n="01" kicker="Contact" title={"Let\u2019s talk human to human"} />
       <section className="L-sec">
         <div className="L-wrap">
           <div className="contact-grid">

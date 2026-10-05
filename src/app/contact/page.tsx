@@ -4,7 +4,7 @@ import { DraftPage } from "../draft/Go";
 
 export const metadata: Metadata = {
   title: "Contact · SAMUH",
-  description: "Tell us about your team. A short form, or reach SAMUH directly.",
+  description: "Let\u2019s talk human to human. A short form, or reach SAMUH directly.",
 };
 
 // A production route. It borrows Draft B's shell until Draft B is promoted to
