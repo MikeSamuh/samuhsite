@@ -21,16 +21,18 @@
   gap: 6px;
 }
 
+/* the nav's font, at full text color and a step heavier so it holds on the
+   dark background */
 .lead-field label {
-  color: var(--muted);
-  font-family: var(--font-caption);
-  font-size: 12px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .lead-optional {
   color: var(--muted);
+  font-weight: 400;
 }
 
 .lead-field :is(input, textarea, select) {

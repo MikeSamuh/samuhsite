@@ -1,16 +1,11 @@
-import {
-  CONTACT_EMAIL,
-  CONTACT_PHONE,
-  CONTACT_RESPONSE_TIME,
-} from "@/lib/contact-details";
+import { CONTACT_EMAIL, CONTACT_PHONE } from "@/lib/contact-details";
 import "./contact.css";
 
 function Owed({ what }: { what: string }) {
   return <span className="contact-todo">TODO(content): {what}</span>;
 }
 
-/** The way round the form: SAMUH's email and phone, and how soon to expect
- *  a reply. */
+/** The way round the form: SAMUH's email and phone. */
 export function ContactAside() {
   return (
     <aside className="contact-aside" aria-labelledby="contact-aside-title">
@@ -18,7 +13,7 @@ export function ContactAside() {
         Or reach us directly
       </h2>
       <dl className="contact-details">
-        <dt className="L-cap">Email</dt>
+        <dt>Email</dt>
         <dd>
           {CONTACT_EMAIL ? (
             <a className="inline-link" href={`mailto:${CONTACT_EMAIL}`}>
@@ -28,7 +23,7 @@ export function ContactAside() {
             <Owed what="email address" />
           )}
         </dd>
-        <dt className="L-cap">Phone</dt>
+        <dt>Phone</dt>
         <dd>
           {CONTACT_PHONE ? (
             <a className="inline-link" href={`tel:${CONTACT_PHONE}`}>
@@ -38,8 +33,6 @@ export function ContactAside() {
             <Owed what="Google Voice number" />
           )}
         </dd>
-        <dt className="L-cap">Response</dt>
-        <dd>{CONTACT_RESPONSE_TIME ?? <Owed what="response time" />}</dd>
       </dl>
     </aside>
   );

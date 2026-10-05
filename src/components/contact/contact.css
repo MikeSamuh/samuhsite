@@ -35,6 +35,13 @@
   font-size: 15px;
 }
 
+.contact-details dt {
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 600;
+}
+
 .contact-details dd {
   margin: 0;
   overflow-wrap: anywhere;
