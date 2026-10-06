@@ -30,12 +30,6 @@ const READOUT_STEPS: TourStep[] = [
     title: "Capacity to perform.",
     text: "The team\u2019s average Mental Health Quotient, the measure from our partner Sapien Labs that TeamQ is built on. It estimates how much capacity the people on this team have to bring to their work.",
   },
-  {
-    lit: "change",
-    kicker: "Change from today",
-    title: "Every figure shows how far it has moved.",
-    text: "The team starts as they are today. Move anything and each figure shows its change from that starting point, up or down.",
-  },
 ];
 
 /** A section in the editorial frame: heading left, content right. */
@@ -87,9 +81,10 @@ function LifestyleExhibit() {
   );
 }
 
-/** The top of /teamq: an education that leads into the tool. The heading,
- *  one bold line, what TeamQ is, how SAMUH uses it, then each part of the
- *  tool explained one at a time, lit on a frozen copy of the real thing. */
+/** The top of /teamq: a short education that leads into the tool. The
+ *  heading, what TeamQ is and how SAMUH uses it in one section, then each
+ *  part of the tool explained one at a time on a frozen copy of the real
+ *  thing. */
 export function TeamQIntro({ baseline }: { baseline: TeaserResult }) {
   return (
     <>
@@ -103,46 +98,21 @@ export function TeamQIntro({ baseline }: { baseline: TeaserResult }) {
         </div>
       </section>
 
-      <section className="L-sec guide-bold">
-        <div className="L-wrap">
-          <p className="L-big">
-            A team&rsquo;s performance is shaped by the conditions it works in and the lives its people lead. TeamQ
-            measures both, so a team can see where it is leaking and what to do about it.
-          </p>
-        </div>
-      </section>
-
-      <Part kicker="01" title="What is TeamQ">
+      <Part kicker="What is TeamQ" title="A read on how a team works, and how its people live.">
         <div className="guide-copy">
           <p className="L-mid">
             TeamQ is how SAMUH reads a team: what the work is like for the people doing it, and what that does to
-            their capacity to perform.
+            their capacity to perform. It looks at eleven things, nine in the work environment and two in how
+            people live outside it.
           </p>
-          <p className="L-mid">
-            It looks at eleven things that shape a working life. Nine are about the work environment, from workload
-            to the relationship with a manager. Two are about how people live outside it.
-          </p>
-        </div>
-      </Part>
-
-      <Part kicker="02" title="How we use it">
-        <div className="guide-copy">
           <p className="L-mid">
             With a real team, this is where the work starts. The team answers for itself, we read the result
-            together, and the team chooses what to work on. Then we measure again.
+            together, and the team chooses what to work on. Then we measure again. Capacity to perform is
+            measured with the Mental Health Quotient (MHQ), from our partner Sapien Labs.
           </p>
           <p className="L-mid">
-            Capacity to perform is measured with the Mental Health Quotient (MHQ), from our partner Sapien Labs.
-          </p>
-        </div>
-      </Part>
-
-      <Part kicker="03" title="How to understand it">
-        <div className="guide-copy">
-          <p className="L-mid">
-            Below, you can interact with the tool and see how different factors could positively or negatively
-            affect a team, using example test case data: a demonstration team of {TEAM_SIZE}. Before you do, here
-            is what each part of it shows.
+            Below, you can see how different factors could positively or negatively affect a team, using example
+            test case data: a demonstration team of {TEAM_SIZE}. First, what the numbers mean.
           </p>
         </div>
       </Part>
@@ -182,7 +152,7 @@ export function TeamQIntro({ baseline }: { baseline: TeaserResult }) {
           <p className="teaser-intro-note">
             The team below is a demonstration, not yours. Nothing on this page is a result for your team.
           </p>
-          <p className="L-big">Now try it. There is a challenge waiting.</p>
+          <p className="L-big">Now try it. Can you optimize this team?</p>
         </div>
       </section>
     </>

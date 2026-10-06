@@ -24,14 +24,6 @@
 
 /* ---------- the guide ---------- */
 
-.guide-bold {
-  padding-top: calc(32px * var(--space, 1));
-}
-
-.guide-bold .L-big {
-  max-width: 30ch;
-}
-
 .guide-copy .L-mid:last-child {
   margin-bottom: 0;
 }
@@ -48,7 +40,7 @@
 /* the readout tour. The track is one screen tall per step; the stage pins
    inside it and shows one step and one readout at a time */
 .tour {
-  height: calc(var(--tour-steps, 4) * 100vh);
+  height: calc(var(--tour-steps, 3) * 80vh + 20vh);
 }
 
 .tour-stage {
@@ -247,6 +239,56 @@
 .teaser-answer strong {
   color: var(--text);
   font-weight: 600;
+}
+
+.teaser-compare {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+
+.teaser-compare th,
+.teaser-compare td {
+  padding: 10px 12px 10px 0;
+  text-align: left;
+  border-bottom: var(--rule-thin) solid var(--border);
+  color: var(--text);
+}
+
+.teaser-compare thead th {
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.teaser-compare tbody th {
+  font-weight: 600;
+}
+
+.teaser-compare td:nth-child(4) {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.teaser-compare td.teaser-verdict {
+  text-align: right;
+  color: var(--muted);
+}
+
+.teaser-compare tr[data-verdict="match"] td.teaser-verdict,
+.teaser-compare tr[data-verdict="close"] td.teaser-verdict {
+  color: var(--text);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 /* the readout stays in view while the inputs scroll under it */

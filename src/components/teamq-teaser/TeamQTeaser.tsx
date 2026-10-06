@@ -72,14 +72,14 @@ export function TeamQTeaser({ baseline, answer }: { baseline: TeaserResult; answ
   const [failed, setFailed] = useState(false);
   const [touched, setTouched] = useState(false);
   const [best, setBest] = useState<number>();
-  const [revealed, setRevealed] = useState(false);
+  /** the visitor's setting and score, frozen when they submit */
+  const [submitted, setSubmitted] = useState<{ values: Values; result: TeaserResult }>();
+  const revealed = submitted !== undefined;
   const answerRef = useRef<HTMLDivElement>(null);
 
-  // the visitor's best within the rules, kept as the figures land
+  // the visitor's best, kept as the figures land
   useEffect(() => {
-    if (stale || revealed) return;
-    const moves = movedCount(values);
-    if (moves === 0 || moves > CHALLENGE_MOVES) return;
+    if (stale || revealed || movedCount(values) === 0) return;
     setBest((current) => (current === undefined || result.days > current ? result.days : current));
   }, [result, stale, values, revealed]);
 
@@ -132,9 +132,9 @@ export function TeamQTeaser({ baseline, answer }: { baseline: TeaserResult; answ
     }
   };
 
-  const reveal = () => {
+  const submitAnswer = () => {
+    setSubmitted({ values, result });
     setValues(answer.values);
-    setRevealed(true);
   };
 
   const environment = FACTORS.filter((factor) => factor.group === "environment");
@@ -159,15 +159,15 @@ export function TeamQTeaser({ baseline, answer }: { baseline: TeaserResult; answ
             Your challenge: can you optimize for productive days?
           </p>
           <p>
-            Move up to {CHALLENGE_MOVES} factors and get this team as many productive days as you can. When
-            you are done, scroll down and see the answer.
+            The model gets {CHALLENGE_MOVES} moves to give this team the most productive days it can. Make yours,
+            then submit your answer and see how close you came.
           </p>
           <p className="teaser-challenge-status" aria-live="polite">
             {revealed
-              ? "That is the answer, applied below."
+              ? "The optimized profile is applied below."
               : moves === 0
                 ? "Nothing moved yet."
-                : `${moves} of ${CHALLENGE_MOVES} factors moved${moves > CHALLENGE_MOVES ? ", which is more than the challenge allows" : ""}.${best !== undefined ? ` Your best so far: ${one(best)} days.` : ""}`}
+                : `${moves} ${moves === 1 ? "factor" : "factors"} moved.${best !== undefined ? ` Your best so far: ${one(best)} days.` : ""}`}
           </p>
         </div>
       ) : null}
@@ -224,27 +224,15 @@ export function TeamQTeaser({ baseline, answer }: { baseline: TeaserResult; answ
 
       {MODEL_VERIFIED ? (
         <div className="teaser-answer" ref={answerRef} tabIndex={-1}>
-          {revealed ? (
-            <>
-              <p className="teaser-ask-title">The answer, for this team.</p>
-              <p className="L-mid">
-                The most productive days within {CHALLENGE_MOVES} moves come from taking{" "}
-                {list(answer.levers.map((lever) => `${lever.label} to ${lever.value}`))}:{" "}
-                <strong>{one(answer.days)} productive days a month</strong>, {change(answer.days, baseline.days)} on
-                today
-                {best !== undefined ? `. Your best was ${one(best)}` : ""}.
-              </p>
-              <p className="L-mid">
-                That is this demonstration team. Every team leaks somewhere different, which is why the first
-                step with a real team is finding out where.
-              </p>
-            </>
+          {submitted ? (
+            <Comparison yours={submitted} answer={answer} baseline={baseline} />
           ) : (
             <>
-              <p className="L-mid">Done exploring? See which {CHALLENGE_MOVES} moves the model would make.</p>
-              <button className="btn" type="button" onClick={reveal}>
-                Show me the answer <span className="arrow">&rarr;</span>
+              <p className="L-mid">Happy with your moves? Submit and see the optimized profile next to yours.</p>
+              <button className="btn" type="button" onClick={submitAnswer} disabled={moves === 0}>
+                Submit my answer <span className="arrow">&rarr;</span>
               </button>
+              {moves === 0 ? <span className="teaser-note">Move at least one factor first.</span> : null}
             </>
           )}
         </div>
@@ -323,6 +311,70 @@ function Gauge({ values }: { values: Values }) {
         <span className="teaser-pending">TODO(content): model pending</span>
       </div>
     </div>
+  );
+}
+
+type Verdict = "match" | "close" | "off" | "extra";
+
+const VERDICTS: Record<Verdict, string> = {
+  match: "Spot on",
+  close: "Close",
+  off: "Missed",
+  extra: "Not needed",
+};
+
+/** The optimized profile next to what the visitor submitted, factor by
+ *  factor, for every factor either of them moved. */
+function Comparison({ yours, answer, baseline }: { yours: { values: Values; result: TeaserResult }; answer: Answer; baseline: TeaserResult }) {
+  const rows = FACTORS.filter(
+    (factor) => yours.values[factor.id] !== BASELINE[factor.id] || answer.values[factor.id] !== BASELINE[factor.id],
+  ).map((factor) => {
+    const mine = yours.values[factor.id];
+    const optimal = answer.values[factor.id];
+    const modelMoved = optimal !== BASELINE[factor.id];
+    const verdict: Verdict = !modelMoved ? "extra" : mine === optimal ? "match" : Math.abs(mine - optimal) <= 1 ? "close" : "off";
+    return { factor, mine, optimal, verdict };
+  });
+  const hits = rows.filter((row) => row.verdict === "match" || row.verdict === "close").length;
+
+  return (
+    <>
+      <p className="teaser-ask-title">The optimized profile, next to yours.</p>
+      <p className="L-mid">
+        You got this team to <strong>{one(yours.result.days)} productive days</strong>. The model&rsquo;s{" "}
+        {CHALLENGE_MOVES} moves, {list(answer.levers.map((lever) => lever.label))}, get it to{" "}
+        <strong>{one(answer.days)}</strong>, {change(answer.days, baseline.days)} on today. You were on or near{" "}
+        {hits} of the {CHALLENGE_MOVES}.
+      </p>
+      <table className="teaser-compare">
+        <thead>
+          <tr>
+            <th scope="col">Factor</th>
+            <th scope="col">Today</th>
+            <th scope="col">You</th>
+            <th scope="col">Optimized</th>
+            <th scope="col">
+              <span className="sr-only">Verdict</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map(({ factor, mine, optimal, verdict }) => (
+            <tr key={factor.id} data-verdict={verdict}>
+              <th scope="row">{factor.label}</th>
+              <td>{BASELINE[factor.id]}</td>
+              <td>{mine}</td>
+              <td>{optimal}</td>
+              <td className="teaser-verdict">{VERDICTS[verdict]}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <p className="L-mid">
+        That is this demonstration team. Every team leaks somewhere different, which is why the first step with a
+        real team is finding out where.
+      </p>
+    </>
   );
 }
 
