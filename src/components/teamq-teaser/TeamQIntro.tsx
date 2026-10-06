@@ -1,4 +1,5 @@
 import { BASELINE, BASELINE_AVERAGES, FACTORS, LIFESTYLE_OPTIONS, TEAM_SIZE } from "./model";
+import { ReadoutTour, type TourStep } from "./ReadoutTour";
 import type { TeaserResult } from "./TeamQTeaser";
 import "./teaser.css";
 
@@ -7,6 +8,35 @@ import "./teaser.css";
 // names. See CLAUDE.md rules 1 and 4.
 
 const one = (value: number) => value.toFixed(1);
+
+/** The readout, one figure at a time. One frozen readout stays on screen
+ *  and the lit figure follows these as they scroll. */
+const READOUT_STEPS: TourStep[] = [
+  {
+    lit: "days",
+    kicker: "Productive days per month",
+    title: "The headline number.",
+    text: "Of 22 working days in a month, how many this team is estimated to get full value from. It is the number a leader feels first, so it is the one in colour.",
+  },
+  {
+    lit: "teamQ",
+    kicker: "TeamQ",
+    title: "The team's environment and habits, in one figure.",
+    text: "A composite from 0 to 100, built from all eleven factors and weighted by how much each one matters. Higher means the conditions this team works and lives in are closer to their best.",
+  },
+  {
+    lit: "mhq",
+    kicker: "MHQ",
+    title: "Capacity to perform.",
+    text: "The team\u2019s average Mental Health Quotient, the measure from our partner Sapien Labs that TeamQ is built on. It estimates how much capacity the people on this team have to bring to their work.",
+  },
+  {
+    lit: "change",
+    kicker: "Change from today",
+    title: "Every figure shows how far it has moved.",
+    text: "The team starts as they are today. Move anything and each figure shows its change from that starting point, up or down.",
+  },
+];
 
 /** A section in the editorial frame: heading left, content right. */
 function Part({ kicker, title, children, cls }: { kicker: string; title: string; children: React.ReactNode; cls?: string }) {
@@ -22,31 +52,6 @@ function Part({ kicker, title, children, cls }: { kicker: string; title: string;
         {children}
       </div>
     </section>
-  );
-}
-
-/** The readout, frozen at the baseline, with one figure lit and the rest
- *  dimmed. The same markup the live readout uses, so it looks identical. */
-function ReadoutExhibit({ baseline, lit }: { baseline: TeaserResult; lit: "days" | "teamQ" | "mhq" | "change" }) {
-  const dim = (part: string) => (lit === "change" || lit === part ? undefined : true);
-  return (
-    <div className="teaser-readout guide-exhibit" aria-hidden="true">
-      <div className="teaser-headline" data-dim={dim("days")}>
-        <span className="teaser-label">Productive days per month</span>
-        <span className="teaser-days">{one(baseline.days)}</span>
-        <span className="teaser-delta" data-lit={lit === "change" || undefined}>no change</span>
-      </div>
-      <div className="teaser-minor" data-dim={dim("teamQ")}>
-        <span className="teaser-label">TeamQ</span>
-        <span className="teaser-figure">{one(baseline.teamQ)}</span>
-        <span className="teaser-delta" data-lit={lit === "change" || undefined}>no change</span>
-      </div>
-      <div className="teaser-minor" data-dim={dim("mhq")}>
-        <span className="teaser-label">MHQ</span>
-        <span className="teaser-figure">{one(baseline.mhq)}</span>
-        <span className="teaser-delta" data-lit={lit === "change" || undefined}>no change</span>
-      </div>
-    </div>
   );
 }
 
@@ -142,45 +147,11 @@ export function TeamQIntro({ baseline }: { baseline: TeaserResult }) {
         </div>
       </Part>
 
-      <Part kicker="Productive days per month" title="The headline number." cls="guide-step">
-        <div className="guide-step-body">
-          <p className="L-mid">
-            Of 22 working days in a month, how many this team is estimated to get full value from. It is the
-            number a leader feels first, so it is the one in colour.
-          </p>
-          <ReadoutExhibit baseline={baseline} lit="days" />
+      <section className="L-sec guide-tour">
+        <div className="L-wrap">
+          <ReadoutTour baseline={baseline} steps={READOUT_STEPS} />
         </div>
-      </Part>
-
-      <Part kicker="TeamQ" title="The team's environment and habits, in one figure." cls="guide-step">
-        <div className="guide-step-body">
-          <p className="L-mid">
-            A composite from 0 to 100, built from all eleven factors and weighted by how much each one matters.
-            Higher means the conditions this team works and lives in are closer to their best.
-          </p>
-          <ReadoutExhibit baseline={baseline} lit="teamQ" />
-        </div>
-      </Part>
-
-      <Part kicker="MHQ" title="Capacity to perform." cls="guide-step">
-        <div className="guide-step-body">
-          <p className="L-mid">
-            The team&rsquo;s average Mental Health Quotient, the measure from our partner Sapien Labs that TeamQ is
-            built on. It estimates how much capacity the people on this team have to bring to their work.
-          </p>
-          <ReadoutExhibit baseline={baseline} lit="mhq" />
-        </div>
-      </Part>
-
-      <Part kicker="Change from today" title="Every figure shows how far it has moved." cls="guide-step">
-        <div className="guide-step-body">
-          <p className="L-mid">
-            The team starts as they are today. Move anything and each figure shows its change from that
-            starting point, up or down.
-          </p>
-          <ReadoutExhibit baseline={baseline} lit="change" />
-        </div>
-      </Part>
+      </section>
 
       <Part kicker="Work environment" title="Nine factors, rated 1 to 9." cls="guide-step">
         <div className="guide-step-body">

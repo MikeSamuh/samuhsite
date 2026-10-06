@@ -45,6 +45,45 @@
   margin-bottom: 0;
 }
 
+/* the readout tour: steps scroll on the left, one frozen readout stays on
+   the right and lights up the figure the current step is about */
+.tour {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+  gap: 64px;
+  align-items: start;
+}
+
+.tour-steps {
+  display: grid;
+}
+
+.tour-step {
+  min-height: 70vh;
+  display: grid;
+  align-content: center;
+  gap: 0;
+  opacity: 0.35;
+  transition: opacity var(--dur) var(--ease);
+}
+
+.tour-step[data-active] {
+  opacity: 1;
+}
+
+.tour-step .sec {
+  margin: 0 0 16px;
+}
+
+.tour-step .L-mid {
+  margin-bottom: 0;
+}
+
+.tour-stage {
+  position: sticky;
+  top: calc(var(--nav-h, 0px) + 20vh);
+}
+
 /* a frozen copy of a piece of the tool. Not sticky, not interactive */
 .guide-exhibit {
   position: static;
@@ -479,6 +518,24 @@
 /* ---------- narrow ---------- */
 
 @container page (max-width: 760px) {
+  /* on a phone the readout sits at the top and the steps scroll under it */
+  .tour {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .tour-stage {
+    order: -1;
+    top: var(--nav-h, 0px);
+    z-index: 2;
+    padding-bottom: 12px;
+    background: var(--base);
+  }
+
+  .tour-step {
+    min-height: 60vh;
+  }
+
   .teaser-inputs,
   .teaser-ask {
     grid-template-columns: 1fr;
@@ -521,6 +578,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .tour-step,
   .teaser-days,
   .teaser-figure,
   .teaser-gauge span,
