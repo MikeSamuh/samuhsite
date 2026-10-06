@@ -45,30 +45,37 @@
   margin-bottom: 0;
 }
 
-/* the readout tour: steps scroll on the left, one frozen readout stays on
-   the right and lights up the figure the current step is about */
+/* the readout tour. The track is one screen tall per step; the stage pins
+   inside it and shows one step and one readout at a time */
 .tour {
+  height: calc(var(--tour-steps, 4) * 100vh);
+}
+
+.tour-stage {
+  position: sticky;
+  top: var(--nav-h, 0px);
+  height: calc(100vh - var(--nav-h, 0px));
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
   gap: 64px;
-  align-items: start;
+  align-items: center;
 }
 
+/* the steps share one cell and take turns */
 .tour-steps {
   display: grid;
 }
 
 .tour-step {
-  min-height: 70vh;
-  display: grid;
-  align-content: center;
-  gap: 0;
-  opacity: 0.35;
+  grid-area: 1 / 1;
+  opacity: 0;
+  pointer-events: none;
   transition: opacity var(--dur) var(--ease);
 }
 
 .tour-step[data-active] {
   opacity: 1;
+  pointer-events: auto;
 }
 
 .tour-step .sec {
@@ -79,9 +86,9 @@
   margin-bottom: 0;
 }
 
-.tour-stage {
-  position: sticky;
-  top: calc(var(--nav-h, 0px) + 20vh);
+.tour-count {
+  grid-area: 2 / 1;
+  margin: 24px 0 0;
 }
 
 /* a frozen copy of a piece of the tool. Not sticky, not interactive */
@@ -125,6 +132,10 @@
   color: var(--text);
   font-family: var(--font-body);
   font-size: 16px;
+}
+
+.guide-tour {
+  padding: 0;
 }
 
 .guide-handoff .L-wrap {
@@ -518,22 +529,15 @@
 /* ---------- narrow ---------- */
 
 @container page (max-width: 760px) {
-  /* on a phone the readout sits at the top and the steps scroll under it */
-  .tour {
-    grid-template-columns: 1fr;
-    gap: 0;
-  }
-
+  /* on a phone the readout sits above the step */
   .tour-stage {
-    order: -1;
-    top: var(--nav-h, 0px);
-    z-index: 2;
-    padding-bottom: 12px;
-    background: var(--base);
+    grid-template-columns: 1fr;
+    gap: 28px;
+    align-content: center;
   }
 
-  .tour-step {
-    min-height: 60vh;
+  .tour-stage .teaser-readout {
+    order: -1;
   }
 
   .teaser-inputs,
