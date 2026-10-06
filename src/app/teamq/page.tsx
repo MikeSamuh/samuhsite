@@ -17,7 +17,7 @@ export default function TeamQPage() {
   const baseline = score(BASELINE);
   return (
     <DraftShell draft="b">
-      <TeamQIntro />
+      <TeamQIntro baseline={baseline} />
       <section className="L-sec teaser-sec" id="tool" aria-label="The TeamQ demonstration">
         <div className="L-wrap">
           <TeamQTeaser baseline={baseline} />
