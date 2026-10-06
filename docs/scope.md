@@ -14,7 +14,7 @@ shape of the engagement and the functions the site has to perform.
 |---|---|
 | Home | The argument, then conversion |
 | Solutions | Self-guided, Supported, Guided as sections on one page, plus testimonials |
-| Process | The team process. Structure still TBD |
+| Process | The three initial phases of the team process, expanded. Content from Calina |
 | Insights | Foundations, case studies, articles and video with transcripts, Sapien Labs Work Culture Report |
 | About | About SAMUH, team profiles, Sapien Labs. Channel partners and coaching teams TBA |
 | Contact | Form plus calendar booking |
@@ -29,7 +29,9 @@ page and the homepage keeps a short version that links to it.
 
 ## Home page, draft order
 
-From the team journey map. Sequence and placement will change.
+From the team journey map. On 1 Oct the client asked for a shorter scroll:
+combine or remove sections. The twelve below are the full list the shortened
+version is cut from, not the target.
 
 | # | Section | Note |
 |---|---|---|
@@ -47,6 +49,9 @@ From the team journey map. Sequence and placement will change.
 | 12 | Get Started | Entry to the intake assessment. May move off the homepage |
 
 ## Get Started: the intake assessment
+
+Built as the TeamQ explore tool in section 9 of the home. One thing, not two.
+Spec in `docs/sprint-intakes.md`, Flow 2.
 
 One person, usually a team leader, reflects on how their team scores across the
 Sapien Labs team environment factors.
@@ -86,8 +91,9 @@ central in every sentence.
 
 ## Partners and logos
 
-- Sapien Labs is the primary partner. Credited as "in partnership with Sapien
-  Labs" near the logo in the header, and again alongside the data sections
+- Sapien Labs is the primary partner. Credited as "Partnered with Sapien
+  Labs" in text next to the logo in the header, no second logo or icon, and
+  again alongside the data sections
 - Client logos included by default, except where a contract restricts use
 - Sankora: check the contract for a logo restriction before publishing the case
   study or the logo
@@ -132,21 +138,24 @@ curate, or leave. Redirects built either way.
 
 ## Lead capture
 
-| Capture point | Behaviour |
-|---|---|
-| Get Started | Intake assessment, routes to results |
-| Assessment results | On screen. Email or booking offered to save or share |
-| Interactive data tool | Optional email for the full breakdown |
-| Solutions CTAs | One per tier, tagged by tier |
-| Insights and Foundations | Email offered after the content, not before |
-| Homepage closing CTA | Booking first, form second |
-| Footer | Contact details listed |
+Three flows, agreed 1 Oct. Every one posts to Clarify through the same server
+route.
+
+| Flow | Where | What it does |
+|---|---|---|
+| 1. Contact | `/contact` | General inquiry form. Email, and phone as a direct option |
+| 2. TeamQ teaser | `/teamq` | An intro on what TeamQ does and how SAMUH uses it, then the visitor explores the toggles freely. Nothing gated. An optional ask moves the intrigued into a contact flow |
+| 3. Talk to us | `/solutions` and `/` | Books time on Jake's calendar directly, with one or two qualifying questions first |
+
+Secondary capture points from the original scope still apply where they fit:
+email offered after Insights content rather than before, and contact details
+in the footer.
 
 Lead record: name, email, organization, message, goal, assessment answers where
 given, recommended tier, source and campaign.
 
-**Open:** destination for submitted leads. Inbox, shared sheet, or CRM. Owner
-is Jake DeBerry.
+Leads post to Clarify, SAMUH's CRM. Jake owns it. See
+`docs/crm-integration.md`.
 
 ## Out of scope
 

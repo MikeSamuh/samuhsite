@@ -813,15 +813,19 @@
 .L-arc-ball-core { fill: var(--arc-gold); }
 .L-arc-ball-glow { fill: var(--arc-gold); opacity: 0.55; }
 /* what the ball is beside lights up, and its icon glows gold */
-.L-arc-item .L-arc-what, .L-arc-item .L-arc-note, .L-arc-item .L-arc-art { transition: color var(--dur) var(--ease), box-shadow var(--dur) var(--ease), transform var(--dur) var(--ease); }
+/* quick to light up, slow to let go: the off state lingers a beat, then
+   fades over three times the on time */
+.L-arc-item { --arc-off: calc(var(--dur) * 3); --arc-linger: 240ms; }
+.L-arc-item .L-arc-what, .L-arc-item .L-arc-note, .L-arc-item .L-arc-art { transition: color var(--arc-off) var(--ease) var(--arc-linger), box-shadow var(--arc-off) var(--ease) var(--arc-linger), transform var(--arc-off) var(--ease) var(--arc-linger); }
+.L-arc-item[data-on] .L-arc-what, .L-arc-item[data-on] .L-arc-note, .L-arc-item[data-on] .L-arc-art { transition: color var(--dur) var(--ease), box-shadow var(--dur) var(--ease), transform var(--dur) var(--ease); }
 .L-arc-item[data-on] .L-arc-what { color: var(--arc-gold); }
 .L-arc-item[data-on] .L-arc-note { color: var(--text); }
 .L-arc-item[data-on] .L-arc-art { box-shadow: 0 0 0 1.5px var(--arc-gold), 0 0 28px color-mix(in srgb, var(--arc-gold) 55%, transparent); }
 /* the six icons: 30 percent until the ball is level with them, then full and a step larger */
 .L-arc-art.L-arc-icon { background: transparent; box-shadow: none; border: 0; padding: 0; display: grid; place-items: center; color: transparent; overflow: visible; }
-.L-arc-icon img { width: 100%; height: 100%; object-fit: contain; opacity: 0.3; transform: scale(1); transition: opacity var(--dur) var(--ease), transform calc(var(--dur) * 1.4) var(--ease); }
+.L-arc-icon img { width: 100%; height: 100%; object-fit: contain; opacity: 0.3; transform: scale(1); transition: opacity var(--arc-off) var(--ease) var(--arc-linger), transform var(--arc-off) var(--ease) var(--arc-linger); }
 .L-arc-item[data-on] .L-arc-art.L-arc-icon { box-shadow: none; }
-.L-arc-item[data-on] .L-arc-icon img { opacity: 1; transform: scale(1.28); }
+.L-arc-item[data-on] .L-arc-icon img { opacity: 1; transform: scale(1.28); transition: opacity var(--dur) var(--ease), transform calc(var(--dur) * 1.4) var(--ease); }
 .L-arc-item { position: relative; display: grid; grid-template-columns: 1fr var(--arc-lane) 1fr; align-items: center; min-height: 168px; }
 .L-arc-copy { display: grid; gap: 6px; text-align: right; justify-items: end; padding: 12px 0; }
 .L-arc-art {
@@ -1288,16 +1292,16 @@
 }
 /* ---------- draft B (Wilfred's 28 September edits) ---------- */
 
-.D-stage[data-draft="b"] .L-dict { max-width: 72ch; }
-.D-stage[data-draft="b"] .L-dict-word { font-size: clamp(44px, 5.2cqw, 76px); }
-.D-stage[data-draft="b"] .L-dict-pron { font-size: 18px; }
-.D-stage[data-draft="b"] .L-dict-pos { font-size: 16px; }
-.D-stage[data-draft="b"] .L-dict-defs { font-size: clamp(18px, 1.7cqw, 22px); }
-.D-stage[data-draft="b"] .L-dict-hi { color: var(--accent-2); }
+.D-stage:is([data-draft="b"], [data-draft="working"]) .L-dict { max-width: 72ch; }
+.D-stage:is([data-draft="b"], [data-draft="working"]) .L-dict-word { font-size: clamp(44px, 5.2cqw, 76px); }
+.D-stage:is([data-draft="b"], [data-draft="working"]) .L-dict-pron { font-size: 18px; }
+.D-stage:is([data-draft="b"], [data-draft="working"]) .L-dict-pos { font-size: 16px; }
+.D-stage:is([data-draft="b"], [data-draft="working"]) .L-dict-defs { font-size: clamp(18px, 1.7cqw, 22px); }
+.D-stage:is([data-draft="b"], [data-draft="working"]) .L-dict-hi { color: var(--accent-2); }
 .L-thesis-eyebrow { margin: 0 0 14px; }
 .L-thesis-eyebrow::after { display: none; }
-.D-stage[data-draft="b"] .L-dict-say { width: 48px; height: 48px; }
-.D-stage[data-draft="b"] .L-dict-say svg { width: 27px; height: 27px; }
+.D-stage:is([data-draft="b"], [data-draft="working"]) .L-dict-say { width: 48px; height: 48px; }
+.D-stage:is([data-draft="b"], [data-draft="working"]) .L-dict-say svg { width: 27px; height: 27px; }
 /* thesis and dictionary side by side on desktop */
 .L-thesis-duo { grid-template-columns: 1.1fr 1fr; column-gap: clamp(32px, 5cqw, 80px); align-items: start; }
 .L-thesis-duo .L-dict { max-width: none; border-top: 0; border-bottom: 0; border-left: var(--rule-fat) solid var(--accent-2); padding: 4px 0 4px 22px; }
@@ -1305,10 +1309,10 @@
 .L-page[data-comp="comp-editorial"] .L-s-thesis[data-v="under"] .L-thesis-duo .L-cap { text-align: left; }
 @container page (max-width: 900px) { .L-thesis-duo { grid-template-columns: 1fr; row-gap: 32px; } }
 /* the thesis under the hero carries the leak line, so it reads as the argument, not a caption */
-.D-stage[data-draft="b"] .L-s-thesis .L-big { font-size: clamp(30px, 3.6cqw, 50px); max-width: 26ch; line-height: 1.15; }
+.D-stage:is([data-draft="b"], [data-draft="working"]) .L-s-thesis .L-big { font-size: clamp(30px, 3.6cqw, 50px); max-width: 26ch; line-height: 1.15; }
 /* copy over the hero video, editorial alignment, a scrim so it reads */
-.D-stage[data-draft="b"] .L-s-hero[data-v="cinema"] .L-video { position: absolute; inset: 0; border: 0; border-radius: 0; z-index: 0; background: var(--base); }
-.D-stage[data-draft="b"] .L-s-hero[data-v="cinema"] .L-video::after {
+.D-stage:is([data-draft="b"], [data-draft="working"]) .L-s-hero[data-v="cinema"] .L-video { position: absolute; inset: 0; border: 0; border-radius: 0; z-index: 0; background: var(--base); }
+.D-stage:is([data-draft="b"], [data-draft="working"]) .L-s-hero[data-v="cinema"] .L-video::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -1316,7 +1320,7 @@
               linear-gradient(180deg, transparent 50%, var(--base) 100%);
   pointer-events: none;
 }
-.D-stage[data-draft="b"] .L-s-hero[data-v="cinema"] .L-video-hint { top: auto; left: auto; right: 24px; bottom: 24px; transform: none; z-index: 1; }
-.D-stage[data-draft="b"] .L-s-hero[data-v="cinema"] .L-hero-grid { min-height: min(86vh, 820px); }
-.D-stage[data-draft="b"] .L-s-hero[data-v="cinema"] .L-hero-copy { padding-top: calc(140px * var(--space, 1)); }
-.D-stage[data-draft="b"] .L-s-hero[data-v="cinema"] h1.display { font-size: clamp(42px, 6.4cqw, 92px); }
+.D-stage:is([data-draft="b"], [data-draft="working"]) .L-s-hero[data-v="cinema"] .L-video-hint { top: auto; left: auto; right: 24px; bottom: 24px; transform: none; z-index: 1; }
+.D-stage:is([data-draft="b"], [data-draft="working"]) .L-s-hero[data-v="cinema"] .L-hero-grid { min-height: min(86vh, 820px); }
+.D-stage:is([data-draft="b"], [data-draft="working"]) .L-s-hero[data-v="cinema"] .L-hero-copy { padding-top: calc(140px * var(--space, 1)); }
+.D-stage:is([data-draft="b"], [data-draft="working"]) .L-s-hero[data-v="cinema"] h1.display { font-size: clamp(42px, 6.4cqw, 92px); }

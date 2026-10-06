@@ -42,6 +42,8 @@ credible, it is the wrong change.
   transitions. Neither is installed yet; wait for the direction decision
 - Headless CMS for foundations, insights, case studies, team, testimonials and
   solutions
+- Clarify (clarify.ai) is the CRM. All lead capture posts there through one
+  server route. API key is server-side only, never `NEXT_PUBLIC_`
 - Vercel. `main` is production, every branch gets a preview URL
 
 ## Commands
@@ -76,6 +78,11 @@ called TeamQ. Ours is a separate intake tool with its own logic. It must not
 share the TeamQ algorithm, must never be labelled validated or scientific, and
 must never be presented as diagnostic.
 
+`/teamq` carries a **TeamQ teaser**: it explains what TeamQ does and lets
+the visitor play with toggles. That is fine. What is not fine is any copy
+implying the toggles are TeamQ, or that the number they produce is a TeamQ
+result. "See how TeamQ thinks" is allowed. "Your TeamQ score" is not.
+
 **5. No accounts, payments or dashboard.** Not in this build. Lead records, not
 user records. If a request implies authentication, Stripe, gated content or
 stored assessment history, it needs a conversation, not an implementation.
@@ -103,6 +110,13 @@ From the signed scope. These are contractual, not aspirational.
 
 ## Working style
 
+- **All edits go to the working draft, `/draft/working`.** It began on
+  5 October 2026 as an exact copy of Draft B. B at `/draft/b` is frozen as the
+  reference the client reacted to; A and C are retired. Never edit B's entry
+  in `src/app/draft/drafts.ts` or its folder. Section, page and style edits in
+  the shared files (`src/app/layout/*`) are fine, that is where the site
+  lives; a change that should apply only to the working draft hangs off
+  `data-draft="working"` or the `working` entry in `drafts.ts`
 - Prefer editing an existing file to creating a new one
 - Branch, review on the Vercel preview URL, then merge
 - **Local only until told to push.** Commit on a branch as much as you like,
@@ -123,5 +137,11 @@ From the signed scope. These are contractual, not aspirational.
 | `docs/content.md` | You need to know who owns a piece of copy, or what we may claim |
 | `docs/assets.md` | You need a logo, font, photo or video |
 | `docs/conventions.md` | You are writing new components |
-| `docs/roadmap.md` | You need to know what week we are in |
+| `docs/milestones.md` | You need to know what is in flight and what is next |
+| `docs/milestones-runbook.md` | Wilfred is driving M2 to M5 step by step |
+| `docs/crm-integration.md` | You are touching any form, the assessment result, or lead capture |
+| `docs/sprint-intakes.md` | You are building /contact, /talk, the TeamQ teaser, or /api/lead |
+| `docs/sprint-intakes-runbook.md` | Wilfred is driving the sprint step by step. Follow the step he pasted, not the whole spec at once |
+| `docs/insights-inventory.md` | You are working on Insights or the content migration |
+| `docs/insights-pipeline.md` | You are turning a transcript into an Insights post |
 | `docs/decisions.md` | You are about to relitigate something |

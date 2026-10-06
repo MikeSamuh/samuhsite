@@ -214,3 +214,78 @@ testimonial and the case snippet SAMUH has published in its own decks, and
 visible TODO(content) where the research claim, the estimate and the
 remaining testimonials are theirs to supply. The word and the circles stay
 shared with B and C. B stays on the shared sections. — Wilfred and Claude
+
+**2026-09-30 — Leads go to Clarify.**
+SAMUH's CRM is Clarify (clarify.ai), owned by Jake. Every capture point posts
+through one server route to the Clarify API, with email fallback so an outage
+never loses a lead. Resolves the open lead-destination item in the scope.
+— Client, confirmed by Wilfred
+
+**2026-10-01 — Draft B is the direction.**
+Three full drafts were built at /draft/a, /draft/b and /draft/c. B is the one
+the client is reacting to and the live working draft. A and C retire and get
+deleted when B is promoted to the root. — Client
+
+**2026-10-01 — Sapien Labs credit is text only in the header.**
+"Partnered with Sapien Labs" next to the SAMUH logo. No Sapien icon, no second
+logo. — Client
+
+**2026-10-01 — Process page covers the three initial phases.**
+Not all six stages. Content expanded on those three, from Calina. The six
+stage arc at the bottom of the page is removed. — Client
+
+**2026-10-01 — Three lead capture flows.**
+Contact form on /contact, TeamQ teaser into contact on /, and Talk to us
+booking on Jake's calendar from /solutions and /. Replaces the seven capture
+point table in the original scope as the primary structure. — Wilfred
+
+**2026-10-01 — The homepage scroll gets shorter.**
+Sections combined or removed. The twelve section list in the scope is the
+source to cut from, not the target. — Client
+
+**2026-10-05 — Intake decisions.**
+Teaser shows all eleven simulator inputs, free exploration, no game, no
+optimizer; productive days is the headline; model is ported from the
+samuh-dashboard repo, which we have access to. Contact select is "What
+brings you here" (general, solutions, partnership, other); speaking and
+keynote path dropped. Booking is Google Calendar appointment schedules, not
+Cal.com; qualifying questions live on our form first, then the embed. Every
+intake emails Jake with Mike in CC; Clarify is additive. — Wilfred
+
+**2026-10-05 — The TeamQ teaser gets its own page, /teamq.**
+An intro on what the tool is and how SAMUH uses TeamQ in its process, then
+the tool. Results are never gated; the ask is optional, for visitors who are
+intrigued. "Get Started" becomes "Explore TeamQ" everywhere and points to
+/teamq. Home section 9 becomes a pitch and a button. Intro copy is our draft
+until the client supplies theirs. A page outside the signed scope, accepted.
+— Wilfred
+
+**2026-10-05 — A lead that reached nowhere is an error, not a success.**
+/api/lead returns ok unless every configured sink failed. Then it logs the
+lead, returns 502, and the form shows an error with the mailto. One sink
+failing still reads as success to the visitor. — Wilfred
+
+**2026-10-05 — Name is optional on the teaser ask, for now.**
+Required on contact and talk. Revisit when we have Clarify API access and
+know what the person record needs. — Wilfred
+
+**2026-10-05 — No dates on milestones. The Noom-style intake is the TeamQ
+explore tool.** Milestones close on their "done when" line, not a week.
+The only date is the three month term. The intake assessment from scope
+section 4 and the interactive data tool from section 9 are one component:
+the teaser, with insights and testimonials interlaced Noom-style. Motion is
+built section by section as we go, not as a separate pass. — Wilfred
+
+**2026-10-05 — The working draft replaces B as the draft that moves.**
+/draft/working is created as an exact copy of Draft B on this date: same
+layout hash, nav, copy overrides and pages. From here on every edit lands on
+the working draft. B at /draft/b is frozen as the reference the client
+reacted to on 1 October, so the two can be compared side by side. A and C
+stay retired and are deleted with B when the working draft is promoted to the
+root. Supersedes "Draft B is the direction" as the place edits go; the
+direction itself is unchanged. — Wilfred
+
+**2026-10-05 — The teaser is a copy of the simulator, models included.**
+We take samuh-dashboard as deployed on Railway and run the same scoring on
+our own server, on the dummy team only. The two LightGBM models are exported
+into the site repo. No proxy to Railway, no approximation. — Wilfred
