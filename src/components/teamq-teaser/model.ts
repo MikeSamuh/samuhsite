@@ -112,6 +112,9 @@ export const BASELINE: Record<string, number> = {
 /** How many people are in the demo team. */
 export const TEAM_SIZE = 18;
 
+/** The challenge: how many factors the visitor may move. */
+export const CHALLENGE_MOVES = 3;
+
 /** True because the scoring behind /api/teaser returns the simulator's own
  *  numbers: see the check recorded in src/lib/teaser/score.ts. If that ever
  *  stops being so, set this false and the teaser renders no number anywhere. */

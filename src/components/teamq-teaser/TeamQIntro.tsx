@@ -211,7 +211,7 @@ export function TeamQIntro({ baseline }: { baseline: TeaserResult }) {
           <p className="teaser-intro-note">
             The team below is a demonstration, not yours. Nothing on this page is a result for your team.
           </p>
-          <p className="L-big">Now try it.</p>
+          <p className="L-big">Now try it. There is a challenge waiting.</p>
         </div>
       </section>
     </>

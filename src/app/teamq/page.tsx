@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { BASELINE } from "@/components/teamq-teaser/model";
+import { BASELINE, CHALLENGE_MOVES } from "@/components/teamq-teaser/model";
 import { TeamQIntro } from "@/components/teamq-teaser/TeamQIntro";
 import { TeamQTeaser } from "@/components/teamq-teaser/TeamQTeaser";
-import { score } from "@/lib/teaser/score";
+import { bestForProductiveDays, score } from "@/lib/teaser/score";
 import DraftShell from "../draft/DraftShell";
 
 export const metadata: Metadata = {
@@ -15,12 +15,14 @@ export const metadata: Metadata = {
 export default function TeamQPage() {
   // scored here, on the server, so the page arrives with its numbers
   const baseline = score(BASELINE);
+  const { values, levers, score: best } = bestForProductiveDays(CHALLENGE_MOVES);
+  const answer = { values, levers, days: best.days, teamQ: best.teamQ, mhq: best.mhq };
   return (
     <DraftShell draft="b">
       <TeamQIntro baseline={baseline} />
       <section className="L-sec teaser-sec" id="tool" aria-label="The TeamQ demonstration">
         <div className="L-wrap">
-          <TeamQTeaser baseline={baseline} />
+          <TeamQTeaser baseline={baseline} answer={answer} />
         </div>
       </section>
     </DraftShell>

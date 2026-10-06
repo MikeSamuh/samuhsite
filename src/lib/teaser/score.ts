@@ -162,3 +162,63 @@ export function score(values: Record<string, number>): TeaserScore {
     days: WORKING_DAYS - avgUnprod,
   };
 }
+
+/** The challenge's answer: which `k` factors, moved to which values, give
+ *  this team the most productive days. The same search the simulator's
+ *  Optimize runs for its productivity goal (optimization.py,
+ *  candidate_levels and the lever search): every combination of k factors,
+ *  each at its current value, 7 (work factors only) or its maximum. */
+export interface Answer {
+  values: Record<string, number>;
+  levers: { id: string; label: string; value: number }[];
+  score: TeaserScore;
+}
+
+function candidateLevels(id: string, current: number, max: number): number[] {
+  const levels = new Set([current, max]);
+  if (id !== "exercise_freq_ord" && id !== "UPF_freq_ord") levels.add(Math.min(Math.max(7, current), max));
+  return [...levels];
+}
+
+function combinations<T>(items: T[], k: number): T[][] {
+  if (k === 0) return [[]];
+  return items.flatMap((item, index) =>
+    combinations(items.slice(index + 1), k - 1).map((rest) => [item, ...rest]),
+  );
+}
+
+let cached: Map<number, Answer> | undefined;
+
+export function bestForProductiveDays(k = 3): Answer {
+  cached ??= new Map();
+  const hit = cached.get(k);
+  if (hit) return hit;
+
+  let best: Answer | undefined;
+  for (const levers of combinations(FACTORS, k)) {
+    const levels = levers.map((factor) => candidateLevels(factor.id, BASELINE[factor.id], factor.max));
+    const tuples = levels.reduce<number[][]>(
+      (acc, options) => acc.flatMap((tuple) => options.map((option) => [...tuple, option])),
+      [[]],
+    );
+    for (const tuple of tuples) {
+      const values = { ...BASELINE };
+      levers.forEach((factor, index) => {
+        values[factor.id] = tuple[index];
+      });
+      const scored = score(values);
+      if (!best || scored.days > best.score.days) {
+        best = {
+          values,
+          levers: levers
+            .map((factor, index) => ({ id: factor.id, label: factor.label, value: tuple[index] }))
+            .filter((lever) => lever.value !== BASELINE[lever.id]),
+          score: scored,
+        };
+      }
+    }
+  }
+  if (!best) throw new Error("bestForProductiveDays: nothing searched");
+  cached.set(k, best);
+  return best;
+}

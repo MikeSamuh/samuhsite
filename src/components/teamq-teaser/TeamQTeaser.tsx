@@ -12,6 +12,7 @@ import { EMAIL_SHAPE } from "@/lib/lead";
 import {
   BASELINE,
   BASELINE_AVERAGES,
+  CHALLENGE_MOVES,
   FACTORS,
   GROUP_LABELS,
   LIFESTYLE_HINTS,
@@ -31,6 +32,12 @@ export interface TeaserResult {
 
 type Values = Record<string, number>;
 
+/** The optimizer's best setting for productive days within CHALLENGE_MOVES. */
+export interface Answer extends TeaserResult {
+  values: Values;
+  levers: { id: string; label: string; value: number }[];
+}
+
 /** long enough to skip the settings a dragged slider passes through */
 const SETTLE_MS = 120;
 
@@ -46,15 +53,39 @@ function change(now: number, base: number, unit = ""): string {
 const atBaseline = (values: Values) =>
   FACTORS.every((factor) => values[factor.id] === BASELINE[factor.id]);
 
+const movedCount = (values: Values) =>
+  FACTORS.filter((factor) => values[factor.id] !== BASELINE[factor.id]).length;
+
+/** "Pride & Purpose, Exercise and Job Security" */
+function list(items: string[]): string {
+  if (items.length <= 1) return items.join("");
+  return `${items.slice(0, -1).join(", ")} and ${items[items.length - 1]}`;
+}
+
 /** Flow 2. The simulator's team mode on a demonstration team: eleven inputs,
- *  a live readout, and an optional ask. Nothing is gated.
- *  Spec: docs/sprint-intakes.md, "Flow 2". */
-export function TeamQTeaser({ baseline }: { baseline: TeaserResult }) {
+ *  a live readout, a challenge with an answer, and the ask after the answer.
+ *  Nothing is gated. Spec: docs/sprint-intakes.md, "Flow 2". */
+export function TeamQTeaser({ baseline, answer }: { baseline: TeaserResult; answer: Answer }) {
   const [values, setValues] = useState<Values>(BASELINE);
   const [result, setResult] = useState<TeaserResult>(baseline);
   const [stale, setStale] = useState(false);
   const [failed, setFailed] = useState(false);
   const [touched, setTouched] = useState(false);
+  const [best, setBest] = useState<number>();
+  const [revealed, setRevealed] = useState(false);
+  const answerRef = useRef<HTMLDivElement>(null);
+
+  // the visitor's best within the rules, kept as the figures land
+  useEffect(() => {
+    if (stale || revealed) return;
+    const moves = movedCount(values);
+    if (moves === 0 || moves > CHALLENGE_MOVES) return;
+    setBest((current) => (current === undefined || result.days > current ? result.days : current));
+  }, [result, stale, values, revealed]);
+
+  useEffect(() => {
+    if (revealed) answerRef.current?.focus();
+  }, [revealed]);
 
   useEffect(() => {
     if (!MODEL_VERIFIED) return;
@@ -101,8 +132,14 @@ export function TeamQTeaser({ baseline }: { baseline: TeaserResult }) {
     }
   };
 
+  const reveal = () => {
+    setValues(answer.values);
+    setRevealed(true);
+  };
+
   const environment = FACTORS.filter((factor) => factor.group === "environment");
   const lifestyle = FACTORS.filter((factor) => factor.group === "lifestyle");
+  const moves = movedCount(values);
 
   return (
     <div className="teaser">
@@ -115,6 +152,25 @@ export function TeamQTeaser({ baseline }: { baseline: TeaserResult }) {
           </span>
         ) : null}
       </p>
+
+      {MODEL_VERIFIED ? (
+        <div className="teaser-challenge">
+          <p className="teaser-challenge-title">
+            Your challenge: can you optimize for productive days?
+          </p>
+          <p>
+            Move up to {CHALLENGE_MOVES} factors and get this team as many productive days as you can. When
+            you are done, scroll down and see the answer.
+          </p>
+          <p className="teaser-challenge-status" aria-live="polite">
+            {revealed
+              ? "That is the answer, applied below."
+              : moves === 0
+                ? "Nothing moved yet."
+                : `${moves} of ${CHALLENGE_MOVES} factors moved${moves > CHALLENGE_MOVES ? ", which is more than the challenge allows" : ""}.${best !== undefined ? ` Your best so far: ${one(best)} days.` : ""}`}
+          </p>
+        </div>
+      ) : null}
 
       {MODEL_VERIFIED ? (
         <div className="teaser-readout" data-stale={stale} aria-live="polite" aria-atomic="true">
@@ -166,7 +222,35 @@ export function TeamQTeaser({ baseline }: { baseline: TeaserResult }) {
         </fieldset>
       </div>
 
-      {touched ? <Ask values={values} /> : null}
+      {MODEL_VERIFIED ? (
+        <div className="teaser-answer" ref={answerRef} tabIndex={-1}>
+          {revealed ? (
+            <>
+              <p className="teaser-ask-title">The answer, for this team.</p>
+              <p className="L-mid">
+                The most productive days within {CHALLENGE_MOVES} moves come from taking{" "}
+                {list(answer.levers.map((lever) => `${lever.label} to ${lever.value}`))}:{" "}
+                <strong>{one(answer.days)} productive days a month</strong>, {change(answer.days, baseline.days)} on
+                today
+                {best !== undefined ? `. Your best was ${one(best)}` : ""}.
+              </p>
+              <p className="L-mid">
+                That is this demonstration team. Every team leaks somewhere different, which is why the first
+                step with a real team is finding out where.
+              </p>
+            </>
+          ) : (
+            <>
+              <p className="L-mid">Done exploring? See which {CHALLENGE_MOVES} moves the model would make.</p>
+              <button className="btn" type="button" onClick={reveal}>
+                Show me the answer <span className="arrow">&rarr;</span>
+              </button>
+            </>
+          )}
+        </div>
+      ) : null}
+
+      {revealed || !MODEL_VERIFIED ? <Ask values={values} /> : null}
     </div>
   );
 }
@@ -300,9 +384,9 @@ function Ask({ values }: { values: Values }) {
     <section className="teaser-ask" aria-labelledby="teaser-ask-title">
       <div>
         <h2 className="teaser-ask-title" id="teaser-ask-title">
-          Want to see this for your team?
+          Want to get your team&rsquo;s TeamQ?
         </h2>
-        <p>This is a demonstration team. Leave your details and we will talk about yours.</p>
+        <p>Leave your details and a person at SAMUH will be in touch about measuring your team.</p>
       </div>
       <form className="lead-form" ref={form} onSubmit={onSubmit} noValidate>
         <Field label="Email" name="email" type="email" autoComplete="email" required error={error} />
