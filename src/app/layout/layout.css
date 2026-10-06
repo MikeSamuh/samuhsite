@@ -705,15 +705,13 @@
 }
 
 @container page (max-width: 560px) {
-  /* the bar shows the two marks at every scroll position: the full
-     wordmarks do not fit beside the call to action and the burger */
+  /* the bar shows the Samuh mark at every scroll position: the full
+     wordmark does not fit beside the call to action and the burger */
   .L-nav .L-brand { gap: 12px; }
   .L-nav .L-brand-samuh { width: calc(30px * 181 / 240); }
-  .L-nav .L-brand-sapien { width: calc(30px * 243 / 240); grid-template-rows: 0 auto; row-gap: 0; }
-  .L-nav .L-brand-samuh .L-brand-full, .L-nav .L-brand-sapien .L-brand-full, .L-nav .L-brand-sapien .L-brand-powered { opacity: 0; }
-  .L-nav .L-brand-sapien .L-brand-full { transform: translateX(-12px); }
-  .L-nav .L-brand-samuh .L-brand-mark, .L-nav .L-brand-sapien .L-brand-mark { opacity: 1; transform: none; }
-  .L-nav .L-brand-sapien .L-brand-mark { opacity: 0.9; }
+  .L-nav .L-brand-samuh .L-brand-full { opacity: 0; }
+  .L-nav .L-brand-samuh .L-brand-mark { opacity: 1; transform: none; }
+  .L-nav .L-brand-partner { font-size: 9px; }
   .L-overlay-foot { flex-direction: column; align-items: flex-start; gap: 20px; }
   .L-nav .L-cta { padding: 10px 14px; font-size: 13px; }
   .L-nav-icons[data-scrolled="true"] .L-nav { padding-top: 10px; padding-bottom: 10px; }
@@ -1219,44 +1217,31 @@
 .L-nav-icons .L-nav { border-bottom: 0; transition: padding var(--dur) var(--ease); }
 .L-nav-icons[data-scrolled="true"] .L-nav { padding-top: 12px; padding-bottom: 12px; }
 .L-brand { display: inline-flex; align-items: center; gap: 16px; }
-.L-brand-samuh, .L-brand-sapien { position: relative; display: inline-grid; align-items: center; justify-items: start; }
-.L-brand-samuh > *, .L-brand-sapien > img { grid-area: 1 / 1; }
-/* every logo is 30px tall, set by .L-nav .nav-logo img above */
+.L-brand-samuh { position: relative; display: inline-grid; align-items: center; justify-items: start; }
+.L-brand-samuh > * { grid-area: 1 / 1; }
+/* the logo is 30px tall, set by .L-nav .nav-logo img above */
 .L-brand img { width: auto; max-width: none; filter: brightness(0) invert(1); transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease); }
-.L-brand-sapien .L-brand-full { opacity: 0.9; }
-/* each cell is as wide as the logo it is showing, and the width eases, so
-   the rule and the Sapien mark glide left to sit an even 16px from the
+/* the cell is as wide as the logo it is showing, and the width eases, so
+   the rule and the partner line glide left to sit an even 16px from the
    Samuh mark once the page has scrolled. Widths are 30px tall by the PNG
-   aspect ratios: samuh-logo 960x285, samuh-icon 181x240, sapien-labs
-   820x240, sapien-icon 243x240 */
+   aspect ratios: samuh-logo 960x285, samuh-icon 181x240 */
 .L-brand-samuh { width: calc(30px * 960 / 285); transition: width var(--dur) var(--ease); }
-.L-brand-sapien { width: calc(30px * 820 / 240); transition: width var(--dur) var(--ease), row-gap var(--dur) var(--ease); }
 .L-nav-icons[data-scrolled="true"] .L-brand-samuh { width: calc(30px * 181 / 240); }
-.L-nav-icons[data-scrolled="true"] .L-brand-sapien { width: calc(30px * 243 / 240); }
-.L-brand-sapien { grid-template-rows: auto auto; row-gap: 3px; }
-.L-brand-sapien > img { grid-row: 2; }
-.L-brand-powered {
-  grid-row: 1;
+/* "Partnered with Sapien Labs" sits beside the logo at every scroll position */
+.L-brand-partner {
   font-family: var(--font-caption);
-  font-size: 8.5px;
-  letter-spacing: 0.16em;
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   white-space: nowrap;
   color: var(--muted);
-  transition: opacity var(--dur) var(--ease);
 }
 .L-brand-rule { width: var(--rule-thin); height: 30px; flex: none; background: var(--border); }
-/* at rest the full logos show; once scrolled, only the two marks. The Samuh
-   mark stays put and fades up in place; the Sapien mark arrives from the
-   right, out of where its wordmark was */
+/* at rest the full logo shows; once scrolled, only the mark, which stays
+   put and fades up in place */
 .L-brand-mark { opacity: 0; transform: translateY(-4px); pointer-events: none; }
-.L-brand-sapien .L-brand-mark { transform: translateX(28px); }
 .L-nav-icons[data-scrolled="true"] .L-brand-full { opacity: 0; transform: translateY(4px); }
-.L-nav-icons[data-scrolled="true"] .L-brand-sapien .L-brand-full { transform: translateX(-12px); }
 .L-nav-icons[data-scrolled="true"] .L-brand-mark { opacity: 1; transform: none; }
-.L-nav-icons[data-scrolled="true"] .L-brand-sapien .L-brand-mark { opacity: 0.9; }
-.L-nav-icons[data-scrolled="true"] .L-brand-powered { opacity: 0; }
-.L-nav-icons[data-scrolled="true"] .L-brand-sapien { grid-template-rows: 0 auto; row-gap: 0; }
 
 /* ---------- circles: motion and hover notes ---------- */
 

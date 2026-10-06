@@ -21,9 +21,9 @@ export interface NavProps {
   explore: boolean;
   /** which pages appear as links, in order. Default: every nav page but home */
   links?: PageId[];
-  /** "wordmark" is the Samuh logo alone. "icons" shows the Samuh mark and the
-   *  Sapien Labs mark at rest and swaps to both full logos once the page has
-   *  scrolled, with the nav stuck to the top */
+  /** "wordmark" is the Samuh logo alone. "icons" shows the Samuh wordmark
+   *  with "Partnered with Sapien Labs" beside it, and swaps the wordmark for
+   *  the Samuh mark once the page has scrolled, with the nav stuck to the top */
   brand?: "wordmark" | "icons";
   /** "in partnership with Sapien Labs" beside the wordmark, per the scope */
   partner?: boolean;
@@ -87,11 +87,7 @@ export function Nav({ page, go, menu, links: order, brand = "wordmark", partner 
               <Image className="L-brand-full" src="/samuh-logo.png" alt="SAMUH" width={960} height={LOGO_H} priority />
             </span>
             <span className="L-brand-rule" aria-hidden />
-            <span className="L-brand-sapien">
-              <span className="L-brand-powered">Powered by</span>
-              <Image className="L-brand-mark" src="/sapien-icon.png" alt="" width={240} height={240} />
-              <Image className="L-brand-full" src="/sapien-labs.png" alt="Sapien Labs" width={820} height={240} />
-            </span>
+            <span className="L-brand-partner">Partnered with Sapien Labs</span>
           </a>
         ) : (
           <a href="#" className="nav-logo" onClick={(e) => { stay(e); jump("home"); }} aria-label="SAMUH home">
