@@ -165,18 +165,16 @@
   color: var(--text);
 }
 
-.teaser-challenge .teaser-team {
-  margin-top: 12px;
-  padding-top: 12px;
-  border-top: var(--rule-thin) solid var(--border);
+.teaser-team {
+  margin: 0 0 28px;
   font-family: var(--font-display);
   font-weight: var(--display-weight);
   font-style: var(--display-style);
   letter-spacing: var(--display-tracking);
-  font-size: 20px;
+  font-size: 22px;
   color: var(--text);
-  max-width: none;
 }
+
 
 .teaser-team-base {
   display: block;
@@ -187,13 +185,6 @@
   letter-spacing: 0;
   font-size: 15px;
   color: var(--muted);
-}
-
-.teaser-challenge .teaser-challenge-status {
-  font-family: var(--font-ui);
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text);
 }
 
 /* when focus lands here it scrolls clear of the sticky readout */
@@ -334,6 +325,24 @@
   font-size: 14px;
   font-variant-numeric: tabular-nums;
   color: var(--muted);
+}
+
+/* the challenge's running count, inside the sticky readout so it is always
+   in view */
+.teaser-status {
+  grid-column: 1 / -1;
+  margin: 10px 0 0;
+  padding-top: 10px;
+  border-top: var(--rule-thin) solid var(--border);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.teaser-side {
+  display: grid;
+  min-width: 0;
 }
 
 .teaser-failed {

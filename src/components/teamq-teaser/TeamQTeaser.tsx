@@ -153,20 +153,6 @@ export function TeamQTeaser({ baseline, answer }: { baseline: TeaserResult; answ
             can. Then submit your answer and see how close you came to the model&rsquo;s own {CHALLENGE_MOVES}{" "}
             moves.
           </p>
-          <p className="teaser-challenge-status" aria-live="polite">
-            {revealed
-              ? "The optimized profile is applied below."
-              : moves === 0
-                ? "Nothing moved yet."
-                : `${moves} of ${CHALLENGE_MOVES} factors moved${moves > CHALLENGE_MOVES ? ", which is more than the challenge allows" : ""}.${best !== undefined ? ` Your best so far: ${one(best)} days.` : ""}`}
-          </p>
-          <p className="teaser-team">
-            A team of {TEAM_SIZE}, as they are today.
-            <span className="teaser-team-base">
-              {" "}
-              {one(baseline.days)} productive days a month, TeamQ {one(baseline.teamQ)}, MHQ {one(baseline.mhq)}.
-            </span>
-          </p>
         </div>
       ) : null}
 
@@ -187,6 +173,13 @@ export function TeamQTeaser({ baseline, answer }: { baseline: TeaserResult; answ
             <span className="teaser-figure">{one(result.mhq)}</span>
             <span className="teaser-delta">{change(result.mhq, baseline.mhq)}</span>
           </div>
+          <p className="teaser-status">
+            {revealed
+              ? "The optimized profile is applied."
+              : moves === 0
+                ? "Nothing moved yet."
+                : `${moves} of ${CHALLENGE_MOVES} factors moved${moves > CHALLENGE_MOVES ? ", which is more than the challenge allows" : ""}.${best !== undefined ? ` Your best so far: ${one(best)} days.` : ""}`}
+          </p>
           {failed ? (
             <p className="teaser-failed" role="alert">
               That change could not be scored. These are the last figures we have.
@@ -204,6 +197,14 @@ export function TeamQTeaser({ baseline, answer }: { baseline: TeaserResult; answ
             <Slider key={factor.id} factor={factor} value={values[factor.id]} onChange={move} />
           ))}
         </fieldset>
+        <div className="teaser-side">
+          <p className="teaser-team">
+            A team of {TEAM_SIZE}, as they are today.
+            <span className="teaser-team-base">
+              {" "}
+              {one(baseline.days)} productive days a month, TeamQ {one(baseline.teamQ)}, MHQ {one(baseline.mhq)}.
+            </span>
+          </p>
         <fieldset className="teaser-group">
           <legend>{GROUP_LABELS.lifestyle}</legend>
           {lifestyle.map((factor) => (
@@ -218,6 +219,7 @@ export function TeamQTeaser({ baseline, answer }: { baseline: TeaserResult; answ
             Reset
           </button>
         </fieldset>
+        </div>
       </div>
 
       {MODEL_VERIFIED ? (
