@@ -791,63 +791,18 @@
 .L-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 14px; }
 .L-step { display: grid; gap: 10px; }
 .L-step .ph { min-height: 72px; }
-/* the arc timeline: copy | lane | art, the lane is where the line winds.
-   Rows alternate which side the copy is on, and each side always keeps
-   room for the art, which is a small piece of illustration to come */
-.L-arc-run { --arc-gold: #F5D547; position: relative; } /* the palette's Butter, the lighter of its golds */
-.L-arc-run > .L-sec:first-of-type { border-top: 0; }
-/* the first section in the run loses its rule to :first-of-type, so the
-   run draws it back */
-/* no rule between the page head and the six moves: the arc runs straight out of the intro */
-.L-arc-run::before { display: none; }
-.L-page[data-rule="rule-none"] .L-arc-run::before { display: none; }
-/* the note under the moves stays in the first column, left of the line */
-.L-arc-run .L-arc + .L-cap { display: block; max-width: 30ch; }
-.L-arc-moves .step-n { margin: 0; }
-.L-arc { --arc-lane: 200px; --arc-art: 112px; position: relative; list-style: none; margin: 0 0 28px; padding: 0; display: grid; gap: 8px; }
-.L-arc-svg { position: absolute; inset: 0 0 auto; z-index: 2; pointer-events: none; overflow: visible; }
-.L-arc-path { mask: url(#L-arc-end); fill: none; stroke: var(--arc-gold); stroke-width: 1.5px; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; opacity: 0.9; }
-/* the one ball that rides the line */
-.L-arc-ball-core { fill: var(--arc-gold); }
-.L-arc-ball-glow { fill: var(--arc-gold); opacity: 0.55; }
-/* what the ball is beside lights up, and its icon glows gold */
-/* quick to light up, slow to let go: the off state lingers a beat, then
-   fades over three times the on time */
-.L-arc-item { --arc-off: calc(var(--dur) * 3); --arc-linger: 240ms; }
-.L-arc-item .L-arc-what, .L-arc-item .L-arc-note, .L-arc-item .L-arc-art { transition: color var(--arc-off) var(--ease) var(--arc-linger), box-shadow var(--arc-off) var(--ease) var(--arc-linger), transform var(--arc-off) var(--ease) var(--arc-linger); }
-.L-arc-item[data-on] .L-arc-what, .L-arc-item[data-on] .L-arc-note, .L-arc-item[data-on] .L-arc-art { transition: color var(--dur) var(--ease), box-shadow var(--dur) var(--ease), transform var(--dur) var(--ease); }
-.L-arc-item[data-on] .L-arc-what { color: var(--arc-gold); }
-.L-arc-item[data-on] .L-arc-note { color: var(--text); }
-.L-arc-item[data-on] .L-arc-art { box-shadow: 0 0 0 1.5px var(--arc-gold), 0 0 28px color-mix(in srgb, var(--arc-gold) 55%, transparent); }
-/* the six icons: 30 percent until the ball is level with them, then full and a step larger */
-.L-arc-art.L-arc-icon { background: transparent; box-shadow: none; border: 0; padding: 0; display: grid; place-items: center; color: transparent; overflow: visible; }
-.L-arc-icon img { width: 100%; height: 100%; object-fit: contain; opacity: 0.3; transform: scale(1); transition: opacity var(--arc-off) var(--ease) var(--arc-linger), transform var(--arc-off) var(--ease) var(--arc-linger); }
-.L-arc-item[data-on] .L-arc-art.L-arc-icon { box-shadow: none; }
-.L-arc-item[data-on] .L-arc-icon img { opacity: 1; transform: scale(1.28); transition: opacity var(--dur) var(--ease), transform calc(var(--dur) * 1.4) var(--ease); }
-.L-arc-item { position: relative; display: grid; grid-template-columns: 1fr var(--arc-lane) 1fr; align-items: center; min-height: 168px; }
-.L-arc-copy { display: grid; gap: 6px; text-align: right; justify-items: end; padding: 12px 0; }
-.L-arc-art {
-  width: var(--arc-art);
-  height: var(--arc-art);
-  display: grid;
-  place-items: center;
-  border-radius: min(var(--radius), 18px);
-  background: #fff;
-  color: #000;
-  font-family: var(--font-caption);
-  font-size: 10.5px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  justify-self: start;
-}
-/* odd rows swap sides: art left, copy right. nth-of-type, because the svg
-   is the list's first child */
-.L-arc-item:nth-of-type(odd) .L-arc-copy { order: 3; text-align: left; justify-items: start; }
-.L-arc-item:nth-of-type(odd) .L-arc-lane { order: 2; }
-.L-arc-item:nth-of-type(odd) .L-arc-art { order: 1; justify-self: end; }
-.L-arc-what { font-family: var(--font-display); font-weight: var(--display-weight); font-size: 19px; }
-.L-arc-note { font-size: 13px; color: var(--muted); line-height: 1.5; max-width: 34ch; }
-.L-page[data-align="align-center"] .L-arc-copy { text-align: inherit; }
+/* the three stages: copy one side, the icon the other, swapping each
+   stage. The icon sits at a third and comes up while the pointer is on
+   the section. The verb in the kicker is set in the accent */
+.L-stage { display: grid; grid-template-columns: minmax(0, 1fr) var(--stage-art, 280px); gap: 40px; align-items: center; }
+.L-stage-copy { display: grid; gap: 8px; }
+.L-stage-copy .L-mid { font-size: 17px; max-width: 48ch; }
+.L-stage-art { width: var(--stage-art, 280px); aspect-ratio: 1; display: grid; place-items: center; justify-self: end; }
+.L-stage-art img { width: 100%; height: 100%; object-fit: contain; opacity: 0.35; transform: scale(1); transition: opacity calc(var(--dur) * 2) var(--ease), transform calc(var(--dur) * 2.5) var(--ease); }
+.L-stage-sec:hover .L-stage-art img { opacity: 1; transform: scale(1.1); }
+.L-stage-sec:nth-of-type(odd) .L-stage { grid-template-columns: var(--stage-art, 280px) minmax(0, 1fr); }
+.L-stage-sec:nth-of-type(odd) .L-stage-art { order: -1; justify-self: start; }
+.L-stage-sec .L-eyebrow { color: var(--accent); }
 
 /* insights */
 .L-filters { display: grid; gap: 12px; }
@@ -909,18 +864,13 @@
 
 @container page (max-width: 900px) {
   .L-tier, .L-steps, .L-feed, .L-team, .L-logos, .L-contact, .L-voices-grid { grid-template-columns: 1fr 1fr; }
-  .L-arc { --arc-lane: 140px; --arc-art: 96px; }
+  .L-stage { --stage-art: 200px; }
   .L-research-card, .L-partner { grid-template-columns: 1fr; }
 }
 @container page (max-width: 560px) {
   .L-tier, .L-steps, .L-feed, .L-team, .L-logos, .L-contact, .L-voices-grid { grid-template-columns: 1fr; }
-  /* one row per move on a phone: the line runs down the left, the art
-     sits beside it, the copy to the right */
-  .L-arc { --arc-lane: 44px; --arc-art: 72px; }
-  .L-arc-item, .L-arc-item:nth-of-type(odd) { grid-template-columns: var(--arc-lane) var(--arc-art) 1fr; column-gap: 16px; min-height: 0; }
-  .L-arc-item .L-arc-lane, .L-arc-item:nth-of-type(odd) .L-arc-lane { order: 1; grid-row: auto; }
-  .L-arc-item .L-arc-art, .L-arc-item:nth-of-type(odd) .L-arc-art { order: 2; justify-self: start; margin-top: 0; }
-  .L-arc-item .L-arc-copy, .L-arc-item:nth-of-type(odd) .L-arc-copy { order: 3; text-align: left; justify-items: start; }
+  .L-stage, .L-stage-sec:nth-of-type(odd) .L-stage { --stage-art: 120px; grid-template-columns: 1fr; gap: 16px; }
+  .L-stage-art, .L-stage-sec:nth-of-type(odd) .L-stage-art { order: -1; justify-self: start; }
   .L-scale { grid-template-columns: repeat(7, 1fr); gap: 4px; }
   .L-scale-opt { padding: 12px 0; font-size: 15px; }
   .L-table { font-size: 12px; }
