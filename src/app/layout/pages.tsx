@@ -156,7 +156,7 @@ function Process({ go }: { go: (p: PageId) => void }) {
     <>
       <PageHead n="01" kicker="The methodology across all three tiers" title="The team process." lede="See the team clearly. Choose the practice together. Ritualize it in the flow of work." />
       {STAGES.map(([verb, line, body, icon], i) => (
-        <Sec key={verb} n={`0${i + 2}`} kicker={`Stage ${i + 1} · ${verb}`} title={line} cls="L-stage-sec">
+        <Sec key={verb} n={`0${i + 2}`} kicker={line} title={verb} cls="L-stage-sec">
           <div className="L-stage">
             <div className="L-stage-copy">
               <p className="L-mid">{body}</p>
