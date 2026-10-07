@@ -22,8 +22,11 @@ export default function TeamQPage() {
   return (
     <DraftShell draft={WORKING}>
       <TeamQIntro baseline={baseline} />
-      <section className="L-sec teaser-sec" id="tool" aria-label="The TeamQ demonstration">
+      <section className="L-sec teaser-sec" id="tool" aria-labelledby="tool-title">
         <div className="L-wrap">
+          <h2 className="sec teaser-title" id="tool-title">
+            Try it out.
+          </h2>
           <TeamQTeaser baseline={baseline} answer={answer} />
         </div>
       </section>
