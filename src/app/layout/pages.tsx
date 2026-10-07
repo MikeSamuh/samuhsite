@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import Image from "next/image";
 import type { PageId } from "@/lib/layout";
 import { ContactAside } from "@/components/contact/ContactAside";
 import { ContactForm } from "@/components/contact/ContactForm";
+import { ProcessFigure, StageFigure } from "@/components/process-figure/ProcessFigure";
+import type { PoseId } from "@/components/process-figure/figures";
 
 /**
  * The pages behind the nav, composed from docs/scope.md and docs/brief.md.
@@ -141,59 +143,100 @@ function Solutions({ go }: { go: (p: PageId) => void }) {
 
 /* ------------------------------------------------------------------ */
 
-// verb, line, body, icon (Wilfred's, public/icons; the three stages from the hero video script)
-const STAGES: [string, string, string, string][] = [
-  ["Discover", "The team turns the lens on itself.", "Through confidential conversations and a TeamQ baseline, the team gets a clear read on its own environment: what it is working toward, what already goes well, and what is quietly getting in the way.", "/icons/Discover.png"],
-  ["Align", "The team agrees on what better looks like.", "With that picture in front of it, the team decides what better performance means here, and where one change would do the most for the work and for the people doing it.", "/icons/Belonging.png"],
-  ["Co-create", "Together, we turn moments into practice.", "Decisions, feedback, disagreement, change: the moments that shape performance become specific, repeatable practices. The team designs them, tests them, and runs them inside the work it already does.", "/icons/Action.png"],
+// verb, line, body, icon (Wilfred's, public/icons, the same files the poses are traced from),
+// and the traced pose the working draft morphs between (scripts/figures)
+const STAGES: [string, string, string, string, PoseId][] = [
+  ["Discover", "The team turns the lens on itself.", "Through confidential conversations and a TeamQ baseline, the team gets a clear read on its own environment: what it is working toward, what already goes well, and what is quietly getting in the way.", "/icons/Discover%202.png", "discover"],
+  ["Align", "The team agrees on what better looks like.", "With that picture in front of it, the team decides what better performance means here, and where one change would do the most for the work and for the people doing it.", "/icons/Align%202.png", "align"],
+  ["Co-create", "Together, we turn moments into practice.", "Decisions, feedback, disagreement, change: the moments that shape performance become specific, repeatable practices. The team designs them, tests them, and runs them inside the work it already does.", "/icons/Belonging%202.png", "cocreate"],
 ];
 
-/** The three stages, one section each. Copy one side, the icon the other,
- *  swapping sides each stage. The icon sits faint and comes to full
- *  strength while the pointer is on its stage. */
-function Process({ go }: { go: (p: PageId) => void }) {
+const HEAD_TOP = 28; // the sticky head's offset below the nav, as in layout.css
+const STAGE_LINE = 96; // a stage takes over once its top is this far below that
+
+/** The three stages in one section. On the editorial columns at desktop
+ *  width, with figures on, the section's running head is the active stage's
+ *  eyebrow, title and figure: it sticks in the left column and swaps in
+ *  place as the bodies scroll past on the right, the figure morphing into
+ *  the next pose. The running head is decorative; every stage carries its
+ *  own heading, visually hidden there. Everywhere else the running head is
+ *  off and the stages stack, each with its head and its own figure or icon. */
+function Process({ go, figures }: { go: (p: PageId) => void; figures?: boolean }) {
+  const ref = useRef<HTMLElement>(null);
+  const [active, setActive] = useState(0);
+
+  useEffect(() => {
+    const root = ref.current;
+    if (!root || !figures) return;
+    const items = Array.from(root.querySelectorAll<HTMLElement>(".L-stage"));
+    if (!items.length) return;
+    let raf = 0;
+    const tick = () => {
+      raf = 0;
+      const navH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--nav-h")) || 0;
+      const line = navH + HEAD_TOP + STAGE_LINE;
+      let i = 0;
+      items.forEach((el, j) => { if (el.getBoundingClientRect().top <= line) i = j; });
+      setActive(i);
+    };
+    const kick = () => { if (!raf) raf = requestAnimationFrame(tick); };
+    const ro = new ResizeObserver(kick);
+    ro.observe(root);
+    kick();
+    window.addEventListener("scroll", kick, { passive: true });
+    return () => { ro.disconnect(); cancelAnimationFrame(raf); window.removeEventListener("scroll", kick); };
+  }, [figures]);
+
+  const [verb, line, , , pose] = STAGES[active];
   return (
     <>
       <PageHead n="01" kicker="The methodology across all three tiers" title="The team process." lede="See the team clearly. Choose the practice together. Ritualize it in the flow of work." />
-      {STAGES.map(([verb, line, body, icon], i) => (
-        <Sec key={verb} n={`0${i + 2}`} kicker={line} title={verb} cls="L-stage-sec">
-          <div className="L-stage">
-            <div className="L-stage-copy">
-              <p className="L-mid">{body}</p>
-              {i === STAGES.length - 1 ? (
-                <div className="cta-row">
-                  <button className="btn" onClick={() => go("start")}>Explore TeamQ <span className="arrow">&rarr;</span></button>
-                  <button className="btn btn-secondary" onClick={() => go("solutions")}>Ways to engage</button>
-                </div>
-              ) : null}
+      <section className="L-sec L-sec-h L-stages" data-n="02" ref={ref} data-slot={figures ? "" : undefined}>
+        <div className="L-wrap">
+          <div className="L-head L-stages-head" aria-hidden>
+            <span className="L-n">02</span>
+            <div>
+              <p className="eyebrow L-eyebrow" key={`line-${active}`}>{line}</p>
+              <h2 className="sec" key={`verb-${active}`}>{verb}</h2>
             </div>
-            <span className="L-stage-art" aria-hidden>
-              <Image src={icon} alt="" width={2048} height={2048} sizes="320px" />
-            </span>
+            {figures ? <span className="L-stage-fig"><StageFigure pose={pose} /></span> : null}
           </div>
-        </Sec>
-      ))}
+          <ol className="L-stage-list">
+            {STAGES.map(([verb, line, body, icon, pose], i) => (
+              <li key={verb} className="L-stage" data-on={i === active ? "" : undefined}>
+                <p className="eyebrow L-eyebrow L-stage-line">{line}</p>
+                <h2 className="sec L-stage-verb">{verb}</h2>
+                <div className="L-stage-copy">
+                  <p className="L-mid">{body}</p>
+                  {i === STAGES.length - 1 ? (
+                    <div className="cta-row">
+                      <button className="btn" onClick={() => go("start")}>Explore TeamQ <span className="arrow">&rarr;</span></button>
+                      <button className="btn btn-secondary" onClick={() => go("solutions")}>Ways to engage</button>
+                    </div>
+                  ) : null}
+                </div>
+                <span className="L-stage-art" aria-hidden>
+                  {figures ? (
+                    <ProcessFigure pose={pose} from={i ? STAGES[i - 1][4] : undefined} />
+                  ) : (
+                    <Image src={icon} alt="" width={2048} height={2048} sizes="320px" />
+                  )}
+                </span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
     </>
   );
 }
 
 /* ------------------------------------------------------------------ */
 
-const KINDS = ["All", "Foundations", "Articles", "Video", "Research"];
-const HUBS = ["Capacity", "Team practices", "Rituals", "Measurement"];
-
 function Insights() {
   return (
     <>
       <PageHead n="01" kicker="The education layer" title="Insights." lede="Foundations, articles, video and research in one feed. Start with the foundations if the argument is new to you." />
-      <section className="L-sec L-sec-tight">
-        <div className="L-wrap">
-          <div className="L-filters">
-            <div className="L-pills">{KINDS.map((k, i) => <span className={`pill${i === 0 ? " is-accent" : ""}`} key={k}>{k}</span>)}</div>
-            <div className="L-pills">{HUBS.map((h) => <span className="pill" key={h}>{h}</span>)}</div>
-          </div>
-        </div>
-      </section>
       <Sec n="02" kicker="Research · distinct treatment" title="Sapien Labs Work Culture Report">
         <div className="L-research-card card">
           <Frame label="Report cover" />
@@ -326,10 +369,10 @@ function Start({ go }: { go: (p: PageId) => void }) {
 
 /* ------------------------------------------------------------------ */
 
-export function Page({ id, go }: { id: PageId; go: (p: PageId) => void }) {
+export function Page({ id, go, figures }: { id: PageId; go: (p: PageId) => void; figures?: boolean }) {
   switch (id) {
     case "solutions": return <Solutions go={go} />;
-    case "process": return <Process go={go} />;
+    case "process": return <Process go={go} figures={figures} />;
     case "insights": return <Insights />;
     case "about": return <About />;
     case "contact": return <Contact />;

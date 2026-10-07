@@ -30,6 +30,8 @@ export interface Draft {
   nav?: Pick<NavProps, "links" | "brand" | "partner">;
   /** copy that differs from the shared sections */
   copy?: CopyOverrides;
+  /** process stages use the traced figures that morph stage to stage, not the PNG icons */
+  figures?: boolean;
 }
 
 /** B's frame, nav and copy as frozen on 5 October 2026. The working draft
@@ -59,6 +61,7 @@ export const DRAFTS: Draft[] = [
     owner: "Wilfred",
     note: "The live draft. Began on 5 October 2026 as an exact copy of B, and every edit from that day forward lands here. B stays as it was for comparison.",
     ...B_SHAPE,
+    figures: true,
   },
   {
     id: "a",

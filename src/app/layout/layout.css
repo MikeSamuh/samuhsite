@@ -812,22 +812,49 @@
 .L-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 14px; }
 .L-step { display: grid; gap: 10px; }
 .L-step .ph { min-height: 72px; }
-/* the three stages: copy one side, the icon the other, swapping each
-   stage. The icon sits at a third and comes up while the pointer is on
-   the section. The verb in the kicker is set in the accent */
-.L-stage { display: grid; grid-template-columns: minmax(0, 1fr) var(--stage-art, 280px); gap: 40px; align-items: center; }
+/* the three stages, one section. Each stage: its eyebrow line, its verb,
+   the copy one side and its figure or icon the other. Stages stack with a
+   hairline between. The running head (.L-stages-head) is off here and
+   comes on in slot mode, below */
+.L-stage-list { list-style: none; margin: 0; padding: 0; }
+.L-stage { display: grid; grid-template-columns: minmax(0, 1fr) var(--stage-art, 280px); gap: 10px 40px; align-items: center; padding-bottom: calc(56px * var(--space, 1)); }
+.L-stage + .L-stage { border-top: var(--rule-thin) solid var(--border); padding-top: calc(56px * var(--space, 1)); }
+.L-stage:last-child { padding-bottom: 0; }
+.L-stage-line { grid-column: 1 / -1; order: -3; margin: 0; color: var(--accent); }
+.L-stage-verb { grid-column: 1 / -1; order: -2; margin: 0 0 6px; }
 .L-stage-copy { display: grid; gap: 8px; }
-.L-stage-copy .L-mid { font-size: 17px; max-width: 48ch; }
+.L-stage-copy .L-mid { font-size: 17px; max-width: 48ch; transition: color calc(var(--dur) * 2) var(--ease); }
 .L-stage-art { width: var(--stage-art, 280px); aspect-ratio: 1; display: grid; place-items: center; justify-self: end; }
 .L-stage-art :is(img, .process-figure) { width: 100%; height: 100%; object-fit: contain; opacity: 0.35; transform: scale(1); transition: opacity calc(var(--dur) * 2) var(--ease), transform calc(var(--dur) * 2.5) var(--ease); }
-.L-stage-sec:hover .L-stage-art :is(img, .process-figure) { opacity: 1; transform: scale(1.1); }
-/* the traced figure (working draft): drawn in the text color, full strength
-   while it morphs out of the previous stage's pose, then back to faint */
+.L-stage:hover .L-stage-art :is(img, .process-figure) { opacity: 1; transform: scale(1.1); }
+.L-stage:nth-child(even) { grid-template-columns: var(--stage-art, 280px) minmax(0, 1fr); }
+.L-stage:nth-child(even) .L-stage-art { order: -1; justify-self: start; }
+/* the traced figure: the text colour, flat. Mid-morph it is at full strength */
 .process-figure { display: block; fill: var(--text); overflow: visible; }
 .L-stage-art .process-figure.is-moving { opacity: 1; }
-.L-stage-sec:nth-of-type(odd) .L-stage { grid-template-columns: var(--stage-art, 280px) minmax(0, 1fr); }
-.L-stage-sec:nth-of-type(odd) .L-stage-art { order: -1; justify-self: start; }
-.L-stage-sec .L-eyebrow { color: var(--accent); }
+/* the running head, and the list across the full width while it is off */
+.L-stages-head { display: none; }
+.L-page[data-comp="comp-editorial"] .L-sec.L-stages > .L-wrap { grid-template-columns: 1fr; }
+.L-page[data-comp="comp-editorial"] .L-sec.L-stages > .L-wrap > :not(.L-head) { grid-column: 1; }
+/* slot mode: the editorial columns at desktop width, figures on. The
+   running head sticks (the editorial head rule) and shows the active
+   stage: eyebrow and title fade in on each swap, the figure under them
+   morphs. Each stage takes most of a screen so the swap has room, its
+   own line and art are off, its verb is kept for readers only, and the
+   active body comes up to full text colour */
+@keyframes L-stage-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.L-stages-head .L-eyebrow, .L-stages-head h2.sec { animation: L-stage-in calc(var(--dur) * 2) var(--ease) both; }
+.L-stage-fig { display: block; order: 5; width: 100%; max-width: var(--stage-fig, 200px); aspect-ratio: 1; margin-top: 14px; }
+.L-stage-fig .process-figure { width: 100%; height: 100%; opacity: 0.9; }
+@container page (min-width: 901px) {
+  .L-page[data-comp="comp-editorial"] .L-sec.L-stages[data-slot] > .L-wrap { grid-template-columns: minmax(180px, 240px) 1fr; }
+  .L-page[data-comp="comp-editorial"] .L-sec.L-stages[data-slot] > .L-wrap > :not(.L-head) { grid-column: 2; }
+  .L-page[data-comp="comp-editorial"] .L-stages[data-slot] .L-stages-head { display: flex; }
+  .L-page[data-comp="comp-editorial"] .L-stages[data-slot] .L-stage, .L-page[data-comp="comp-editorial"] .L-stages[data-slot] .L-stage:nth-child(even) { grid-template-columns: minmax(0, 1fr); min-height: 56vh; align-content: start; }
+  .L-page[data-comp="comp-editorial"] .L-stages[data-slot] :is(.L-stage-art, .L-stage-line) { display: none; }
+  .L-page[data-comp="comp-editorial"] .L-stages[data-slot] .L-stage-verb { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .L-page[data-comp="comp-editorial"] .L-stages[data-slot] .L-stage[data-on] .L-mid { color: var(--text); }
+}
 
 /* insights */
 .L-research-card { display: grid; grid-template-columns: 200px 1fr; gap: 28px; align-items: center; padding: 28px; }
@@ -892,8 +919,8 @@
 }
 @container page (max-width: 560px) {
   .L-tier, .L-steps, .L-feed, .L-team, .L-logos, .L-contact, .L-voices-grid { grid-template-columns: 1fr; }
-  .L-stage, .L-stage-sec:nth-of-type(odd) .L-stage { --stage-art: 120px; grid-template-columns: 1fr; gap: 16px; }
-  .L-stage-art, .L-stage-sec:nth-of-type(odd) .L-stage-art { order: -1; justify-self: start; }
+  .L-stage, .L-stage:nth-child(even) { --stage-art: 120px; grid-template-columns: 1fr; gap: 16px; }
+  .L-stage-art, .L-stage:nth-child(even) .L-stage-art { order: -1; justify-self: start; }
   .L-scale { grid-template-columns: repeat(7, 1fr); gap: 4px; }
   .L-scale-opt { padding: 12px 0; font-size: 15px; }
   .L-table { font-size: 12px; }
