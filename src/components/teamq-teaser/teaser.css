@@ -37,8 +37,10 @@
   margin-bottom: 0;
 }
 
-/* the readout tour. The track is one screen tall per step; the stage pins
-   inside it and shows one step and one readout at a time */
+/* the readout tour. The track is 80vh per step; the stage pins inside it
+   and shows one step and one readout at a time, on the same two columns
+   as the editorial sections above it: heading left, text and readout
+   right */
 .tour {
   height: calc(var(--tour-steps, 3) * 80vh + 20vh);
 }
@@ -46,41 +48,52 @@
 .tour-stage {
   position: sticky;
   top: var(--nav-h, 0px);
-  height: calc(100vh - var(--nav-h, 0px));
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
-  gap: 64px;
-  align-items: center;
+  grid-template-columns: minmax(180px, 240px) 1fr;
+  grid-template-rows: auto auto;
+  column-gap: clamp(28px, 5cqw, 72px);
+  row-gap: 28px;
+  align-items: start;
+  padding: calc(88px * var(--space, 1)) 0 calc(48px * var(--space, 1));
 }
 
-/* the steps share one cell and take turns */
-.tour-steps {
-  display: grid;
-}
-
+/* the steps share the same cells and take turns */
 .tour-step {
-  grid-area: 1 / 1;
+  display: contents;
+}
+
+/* the heading runs down the left of both rows, so the longest heading does
+   not push the readout away from the text */
+.tour-head {
+  grid-area: 1 / 1 / span 2;
+}
+
+.tour-text {
+  grid-area: 1 / 2;
+  margin: 0;
+}
+
+.tour-stage .teaser-readout {
+  grid-area: 2 / 2;
+}
+
+.tour-step > * {
   opacity: 0;
   pointer-events: none;
   transition: opacity var(--dur) var(--ease);
 }
 
-.tour-step[data-active] {
+.tour-step[data-active] > * {
   opacity: 1;
   pointer-events: auto;
 }
 
-.tour-step .sec {
-  margin: 0 0 16px;
-}
-
-.tour-step .L-mid {
-  margin-bottom: 0;
+.tour-head .sec {
+  margin: 0;
 }
 
 .tour-count {
-  grid-area: 2 / 1;
-  margin: 24px 0 0;
+  margin: 14px 0 0;
 }
 
 /* a frozen copy of a piece of the tool. Not sticky, not interactive */
@@ -477,18 +490,30 @@
 
 /* ---------- narrow ---------- */
 
-@container page (max-width: 760px) {
-  /* on a phone the readout sits above the step */
+/* the editorial sections stack at 900px, so the tour does too */
+@container page (max-width: 900px) {
+  /* on a phone: readout, heading, text, stacked */
   .tour-stage {
     grid-template-columns: 1fr;
-    gap: 28px;
-    align-content: center;
+    grid-template-rows: auto auto auto;
+    row-gap: 20px;
+    padding-top: 24px;
   }
 
   .tour-stage .teaser-readout {
-    order: -1;
+    grid-area: 1 / 1;
   }
 
+  .tour-head {
+    grid-area: 2 / 1;
+  }
+
+  .tour-text {
+    grid-area: 3 / 1;
+  }
+}
+
+@container page (max-width: 760px) {
   .teaser-inputs,
   .teaser-ask {
     grid-template-columns: 1fr;
@@ -531,7 +556,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .tour-step,
+  .tour-step > *,
   .teaser-days,
   .teaser-figure,
   .teaser-gauge span,

@@ -50,18 +50,18 @@ export function ReadoutTour({ baseline, steps }: { baseline: TeaserResult; steps
   return (
     <div className="tour" ref={track} style={{ "--tour-steps": steps.length } as React.CSSProperties}>
       <div className="tour-stage">
-        <div className="tour-steps">
-          {steps.map((step, index) => (
-            <div className="tour-step" key={step.lit} data-active={index === active || undefined}>
+        {steps.map((step, index) => (
+          <div className="tour-step" key={step.lit} data-active={index === active || undefined}>
+            <div className="tour-head">
               <p className="eyebrow L-eyebrow">{step.kicker}</p>
               <h2 className="sec">{step.title}</h2>
-              <p className="L-mid">{step.text}</p>
+              <p className="tour-count L-cap" aria-hidden="true">
+                {index + 1} of {steps.length}
+              </p>
             </div>
-          ))}
-          <p className="tour-count L-cap" aria-hidden="true">
-            {active + 1} of {steps.length}
-          </p>
-        </div>
+            <p className="L-mid tour-text">{step.text}</p>
+          </div>
+        ))}
         <div className="teaser-readout guide-exhibit" aria-hidden="true">
           <div className="teaser-headline" data-dim={dim("days")}>
             <span className="teaser-label">Productive days per month</span>
