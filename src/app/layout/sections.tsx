@@ -4,6 +4,8 @@ import { useEffect, useId, useRef, useState, type TouchEvent } from "react";
 import Image from "next/image";
 import { PAGES, SECTIONS, type PageId } from "@/lib/layout";
 import { TEAM_SIZE } from "@/components/teamq-teaser/model";
+import { TeaserDemo, type TeaserDemoProps } from "@/components/teamq-teaser/TeaserDemo";
+import { CONTACT_EMAIL } from "@/lib/contact-details";
 import "@/components/teamq-teaser/teaser.css";
 import Synapse from "../design/Synapse";
 
@@ -505,14 +507,35 @@ export function MetaphorGallery({ cards = ARCHETYPES }: { cards?: [string, strin
 
 export function Footer({ go }: { go: (p: PageId) => void }) {
   return (
-    <footer className="L-foot L-wrap">
-      <span className="L-cap">SAMUH · in partnership with Sapien Labs</span>
-      <nav className="L-foot-links" aria-label="Footer">
-        {PAGES.filter((x) => x.nav && x.id !== "home").map((x) => (
-          <a key={x.id} className="L-cap" onClick={() => go(x.id)}>{x.name}</a>
-        ))}
-      </nav>
-      <span className="L-cap">Privacy · Terms · Cookies</span>
+    <footer className="L-foot">
+      <div className="L-wrap L-foot-grid">
+        <div className="L-foot-brand">
+          <a href="#" className="L-foot-logo" onClick={(e) => { stay(e); go("home"); }} aria-label="SAMUH home">
+            <Image src="/samuh-logo.png" alt="SAMUH" width={960} height={LOGO_H} />
+          </a>
+          <p className="L-foot-line">High performance <em className="L-hl">without</em> the cost to people.</p>
+          <span className="L-cap">Partnered with Sapien Labs</span>
+        </div>
+        <nav className="L-foot-col L-foot-links" aria-label="Footer">
+          <span className="L-cap L-foot-h">Explore</span>
+          {PAGES.filter((x) => x.nav && x.id !== "home").map((x) => (
+            <a key={x.id} className="L-foot-link" onClick={() => go(x.id)}>{x.name}</a>
+          ))}
+        </nav>
+        <div className="L-foot-col">
+          <span className="L-cap L-foot-h">Talk to us</span>
+          {CONTACT_EMAIL ? (
+            <a className="L-foot-link" href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+          ) : (
+            <span className="L-foot-link L-foot-todo">TODO(content): email address</span>
+          )}
+          <button className="btn L-foot-cta" onClick={() => go("start")}>Get started <span className="arrow">&rarr;</span></button>
+        </div>
+      </div>
+      <div className="L-wrap L-foot-base">
+        <span className="L-cap">&copy; {new Date().getFullYear()} SAMUH</span>
+        <span className="L-cap">Privacy · Terms · Cookies</span>
+      </div>
     </footer>
   );
 }
@@ -632,7 +655,7 @@ export interface CopyOverrides {
   cards?: [string, string, string][];
 }
 
-export function Section({ def, variant, go, copy = {} }: { def: (typeof SECTIONS)[number]; variant: string; go: (p: PageId) => void; copy?: CopyOverrides }) {
+export function Section({ def, variant, go, copy = {}, demo }: { def: (typeof SECTIONS)[number]; variant: string; go: (p: PageId) => void; copy?: CopyOverrides; /** the tool's numbers, scored on the server; with them, section 9 shows the bars moving */ demo?: TeaserDemoProps }) {
   const v = variant.replace(`${def.id}-`, "");
   const headed = !["hero", "thesis", "meaning", "start"].includes(def.id) && !(def.id === "voices" && v === "carousel");
   return (
@@ -774,6 +797,7 @@ export function Section({ def, variant, go, copy = {} }: { def: (typeof SECTIONS
         {def.id === "tool" && (
           <>
             <Head def={def} />
+            {demo ? <TeaserDemo {...demo} /> : null}
             {/* TODO(content): draft pitch, for SAMUH to replace */}
             <div className="teaser-pitch">
               <p className="L-mid">Take a demonstration team of {TEAM_SIZE}. Change what their work is like, and watch their productive days move.</p>
