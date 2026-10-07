@@ -112,8 +112,8 @@ export const BASELINE: Record<string, number> = {
 /** How many people are in the demo team. */
 export const TEAM_SIZE = 18;
 
-/** The challenge: how many factors the visitor may move. */
-export const CHALLENGE_MOVES = 3;
+/** How many factors the model moves when it shows the factors optimized. */
+export const OPTIMIZER_MOVES = 3;
 
 /** True because the scoring behind /api/teaser returns the simulator's own
  *  numbers: see the check recorded in src/lib/teaser/score.ts. If that ever

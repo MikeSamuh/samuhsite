@@ -141,30 +141,6 @@
   gap: 28px;
 }
 
-.teaser-challenge {
-  display: grid;
-  gap: 8px;
-  padding: 20px 24px;
-  border-left: var(--rule-fat) solid var(--accent);
-}
-
-.teaser-challenge p {
-  margin: 0;
-  color: var(--muted);
-  font-size: 16px;
-  line-height: 1.6;
-  max-width: 60ch;
-}
-
-.teaser-challenge .teaser-challenge-title {
-  font-family: var(--font-display);
-  font-weight: var(--display-weight);
-  font-style: var(--display-style);
-  letter-spacing: var(--display-tracking);
-  font-size: 24px;
-  color: var(--text);
-}
-
 .teaser-team {
   margin: 0 0 28px;
   font-family: var(--font-display);
@@ -215,56 +191,6 @@
 .teaser-answer strong {
   color: var(--text);
   font-weight: 600;
-}
-
-.teaser-compare {
-  width: 100%;
-  border-collapse: collapse;
-  font-family: var(--font-ui);
-  font-size: 14px;
-  font-variant-numeric: tabular-nums;
-}
-
-.teaser-compare th,
-.teaser-compare td {
-  padding: 10px 12px 10px 0;
-  text-align: left;
-  border-bottom: var(--rule-thin) solid var(--border);
-  color: var(--text);
-}
-
-.teaser-compare thead th {
-  font-weight: 600;
-  color: var(--muted);
-}
-
-.teaser-compare tbody th {
-  font-weight: 600;
-}
-
-.teaser-compare td:nth-child(4) {
-  color: var(--accent);
-  font-weight: 600;
-}
-
-.teaser-compare td.teaser-verdict {
-  text-align: right;
-  color: var(--muted);
-}
-
-.teaser-compare tr[data-verdict="match"] td.teaser-verdict,
-.teaser-compare tr[data-verdict="close"] td.teaser-verdict {
-  color: var(--text);
-}
-
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: -1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
 }
 
 /* the readout stays in view while the inputs scroll under it */
@@ -325,19 +251,6 @@
   font-size: 14px;
   font-variant-numeric: tabular-nums;
   color: var(--muted);
-}
-
-/* the challenge's running count, inside the sticky readout so it is always
-   in view */
-.teaser-status {
-  grid-column: 1 / -1;
-  margin: 10px 0 0;
-  padding-top: 10px;
-  border-top: var(--rule-thin) solid var(--border);
-  font-family: var(--font-ui);
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text);
 }
 
 .teaser-side {
