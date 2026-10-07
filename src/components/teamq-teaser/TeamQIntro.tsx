@@ -147,14 +147,6 @@ export function TeamQIntro({ baseline }: { baseline: TeaserResult }) {
         </div>
       </Part>
 
-      <section className="L-sec guide-handoff">
-        <div className="L-wrap">
-          <p className="teaser-intro-note">
-            The team below is a demonstration, not yours. Nothing on this page is a result for your team.
-          </p>
-          <p className="L-big">Now try it. Can you optimize this team?</p>
-        </div>
-      </section>
     </>
   );
 }

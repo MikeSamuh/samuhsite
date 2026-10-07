@@ -77,12 +77,6 @@ export function TeamQTeaser({ baseline, answer }: { baseline: TeaserResult; answ
   const revealed = submitted !== undefined;
   const answerRef = useRef<HTMLDivElement>(null);
 
-  // the visitor's best, kept as the figures land
-  useEffect(() => {
-    if (stale || revealed || movedCount(values) === 0) return;
-    setBest((current) => (current === undefined || result.days > current ? result.days : current));
-  }, [result, stale, values, revealed]);
-
   useEffect(() => {
     if (revealed) answerRef.current?.focus();
   }, [revealed]);
@@ -111,6 +105,12 @@ export function TeamQTeaser({ baseline, answer }: { baseline: TeaserResult; answ
         setResult({ teamQ: scored.teamQ, mhq: scored.mhq, days: scored.days });
         setStale(false);
         setFailed(false);
+        // the visitor's best within the rules. `values` is the setting this
+        // score is for, so a figure never credits a different setting
+        const moved = movedCount(values);
+        if (moved > 0 && moved <= CHALLENGE_MOVES && !revealed) {
+          setBest((current) => (current === undefined || scored.days > current ? scored.days : current));
+        }
       } catch {
         if (request.signal.aborted) return;
         setStale(false);
@@ -122,7 +122,7 @@ export function TeamQTeaser({ baseline, answer }: { baseline: TeaserResult; answ
       window.clearTimeout(timer);
       request.abort();
     };
-  }, [values, baseline]);
+  }, [values, baseline, revealed]);
 
   const move = (factor: Factor, value: number) => {
     setValues((current) => ({ ...current, [factor.id]: value }));
@@ -143,31 +143,22 @@ export function TeamQTeaser({ baseline, answer }: { baseline: TeaserResult; answ
 
   return (
     <div className="teaser">
-      <p className="teaser-team">
-        A team of {TEAM_SIZE}, as they are today.
-        {MODEL_VERIFIED ? (
-          <span className="teaser-team-base">
-            {" "}
-            {one(baseline.days)} productive days a month, TeamQ {one(baseline.teamQ)}, MHQ {one(baseline.mhq)}.
-          </span>
-        ) : null}
-      </p>
-
       {MODEL_VERIFIED ? (
         <div className="teaser-challenge">
           <p className="teaser-challenge-title">
             Your challenge: can you optimize for productive days?
           </p>
           <p>
-            The model gets {CHALLENGE_MOVES} moves to give this team the most productive days it can. Make yours,
-            then submit your answer and see how close you came.
+            Move up to {CHALLENGE_MOVES} factors and give this team of {TEAM_SIZE} the most productive days you
+            can. Then submit your answer and see how close you came to the model&rsquo;s own {CHALLENGE_MOVES}{" "}
+            moves.
           </p>
           <p className="teaser-challenge-status" aria-live="polite">
             {revealed
               ? "The optimized profile is applied below."
               : moves === 0
                 ? "Nothing moved yet."
-                : `${moves} ${moves === 1 ? "factor" : "factors"} moved.${best !== undefined ? ` Your best so far: ${one(best)} days.` : ""}`}
+                : `${moves} of ${CHALLENGE_MOVES} factors moved${moves > CHALLENGE_MOVES ? ", which is more than the challenge allows" : ""}.${best !== undefined ? ` Your best so far: ${one(best)} days.` : ""}`}
           </p>
         </div>
       ) : null}
@@ -229,10 +220,17 @@ export function TeamQTeaser({ baseline, answer }: { baseline: TeaserResult; answ
           ) : (
             <>
               <p className="L-mid">Happy with your moves? Submit and see the optimized profile next to yours.</p>
-              <button className="btn" type="button" onClick={submitAnswer} disabled={moves === 0}>
+              <button className="btn" type="button" onClick={submitAnswer} disabled={moves === 0 || moves > CHALLENGE_MOVES}>
                 Submit my answer <span className="arrow">&rarr;</span>
               </button>
-              {moves === 0 ? <span className="teaser-note">Move at least one factor first.</span> : null}
+              {moves === 0 ? (
+                <span className="teaser-note">Move at least one factor first.</span>
+              ) : moves > CHALLENGE_MOVES ? (
+                <span className="teaser-note">
+                  Put {moves - CHALLENGE_MOVES} {moves - CHALLENGE_MOVES === 1 ? "factor" : "factors"} back to submit. The challenge
+                  allows {CHALLENGE_MOVES}.
+                </span>
+              ) : null}
             </>
           )}
         </div>
