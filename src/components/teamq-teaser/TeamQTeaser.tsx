@@ -160,6 +160,13 @@ export function TeamQTeaser({ baseline, answer }: { baseline: TeaserResult; answ
                 ? "Nothing moved yet."
                 : `${moves} of ${CHALLENGE_MOVES} factors moved${moves > CHALLENGE_MOVES ? ", which is more than the challenge allows" : ""}.${best !== undefined ? ` Your best so far: ${one(best)} days.` : ""}`}
           </p>
+          <p className="teaser-team">
+            A team of {TEAM_SIZE}, as they are today.
+            <span className="teaser-team-base">
+              {" "}
+              {one(baseline.days)} productive days a month, TeamQ {one(baseline.teamQ)}, MHQ {one(baseline.mhq)}.
+            </span>
+          </p>
         </div>
       ) : null}
 
