@@ -1,4 +1,4 @@
-import { BASELINE, BASELINE_AVERAGES, FACTORS, LIFESTYLE_HINTS, TEAM_SIZE, type Factor } from "./model";
+import { BASELINE, FACTORS, LIFESTYLE_HINTS, TEAM_SIZE, type Factor } from "./model";
 import { ReadoutTour, type TourStep } from "./ReadoutTour";
 import type { TeaserResult } from "./TeamQTeaser";
 import "./teaser.css";
@@ -6,8 +6,6 @@ import "./teaser.css";
 // TODO(content): every line of copy here is our draft, for SAMUH to replace.
 // It describes and does not claim: no statistics, no outcomes, no client
 // names. See CLAUDE.md rules 1 and 4.
-
-const one = (value: number) => value.toFixed(1);
 
 /** The readout, one figure at a time. One frozen readout stays on screen
  *  and the lit figure follows these as they scroll. */
@@ -53,10 +51,7 @@ function SliderExhibit({ factor }: { factor: Factor }) {
       <span className="guide-exhibit-label">{factor.label}</span>
       <span className="teaser-value">{value}</span>
       <input className="teaser-range" type="range" min={factor.min} max={factor.max} step={factor.step} value={value} readOnly tabIndex={-1} style={{ "--fill": `${fill}%` } as React.CSSProperties} />
-      <span className="teaser-note">
-        Baseline avg: {one(BASELINE_AVERAGES[factor.id])}
-        {hint ? ` · ${hint}` : null}
-      </span>
+      {hint ? <span className="teaser-note">{hint}</span> : null}
     </div>
   );
 }
@@ -126,8 +121,8 @@ export function TeamQIntro({ baseline }: { baseline: TeaserResult }) {
       <Part kicker="Work environment" title="Eight factors, rated 1 to 9." cls="guide-step">
         <div className="guide-step-body">
           <p className="L-mid">
-            Each slider starts at this team&rsquo;s average, with the exact average noted under it. Drag it to see
-            what happens when the whole team&rsquo;s experience of that factor improves, or slips.
+            Each slider starts where this team&rsquo;s average sits today. Drag it to see what happens when the
+            whole team&rsquo;s experience of that factor improves, or slips.
           </p>
           <WorkExhibit />
         </div>
@@ -137,8 +132,8 @@ export function TeamQIntro({ baseline }: { baseline: TeaserResult }) {
         <div className="guide-step-body">
           <p className="L-mid">
             Two factors from outside work, on the same 1 to 9 scale as the rest: exercise, and healthy diet, which
-            is how rarely people eat ultra-processed food. The sliders start at the sample team&rsquo;s averages,
-            not at a recommendation.
+            is how rarely people eat ultra-processed food. The sliders start where the sample team is, not at a
+            recommendation.
           </p>
           <p className="L-mid">
             This is what sets SAMUH apart. We do not stop at the team inside the organization. We go to individual

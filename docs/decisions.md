@@ -313,3 +313,11 @@ the model's change, the dashboard's own rule. Flexibility over Work and
 Sleep are in the sample but not in the models, and Job Security is in the
 models but not in the sample, so none of the three is a slider. — Client,
 via Wilfred
+
+**2026-10-10 — The tool in one fold: readout left, sliders right, no
+baseline averages.** Productive days and capacity to perform sit on the
+left with the team line; the ten sliders on the right in two columns,
+lifestyle under the work factors. "Baseline avg" is gone from under the
+sliders, it did not help tell the story. Open: whether the education moves
+from the scroll tour into popups beside the readout and the groups, so it
+reads the same on mobile. — Client

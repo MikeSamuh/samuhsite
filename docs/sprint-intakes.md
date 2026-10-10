@@ -271,9 +271,12 @@ longer asks it; the dashboard feeds its default, 5, and so does `score.ts`.
 If the client wants any of the three shown, that is a model question for
 Jerzy, not a copy change.
 
-Two columns on desktop: eight sliders left, two sliders right, the readout
-above. Stacked on mobile with the readout sticky at the top so the number
-stays visible while scrolling the sliders.
+One fold on desktop (decided 10 Oct): the readout on the left, the team
+line, productive days and capacity to perform stacked; the ten sliders on
+the right in two columns, lifestyle under work environment, Reset under
+them. Stacked on mobile with the readout sticky at the top so the number
+stays visible while scrolling the sliders. No "Baseline avg" under the
+sliders: it did not help tell the story (10 Oct).
 
 ### Baseline
 
@@ -308,7 +311,7 @@ they run on our server.
   `BASELINE`, the lifestyle answer labels, `MODEL_VERIFIED`
 
 Inputs are whole-number steps, and the baseline is the team averages rounded
-to the step. Each input shows the unrounded "Baseline avg".
+to the step.
 
 The figures follow the dashboard's anchoring rule
 (`docs/metrics_and_anchoring.md` there): what the team measured, plus the

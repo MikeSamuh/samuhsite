@@ -13,7 +13,6 @@ import { mhqBand } from "@/lib/tokens";
 import { Capacity } from "./Capacity";
 import {
   BASELINE,
-  BASELINE_AVERAGES,
   OPTIMIZER_MOVES,
   FACTORS,
   GROUP_LABELS,
@@ -132,54 +131,55 @@ export function TeamQTeaser({ baseline, answer }: { baseline: TeaserResult; answ
 
   return (
     <div className="teaser">
-      {MODEL_VERIFIED ? (
-        <div className="teaser-readout" data-stale={stale} aria-live="polite" aria-atomic="true">
-          <div className="teaser-headline">
-            <span className="teaser-label">Productive days per month</span>
-            <span className="teaser-days">{one(result.days)}</span>
-            <span className="teaser-delta">{change(result.days, baseline.days, " days")}</span>
-          </div>
-          <Capacity value={result.mhq} delta={change(result.mhq, baseline.mhq)} />
-          {failed ? (
-            <p className="teaser-failed" role="alert">
-              That change could not be scored. These are the last figures we have.
+      {/* one fold: the readout on the left, the ten sliders on the right */}
+      <div className="teaser-fold">
+        {MODEL_VERIFIED ? (
+          <div className="teaser-readout" data-stale={stale} aria-live="polite" aria-atomic="true">
+            <p className="teaser-team">
+              A team of {TEAM_SIZE}, as they are today.
+              <span className="teaser-team-base">
+                {" "}
+                {one(baseline.days)} productive days a month. Capacity to perform {one(baseline.mhq)},{" "}
+                {mhqBand(baseline.mhq).name}.
+              </span>
             </p>
-          ) : null}
-        </div>
-      ) : (
-        <Gauge values={values} />
-      )}
+            <div className="teaser-headline">
+              <span className="teaser-label">Productive days per month</span>
+              <span className="teaser-days">{one(result.days)}</span>
+              <span className="teaser-delta">{change(result.days, baseline.days, " days")}</span>
+            </div>
+            <Capacity value={result.mhq} delta={change(result.mhq, baseline.mhq)} />
+            {failed ? (
+              <p className="teaser-failed" role="alert">
+                That change could not be scored. These are the last figures we have.
+              </p>
+            ) : null}
+          </div>
+        ) : (
+          <Gauge values={values} />
+        )}
 
-      <div className="teaser-inputs">
-        <fieldset className="teaser-group">
-          <legend>{GROUP_LABELS.environment}</legend>
-          {environment.map((factor) => (
-            <Slider key={factor.id} factor={factor} value={values[factor.id]} onChange={move} />
-          ))}
-        </fieldset>
-        <div className="teaser-side">
-          <p className="teaser-team">
-            A team of {TEAM_SIZE}, as they are today.
-            <span className="teaser-team-base">
-              {" "}
-              {one(baseline.days)} productive days a month. Capacity to perform {one(baseline.mhq)},{" "}
-              {mhqBand(baseline.mhq).name}.
-            </span>
-          </p>
+        <div className="teaser-inputs">
+          <fieldset className="teaser-group">
+            <legend>{GROUP_LABELS.environment}</legend>
+            {environment.map((factor) => (
+              <Slider key={factor.id} factor={factor} value={values[factor.id]} onChange={move} />
+            ))}
+          </fieldset>
           <fieldset className="teaser-group">
             <legend>{GROUP_LABELS.lifestyle}</legend>
             {lifestyle.map((factor) => (
               <Slider key={factor.id} factor={factor} value={values[factor.id]} onChange={move} />
             ))}
-            <button
-              className="btn btn-secondary teaser-reset"
-              type="button"
-              onClick={() => setValues(BASELINE)}
-              disabled={atBaseline(values)}
-            >
-              Reset
-            </button>
           </fieldset>
+          <button
+            className="btn btn-secondary teaser-reset"
+            type="button"
+            onClick={() => setValues(BASELINE)}
+            disabled={atBaseline(values)}
+          >
+            Reset
+          </button>
         </div>
       </div>
 
@@ -236,13 +236,14 @@ function Slider({ factor, value, onChange }: { factor: Factor; value: number; on
         step={factor.step}
         value={value}
         onChange={(event) => onChange(factor, Number(event.target.value))}
-        aria-describedby={`${id}-note`}
+        aria-describedby={hint ? `${id}-note` : undefined}
         style={{ "--fill": `${fill}%` } as React.CSSProperties}
       />
-      <span className="teaser-note" id={`${id}-note`}>
-        Baseline avg: {one(BASELINE_AVERAGES[factor.id])}
-        {hint ? ` · ${hint}` : null}
-      </span>
+      {hint ? (
+        <span className="teaser-note" id={`${id}-note`}>
+          {hint}
+        </span>
+      ) : null}
     </div>
   );
 }

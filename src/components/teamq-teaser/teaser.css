@@ -147,12 +147,12 @@
 }
 
 .teaser-team {
-  margin: 0 0 28px;
+  margin: 0;
   font-family: var(--font-display);
   font-weight: var(--display-weight);
   font-style: var(--display-style);
   letter-spacing: var(--display-tracking);
-  font-size: 22px;
+  font-size: 20px;
   color: var(--text);
 }
 
@@ -164,13 +164,20 @@
   font-weight: 400;
   font-style: normal;
   letter-spacing: 0;
-  font-size: 15px;
+  font-size: 14px;
   color: var(--muted);
 }
 
-/* when focus lands here it scrolls clear of the sticky readout */
+/* one fold: the readout on the left, the sliders on the right */
+.teaser-fold {
+  display: grid;
+  grid-template-columns: minmax(280px, 2fr) 3fr;
+  gap: 32px clamp(32px, 5cqw, 72px);
+  align-items: start;
+}
+
 .teaser-answer {
-  scroll-margin-top: calc(var(--nav-h, 0px) + 240px);
+  scroll-margin-top: calc(var(--nav-h, 0px) + 24px);
   display: grid;
   gap: 16px;
   justify-items: start;
@@ -198,17 +205,17 @@
   font-weight: 600;
 }
 
-/* the readout stays in view while the inputs scroll under it: productive
-   days on the left, capacity to perform with its scale on the right */
+/* the readout: who the team is, productive days, then capacity to perform
+   with its scale, stacked. It stays in view while the inputs scroll */
 .teaser-readout {
   position: sticky;
   top: var(--nav-h, 0px);
   z-index: 2;
   display: grid;
-  grid-template-columns: 1.3fr auto;
-  gap: 8px 40px;
-  align-items: end;
-  padding: 20px 24px;
+  grid-template-columns: 1fr;
+  gap: 22px;
+  align-items: start;
+  padding: 24px;
   background: var(--surface);
   border: var(--rule-thin) solid var(--border);
   border-radius: min(var(--radius), 22px);
@@ -256,11 +263,6 @@
   font-size: 14px;
   font-variant-numeric: tabular-nums;
   color: var(--muted);
-}
-
-.teaser-side {
-  display: grid;
-  min-width: 0;
 }
 
 .teaser-failed {
@@ -387,16 +389,18 @@
 
 /* ---------- inputs ---------- */
 
+/* work environment, then lifestyle under it, each in two columns so the
+   ten sliders sit in one fold beside the readout */
 .teaser-inputs {
   display: grid;
-  grid-template-columns: 1.5fr 1fr;
-  gap: 56px;
+  gap: 24px;
   align-items: start;
 }
 
 .teaser-group {
   display: grid;
-  gap: 22px;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 32px;
   margin: 0;
   padding: 0;
   border: 0;
@@ -405,7 +409,7 @@
 
 .teaser-group legend {
   padding: 0;
-  margin-bottom: 20px;
+  margin-bottom: 12px;
   font-family: var(--font-display);
   font-weight: var(--display-weight);
   font-style: var(--display-style);
@@ -445,7 +449,6 @@
 
 .teaser-reset {
   justify-self: start;
-  margin-top: 8px;
 }
 
 .teaser-reset:disabled {
@@ -459,7 +462,7 @@
   -webkit-appearance: none;
   appearance: none;
   width: 100%;
-  height: 28px;
+  height: 24px;
   margin: 0;
   background: transparent;
   cursor: pointer;
@@ -579,32 +582,39 @@
   }
 }
 
+@container page (max-width: 900px) {
+  /* the fold stacks: the readout pins at the top, the sliders scroll under */
+  .teaser-fold {
+    grid-template-columns: 1fr;
+  }
+}
+
 @container page (max-width: 760px) {
-  .teaser-inputs,
   .teaser-ask {
     grid-template-columns: 1fr;
     gap: 32px;
   }
 
-  /* the readout stacks: days on top, capacity under, with a shorter scale
-     so the sticky block leaves room for the sliders */
+  /* the pinned readout gets short: the team line, then days and capacity
+     side by side with a shorter scale, so the sliders keep their room */
   .teaser-readout {
-    grid-template-columns: 1fr;
-    gap: 10px;
+    grid-template-columns: 1fr auto;
+    gap: 8px 20px;
     padding: 12px 16px;
   }
 
-  .teaser-headline {
-    grid-template-columns: 1fr auto;
-    align-items: baseline;
+  .teaser-readout .teaser-team {
+    grid-column: 1 / -1;
+    font-size: 16px;
   }
 
-  .teaser-headline .teaser-label {
-    grid-column: 1 / -1;
+  .teaser-readout .teaser-team-base {
+    display: inline;
+    margin: 0;
   }
 
   .teaser-days {
-    font-size: 44px;
+    font-size: 40px;
   }
 
   .teaser-figure {
@@ -612,12 +622,18 @@
   }
 
   .teaser-capacity {
-    --band-h: 15px;
+    --band-h: 14px;
     gap: 4px;
   }
 
   .capacity-names {
     font-size: 12px;
+  }
+}
+
+@container page (max-width: 600px) {
+  .teaser-group {
+    grid-template-columns: 1fr;
   }
 }
 
