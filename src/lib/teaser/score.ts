@@ -1,29 +1,38 @@
-// The simulator's scoring, run on our server for the TeamQ teaser.
+// The dashboard's scoring, run on our server for the TeamQ teaser.
 //
-// A copy of github.com/jerzybala/samuh-dashboard, the code behind
-// workforce-wellbeing-simulator2-production.up.railway.app, in team mode with
-// the "Western Countries" models (models_west, the simulator's default).
-// Jerzy's maths, our file. Nothing is tuned, simplified or approximated.
+// A copy of github.com/jerzybala/samuh-dashboard at commit 53eb9f8: the v2
+// dashboard in samuh/, with the "Western Countries" models (models_west, its
+// default), on the demonstration team only. Jerzy's maths, our file. Nothing
+// is tuned, simplified or approximated.
 //
 //   models.json   the two LightGBM models, mhq_model.pkl and
 //                 unproductive_days_model.pkl, exported tree for tree with
 //                 booster.dump_model() at commit 53eb9f8
-//   TEAM          the 18 rows of "Simulator Dummy Data (1).csv" as the
-//                 simulator's /api/upload-csv parses them
-//   score()       what the simulator's /api/predict-batch does: shift every
-//                 row by the slider's distance from the team average, clip,
-//                 predict each row, average
+//   TEAM          the 20 rows of training/data/sample/new_sample_20.csv as
+//                 samuh/data_loader.py reads them: the eight work answers,
+//                 the two lifestyle answers on the survey's 1 to 5, and what
+//                 each person reported for MHQ and days lost
+//   score()       what /api/samuh/simulate does (samuh/simulate.py): shift
+//                 every row by the slider's distance from the team average,
+//                 clip, predict each row, average, and take the change from
+//                 the unshifted team. The change is added to what the team
+//                 measured, the dashboard's rule for every headline figure
+//                 (docs/metrics_and_anchoring.md: target = observed + Δ)
 //
-// Checked against the live simulator's /api/predict-batch on 5 Oct 2026, on
-// 60 slider settings (the baseline, all factors at each end, each factor at
-// each end, and 35 random). TeamQ and TeamP were identical. MHQ and
-// unproductive days differed by less than 1e-13, which is floating point
-// summation order.
+// Checked against the dashboard's own code on 10 Oct 2026: the
+// apply_team_deltas and predict_targets_batch that samuh.simulate runs, on
+// the same rows, with the team averages held at BASELINE, on 37 slider
+// settings (the baseline, every factor at each end, both lifestyle factors
+// at each end together, every factor at its best, a half-step lifestyle
+// move, and 12 random). The MHQ and productive-day changes differed by less
+// than 1e-13, which is floating point summation order. The three moves
+// bestForProductiveDays picks matched samuh.optimize's sweep over the same
+// factors, to the same change in days.
 //
 // Server only. The models and the team rows are never sent to the browser.
 // Import this from a route handler or a server component, nowhere else.
 
-import { BASELINE, FACTORS } from "@/components/teamq-teaser/model";
+import { BASELINE, FACTORS, type Factor } from "@/components/teamq-teaser/model";
 import models from "./models.json";
 
 interface Tree {
@@ -39,60 +48,66 @@ interface Tree {
   root: number;
 }
 
-/** One row per team member, columns in FACTORS order. */
-const TEAM: number[][] = [
-  [7, 3, 5, 3, 5, 4, 5, 2, 4, 5, 4],
-  [9, 9, 4, 9, 8, 8, 9, 9, 3, 5, 5],
-  [9, 8, 4, 9, 6, 6, 9, 9, 9, 4, 5],
-  [8, 8, 5, 9, 9, 9, 9, 6, 8, 5, 5],
-  [6, 7, 3, 8, 8, 7, 9, 8, 9, 3, 1],
-  [7, 8, 7, 9, 9, 5, 8, 7, 7, 4, 5],
-  [8, 9, 8, 9, 9, 8, 8, 8, 9, 5, 5],
-  [9, 9, 5, 9, 9, 5, 9, 6, 8, 4, 5],
-  [6, 6, 1, 5, 5, 7, 3, 2, 2, 4, 5],
-  [8, 3, 1, 6, 7, 5, 5, 2, 2, 4, 4],
-  [4, 5, 5, 8, 8, 5, 8, 7, 5, 4, 2],
-  [9, 6, 4, 8, 6, 5, 7, 5, 5, 4, 4],
-  [8, 9, 7, 8, 7, 6, 8, 7, 8, 4, 5],
-  [9, 9, 5, 9, 8, 7, 9, 7, 8, 2, 4],
-  [8, 5, 5, 9, 9, 5, 7, 6, 8, 4, 4],
-  [5, 7, 6, 8, 7, 5, 8, 8, 6, 5, 4],
-  [5, 4, 3, 9, 7, 5, 7, 3, 4, 5, 4],
-  [6, 9, 7, 9, 9, 7, 9, 5, 9, 4, 5],
+/** The models take eleven inputs (models.json "features"). Job Security is
+ *  the one the survey no longer asks. The dashboard feeds its default, 5
+ *  (data/feature_config.json, via samuh/optimize.py _extract_v1_team), so
+ *  this does too, at the position the models expect it. */
+const JOB_SECURITY = { index: 1, value: 5 };
+
+const LIFESTYLE = new Set(["exercise_freq_ord", "UPF_freq_ord"]);
+
+/** A slider value as the models take it: the two lifestyle sliders' 1 to 9
+ *  back to the survey's 1 to 5 (samuh.js _lifeDispToOrd). */
+const toModel = (factor: Factor, value: number) => (LIFESTYLE.has(factor.id) ? (value + 1) / 2 : value);
+
+/** The range the models were trained on, per factor. */
+const modelBounds = (factor: Factor): [number, number] => (LIFESTYLE.has(factor.id) ? [1, 5] : [factor.min, factor.max]);
+
+interface Member {
+  /** answers in FACTORS order, lifestyle on the survey's 1 to 5 */
+  a: number[];
+  /** "Overall MHQ" */
+  mhq: number;
+  /** days unable to work plus days with reduced output, in the past month */
+  lost: number;
+}
+
+/** One row per team member. */
+const TEAM: Member[] = [
+  { a: [6, 8, 4, 5, 8, 8, 7, 7, 4, 3], mhq: 54.2, lost: 4 },
+  { a: [5, 5, 5, 5, 5, 5, 9, 9, 4, 4], mhq: -46.9, lost: 23 },
+  { a: [8, 8, 8, 7, 8, 7, 8, 8, 5, 5], mhq: 30.2, lost: 0 },
+  { a: [7, 6, 8, 8, 8, 8, 7, 6, 4, 4], mhq: 128.5, lost: 0 },
+  { a: [4, 7, 8, 9, 4, 4, 4, 8, 1, 3], mhq: -15.4, lost: 0 },
+  { a: [6, 6, 7, 5, 4, 5, 3, 2, 4, 5], mhq: 58.4, lost: 2 },
+  { a: [4, 7, 7, 3, 4, 5, 4, 1, 1, 3], mhq: 143.0, lost: 30 },
+  { a: [3, 5, 5, 6, 8, 6, 7, 8, 4, 4], mhq: 121.7, lost: 0 },
+  { a: [7, 5, 5, 2, 4, 5, 5, 4, 3, 3], mhq: -16.3, lost: 30 },
+  { a: [4, 5, 5, 4, 5, 5, 5, 5, 4, 4], mhq: 135.4, lost: 8 },
+  { a: [5, 9, 8, 8, 7, 5, 7, 8, 5, 3], mhq: 129.3, lost: 2 },
+  { a: [8, 8, 6, 6, 9, 7, 7, 5, 2, 3], mhq: 154.9, lost: 2 },
+  { a: [5, 8, 6, 1, 7, 5, 5, 5, 2, 3], mhq: 137.6, lost: 28 },
+  { a: [5, 9, 9, 9, 9, 9, 9, 9, 1, 5], mhq: 152.9, lost: 2 },
+  { a: [5, 6, 7, 7, 8, 8, 8, 7, 2, 5], mhq: 139.9, lost: 6 },
+  { a: [4, 1, 3, 4, 2, 1, 3, 3, 1, 3], mhq: -71.0, lost: 29 },
+  { a: [3, 5, 3, 3, 5, 4, 3, 4, 1, 4], mhq: 106.8, lost: 5 },
+  { a: [8, 5, 7, 5, 9, 9, 7, 8, 1, 4], mhq: 154.4, lost: 0 },
+  { a: [4, 1, 4, 7, 4, 4, 5, 4, 1, 3], mhq: -38.5, lost: 38 },
+  { a: [5, 5, 9, 9, 5, 9, 7, 7, 4, 2], mhq: 91.6, lost: 0 },
 ];
 
-/** models_west/shap_weights.json */
-const SHAP_WEIGHTS_MHQ: Record<string, number> = {
-  work_control_time: 1.87222,
-  work_control_job: 4.499651,
-  work_amount: 4.803994,
-  work_purpose: 12.692871,
-  work_learning: 4.784616,
-  work_colleagues: 9.727239,
-  work_manager: 0.059643,
-  work_informed: 2.024194,
-  work_recognition: 9.165092,
-  exercise_freq_ord: 8.624633,
-  UPF_freq_ord: 8.44791,
-};
-
-/** models_west/shap_weights_unprod.json */
-const SHAP_WEIGHTS_UNPROD: Record<string, number> = {
-  work_control_time: 0.551952,
-  work_control_job: 0.175111,
-  work_amount: 0.250114,
-  work_purpose: 0.796553,
-  work_learning: 0.089304,
-  work_colleagues: 0.28817,
-  work_manager: 0.105463,
-  work_informed: 0.136283,
-  work_recognition: 0.581166,
-  exercise_freq_ord: 0.496263,
-  UPF_freq_ord: 0.075256,
-};
-
-/** The simulator's working days in a month (ui.js, WORKING_DAYS). */
+/** The dashboard's working days in a month (samuh/overview.py). */
 const WORKING_DAYS = 22;
+
+const mean = (numbers: number[]) => numbers.reduce((a, b) => a + b, 0) / numbers.length;
+
+/** What the team measured, as the dashboard's arcs show it
+ *  (samuh/overview.py): the mean MHQ, and the working days less the mean
+ *  days lost. The figures every change is added to. */
+const OBSERVED = {
+  mhq: mean(TEAM.map((member) => member.mhq)),
+  days: WORKING_DAYS - mean(TEAM.map((member) => member.lost)),
+};
 
 function predict(trees: Tree[], row: number[]): number {
   let sum = 0;
@@ -106,77 +121,69 @@ function predict(trees: Tree[], row: number[]): number {
   return sum;
 }
 
-/** team.py compute_teamq(): a SHAP-weighted, normalized average, 0 to 100. */
-function weightedComposite(values: Record<string, number>, weights: Record<string, number>): number {
-  let weightedSum = 0;
-  let weightTotal = 0;
-  for (const factor of FACTORS) {
-    const weight = weights[factor.id] ?? 0;
-    if (weight === 0) continue;
-    const { min, max } = factor;
-    let norm = max !== min ? (values[factor.id] - min) / (max - min) : 0.5;
-    norm = Math.max(0, Math.min(1, norm));
-    weightedSum += weight * norm;
-    weightTotal += weight;
-  }
-  if (weightTotal === 0) return 0;
-  return (weightedSum / weightTotal) * 100;
+/** A member's answers as a model row: Job Security slotted in at its default. */
+function modelRow(answers: number[]): number[] {
+  const row = [...answers];
+  row.splice(JOB_SECURITY.index, 0, JOB_SECURITY.value);
+  return row;
 }
 
 /** team.py apply_team_deltas(): every member moves by the same amount the
  *  slider moved from the team average, and stays on the scale. */
 function shiftedTeam(values: Record<string, number>): number[][] {
-  return TEAM.map((row) =>
-    row.map((answer, column) => {
-      const factor = FACTORS[column];
-      const delta = values[factor.id] - BASELINE[factor.id];
-      if (delta === 0) return answer;
-      return Math.max(factor.min, Math.min(factor.max, answer + delta));
-    }),
+  return TEAM.map((member) =>
+    modelRow(
+      member.a.map((answer, column) => {
+        const factor = FACTORS[column];
+        const delta = toModel(factor, values[factor.id]) - toModel(factor, BASELINE[factor.id]);
+        if (delta === 0) return answer;
+        const [lo, hi] = modelBounds(factor);
+        return Math.max(lo, Math.min(hi, answer + delta));
+      }),
+    ),
   );
 }
 
-const mean = (numbers: number[]) => numbers.reduce((a, b) => a + b, 0) / numbers.length;
+/** The models' view of the unshifted team: the baseline every change is
+ *  measured from. Computed once. */
+const base = shiftedTeam(BASELINE);
+const BASE_MHQ = mean(base.map((row) => predict(models.mhq, row)));
+const BASE_UNPROD = mean(base.map((row) => predict(models.unprod, row)));
 
 export interface TeaserScore {
-  /** the simulator's headline composite, 0 to 100: the mean of its TeamQ and
-   *  TeamP figures, as ui.js renderTeamQ() shows it */
-  teamQ: number;
-  /** "Capacity to Perform": the team's mean predicted MHQ */
+  /** "Capacity to perform": the team's measured MHQ, plus the predicted change */
   mhq: number;
-  /** productive days a month: working days less the mean predicted
-   *  unproductive days */
+  /** productive days a month: the team's measured productive days, plus the
+   *  predicted change */
   days: number;
 }
 
 /** `values` is one number per factor id, each within that factor's range. */
 export function score(values: Record<string, number>): TeaserScore {
   const team = shiftedTeam(values);
-  const avgMhq = mean(team.map((row) => predict(models.mhq, row)));
-  const avgUnprod = mean(team.map((row) => predict(models.unprod, row)));
-  const teamq = weightedComposite(values, SHAP_WEIGHTS_MHQ);
-  const teamp = weightedComposite(values, SHAP_WEIGHTS_UNPROD);
+  const deltaMhq = mean(team.map((row) => predict(models.mhq, row))) - BASE_MHQ;
+  const deltaUnprod = mean(team.map((row) => predict(models.unprod, row))) - BASE_UNPROD;
   return {
-    teamQ: (teamq + teamp) / 2,
-    mhq: avgMhq,
-    days: WORKING_DAYS - avgUnprod,
+    mhq: OBSERVED.mhq + deltaMhq,
+    days: OBSERVED.days - deltaUnprod,
   };
 }
 
-/** The challenge's answer: which `k` factors, moved to which values, give
- *  this team the most productive days. The same search the simulator's
- *  Optimize runs for its productivity goal (optimization.py,
- *  candidate_levels and the lever search): every combination of k factors,
- *  each at its current value, 7 (work factors only) or its maximum. */
+/** The answer to "show me the factors optimized": which `k` factors, moved
+ *  to which values, give this team the most productive days. The same
+ *  search the dashboard's Optimize runs for its productivity goal
+ *  (optimization.py candidate_levels and sweep_levers_team): every
+ *  combination of k factors, each at its current value, its maximum, or
+ *  7 (work factors only). */
 export interface Answer {
   values: Record<string, number>;
   levers: { id: string; label: string; value: number }[];
   score: TeaserScore;
 }
 
-function candidateLevels(id: string, current: number, max: number): number[] {
-  const levels = new Set([current, max]);
-  if (id !== "exercise_freq_ord" && id !== "UPF_freq_ord") levels.add(Math.min(Math.max(7, current), max));
+function candidateLevels(factor: Factor, current: number): number[] {
+  const levels = new Set([current, factor.max]);
+  if (!LIFESTYLE.has(factor.id)) levels.add(Math.min(Math.max(7, current), factor.max));
   return [...levels];
 }
 
@@ -196,7 +203,7 @@ export function bestForProductiveDays(k = 3): Answer {
 
   let best: Answer | undefined;
   for (const levers of combinations(FACTORS, k)) {
-    const levels = levers.map((factor) => candidateLevels(factor.id, BASELINE[factor.id], factor.max));
+    const levels = levers.map((factor) => candidateLevels(factor, BASELINE[factor.id]));
     const tuples = levels.reduce<number[][]>(
       (acc, options) => acc.flatMap((tuple) => options.map((option) => [...tuple, option])),
       [[]],

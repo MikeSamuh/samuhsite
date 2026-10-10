@@ -223,80 +223,101 @@ visitor's team. "See how TeamQ thinks" is fine. "Your TeamQ score" is not.
 
 ### Source of truth
 
-**The simulator**, `workforce-wellbeing-simulator2-production.up.railway.app`,
-repo `github.com/jerzybala/samuh-dashboard`. We have repo access. The model
-gets ported from there, not reinvented.
+**The SAMUH dashboard**, repo `github.com/jerzybala/samuh-dashboard` at
+commit `53eb9f8`: the v2 dashboard in `samuh/` and `static_samuh/`, which
+shows every factor on a 1 to 9 scale. We have repo access. The model gets
+ported from there, not reinvented. (Until 10 Oct the source was the older
+simulator deployed on Railway, with lifestyle on 1 to 5 and a TeamQ figure.)
 
 | | |
 |---|---|
 | Headline | **Productive days per month**, with change from baseline |
-| Also shown | **TeamQ** composite 0 to 100, **MHQ** with change from baseline |
+| Also shown | **Capacity to perform**: the team's MHQ, with change from baseline, on the dashboard's six-band scale from Distressed to Thriving, a marker at the figure |
+| Not shown | TeamQ as a number. Decided 10 Oct: the readout is productive days and capacity to perform, that is it |
 | Mode | Team only. Individual mode and CSV upload are not in the teaser |
 | Not in the teaser | The Optimize function, baseline setting, Max All, reports |
 
 ### Inputs
 
-All of them. Labels exactly as the simulator shows them.
+Labels exactly as the dashboard shows them. Every input is a slider from 1
+to 9 in whole steps, lifestyle included (decided 10 Oct: lifestyle on the
+same scale as the other factors, as the dashboard draws it).
 
-**Work environment, nine sliders, 1 to 9**
+**Work environment, eight sliders, 1 to 9**
 
-1. Work-Life Balance
-2. Job Security
-3. Manageable Workload
-4. Pride & Purpose
-5. Learning & Growth
-6. Relationship with Colleagues
-7. Relationship with Manager
-8. Flow of Information
-9. Reward & Recognition
+1. Flexibility over Time
+2. Workload
+3. Pride & Purpose
+4. Learning & Growth
+5. Relationship with Colleagues
+6. Relationship with Manager
+7. Flow of Information
+8. Reward & Recognition
 
-**Lifestyle, two selects, 1 to 5**
+**Lifestyle, two sliders, 1 to 9**
 
-10. Exercise. Higher is more frequent
-11. Ultra-Processed Food. Higher is healthier, meaning less UPF. Note the
-    inversion when mapping from the CSV, where the raw answer is frequency
+9. Exercise. Higher is more frequent
+10. Healthy Diet. Higher is healthier, meaning less ultra-processed food.
+    The CSV answer is a frequency; the dashboard inverts it
 
-Two columns on desktop: nine sliders left, two selects right, the readout
-above or beside. Stacked on mobile with the readout sticky at the top so the
-number stays visible while scrolling the sliders.
+The survey has five answers for each lifestyle question. The dashboard shows
+them at 1, 3, 5, 7 and 9 (`samuh.js`, 2v - 1) and converts back to 1 to 5
+before the models see them. So do we.
+
+Three columns the survey asks are not sliders. Flexibility over Work and
+Sleep: the dashboard shows both, but its models take neither, so a slider
+would move nothing. Job Security: the models take it, but the sample no
+longer asks it; the dashboard feeds its default, 5, and so does `score.ts`.
+If the client wants any of the three shown, that is a model question for
+Jerzy, not a copy change.
+
+Two columns on desktop: eight sliders left, two sliders right, the readout
+above. Stacked on mobile with the readout sticky at the top so the number
+stays visible while scrolling the sliders.
 
 ### Baseline
 
-`Reference material/Simulator Dummy Data (1).csv`, a team of 18. The
-baseline is the team's averages per factor, computed once and committed as a
-constant in `model.ts` with the CSV's column names noted beside each value.
-The CSV itself is not shipped to the browser.
+`training/data/sample/new_sample_20.csv` in the dashboard repo, a team of
+20, supplied by the client on 10 Oct (with `new_sample_10.csv` and
+`new_sample_5.csv`, smaller teams in the same shape, not used). The baseline
+is the team's averages per factor, computed once and committed as a constant
+in `model.ts` with the CSV's column names noted beside each value. The CSV
+itself is not shipped to the browser.
 
-The CSV's column headers are the survey questions, not the simulator labels.
-Map them explicitly in `model.ts`, for example "Please rate how safe and
-secure you feel in your job" is Job Security. Where a simulator label has no
-obvious column, say so in a comment and ask rather than guess.
+The CSV's column headers are the survey questions, not the dashboard labels.
+Map them explicitly in `model.ts`, by the dashboard's own
+`samuh/data_loader.py`. Where a label has no obvious column, say so in a
+comment and ask rather than guess.
 
 ### The model
 
-Decided 5 Oct: the teaser is a **copy of the deployed simulator**, team mode,
-running on the dummy team only.
+Decided 5 Oct: the teaser is a **copy of the dashboard's scoring**, team
+mode, running on the sample team only.
 
-TeamQ in the simulator is a formula. MHQ and productive days are not: they
-come from two trained LightGBM models run on every row of the team. So the
-models themselves are copied, not approximated, and they run on our server.
+MHQ and productive days come from two trained LightGBM models run on every
+row of the team. So the models themselves are copied, not approximated, and
+they run on our server.
 
 - `src/lib/teaser/models.json`: the two `models_west` models, exported tree
   for tree from `samuh-dashboard` at commit `53eb9f8`
-- `src/lib/teaser/score.ts`: the simulator's scoring. Server only. Holds the
-  18 team rows, which never reach the browser
-- `POST /api/teaser`: scores one slider setting, returns
-  `{ teamQ, mhq, days }`. The page calls it on every change
+- `src/lib/teaser/score.ts`: the dashboard's scoring. Server only. Holds the
+  20 team rows, which never reach the browser
+- `POST /api/teaser`: scores one slider setting, returns `{ mhq, days }`.
+  The page calls it on every change
 - `src/components/teamq-teaser/model.ts`: what the browser needs. `FACTORS`,
-  `BASELINE`, the lifestyle option labels, `MODEL_VERIFIED`
+  `BASELINE`, the lifestyle answer labels, `MODEL_VERIFIED`
 
-Inputs follow the deployed simulator, not the repo head, where they differ:
-whole-number steps, lifestyle as selects, and a baseline that is the team
-averages rounded to the step. Each input shows the unrounded "Baseline avg".
+Inputs are whole-number steps, and the baseline is the team averages rounded
+to the step. Each input shows the unrounded "Baseline avg".
 
-The "TeamQ" figure is the simulator's: the mean of its TeamQ and TeamP
-composites. Productive days is 22 working days less predicted unproductive
-days.
+The figures follow the dashboard's anchoring rule
+(`docs/metrics_and_anchoring.md` there): what the team measured, plus the
+change the models predict. Capacity to perform starts at the sample's mean
+"Overall MHQ"; productive days at 22 working days less the mean days lost
+the team reported. Moving a slider shifts every row by the same amount,
+the models score the shifted team, and the difference from the unshifted
+team is added to the measured figure. At baseline the change is exactly
+zero. The band comes from the dashboard's thresholds, 50 wide from -100.
 
 **Verified.** On 5 Oct our route was compared with the live simulator's
 `/api/predict-batch` on 60 slider settings. Identical, to floating point.
@@ -313,9 +334,13 @@ One page, two parts: the intro, then the tool.
 
 **Intro**
 
-What the tool is, and how SAMUH uses TeamQ in its process. One button,
-"Start exploring", scrolls to the tool. The tool is on the same page, so
-nothing stops a visitor scrolling straight past the intro.
+An education that leads into the tool, one section at a time: the heading,
+one bold line, What is TeamQ, How we use it, then How to understand it, with
+each part of the tool explained on a frozen copy of the real readout and
+inputs, the part in question lit. The lifestyle step says the values are
+the sample team's averages and why SAMUH looks beyond the team to
+individual habits. A "Skip to the tool" button at the top. The tool is on
+the same page, so nothing stops a visitor scrolling straight past.
 
 Copy is our draft for now, marked `TODO(content)` in the source for client
 review. Rule 1 still applies to a draft: describe, do not claim. No
@@ -326,18 +351,22 @@ visitor's team (rule 4).
 **Tool**
 
 1. Kicker and two lines on what the visitor is looking at
-2. The team line: "A team of 18, as they are today." Baseline productive
-   days, TeamQ and MHQ once verified
+2. The team line: "A team of 20, as they are today." Baseline productive
+   days, capacity to perform and its band
 3. Readout: **productive days per month** large, delta from baseline beside
-   it. TeamQ and MHQ smaller underneath. Updates on every input change
-4. The eleven inputs, grouped and labelled as above. Native
-   `<input type="range">` and `<select>`, styled from tokens. A "Reset"
-   returns everything to baseline
-5. The ask, below the tool, revealed after the first input changes
-   (`teaser_interact` fires). Optional, never a gate. Heading along the
-   lines of "Want to see this for your team". Fields: email (required),
-   name, organization. Honeypot and Turnstile. Inline success with "Or book
-   a time" to `/talk`
+   it. Capacity to perform beside that: the figure, its band, the delta,
+   and the six-band scale with a marker. Updates on every input change
+4. The ten inputs, grouped and labelled as above. Native
+   `<input type="range">`, styled from tokens. A "Reset" returns everything
+   to baseline
+5. "Show me the factors optimized", below the inputs. Applies the
+   simulator's own optimizer result (its best three levers for productive
+   days, the same search as its Optimize) to the inputs and explains it in
+   a sentence
+6. The ask, always visible below. Optional, never a gate. Heading "Want to
+   get your team's TeamQ?" Fields: email (required), name, organization.
+   Honeypot and Turnstile. Inline success with "Or book a time" to `/talk`.
+   `teaser_interact` fires on the first input change
 
 ### Posts
 

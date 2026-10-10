@@ -1,4 +1,4 @@
-import { BASELINE, BASELINE_AVERAGES, FACTORS, LIFESTYLE_OPTIONS, TEAM_SIZE } from "./model";
+import { BASELINE, BASELINE_AVERAGES, FACTORS, LIFESTYLE_HINTS, TEAM_SIZE, type Factor } from "./model";
 import { ReadoutTour, type TourStep } from "./ReadoutTour";
 import type { TeaserResult } from "./TeamQTeaser";
 import "./teaser.css";
@@ -16,19 +16,13 @@ const READOUT_STEPS: TourStep[] = [
     lit: "days",
     kicker: "Productive days per month",
     title: "The headline number.",
-    text: "Of 22 working days in a month, how many this team is estimated to get full value from. It is the number a leader feels first, so it is the one in colour.",
-  },
-  {
-    lit: "teamQ",
-    kicker: "TeamQ",
-    title: "The team's environment and habits, in one figure.",
-    text: "A composite from 0 to 100, built from all eleven factors and weighted by how much each one matters. Higher means the conditions this team works and lives in are closer to their best.",
+    text: "Of 22 working days in a month, how many this team gets full value from, as the team reported it. It is the number a leader feels first, so it is the one in colour, and it moves as the factors change.",
   },
   {
     lit: "mhq",
-    kicker: "MHQ",
-    title: "Capacity to perform.",
-    text: "The team\u2019s average Mental Health Quotient, the measure from our partner Sapien Labs that TeamQ is built on. It estimates how much capacity the people on this team have to bring to their work.",
+    kicker: "Capacity to perform",
+    title: "How much the people on this team have to give.",
+    text: "The team’s average Mental Health Quotient, the measure from our partner Sapien Labs that TeamQ is built on, on its scale from Distressed to Thriving. The marker shows where this team sits today. As the factors change, it moves along the scale.",
   },
 ];
 
@@ -49,33 +43,39 @@ function Part({ kicker, title, children, cls }: { kicker: string; title: string;
   );
 }
 
-/** One work environment slider, frozen at the baseline. Decorative. */
-function SliderExhibit() {
-  const factor = FACTORS[0];
+/** One slider, frozen at the baseline. Decorative. */
+function SliderExhibit({ factor }: { factor: Factor }) {
   const value = BASELINE[factor.id];
   const fill = ((value - factor.min) / (factor.max - factor.min)) * 100;
+  const hint = LIFESTYLE_HINTS[factor.id];
   return (
-    <div className="guide-exhibit guide-exhibit-input" aria-hidden="true">
-      <div className="teaser-input">
-        <span className="guide-exhibit-label">{factor.label}</span>
-        <span className="teaser-value">{value}</span>
-        <input className="teaser-range" type="range" min={factor.min} max={factor.max} step={factor.step} value={value} readOnly tabIndex={-1} style={{ "--fill": `${fill}%` } as React.CSSProperties} />
-        <span className="teaser-note">Baseline avg: {one(BASELINE_AVERAGES[factor.id])}</span>
-      </div>
+    <div className="teaser-input">
+      <span className="guide-exhibit-label">{factor.label}</span>
+      <span className="teaser-value">{value}</span>
+      <input className="teaser-range" type="range" min={factor.min} max={factor.max} step={factor.step} value={value} readOnly tabIndex={-1} style={{ "--fill": `${fill}%` } as React.CSSProperties} />
+      <span className="teaser-note">
+        Baseline avg: {one(BASELINE_AVERAGES[factor.id])}
+        {hint ? ` · ${hint}` : null}
+      </span>
     </div>
   );
 }
 
-/** The two lifestyle selects, frozen at the baseline. Decorative. */
+/** The first work environment slider, frozen. */
+function WorkExhibit() {
+  return (
+    <div className="guide-exhibit guide-exhibit-input" aria-hidden="true">
+      <SliderExhibit factor={FACTORS[0]} />
+    </div>
+  );
+}
+
+/** The two lifestyle sliders, frozen. */
 function LifestyleExhibit() {
   return (
     <div className="guide-exhibit guide-exhibit-input" aria-hidden="true">
       {FACTORS.filter((factor) => factor.group === "lifestyle").map((factor) => (
-        <div className="teaser-input teaser-choice" key={factor.id}>
-          <span className="guide-exhibit-label">{factor.label}</span>
-          <span className="guide-exhibit-select">{LIFESTYLE_OPTIONS[factor.id][BASELINE[factor.id] - 1]}</span>
-          <span className="teaser-note">Baseline avg: {one(BASELINE_AVERAGES[factor.id])}</span>
-        </div>
+        <SliderExhibit factor={factor} key={factor.id} />
       ))}
     </div>
   );
@@ -102,8 +102,7 @@ export function TeamQIntro({ baseline }: { baseline: TeaserResult }) {
         <div className="guide-copy">
           <p className="L-mid">
             TeamQ is how SAMUH reads a team: what the work is like for the people doing it, and what that does to
-            their capacity to perform. It looks at eleven things, nine in the work environment and two in how
-            people live outside it.
+            their capacity to perform. It looks at the work environment, and at how people live outside it.
           </p>
           <p className="L-mid">
             With a real team, this is where the work starts. The team answers for itself, we read the result
@@ -112,7 +111,8 @@ export function TeamQIntro({ baseline }: { baseline: TeaserResult }) {
           </p>
           <p className="L-mid">
             Below, you can see how different factors could positively or negatively affect a team, using example
-            test case data: a demonstration team of {TEAM_SIZE}. First, what the numbers mean.
+            test case data: a demonstration team of {TEAM_SIZE}, and ten factors, eight in the work environment
+            and two in how people live. First, what the numbers mean.
           </p>
         </div>
       </Part>
@@ -123,21 +123,22 @@ export function TeamQIntro({ baseline }: { baseline: TeaserResult }) {
         </div>
       </section>
 
-      <Part kicker="Work environment" title="Nine factors, rated 1 to 9." cls="guide-step">
+      <Part kicker="Work environment" title="Eight factors, rated 1 to 9." cls="guide-step">
         <div className="guide-step-body">
           <p className="L-mid">
             Each slider starts at this team&rsquo;s average, with the exact average noted under it. Drag it to see
             what happens when the whole team&rsquo;s experience of that factor improves, or slips.
           </p>
-          <SliderExhibit />
+          <WorkExhibit />
         </div>
       </Part>
 
       <Part kicker="Lifestyle factors" title="Beyond the team, to the individual." cls="guide-step">
         <div className="guide-step-body">
           <p className="L-mid">
-            Two factors from outside work: exercise, and how often people eat ultra-processed food. The values
-            shown are the sample team&rsquo;s baseline averages, not a recommendation.
+            Two factors from outside work, on the same 1 to 9 scale as the rest: exercise, and healthy diet, which
+            is how rarely people eat ultra-processed food. The sliders start at the sample team&rsquo;s averages,
+            not at a recommendation.
           </p>
           <p className="L-mid">
             This is what sets SAMUH apart. We do not stop at the team inside the organization. We go to individual

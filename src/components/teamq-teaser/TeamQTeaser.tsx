@@ -9,6 +9,8 @@ import { useLeadSubmit } from "@/components/lead/useLeadSubmit";
 import { track } from "@/lib/analytics";
 import { CONTACT_EMAIL } from "@/lib/contact-details";
 import { EMAIL_SHAPE } from "@/lib/lead";
+import { mhqBand } from "@/lib/tokens";
+import { Capacity } from "./Capacity";
 import {
   BASELINE,
   BASELINE_AVERAGES,
@@ -16,7 +18,6 @@ import {
   FACTORS,
   GROUP_LABELS,
   LIFESTYLE_HINTS,
-  LIFESTYLE_OPTIONS,
   MODEL_VERIFIED,
   TEAM_SIZE,
   type Factor,
@@ -25,8 +26,9 @@ import "./teaser.css";
 
 /** What /api/teaser returns for one slider setting. */
 export interface TeaserResult {
-  teamQ: number;
+  /** capacity to perform: the team's MHQ */
   mhq: number;
+  /** productive days a month */
   days: number;
 }
 
@@ -43,7 +45,7 @@ const SETTLE_MS = 120;
 
 const one = (value: number) => value.toFixed(1);
 
-/** The simulator's rule: a change under 0.05 rounds to nothing, so say so. */
+/** The dashboard's rule: a change under 0.05 rounds to nothing, so say so. */
 function change(now: number, base: number, unit = ""): string {
   const delta = now - base;
   if (Math.abs(delta) < 0.05) return "no change";
@@ -53,15 +55,15 @@ function change(now: number, base: number, unit = ""): string {
 const atBaseline = (values: Values) =>
   FACTORS.every((factor) => values[factor.id] === BASELINE[factor.id]);
 
-/** "Pride & Purpose, Exercise and Job Security" */
+/** "Pride & Purpose, Exercise and Workload" */
 function list(items: string[]): string {
   if (items.length <= 1) return items.join("");
   return `${items.slice(0, -1).join(", ")} and ${items[items.length - 1]}`;
 }
 
-/** Flow 2. The simulator's team mode on a demonstration team: eleven inputs,
- *  a live readout, a button that applies the model's own best moves, and
- *  the ask. Nothing is gated. Spec: docs/sprint-intakes.md, "Flow 2". */
+/** Flow 2. The dashboard's what-if on a demonstration team: ten inputs, a
+ *  live readout, a button that applies the model's own best moves, and the
+ *  ask. Nothing is gated. Spec: docs/sprint-intakes.md, "Flow 2". */
 export function TeamQTeaser({ baseline, answer }: { baseline: TeaserResult; answer: Answer }) {
   const [values, setValues] = useState<Values>(BASELINE);
   const [result, setResult] = useState<TeaserResult>(baseline);
@@ -96,7 +98,7 @@ export function TeamQTeaser({ baseline, answer }: { baseline: TeaserResult; answ
         });
         const scored: TeaserResult & { ok?: boolean } = await response.json();
         if (!response.ok || !scored.ok) throw new Error(`teaser rejected: ${response.status}`);
-        setResult({ teamQ: scored.teamQ, mhq: scored.mhq, days: scored.days });
+        setResult({ mhq: scored.mhq, days: scored.days });
         setStale(false);
         setFailed(false);
       } catch {
@@ -137,16 +139,7 @@ export function TeamQTeaser({ baseline, answer }: { baseline: TeaserResult; answ
             <span className="teaser-days">{one(result.days)}</span>
             <span className="teaser-delta">{change(result.days, baseline.days, " days")}</span>
           </div>
-          <div className="teaser-minor">
-            <span className="teaser-label">TeamQ</span>
-            <span className="teaser-figure">{one(result.teamQ)}</span>
-            <span className="teaser-delta">{change(result.teamQ, baseline.teamQ)}</span>
-          </div>
-          <div className="teaser-minor">
-            <span className="teaser-label">MHQ</span>
-            <span className="teaser-figure">{one(result.mhq)}</span>
-            <span className="teaser-delta">{change(result.mhq, baseline.mhq)}</span>
-          </div>
+          <Capacity value={result.mhq} delta={change(result.mhq, baseline.mhq)} />
           {failed ? (
             <p className="teaser-failed" role="alert">
               That change could not be scored. These are the last figures we have.
@@ -169,23 +162,24 @@ export function TeamQTeaser({ baseline, answer }: { baseline: TeaserResult; answ
             A team of {TEAM_SIZE}, as they are today.
             <span className="teaser-team-base">
               {" "}
-              {one(baseline.days)} productive days a month, TeamQ {one(baseline.teamQ)}, MHQ {one(baseline.mhq)}.
+              {one(baseline.days)} productive days a month. Capacity to perform {one(baseline.mhq)},{" "}
+              {mhqBand(baseline.mhq).name}.
             </span>
           </p>
-        <fieldset className="teaser-group">
-          <legend>{GROUP_LABELS.lifestyle}</legend>
-          {lifestyle.map((factor) => (
-            <Choice key={factor.id} factor={factor} value={values[factor.id]} onChange={move} />
-          ))}
-          <button
-            className="btn btn-secondary teaser-reset"
-            type="button"
-            onClick={() => setValues(BASELINE)}
-            disabled={atBaseline(values)}
-          >
-            Reset
-          </button>
-        </fieldset>
+          <fieldset className="teaser-group">
+            <legend>{GROUP_LABELS.lifestyle}</legend>
+            {lifestyle.map((factor) => (
+              <Slider key={factor.id} factor={factor} value={values[factor.id]} onChange={move} />
+            ))}
+            <button
+              className="btn btn-secondary teaser-reset"
+              type="button"
+              onClick={() => setValues(BASELINE)}
+              disabled={atBaseline(values)}
+            >
+              Reset
+            </button>
+          </fieldset>
         </div>
       </div>
 
@@ -226,6 +220,7 @@ export function TeamQTeaser({ baseline, answer }: { baseline: TeaserResult; answ
 function Slider({ factor, value, onChange }: { factor: Factor; value: number; onChange: (factor: Factor, value: number) => void }) {
   const id = `teaser-${factor.id}`;
   const fill = ((value - factor.min) / (factor.max - factor.min)) * 100;
+  const hint = LIFESTYLE_HINTS[factor.id];
   return (
     <div className="teaser-input">
       <label htmlFor={id}>{factor.label}</label>
@@ -246,30 +241,7 @@ function Slider({ factor, value, onChange }: { factor: Factor; value: number; on
       />
       <span className="teaser-note" id={`${id}-note`}>
         Baseline avg: {one(BASELINE_AVERAGES[factor.id])}
-      </span>
-    </div>
-  );
-}
-
-function Choice({ factor, value, onChange }: { factor: Factor; value: number; onChange: (factor: Factor, value: number) => void }) {
-  const id = `teaser-${factor.id}`;
-  return (
-    <div className="teaser-input teaser-choice">
-      <label htmlFor={id}>{factor.label}</label>
-      <select
-        id={id}
-        value={value}
-        onChange={(event) => onChange(factor, Number(event.target.value))}
-        aria-describedby={`${id}-note`}
-      >
-        {LIFESTYLE_OPTIONS[factor.id].map((label, index) => (
-          <option key={label} value={index + 1}>
-            {label}
-          </option>
-        ))}
-      </select>
-      <span className="teaser-note" id={`${id}-note`}>
-        Baseline avg: {one(BASELINE_AVERAGES[factor.id])} · {LIFESTYLE_HINTS[factor.id]}
+        {hint ? ` · ${hint}` : null}
       </span>
     </div>
   );

@@ -151,9 +151,10 @@ Branch feat/teaser. Build the teaser UI per docs/sprint-intakes.md
   grouped Work Environment and Lifestyle Factors. Reset button
 - While MODEL_VERIFIED is false: gauge only, no digits in the readout,
   visible TODO(content)
-- The ask sits below the tool, reveals after the first change, fires
-  teaser_interact, posts flow "teaser" with answers. It never gates the
-  readout
+- "Show me the factors optimized" below the inputs applying the
+  optimizer's result, and the ask, "Want to get your team's TeamQ?",
+  always visible under it, posting flow "teaser" with answers.
+  teaser_interact fires on the first change. The readout is never gated
 - src/app/teamq/page.tsx: the intro (what the tool is, how SAMUH uses
   TeamQ in its process, "Start exploring" button to the tool), then
   <TeamQTeaser />. Draft the intro copy yourself, mark it TODO(content),

@@ -1,4 +1,4 @@
-/* /teamq: the intro, the readout, the eleven inputs and the ask. Also the
+/* /teamq: the intro, the readout, the ten inputs and the ask. Also the
    pitch that stands in for the tool on the home page. Every design value is
    a custom property from src/lib/tokens.ts. */
 
@@ -42,7 +42,7 @@
    as the editorial sections above it: heading left, text and readout
    right */
 .tour {
-  height: calc(var(--tour-steps, 3) * 80vh + 20vh);
+  height: calc(var(--tour-steps, 2) * 80vh + 20vh);
 }
 
 .tour-stage {
@@ -127,18 +127,6 @@
   color: var(--text);
 }
 
-.guide-exhibit-select {
-  grid-column: 1 / -1;
-  margin-top: 4px;
-  padding: 12px 14px;
-  background: var(--base);
-  border: var(--rule-thin) solid var(--border);
-  border-radius: min(var(--radius), 12px);
-  color: var(--text);
-  font-family: var(--font-body);
-  font-size: 16px;
-}
-
 .guide-tour {
   padding: 0;
 }
@@ -182,7 +170,7 @@
 
 /* when focus lands here it scrolls clear of the sticky readout */
 .teaser-answer {
-  scroll-margin-top: calc(var(--nav-h, 0px) + 200px);
+  scroll-margin-top: calc(var(--nav-h, 0px) + 240px);
   display: grid;
   gap: 16px;
   justify-items: start;
@@ -210,14 +198,15 @@
   font-weight: 600;
 }
 
-/* the readout stays in view while the inputs scroll under it */
+/* the readout stays in view while the inputs scroll under it: productive
+   days on the left, capacity to perform with its scale on the right */
 .teaser-readout {
   position: sticky;
   top: var(--nav-h, 0px);
   z-index: 2;
   display: grid;
-  grid-template-columns: 1.6fr 1fr 1fr;
-  gap: 8px 32px;
+  grid-template-columns: 1.3fr auto;
+  gap: 8px 40px;
   align-items: end;
   padding: 20px 24px;
   background: var(--surface);
@@ -225,8 +214,7 @@
   border-radius: min(var(--radius), 22px);
 }
 
-.teaser-headline,
-.teaser-minor {
+.teaser-headline {
   display: grid;
   gap: 2px;
 }
@@ -304,6 +292,99 @@
   color: var(--muted);
 }
 
+/* ---------- capacity to perform ---------- */
+
+/* the figure and its band on the left, the six-band scale with a marker at
+   the figure, then the band names. --band-h is one band's height; the six
+   stack from Thriving down to Distressed, as the dashboard draws them */
+.teaser-capacity {
+  --band-h: 20px;
+  display: grid;
+  gap: 8px;
+}
+
+.capacity-body {
+  display: grid;
+  grid-template-columns: auto auto auto;
+  gap: 0 14px;
+  align-items: center;
+}
+
+.capacity-figure {
+  display: grid;
+  gap: 4px;
+  justify-items: start;
+  min-width: 5ch;
+}
+
+.capacity-band-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.capacity-band-name::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  background: var(--band);
+}
+
+.capacity-scale {
+  position: relative;
+  display: grid;
+  grid-template-rows: repeat(6, var(--band-h));
+  width: 18px;
+}
+
+.capacity-band {
+  background: var(--band);
+}
+
+.capacity-band:first-child {
+  border-radius: 3px 3px 0 0;
+}
+
+.capacity-band:last-child {
+  border-radius: 0 0 3px 3px;
+}
+
+/* the marker sits at the figure's place on the scale, --top from Thriving */
+.capacity-marker {
+  position: absolute;
+  top: var(--top);
+  left: -5px;
+  right: -5px;
+  height: var(--rule-fat);
+  transform: translateY(-50%);
+  background: var(--text);
+  outline: var(--rule-thin) solid var(--surface);
+  border-radius: 99px;
+  transition: top var(--dur) var(--ease);
+}
+
+.capacity-names {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-rows: repeat(6, var(--band-h));
+  align-items: center;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.capacity-names li[data-on] {
+  color: var(--text);
+  font-weight: 600;
+}
+
 /* ---------- inputs ---------- */
 
 .teaser-inputs {
@@ -360,25 +441,6 @@
   font-family: var(--font-ui);
   font-size: 13px;
   color: var(--muted);
-}
-
-.teaser-choice select {
-  grid-column: 1 / -1;
-  width: 100%;
-  margin-top: 4px;
-  background: var(--surface);
-  border: var(--rule-thin) solid var(--border);
-  border-radius: min(var(--radius), 12px);
-  padding: 12px 14px;
-  color: var(--text);
-  font-family: var(--font-body);
-  font-size: 16px;
-}
-
-.teaser-choice select:focus-visible {
-  border-color: var(--accent);
-  outline: var(--rule-fat) solid var(--accent);
-  outline-offset: 2px;
 }
 
 .teaser-reset {
@@ -524,14 +586,15 @@
     gap: 32px;
   }
 
+  /* the readout stacks: days on top, capacity under, with a shorter scale
+     so the sticky block leaves room for the sliders */
   .teaser-readout {
-    grid-template-columns: 1fr 1fr;
-    gap: 6px 20px;
+    grid-template-columns: 1fr;
+    gap: 10px;
     padding: 12px 16px;
   }
 
   .teaser-headline {
-    grid-column: 1 / -1;
     grid-template-columns: 1fr auto;
     align-items: baseline;
   }
@@ -548,14 +611,13 @@
     font-size: 22px;
   }
 
-  .teaser-minor {
-    grid-template-columns: auto 1fr;
-    column-gap: 8px;
-    align-items: baseline;
+  .teaser-capacity {
+    --band-h: 15px;
+    gap: 4px;
   }
 
-  .teaser-minor .teaser-label {
-    grid-column: 1 / -1;
+  .capacity-names {
+    font-size: 12px;
   }
 }
 
@@ -564,6 +626,7 @@
   .teaser-days,
   .teaser-figure,
   .teaser-gauge span,
+  .capacity-marker,
   .teaser-range::-webkit-slider-thumb {
     transition: none;
   }
@@ -681,16 +744,6 @@
   grid-template-columns: 1fr;
   gap: 20px;
   align-items: start;
-}
-
-.demo-readout .teaser-minor {
-  grid-template-columns: auto 1fr auto;
-  align-items: baseline;
-  gap: 0 12px;
-}
-
-.demo-readout .teaser-minor .teaser-figure {
-  font-size: 24px;
 }
 
 .demo-readout .teaser-delta {

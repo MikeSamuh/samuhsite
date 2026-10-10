@@ -18,7 +18,7 @@ export default function TeamQPage() {
   // scored here, on the server, so the page arrives with its numbers
   const baseline = score(BASELINE);
   const { values, levers, score: best } = bestForProductiveDays(OPTIMIZER_MOVES);
-  const answer = { values, levers, days: best.days, teamQ: best.teamQ, mhq: best.mhq };
+  const answer = { values, levers, days: best.days, mhq: best.mhq };
   return (
     <DraftShell draft={WORKING}>
       <TeamQIntro baseline={baseline} />

@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { Capacity } from "./Capacity";
 import type { TeaserResult } from "./TeamQTeaser";
 import "./teaser.css";
 
-export type Lit = "days" | "teamQ" | "mhq" | "change";
+export type Lit = "days" | "mhq" | "change";
 
 export interface TourStep {
   lit: Lit;
@@ -68,16 +69,7 @@ export function ReadoutTour({ baseline, steps }: { baseline: TeaserResult; steps
             <span className="teaser-days">{one(baseline.days)}</span>
             <span className="teaser-delta" data-lit={change}>no change</span>
           </div>
-          <div className="teaser-minor" data-dim={dim("teamQ")}>
-            <span className="teaser-label">TeamQ</span>
-            <span className="teaser-figure">{one(baseline.teamQ)}</span>
-            <span className="teaser-delta" data-lit={change}>no change</span>
-          </div>
-          <div className="teaser-minor" data-dim={dim("mhq")}>
-            <span className="teaser-label">MHQ</span>
-            <span className="teaser-figure">{one(baseline.mhq)}</span>
-            <span className="teaser-delta" data-lit={change}>no change</span>
-          </div>
+          <Capacity value={baseline.mhq} delta="no change" dim={dim("mhq")} lit={change} />
         </div>
       </div>
     </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { Capacity } from "./Capacity";
 import { BASELINE, FACTORS, TEAM_SIZE } from "./model";
 
 // Home section 9: the tool, shown rather than offered. Three bars move to
@@ -10,7 +11,6 @@ import { BASELINE, FACTORS, TEAM_SIZE } from "./model";
 // is typed in. See CLAUDE.md rules 1 and 4.
 
 export interface DemoScore {
-  teamQ: number;
   mhq: number;
   days: number;
 }
@@ -28,14 +28,14 @@ export interface TeaserDemoProps {
 
 const one = (value: number) => value.toFixed(1);
 
-/** The simulator's rule: a change under 0.05 rounds to nothing, so say so. */
+/** The dashboard's rule: a change under 0.05 rounds to nothing, so say so. */
 function change(now: number, base: number, unit = ""): string {
   const delta = now - base;
   if (Math.abs(delta) < 0.05) return "no change";
   return `${delta > 0 ? "+" : "−"}${one(Math.abs(delta))}${unit}`;
 }
 
-/** "Work-Life Balance to 9, Flow of Information to 9 and Reward & Recognition to 9" */
+/** "Flexibility over Time to 9, Flow of Information to 9 and Reward & Recognition to 9" */
 function list(items: string[]): string {
   if (items.length <= 1) return items.join("");
   return `${items.slice(0, -1).join(", ")} and ${items[items.length - 1]}`;
@@ -139,7 +139,6 @@ export function TeaserDemo({ baseline, answer }: TeaserDemoProps) {
 
   const shown = landed ? answer.score : baseline;
   const days = useRolling(shown.days, ROLL, !reduced);
-  const teamQ = useRolling(shown.teamQ, ROLL, !reduced);
   const mhq = useRolling(shown.mhq, ROLL, !reduced);
 
   return (
@@ -173,16 +172,7 @@ export function TeaserDemo({ baseline, answer }: TeaserDemoProps) {
           <span className="teaser-days">{one(days)}</span>
           <span className="teaser-delta">{change(shown.days, baseline.days, " days")}</span>
         </div>
-        <div className="teaser-minor">
-          <span className="teaser-label">TeamQ</span>
-          <span className="teaser-figure">{one(teamQ)}</span>
-          <span className="teaser-delta">{change(shown.teamQ, baseline.teamQ)}</span>
-        </div>
-        <div className="teaser-minor">
-          <span className="teaser-label">MHQ</span>
-          <span className="teaser-figure">{one(mhq)}</span>
-          <span className="teaser-delta">{change(shown.mhq, baseline.mhq)}</span>
-        </div>
+        <Capacity value={mhq} delta={change(shown.mhq, baseline.mhq)} />
       </div>
     </div>
   );
