@@ -21,9 +21,10 @@ export function useGo(draft: DraftId) {
 export function DraftHome({ draft, demo }: { draft: DraftId; demo?: TeaserDemoProps }) {
   const go = useGo(draft);
   const d = getDraft(draft);
+  const sections = d.order ? d.order.map((id) => SECTIONS.find((s) => s.id === id)!).filter(Boolean) : SECTIONS;
   return (
     <>
-      {SECTIONS.map((s) => {
+      {sections.map((s) => {
         const v = d.layout.sections[s.id];
         if (v === `${s.id}-${OFF}`) return null;
         if (s.id === "meaning" && d.copy?.thesisWithMeaning) return null;

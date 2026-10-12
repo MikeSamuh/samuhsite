@@ -75,3 +75,12 @@ Read it for context, do not build from it.
 - Platform collateral inventory v7
 - welcome-team-journey script (the in-platform welcome)
 - Productivity Simulator (Railway app)
+
+## Hero background, 12 October
+
+`public/hero-bg.mp4`: the client's stand-in background for the hero, a
+technology network loop, transcoded from
+`vecteezy_technology-network-background_2021681.mp4` on Wilfred's desktop
+(1920 wide, no audio, 2.2 MB). Video never enters git, so the file has to
+be put in `public/` on whatever machine builds, or hosted and the path
+changed in `drafts.ts`. It stays until SAMUH's own film arrives.

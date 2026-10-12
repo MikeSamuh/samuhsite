@@ -8,6 +8,7 @@ import { TeaserDemo, type TeaserDemoProps } from "@/components/teamq-teaser/Teas
 import { CONTACT_EMAIL } from "@/lib/contact-details";
 import "@/components/teamq-teaser/teaser.css";
 import Synapse from "../design/Synapse";
+import { FocusMorph } from "@/components/focus-morph/FocusMorph";
 
 const stay = (e: React.MouseEvent) => e.preventDefault();
 const LOGO_H = 285;
@@ -614,14 +615,23 @@ export function Carousel({ quotes = QUOTES }: { quotes?: typeof QUOTES }) {
  * The hero video. A muted loop; click for the full video with sound and
  * controls, click again to go back to the loop. /hero-test.mp4 is a stock
  * clip for testing the flow, not committed (video is never committed).
+ * As a `background` it only loops: a moving picture behind the copy, with
+ * nothing to click, until SAMUH's own film arrives.
  */
-export function HeroVideo() {
+export function HeroVideo({ src = "/hero-test.mp4", background = false }: { src?: string; background?: boolean }) {
   const [full, setFull] = useState(false);
+  if (background) {
+    return (
+      <div className="ph ph-tall L-video is-bg" aria-hidden>
+        <video src={src} muted loop autoPlay playsInline preload="metadata" />
+      </div>
+    );
+  }
   return (
     <div className={`ph ph-tall L-video${full ? " is-full" : ""}`} onClick={() => setFull((f) => !f)} role="button" aria-label={full ? "Back to the loop" : "Play the full video"}>
       <video
         key={full ? "full" : "loop"}
-        src="/hero-test.mp4"
+        src={src}
         muted={!full}
         loop={!full}
         autoPlay
@@ -651,6 +661,12 @@ export interface CopyOverrides {
   noEyebrow?: boolean;
   /** no buttons in the hero */
   noHeroCtas?: boolean;
+  /** the hero's video file; default is the stock test clip */
+  heroVideo?: string;
+  /** the hero video is a background loop, nothing to click */
+  heroBackground?: boolean;
+  /** the research claim opens the case study section, and the research section is not rendered on its own */
+  caseWithResearch?: boolean;
   /** which metaphor cards to show, in order; default is every card */
   cards?: [string, string, string][];
 }
@@ -678,7 +694,7 @@ export function Section({ def, variant, go, copy = {}, demo }: { def: (typeof SE
                 </div>
               )}
             </div>
-            <HeroVideo />
+            <HeroVideo src={copy.heroVideo} background={copy.heroBackground} />
           </div>
         )}
 
@@ -702,7 +718,14 @@ export function Section({ def, variant, go, copy = {}, demo }: { def: (typeof SE
           </>
         )}
 
-        {def.id === "circles" && v !== "nested" && (
+        {def.id === "circles" && v === "morph" && (
+          <>
+            <Head def={def} />
+            <FocusMorph />
+          </>
+        )}
+
+        {def.id === "circles" && v !== "nested" && v !== "morph" && (
           <>
             <Head def={def} />
             <div className="L-circles">
@@ -769,6 +792,13 @@ export function Section({ def, variant, go, copy = {}, demo }: { def: (typeof SE
         {def.id === "case" && (
           <>
             <Head def={def} />
+            <div className="L-case-wrap">
+            {copy.caseWithResearch ? (
+              <blockquote className="L-research L-case-research">
+                <p className="L-big">The environment inside a team shapes how much capacity its people can bring to the work. What was previously inferred can now be measured.</p>
+                <a href="#" className="inline-link" onClick={stay}>Sapien Labs Work Culture Report</a>
+              </blockquote>
+            ) : null}
             <div className="L-case">
               <span className="L-case-img">
                 <Image src="/case-study.png" alt="Samuh case study: 1 high-performance practice. 90 days. Measurable change." width={2490} height={1404} sizes="(max-width: 900px) 100vw, 560px" />
@@ -790,6 +820,7 @@ export function Section({ def, variant, go, copy = {}, demo }: { def: (typeof SE
                 </dl>
                 <a href="#" className="inline-link" onClick={stay}>Read the case study</a>
               </div>
+            </div>
             </div>
           </>
         )}

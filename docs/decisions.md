@@ -321,3 +321,15 @@ lifestyle under the work factors. "Baseline avg" is gone from under the
 sliders, it did not help tell the story. Open: whether the education moves
 from the scroll tour into popups beside the readout and the groups, so it
 reads the same on mobile. — Client
+
+**2026-10-12 — The shorter home, on the working draft.** The order is
+hero, the leak line with the dictionary beside it, where we focus, the
+tool, the metaphor cards, testimonials, the research claim with the case
+study, and the close. Where we focus now carries the Aspirational section:
+the nested circles stay as they were, with no highlight on the individual
+or the organization, and as you scroll they become a four-way Venn of
+Cognitive, Relational, Emotional and Physical capacity with the SAMUH mark
+at the centre; the four definitions show on hover or tap. "Aspirational
+moment" and its eyebrow are gone. The research claim opens the case study
+section. The equation section is off. The hero's background is the client's
+network video, a stand-in until the film, not committed. — Client

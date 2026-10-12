@@ -10,7 +10,7 @@
 // Same rule as tokens.ts and layout.ts: nothing outside this file carries a
 // draft's name, note or owner.
 
-import { PRESETS, parseLayoutHash, type Layout, type PageId } from "@/lib/layout";
+import { PRESETS, parseLayoutHash, type Layout, type PageId, type SectionId } from "@/lib/layout";
 import type { NavProps, CopyOverrides } from "../layout/sections";
 
 export type DraftId = "a" | "b" | "c" | "working";
@@ -32,6 +32,9 @@ export interface Draft {
   copy?: CopyOverrides;
   /** process stages use the traced figures that morph stage to stage, not the PNG icons */
   figures?: boolean;
+  /** which home sections render, in this order. A section left out is off.
+   *  Without it, the scope's twelve in the scope's order, less the ones off */
+  order?: SectionId[];
 }
 
 /** B's frame, nav and copy as frozen on 5 October 2026. The working draft
@@ -61,6 +64,23 @@ export const DRAFTS: Draft[] = [
     owner: "Wilfred",
     note: "The live draft. Began on 5 October 2026 as an exact copy of B, and every edit from that day forward lands here. B stays as it was for comparison.",
     ...B_SHAPE,
+    // 12 October: the shorter home. Hero, the leak line with the dictionary
+    // beside it, where we focus morphing into the four capacities, the tool,
+    // the metaphors, testimonials, the research claim with the case study,
+    // and the close. Aspirational, research and the equation sections go,
+    // folded into their neighbours.
+    layout: { ...B_SHAPE.layout, sections: { ...B_SHAPE.layout.sections, circles: "circles-morph" } },
+    order: ["hero", "thesis", "circles", "tool", "cards", "voices", "case", "start"],
+    copy: {
+      ...B_SHAPE.copy,
+      thesisWithMeaning: true,
+      // the client's network background, until the real film arrives. Not
+      // in git (video never is): public/hero-bg.mp4 on the machine that
+      // builds, see docs/assets.md
+      heroVideo: "/hero-bg.mp4",
+      heroBackground: true,
+      caseWithResearch: true,
+    },
     figures: true,
   },
   {

@@ -448,6 +448,50 @@
 .L-c-right > .L-c-call { grid-area: 1 / 1; }
 .L-page[data-align="align-center"] .L-c-call { margin-left: auto; margin-right: auto; }
 
+/* the morph: the nested circles become the four capacities as you scroll.
+   The section is the track, tall enough to scroll through; its content pins
+   under the nav and FocusMorph reads how far the track has gone. --p is the
+   eased progress, 0 nested, 1 Venn. The circles cross-fade through the
+   middle of the travel, so something is always on screen; the words and
+   callouts leave early and arrive late, so the two sets never overlap */
+.L-s-circles[data-v="morph"] { min-height: 230vh; }
+.L-s-circles[data-v="morph"] > .L-wrap { position: sticky; top: var(--nav-h, 0px); padding-top: calc(32px * var(--space, 1)); }
+.L-fm .L-fm-out { opacity: clamp(0, 1 - (var(--p, 0) - 0.25) / 0.5, 1); }
+.L-fm .L-fm-in { opacity: clamp(0, (var(--p, 0) - 0.25) / 0.5, 1); }
+.L-fm .L-c-t.L-fm-out, .L-fm .L-c-call.L-fm-out { opacity: clamp(0, 1 - var(--p, 0) / 0.4, 1); }
+.L-fm .L-c-t.L-fm-in, .L-fm .L-c-call.L-fm-in, .L-fm .L-fm-mark { opacity: clamp(0, (var(--p, 0) - 0.6) / 0.4, 1); }
+/* the callouts here are driven by the scroll, not by hover */
+.L-fm .L-c-call { transform: none; transition: none; }
+.L-fm .L-c-svg { cursor: default; }
+.L-fm[data-venn] .L-c-svg { cursor: pointer; }
+.L-fm-ring { fill: none; }
+.L-fm-ring.L-c-team { fill: color-mix(in srgb, var(--accent-4) 8%, transparent); }
+/* the Venn: translucent discs that lighten where they overlap, so the
+   middle, where all four meet, is the brightest place in the picture */
+.L-fm-disc { mix-blend-mode: screen; stroke-width: 1px; vector-effect: non-scaling-stroke; transition: fill-opacity var(--dur) var(--ease); }
+.L-fm-disc-org { fill: var(--accent-2); stroke: var(--accent-2); fill-opacity: 0.4; }
+.L-fm-disc-team { fill: var(--accent); stroke: var(--accent); fill-opacity: 0.4; }
+.L-fm-disc-ind { fill: color-mix(in srgb, var(--accent) 45%, var(--accent-2)); stroke: color-mix(in srgb, var(--accent) 45%, var(--accent-2)); fill-opacity: 0.4; }
+.L-fm-disc-phys { fill: var(--text); stroke: var(--text); fill-opacity: 0.2; }
+.L-fm-disc[data-on] { fill-opacity: 0.6; }
+.L-fm-cap { font-size: 20px; fill: var(--text); transition: fill var(--dur) var(--ease); }
+.L-fm-cap[data-on] { fill: var(--accent); }
+.L-fm .L-c-t { pointer-events: none; }
+.L-fm-mark { pointer-events: none; }
+.L-fm .L-c-right { align-self: center; }
+/* the two callouts fade in place; neither takes space from the other */
+.L-fm .L-c-left, .L-fm .L-c-right { min-height: 0; }
+@media (prefers-reduced-motion: reduce) {
+  .L-fm-disc, .L-fm-cap { transition: none; }
+}
+/* narrow: the picture full width, the callouts above and below it */
+@container page (max-width: 900px) {
+  /* outweighs the editorial three-column rule for .L-circ further down */
+  .L-page[data-comp="comp-editorial"] .L-s-circles .L-fm.L-circ { grid-template-columns: 1fr; gap: 18px; }
+  .L-fm .L-c-left { order: -1; }
+  .L-fm .L-c-right { min-height: 4.5em; align-self: start; }
+}
+
 /* ---------- 05 aspire ---------- */
 
 .L-aspire { display: grid; gap: 28px; }
@@ -564,6 +608,9 @@
 
 /* ---------- 08 case ---------- */
 
+.L-case-wrap { display: grid; gap: calc(40px * var(--space, 1)); }
+/* the research claim opening the case study: the claim, then the proof.
+   It takes the section's panel style, like the case card under it */
 .L-case { display: grid; gap: 28px; align-items: center; }
 /* the case study card, a 16:9 export on black, kept inside a hairline */
 .L-case-img { display: block; aspect-ratio: 2490 / 1404; overflow: hidden; border-radius: min(var(--radius), 14px); border: var(--rule-thin) solid var(--border); background: #000; }
@@ -1185,6 +1232,7 @@
 .L-video { position: relative; padding: 0; overflow: hidden; cursor: pointer; place-items: stretch; border-style: solid; }
 .L-video video { width: 100%; height: 100%; object-fit: cover; display: block; }
 .L-video.is-full { cursor: default; }
+.L-video.is-bg { cursor: default; }
 .L-video-hint {
   position: absolute;
   left: 50%;

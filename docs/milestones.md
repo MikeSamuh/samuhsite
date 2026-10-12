@@ -40,8 +40,9 @@ ported model.
 Everything else from the 1 Oct call. All of it lands on `/draft/working`,
 the copy of B made on 5 Oct. B itself does not change.
 
-- [ ] Home scroll shortened. Sections combined or removed. The twelve in
-      `docs/scope.md` are the list to cut from
+- [x] Home scroll shortened, first pass 12 Oct: eight sections, see
+      `docs/decisions.md`. The twelve in `docs/scope.md` were the list to
+      cut from
 - [ ] Process page rebuilt around the three initial phases, content from
       Calina
 - [ ] Process icons redrawn to read as group and team
