@@ -56,19 +56,11 @@ function SliderExhibit({ factor }: { factor: Factor }) {
   );
 }
 
-/** The first work environment slider, frozen. */
-function WorkExhibit() {
+/** The first work environment slider and the two lifestyle sliders, frozen. */
+function FactorsExhibit() {
   return (
     <div className="guide-exhibit guide-exhibit-input" aria-hidden="true">
       <SliderExhibit factor={FACTORS[0]} />
-    </div>
-  );
-}
-
-/** The two lifestyle sliders, frozen. */
-function LifestyleExhibit() {
-  return (
-    <div className="guide-exhibit guide-exhibit-input" aria-hidden="true">
       {FACTORS.filter((factor) => factor.group === "lifestyle").map((factor) => (
         <SliderExhibit factor={factor} key={factor.id} />
       ))}
@@ -118,28 +110,18 @@ export function TeamQIntro({ baseline }: { baseline: TeaserResult }) {
         </div>
       </section>
 
-      <Part kicker="Work environment" title="Eight factors, rated 1 to 9." cls="guide-step">
+      <Part kicker="The factors" title="Ten factors, rated 1 to 9." cls="guide-step">
         <div className="guide-step-body">
           <p className="L-mid">
-            Each slider starts where this team&rsquo;s average sits today. Drag it to see what happens when the
-            whole team&rsquo;s experience of that factor improves, or slips.
-          </p>
-          <WorkExhibit />
-        </div>
-      </Part>
-
-      <Part kicker="Lifestyle factors" title="Beyond the team, to the individual." cls="guide-step">
-        <div className="guide-step-body">
-          <p className="L-mid">
-            Two factors from outside work, on the same 1 to 9 scale as the rest: exercise, and healthy diet, which
-            is how rarely people eat ultra-processed food. The sliders start where the sample team is, not at a
-            recommendation.
+            Eight are about the work environment. Each slider starts where this team&rsquo;s average sits today.
+            Drag it to see what happens when the whole team&rsquo;s experience of that factor improves, or slips.
           </p>
           <p className="L-mid">
-            This is what sets SAMUH apart. We do not stop at the team inside the organization. We go to individual
-            habits and rituals, all encompassing, because a team performs with the whole person.
+            Two are from outside work, on the same scale: exercise, and healthy diet, which is how rarely people
+            eat ultra-processed food. This is what sets SAMUH apart. We do not stop at the team inside the
+            organization. We go to individual habits and rituals, because a team performs with the whole person.
           </p>
-          <LifestyleExhibit />
+          <FactorsExhibit />
         </div>
       </Part>
 
