@@ -136,5 +136,10 @@ ligatures from PDF extraction, and hyphenation. Nothing is added. Anything
 the source promised but did not include (a figure, a citation) is a
 visible `TODO(content)`.
 
+The route is `src/app/insights/` and the loader is `src/lib/insights.ts`.
+Only `status: published` posts render; video posts default to published
+because every episode is live on samuh.work. Adding a post is adding a
+file, then `npm run build`.
+
 The index must not list `status: draft` posts. `review` posts can show on
 a preview build for Rahul to read, never on production until he says so.

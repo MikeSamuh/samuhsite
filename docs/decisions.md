@@ -348,3 +348,12 @@ go.** Shown wherever the site offers an email, and the launch value for
 LEAD_NOTIFY_TO. The partner line by the mark reads on two lines. The home
 demo's pitch asks for a TeamQ assessment rather than describing the demo.
 — Client
+
+**2026-10-12 — Ship Insights with the 21 posts that are already public. MDX, no CMS for launch.**
+The 18 episodes, the three 2025 articles and the Sapien Labs report link,
+exactly what samuh.work shows today, built at /insights as a live route in
+the working draft's shell like /contact and /teamq. The nine unpublished
+pieces from the Drive stay in the repo as `draft` and `review` and do not
+render until Rahul says so. Content is MDX in `content/insights/`, read at
+build time; a CMS is a retainer item after launch. — Wilfred
+

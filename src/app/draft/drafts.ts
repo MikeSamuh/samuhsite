@@ -126,6 +126,8 @@ export const ROUTES: Record<PageId, string> = {
  *  draft's shell, and the working draft (and frozen B) link straight to them. */
 export const LIVE: Partial<Record<PageId, string>> = {
   contact: "/contact",
+  // the 21 posts carried over from samuh.work, 12 October 2026
+  insights: "/insights",
   // "Explore TeamQ". The intake assessment that used to sit behind Get
   // Started is a later sprint
   start: "/teamq",
@@ -144,7 +146,9 @@ export function getDraft(id: string): Draft {
 }
 
 export function pageFromPath(path: string, id: DraftId): PageId {
-  const live = (Object.keys(LIVE) as PageId[]).find((k) => LIVE[k] === path.replace(/\/$/, ""));
+  const clean = path.replace(/\/$/, "");
+  // a live page owns its sub-paths too: /insights/<slug> is still Insights
+  const live = (Object.keys(LIVE) as PageId[]).find((k) => clean === LIVE[k] || clean.startsWith(`${LIVE[k]}/`));
   if (live) return live;
   const rest = path.replace(draftBase(id), "").replace(/\/$/, "");
   return (Object.keys(ROUTES) as PageId[]).find((k) => ROUTES[k] === rest) ?? "home";

@@ -80,7 +80,12 @@ the copy of B made on 5 Oct. B itself does not change.
       YouTube channel, URLs in the post frontmatter
 - [x] WordPress migration decision: migrate all, 12 Oct 2026. The 21 live
       posts are in `content/insights/`, redirects in `next.config.ts`
-- [ ] CMS decision. See below
+- [x] CMS decision: MDX in the repo for launch, 12 Oct 2026. Wilfred
+      publishes. Sanity on the retainer after launch if SAMUH wants to
+      publish themselves
+- [x] Insights built at /insights and /insights/<slug>, 12 Oct 2026. The
+      21 live posts plus the Sapien Labs report. Filters by kind and topic,
+      YouTube loads on play, transcript folded under each video
 
 **Done when:** `grep -r "TODO(content)" src/` returns nothing.
 
