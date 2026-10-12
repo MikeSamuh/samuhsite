@@ -72,7 +72,7 @@ closest thing in the folder to the research layer the scope asks for.
 | HBR article Measure what matters.pages | Pages | Draft or published, unclear |
 | HBR response to Eben Harell questions.pages | Pages | Editorial Q and A |
 | New outline for HBR Tara Rahul.pages | Pages bundle | Co-authored with Tara, outline stage |
-| 408095-PDF-ENG.PDF | PDF | HBR product number format. Likely the published piece |
+| 408095-PDF-ENG.PDF | PDF | **Not Rahul's article.** Harvard Business School case 9-408-095, "Accenture's War for Talent in India" (Eccles, Lane, Arora, Kothandaraman, rev. 2011). Rahul is a subject in it as Accenture India's HR director. HBS copyright, cannot be republished. Usable only as a biographical line, with his sign-off |
 | A booklet.pages | Pages bundle | Unknown |
 | An inspired way to work and live.pages | Pages bundle | Unknown, title suggests a manifesto |
 
@@ -152,4 +152,34 @@ the top of episode 1 in the YouTube captions.
 
 Still open with Rahul: HBR publication status, the keynotes (not on the
 channel), and which of 1 to 10 he wants on a B2B site.
+
+## Update, 12 Oct 2026, written material read
+
+Wilfred asked for everything in the folder to be used. Both `.pages` files
+and all three `.pages` packages were pulled through the Drive connector and
+exported with Pages on this Mac. Plain text copies are in
+`Reference material/Human Expansion drive extracts/` outside the repo.
+
+| File | What it actually is | Where it went |
+|---|---|---|
+| New outline for HBR Tara Rahul.pages (Aug 2026) | The current draft of an HBR article, co-authored with Tara, on mind health and work culture. ~2,000 words. Unpublished, submission in progress | `content/insights/measure-what-matters.mdx`, status draft. Do not publish before HBR clears |
+| HBR article Measure what matters.pages (Jul 2024) | The pitch, not an article. Working notes plus answers to HBR's pitch questions | Reference only |
+| HBR response to Eben Harell questions.pages (Nov 2024) | Rahul and Tara's answers to an HBR editor's questions about the MHQ. Contains Sapien Labs figures as of late 2024 | Reference only. Figures logged in `docs/content.md` |
+| A booklet.pages (2023) | "A Better Way to Work and Live", a 30 page booklet by Rahul. Chapters on context, recruiting, learning, performance management, three shifts. Leadership, HR construct and Redefining success chapters are blank pages | Five draft articles in `content/insights/`, status draft |
+| An inspired way to work and live.pages (Aug 2026) | The series bible for Human Expansion: intention, episode scripts, LinkedIn posts, title brainstorms. Also holds two SAMUH-era pieces: "The Work Beneath The Work" (May 2025) and "Entitled or struggling?" (Jun 2026), and the older "Falling in love with HR" | Three articles in `content/insights/`, status review |
+| Rahul Paradigm for Performance Oct 2016 2.key | 16 slides, learning and five truths, Accenture era | Reference only, PDF in extracts folder |
+| Rahul_Keynote_Summit2024_FINAL.key | 7MB. The Drive connector cannot return it | Blocked, see below |
+
+**Still blocked, need a human download to `~/Downloads/samuh-videos/`:**
+the Leaders Lounge keynote (4.4GB), Wellbeing=Performance (315MB),
+HR Academy Welcome 2026 (.mov plus two captioned LinkedIn cuts), Rahul 1st
+Email video, and the 2024 Summit keynote deck. The connector returns files
+as base64 in the tool result and anything over a few MB fails. Once they
+are local, `scripts/transcribe.sh` and the pipeline doc cover the rest.
+These videos are not on the YouTube channel, so they also need SAMUH to
+upload them before a post can embed them.
+
+**Not for the site:** the YouTube and LinkedIn banners (Canva template),
+the stock watercolour hero, the stock family photo, the DALL-E image.
+Rahul's episode thumbnails are in use as post covers, fetched from YouTube.
 

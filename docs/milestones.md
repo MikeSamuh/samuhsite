@@ -69,8 +69,13 @@ the copy of B made on 5 Oct. B itself does not change.
 - [ ] Contact page email, Google Voice number, response time
 - [x] Insights: transcripts and posts for episodes 1 to 18, 12 Oct 2026.
       Rahul to review summaries and confirm which of 1 to 10 stay
-- [ ] Insights: keynotes, Sapien Labs long cuts and HBR piece. Need hosting
-      and files from SAMUH
+- [x] Insights: written pieces from the Drive folder. Three articles for
+      review, six drafts needing Rahul's approval (HBR outline, five
+      booklet chapters). 12 Oct 2026
+- [ ] Insights: four videos not on YouTube (Leaders Lounge keynote,
+      Wellbeing=Performance, HR Academy Welcome, 1st Email video) and the
+      2024 Summit deck. Wilfred downloads from Drive, SAMUH uploads the
+      videos to YouTube, then transcribe and post
 - [x] Video hosting: all eighteen episodes are on the Human Expansion
       YouTube channel, URLs in the post frontmatter
 - [ ] WordPress migration decision: migrate all, curate, or leave. Redirect

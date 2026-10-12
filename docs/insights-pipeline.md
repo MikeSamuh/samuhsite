@@ -117,3 +117,24 @@ thing that gets quoted back.
   Episode 10 does not
 - The two Sapien Labs conversations carry "in partnership with Sapien Labs"
   in the summary and the tag `measurement`
+
+## Written posts
+
+Same folder, `type: article`. Frontmatter adds three fields:
+
+```
+status: review | draft   # review: Rahul's own published text, needs a read.
+                          # draft: unpublished text, needs his approval
+source: ""                # where the text came from, file and date
+readTime: ""              # rough, from word count
+cover: ""                 # optional, /insights/NAME.jpg in public/
+```
+
+Episode posts carry `cover` too, fetched from YouTube's maxresdefault for
+the video ID. Text is Rahul's as written, cleaned only for em dashes,
+ligatures from PDF extraction, and hyphenation. Nothing is added. Anything
+the source promised but did not include (a figure, a citation) is a
+visible `TODO(content)`.
+
+The index must not list `status: draft` posts. `review` posts can show on
+a preview build for Rahul to read, never on production until he says so.
