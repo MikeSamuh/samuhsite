@@ -121,6 +121,12 @@ export const TEAM_SIZE = 20;
 /** How many factors the model moves when it shows the factors optimized. */
 export const OPTIMIZER_MOVES = 3;
 
+/** The home demo never pushes a factor all the way to 9. It shows a
+ *  plausible move, not the ceiling, so its search stops at 7, the middle
+ *  level the dashboard's own optimizer tries (optimization.py
+ *  candidate_levels). /teamq's "factors optimized" keeps the full range. */
+export const DEMO_CAP = 7;
+
 /** True because the scoring behind /api/teaser returns the dashboard's own
  *  numbers: see the check recorded in src/lib/teaser/score.ts. If that ever
  *  stops being so, set this false and the teaser renders no number anywhere. */

@@ -181,9 +181,11 @@ export interface Answer {
   score: TeaserScore;
 }
 
-function candidateLevels(factor: Factor, current: number): number[] {
-  const levels = new Set([current, factor.max]);
-  if (!LIFESTYLE.has(factor.id)) levels.add(Math.min(Math.max(7, current), factor.max));
+/** `cap` is the highest level the search may use; the full scale by default */
+function candidateLevels(factor: Factor, current: number, cap: number): number[] {
+  const top = Math.min(cap, factor.max);
+  const levels = new Set([current, Math.max(current, top)]);
+  if (!LIFESTYLE.has(factor.id)) levels.add(Math.min(Math.max(7, current), top));
   return [...levels];
 }
 
@@ -194,16 +196,19 @@ function combinations<T>(items: T[], k: number): T[][] {
   );
 }
 
-let cached: Map<number, Answer> | undefined;
+let cached: Map<string, Answer> | undefined;
 
-export function bestForProductiveDays(k = 3): Answer {
+/** `cap` limits how far any lever may be pushed: the home demo asks for 7,
+ *  so it never shows a factor at the ceiling */
+export function bestForProductiveDays(k = 3, cap = 9): Answer {
   cached ??= new Map();
-  const hit = cached.get(k);
+  const key = `${k}:${cap}`;
+  const hit = cached.get(key);
   if (hit) return hit;
 
   let best: Answer | undefined;
   for (const levers of combinations(FACTORS, k)) {
-    const levels = levers.map((factor) => candidateLevels(factor, BASELINE[factor.id]));
+    const levels = levers.map((factor) => candidateLevels(factor, BASELINE[factor.id], cap));
     const tuples = levels.reduce<number[][]>(
       (acc, options) => acc.flatMap((tuple) => options.map((option) => [...tuple, option])),
       [[]],
@@ -226,6 +231,6 @@ export function bestForProductiveDays(k = 3): Answer {
     }
   }
   if (!best) throw new Error("bestForProductiveDays: nothing searched");
-  cached.set(k, best);
+  cached.set(key, best);
   return best;
 }

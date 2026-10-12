@@ -6,13 +6,14 @@ import { useEffect, useRef, useState } from "react";
 // tall track; its content pins while the visitor scrolls it, and the scroll
 // drives the morph. At the top: the three nested circles, organization
 // housing team housing individual, with the team lit because the team is
-// the subject. Scrolling on, the three circles glide apart and grow into a
-// four-set Venn, a fourth rising from the centre: Cognitive, Relational,
-// Emotional, Physical, the four kinds of capacity to perform. SAMUH's mark
-// sits where all four meet. Scrolling back reverses it. No animation
-// library: the scroll position is the clock, and the geometry is
-// interpolated. Reduced motion changes nothing, since nothing moves on its
-// own.
+// the subject, and a key under the picture saying what each circle is.
+// Scrolling on, the three circles glide apart and grow into a four-set
+// Venn, a fourth rising from the centre: Cognitive, Relational, Emotional,
+// Physical, the four kinds of capacity to perform, each its own colour,
+// SAMUH's mark where all four meet. The head and the key change with it.
+// Scrolling back reverses it. No animation library: the scroll position is
+// the clock, and the geometry is interpolated. Reduced motion changes
+// nothing, since nothing moves on its own.
 //
 // Copy here is our draft, marked TODO(content). It describes and does not
 // claim (CLAUDE.md rule 1). The mark is the supplied PNG, placed, never
@@ -43,6 +44,14 @@ const END: Record<Key, Shape> = {
   phys: { cx: 395, cy: 295, r: 140 },
 };
 
+/** TODO(content): the nested circles' key. The team line and the two
+ *  callouts the Circles diagram shows on hover, here always shown. */
+const FOCUS: { key: Exclude<Key, "phys">; name: string; label: string; note: string; y: number }[] = [
+  { key: "team", name: "Team", label: "Where people experience their work life", note: "The subject. Where the work gets done, and where capacity is won or lost.", y: 246 },
+  { key: "ind", name: "Individual", label: "Where organizations invest", note: "Hiring, coaching, training: one person at a time.", y: 126 },
+  { key: "org", name: "Organization", label: "Where organizations look", note: "Strategy, structure, culture: the whole at once.", y: 362 },
+];
+
 /** TODO(content): what each circle becomes, with its one line. The
  *  definitions are the ones the Aspirational section carried. Each label
  *  sits in the part of its circle that no other circle covers. */
@@ -51,13 +60,6 @@ const CAPACITY: Record<Key, { name: string; note: string; x: number; y: number }
   team: { name: "Relational", note: "Trust, feedback and how decisions get made.", x: 460, y: 100 },
   ind: { name: "Emotional", note: "Energy, and the will to keep going.", x: 180, y: 348 },
   phys: { name: "Physical", note: "The stamina the other three depend on.", x: 460, y: 348 },
-};
-
-/** the labels of the nested circles, where the Circles diagram puts them */
-const NESTED: Record<Exclude<Key, "phys">, { name: string; y: number }> = {
-  org: { name: "Organization", y: 362 },
-  team: { name: "Team", y: 246 },
-  ind: { name: "Individual", y: 126 },
 };
 
 /** the supplied mark, 182 by 240, set small in the middle */
@@ -76,7 +78,9 @@ export function FocusMorph() {
   // the scroll is the clock. The section is the track and its content
   // pins under the nav (layout.css, "morph"); progress is how far the
   // content has travelled from where it pinned to where the section's
-  // content box lets it go, so 0 is the first pinned frame and 1 the last
+  // content box lets it go, so 0 is the first pinned frame and 1 the last.
+  // --p goes on the pinned content, so the head beside the picture reads
+  // it too
   useEffect(() => {
     const el = root.current;
     if (!el) return;
@@ -92,7 +96,9 @@ export function FocusMorph() {
       const padBottom = parseFloat(cs.paddingBottom) || 0;
       const navH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--nav-h")) || 0;
       const travel = rect.height - padTop - padBottom - stage.offsetHeight;
-      setP(travel > 0 ? clamp((navH - rect.top - padTop) / travel) : 1);
+      const next = travel > 0 ? clamp((navH - rect.top - padTop) / travel) : 1;
+      stage.style.setProperty("--p", ease(next).toFixed(4));
+      setP(next);
     };
     const on = () => { if (!raf) raf = requestAnimationFrame(read); };
     read();
@@ -102,6 +108,7 @@ export function FocusMorph() {
       window.removeEventListener("scroll", on);
       window.removeEventListener("resize", on);
       cancelAnimationFrame(raf);
+      stage.style.removeProperty("--p");
     };
   }, []);
 
@@ -128,50 +135,81 @@ export function FocusMorph() {
     return best;
   };
 
-  const shown = hot ? CAPACITY[hot] : null;
-
   return (
-    <div className="L-circ L-fm" ref={root} style={{ "--p": e } as React.CSSProperties} data-venn={venn || undefined}>
-      <p className="L-c-call L-c-left L-c-call-team L-c-hi L-fm-out" aria-hidden={venn || undefined}>
-        Where people experience their work life
-      </p>
-      <svg
-        className="L-c-svg"
-        viewBox={`0 0 ${FRAME.w} ${FRAME.h}`}
-        role="img"
-        aria-label={venn
-          ? "Four overlapping circles: Cognitive, Relational, Emotional and Physical capacity, with the SAMUH mark where all four meet"
-          : "Three nested circles: organization, team, individual"}
-        onPointerMove={(ev) => { if (ev.pointerType !== "touch") setHot(hit(ev.clientX, ev.clientY, ev.currentTarget)); }}
-        onPointerLeave={() => setHot(null)}
-        onClick={(ev) => { const k = hit(ev.clientX, ev.clientY, ev.currentTarget); setHot((was) => (was === k ? null : k)); }}
-      >
-        {/* the rings: the nested circles' look, fading as the Venn arrives */}
-        {(["org", "team", "ind"] as const).map((k) => (
-          <circle key={`ring-${k}`} cx={shapes[k].cx} cy={shapes[k].cy} r={shapes[k].r} className={`L-fm-ring L-c-${k} L-fm-out`} />
-        ))}
-        {/* the discs: the Venn's look, arriving as the rings go */}
-        {KEYS.map((k) => (
-          <circle key={`disc-${k}`} cx={shapes[k].cx} cy={shapes[k].cy} r={shapes[k].r} className={`L-fm-disc L-fm-disc-${k} L-fm-in`} data-on={hot === k || undefined} />
-        ))}
-        {/* the nested labels */}
-        {(["org", "team", "ind"] as const).map((k) => (
-          <text key={`t-${k}`} x={shapes[k].cx} y={shapes[k].cy + (NESTED[k].y - START[k].cy)} className={`L-c-t L-c-t-${k} L-fm-out`}>{NESTED[k].name}</text>
-        ))}
-        {/* the capacity labels */}
-        {KEYS.map((k) => (
-          <text key={`c-${k}`} x={CAPACITY[k].x} y={CAPACITY[k].y} className="L-c-t L-fm-cap L-fm-in" data-on={hot === k || undefined}>{CAPACITY[k].name}</text>
-        ))}
-        {/* the mark, where all four meet */}
-        <image href="/samuh-icon.png" x={FRAME.w / 2 - MARK.w / 2} y={FRAME.h / 2 - MARK.h / 2} width={MARK.w} height={MARK.h} className="L-fm-in L-fm-mark" />
-      </svg>
-      <div className="L-c-right">
-        {/* TODO(content): draft. The hovered or tapped circle's line, else the point of the picture */}
-        <p className="L-c-call L-fm-in L-fm-def" aria-live="polite" aria-hidden={!venn || undefined}>
-          {shown ? shown.name : "SAMUH works at the centre"}
-          <span className="L-c-sub">{shown ? shown.note : "Four kinds of capacity to perform. A team needs all four, so we account for all four."}</span>
-        </p>
+    <>
+      {/* the head, in the margin column: one for each state, crossfading */}
+      <div className="L-head L-fm-head L-fm-out" aria-hidden={venn || undefined}>
+        <div>
+          <p className="eyebrow L-eyebrow">Where others focus</p>
+          <h2 className="sec">Where we focus</h2>
+        </div>
       </div>
-    </div>
+      <div className="L-head L-fm-head L-fm-in" aria-hidden={!venn || undefined}>
+        <div>
+          {/* TODO(content): the client's words, 12 Oct */}
+          <p className="eyebrow L-eyebrow">SAMUH works at the centre</p>
+          <h2 className="sec">Optimize the team as a whole</h2>
+        </div>
+      </div>
+
+      <div className="L-circ L-fm" ref={root} data-venn={venn || undefined}>
+        <svg
+          className="L-c-svg"
+          viewBox={`0 0 ${FRAME.w} ${FRAME.h}`}
+          role="img"
+          aria-label={venn
+            ? "Four overlapping circles: Cognitive, Relational, Emotional and Physical capacity, with the SAMUH mark where all four meet"
+            : "Three nested circles: organization, team, individual"}
+          onPointerMove={(ev) => { if (ev.pointerType !== "touch") setHot(hit(ev.clientX, ev.clientY, ev.currentTarget)); }}
+          onPointerLeave={() => setHot(null)}
+          onClick={(ev) => { const k = hit(ev.clientX, ev.clientY, ev.currentTarget); setHot((was) => (was === k ? null : k)); }}
+        >
+          {/* the rings: the nested circles' look, fading as the Venn arrives */}
+          {(["org", "team", "ind"] as const).map((k) => (
+            <circle key={`ring-${k}`} cx={shapes[k].cx} cy={shapes[k].cy} r={shapes[k].r} className={`L-fm-ring L-c-${k} L-fm-out`} />
+          ))}
+          {/* the Venn: the same stroke, each circle its own colour */}
+          {KEYS.map((k) => (
+            <circle key={`venn-${k}`} cx={shapes[k].cx} cy={shapes[k].cy} r={shapes[k].r} className={`L-fm-venn L-fm-venn-${k} L-fm-in`} data-on={hot === k || undefined} />
+          ))}
+          {/* the nested labels */}
+          {FOCUS.map(({ key: k, name, y }) => (
+            <text key={`t-${k}`} x={shapes[k].cx} y={shapes[k].cy + (y - START[k].cy)} className={`L-c-t L-c-t-${k} L-fm-out`}>{name}</text>
+          ))}
+          {/* the capacity labels */}
+          {KEYS.map((k) => (
+            <text key={`c-${k}`} x={CAPACITY[k].x} y={CAPACITY[k].y} className={`L-c-t L-fm-cap L-fm-cap-${k} L-fm-in`} data-on={hot === k || undefined}>{CAPACITY[k].name}</text>
+          ))}
+          {/* the mark, where all four meet */}
+          <image href="/samuh-icon.png" x={FRAME.w / 2 - MARK.w / 2} y={FRAME.h / 2 - MARK.h / 2} width={MARK.w} height={MARK.h} className="L-fm-in L-fm-mark" />
+        </svg>
+
+        {/* the key under the picture: one for each state, crossfading */}
+        <div className="L-fm-key">
+          <dl className="L-fm-legend L-fm-legend-3 L-fm-out" aria-hidden={venn || undefined}>
+            {FOCUS.map(({ key: k, name, label, note }) => (
+              <div className={`L-fm-item L-fm-item-${k}`} key={k}>
+                <dt>{name}</dt>
+                <dd><strong>{label}.</strong> {note}</dd>
+              </div>
+            ))}
+          </dl>
+          <dl className="L-fm-legend L-fm-legend-4 L-fm-in" aria-hidden={!venn || undefined}>
+            {KEYS.map((k) => (
+              <div
+                className={`L-fm-item L-fm-item-${k}`}
+                key={k}
+                data-on={hot === k || undefined}
+                onPointerEnter={(ev) => { if (ev.pointerType !== "touch" && venn) setHot(k); }}
+                onPointerLeave={() => setHot(null)}
+              >
+                <dt>{CAPACITY[k].name}</dt>
+                <dd>{CAPACITY[k].note}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </div>
+    </>
   );
 }

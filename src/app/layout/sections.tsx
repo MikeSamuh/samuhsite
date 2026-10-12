@@ -718,12 +718,8 @@ export function Section({ def, variant, go, copy = {}, demo }: { def: (typeof SE
           </>
         )}
 
-        {def.id === "circles" && v === "morph" && (
-          <>
-            <Head def={def} />
-            <FocusMorph />
-          </>
-        )}
+        {/* the morph carries its own head: it changes as the picture does */}
+        {def.id === "circles" && v === "morph" && <FocusMorph />}
 
         {def.id === "circles" && v !== "nested" && v !== "morph" && (
           <>

@@ -450,46 +450,69 @@
 
 /* the morph: the nested circles become the four capacities as you scroll.
    The section is the track, tall enough to scroll through; its content pins
-   under the nav and FocusMorph reads how far the track has gone. --p is the
-   eased progress, 0 nested, 1 Venn. The circles cross-fade through the
-   middle of the travel, so something is always on screen; the words and
-   callouts leave early and arrive late, so the two sets never overlap */
+   under the nav and FocusMorph reads how far the track has gone, writing
+   --p, the eased progress, on the pinned content: 0 nested, 1 Venn. The
+   circles cross-fade through the middle of the travel, so something is
+   always on screen; the words, the head and the key leave early and arrive
+   late, so the two sets never overlap. Two heads and two keys share one
+   cell each and take turns */
 .L-s-circles[data-v="morph"] { min-height: 230vh; }
 .L-s-circles[data-v="morph"] > .L-wrap { position: sticky; top: var(--nav-h, 0px); padding-top: calc(32px * var(--space, 1)); }
-.L-fm .L-fm-out { opacity: clamp(0, 1 - (var(--p, 0) - 0.25) / 0.5, 1); }
-.L-fm .L-fm-in { opacity: clamp(0, (var(--p, 0) - 0.25) / 0.5, 1); }
-.L-fm .L-c-t.L-fm-out, .L-fm .L-c-call.L-fm-out { opacity: clamp(0, 1 - var(--p, 0) / 0.4, 1); }
-.L-fm .L-c-t.L-fm-in, .L-fm .L-c-call.L-fm-in, .L-fm .L-fm-mark { opacity: clamp(0, (var(--p, 0) - 0.6) / 0.4, 1); }
-/* the callouts here are driven by the scroll, not by hover */
-.L-fm .L-c-call { transform: none; transition: none; }
-.L-fm .L-c-svg { cursor: default; }
+.L-s-circles[data-v="morph"] .L-fm-out { opacity: clamp(0, 1 - (var(--p, 0) - 0.25) / 0.5, 1); }
+.L-s-circles[data-v="morph"] .L-fm-in { opacity: clamp(0, (var(--p, 0) - 0.25) / 0.5, 1); }
+.L-s-circles[data-v="morph"] .L-c-t.L-fm-out { opacity: clamp(0, 1 - var(--p, 0) / 0.4, 1); }
+.L-s-circles[data-v="morph"] :is(.L-c-t, .L-fm-mark).L-fm-in { opacity: clamp(0, (var(--p, 0) - 0.6) / 0.4, 1); }
+/* the head and the key hand over in the middle, one straight after the other */
+.L-s-circles[data-v="morph"] :is(.L-fm-head, .L-fm-legend).L-fm-out { opacity: clamp(0, 1 - (var(--p, 0) - 0.3) / 0.2, 1); }
+.L-s-circles[data-v="morph"] :is(.L-fm-head, .L-fm-legend).L-fm-in { opacity: clamp(0, (var(--p, 0) - 0.5) / 0.2, 1); }
+/* the picture takes the whole content column, so it draws large */
+.L-page[data-comp="comp-editorial"] .L-s-circles[data-v="morph"] .L-circ { grid-template-columns: 1fr; justify-items: center; gap: 28px; }
+.L-fm .L-c-svg { max-width: 720px; cursor: default; }
 .L-fm[data-venn] .L-c-svg { cursor: pointer; }
 .L-fm-ring { fill: none; }
 .L-fm-ring.L-c-team { fill: color-mix(in srgb, var(--accent-4) 8%, transparent); }
-/* the Venn: translucent discs that lighten where they overlap, so the
-   middle, where all four meet, is the brightest place in the picture */
-.L-fm-disc { mix-blend-mode: screen; stroke-width: 1px; vector-effect: non-scaling-stroke; transition: fill-opacity var(--dur) var(--ease); }
-.L-fm-disc-org { fill: var(--accent-2); stroke: var(--accent-2); fill-opacity: 0.4; }
-.L-fm-disc-team { fill: var(--accent); stroke: var(--accent); fill-opacity: 0.4; }
-.L-fm-disc-ind { fill: color-mix(in srgb, var(--accent) 45%, var(--accent-2)); stroke: color-mix(in srgb, var(--accent) 45%, var(--accent-2)); fill-opacity: 0.4; }
-.L-fm-disc-phys { fill: var(--text); stroke: var(--text); fill-opacity: 0.2; }
-.L-fm-disc[data-on] { fill-opacity: 0.6; }
+/* the Venn: the nested circles' stroke, no fill, each its own colour */
+.L-fm-venn { fill: none; stroke-width: var(--c-stroke); vector-effect: non-scaling-stroke; transition: stroke-width var(--dur) var(--ease); }
+.L-fm-venn-org, .L-fm-item-org dt, .L-fm-cap-org[data-on] { stroke: var(--accent-2); color: var(--accent-2); }
+.L-fm-venn-team, .L-fm-item-team dt, .L-fm-cap-team[data-on] { stroke: var(--accent); color: var(--accent); }
+.L-fm-venn-ind, .L-fm-item-ind dt, .L-fm-cap-ind[data-on] { stroke: color-mix(in srgb, var(--accent) 45%, var(--accent-2)); color: color-mix(in srgb, var(--accent) 45%, var(--accent-2)); }
+.L-fm-venn-phys, .L-fm-item-phys dt, .L-fm-cap-phys[data-on] { stroke: var(--text); color: var(--text); }
+.L-fm-venn[data-on] { stroke-width: calc(var(--c-stroke) * 1.8); }
 .L-fm-cap { font-size: 20px; fill: var(--text); transition: fill var(--dur) var(--ease); }
-.L-fm-cap[data-on] { fill: var(--accent); }
+.L-fm-cap[data-on] { fill: currentColor; }
 .L-fm .L-c-t { pointer-events: none; }
-.L-fm-mark { pointer-events: none; }
-.L-fm .L-c-right { align-self: center; }
-/* the two callouts fade in place; neither takes space from the other */
-.L-fm .L-c-left, .L-fm .L-c-right { min-height: 0; }
+/* the mark is black on transparent; shown white, as the nav shows it */
+.L-fm-mark { pointer-events: none; filter: brightness(0) invert(1); }
+/* the head: both states in the margin column's first cell */
+.L-fm-head { grid-area: 1 / 1; }
+.L-page[data-comp="comp-editorial"] .L-sec-h .L-fm-head.L-fm-in .L-eyebrow { color: var(--accent); }
+.L-fm { grid-area: 1 / 2; width: 100%; }
+/* the key: both states in one cell under the picture */
+.L-fm-key { display: grid; width: 100%; }
+.L-fm-legend { grid-area: 1 / 1; display: grid; gap: 20px 28px; margin: 0; align-content: start; }
+.L-fm-legend-3 { grid-template-columns: repeat(3, 1fr); }
+.L-fm-legend-4 { grid-template-columns: repeat(4, 1fr); }
+.L-fm-item { display: grid; gap: 6px; border-top: var(--rule-thin) solid var(--border); padding-top: 12px; transition: border-color var(--dur) var(--ease); }
+.L-fm-legend-4 .L-fm-item { cursor: default; }
+.L-fm-item[data-on] { border-top-color: currentColor; }
+.L-fm-item dt { font-family: var(--font-display); font-weight: var(--display-weight); font-style: var(--display-style, normal); letter-spacing: var(--display-tracking); font-size: 18px; }
+/* the nested key: the team in the primary, the other two plain. The Venn
+   key takes the circle colours above */
+.L-fm-legend-3 :is(.L-fm-item-ind, .L-fm-item-org) dt { color: var(--text); }
+.L-fm-legend-3 .L-fm-item-team dt { color: var(--accent); }
+.L-fm-item dd { margin: 0; font-size: 13px; line-height: 1.5; color: var(--muted); }
+.L-fm-item dd strong { font-weight: 600; color: var(--text); }
 @media (prefers-reduced-motion: reduce) {
-  .L-fm-disc, .L-fm-cap { transition: none; }
+  .L-fm-venn, .L-fm-cap, .L-fm-item { transition: none; }
 }
-/* narrow: the picture full width, the callouts above and below it */
+/* narrow: the heads over the picture, the key in two columns */
 @container page (max-width: 900px) {
-  /* outweighs the editorial three-column rule for .L-circ further down */
-  .L-page[data-comp="comp-editorial"] .L-s-circles .L-fm.L-circ { grid-template-columns: 1fr; gap: 18px; }
-  .L-fm .L-c-left { order: -1; }
-  .L-fm .L-c-right { min-height: 4.5em; align-self: start; }
+  .L-fm-head { grid-area: 1 / 1; }
+  .L-fm { grid-area: 2 / 1; }
+  .L-page[data-comp="comp-editorial"] .L-s-circles[data-v="morph"] .L-circ { gap: 18px; }
+}
+@container page (max-width: 600px) {
+  .L-fm-legend-3, .L-fm-legend-4 { grid-template-columns: 1fr 1fr; gap: 14px 18px; }
 }
 
 /* ---------- 05 aspire ---------- */
