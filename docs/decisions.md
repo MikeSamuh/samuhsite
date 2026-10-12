@@ -333,3 +333,12 @@ at the centre; the four definitions show on hover or tap. "Aspirational
 moment" and its eyebrow are gone. The research claim opens the case study
 section. The equation section is off. The hero's background is the client's
 network video, a stand-in until the film, not committed. — Client
+
+**2026-10-12 — Insights migration: migrate all 21 live posts, keep the Sapien Labs report link.**
+The live samuh.work Insights has 18 Human Expansion episodes (YouTube
+embeds with Rahul's intro blurbs), three SAMUH articles from May and June
+2025, and a link to the Sapien Labs Work Culture Report. All carry over with
+Rahul's own copy, the blurbs kept as "From Rahul" on each episode, and
+redirects from every WordPress slug in `next.config.ts`. The Drive folder
+holds the raw assets behind those posts plus unpublished writing, which
+sits in the repo as drafts for Rahul's approval. — Wilfred

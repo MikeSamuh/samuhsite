@@ -78,8 +78,8 @@ the copy of B made on 5 Oct. B itself does not change.
       videos to YouTube, then transcribe and post
 - [x] Video hosting: all eighteen episodes are on the Human Expansion
       YouTube channel, URLs in the post frontmatter
-- [ ] WordPress migration decision: migrate all, curate, or leave. Redirect
-      list either way
+- [x] WordPress migration decision: migrate all, 12 Oct 2026. The 21 live
+      posts are in `content/insights/`, redirects in `next.config.ts`
 - [ ] CMS decision. See below
 
 **Done when:** `grep -r "TODO(content)" src/` returns nothing.

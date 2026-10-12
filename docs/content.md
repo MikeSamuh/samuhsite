@@ -68,6 +68,18 @@ page as a present-tense claim. Quote with the date if in doubt.
 - The HBR article with Tara is a draft in submission (Aug 2026). Nothing
   on the site may say "as seen in HBR" until it is published
 
+## Live copy we can reuse as is
+
+- Insights intro on samuh.work today: "Perspectives based on cutting-edge
+  research, and guided by timeless wisdom"
+- Samuh, from the Superchicken article: "In Sanskrit, Samuh signifies a
+  group coming together for a purpose larger than themselves. Our purpose
+  is to help organizations create conditions where people and toplines
+  thrive. Scientifically. Measurably. Sustainably."
+- Rahul's live bio names "a Harvard Business School case study on
+  hyper-growth in India". That is HBS case 9-408-095, so the biographical
+  line is already public and approved
+
 ## What we cannot state yet
 
 - Any sample size or research figure
