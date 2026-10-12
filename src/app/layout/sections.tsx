@@ -90,7 +90,7 @@ export function Nav({ page, go, menu, links: order, brand = "wordmark", partner 
               <Image className="L-brand-full" src="/samuh-logo.png" alt="SAMUH" width={960} height={LOGO_H} priority />
             </span>
             <span className="L-brand-rule" aria-hidden />
-            <span className="L-brand-partner">Partnered with Sapien Labs</span>
+            <span className="L-brand-partner">Partnered with<br />Sapien Labs</span>
           </a>
         ) : (
           <a href="#" className="nav-logo" onClick={(e) => { stay(e); jump("home"); }} aria-label="SAMUH home">
@@ -825,9 +825,9 @@ export function Section({ def, variant, go, copy = {}, demo }: { def: (typeof SE
           <>
             <Head def={def} />
             {demo ? <TeaserDemo {...demo} /> : null}
-            {/* TODO(content): draft pitch, for SAMUH to replace */}
+            {/* TODO(content): draft pitch, for SAMUH to replace. It describes and does not claim */}
             <div className="teaser-pitch">
-              <p className="L-mid">Take a demonstration team of {TEAM_SIZE}. Change what their work is like, and watch their productive days move.</p>
+              <p className="L-mid">That was a demonstration team of {TEAM_SIZE}, three factors moved. Every team leaks performance somewhere different. A TeamQ assessment finds where yours does, and what to move first.</p>
               <div className="cta-row">
                 <button className="btn" onClick={() => go("start")}>Explore TeamQ <span className="arrow">&rarr;</span></button>
               </div>

@@ -342,3 +342,9 @@ Rahul's own copy, the blurbs kept as "From Rahul" on each episode, and
 redirects from every WordPress slug in `next.config.ts`. The Drive folder
 holds the raw assets behind those posts plus unpublished writing, which
 sits in the repo as drafts for Rahul's approval. — Wilfred
+
+**2026-10-12 — hello@samuh.work is the public address and where leads
+go.** Shown wherever the site offers an email, and the launch value for
+LEAD_NOTIFY_TO. The partner line by the mark reads on two lines. The home
+demo's pitch asks for a TeamQ assessment rather than describing the demo.
+— Client

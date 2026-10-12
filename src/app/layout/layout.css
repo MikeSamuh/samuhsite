@@ -477,9 +477,16 @@
 .L-fm-venn-team, .L-fm-item-team dt, .L-fm-cap-team[data-on] { stroke: var(--accent); color: var(--accent); }
 .L-fm-venn-ind, .L-fm-item-ind dt, .L-fm-cap-ind[data-on] { stroke: color-mix(in srgb, var(--accent) 45%, var(--accent-2)); color: color-mix(in srgb, var(--accent) 45%, var(--accent-2)); }
 .L-fm-venn-phys, .L-fm-item-phys dt, .L-fm-cap-phys[data-on] { stroke: var(--text); color: var(--text); }
-.L-fm-venn[data-on] { stroke-width: calc(var(--c-stroke) * 1.8); }
+/* hover, in both states: the circle's stroke grows, its label takes the
+   circle's colour. The individual and the organization take the secondary,
+   as the Circles diagram has it; the team is already in the primary */
+.L-fm-g[data-on] :is(.L-fm-venn, .L-fm-ring) { stroke-width: calc(var(--c-stroke) * 1.8); }
+.L-fm-ring { transition: stroke-width var(--dur) var(--ease), stroke var(--dur) var(--ease); }
+.L-fm-g[data-on] :is(.L-c-ind, .L-c-org) { stroke: var(--accent-2); }
+.L-fm-g[data-on] :is(.L-c-t-ind, .L-c-t-org) { fill: var(--accent-2); }
 .L-fm-cap { font-size: 20px; fill: var(--text); transition: fill var(--dur) var(--ease); }
-.L-fm-cap[data-on] { fill: currentColor; }
+.L-fm-g[data-on] .L-fm-cap { fill: currentColor; }
+.L-fm .L-c-t { transition: fill var(--dur) var(--ease); }
 .L-fm .L-c-t { pointer-events: none; }
 /* the mark is black on transparent; shown white, as the nav shows it */
 .L-fm-mark { pointer-events: none; filter: brightness(0) invert(1); }
@@ -492,9 +499,13 @@
 .L-fm-legend { grid-area: 1 / 1; display: grid; gap: 20px 28px; margin: 0; align-content: start; }
 .L-fm-legend-3 { grid-template-columns: repeat(3, 1fr); }
 .L-fm-legend-4 { grid-template-columns: repeat(4, 1fr); }
-.L-fm-item { display: grid; gap: 6px; border-top: var(--rule-thin) solid var(--border); padding-top: 12px; transition: border-color var(--dur) var(--ease); }
-.L-fm-legend-4 .L-fm-item { cursor: default; }
-.L-fm-item[data-on] { border-top-color: currentColor; }
+.L-fm-item { --k: var(--text); display: grid; gap: 6px; border-top: var(--rule-thin) solid var(--border); padding-top: 12px; cursor: default; transition: border-color var(--dur) var(--ease); }
+.L-fm-item-org { --k: var(--accent-2); }
+.L-fm-item-team { --k: var(--accent); }
+.L-fm-item-ind { --k: color-mix(in srgb, var(--accent) 45%, var(--accent-2)); }
+.L-fm-legend-3 :is(.L-fm-item-ind, .L-fm-item-org) { --k: var(--accent-2); }
+.L-fm-item[data-on] { border-top-color: var(--k); }
+.L-fm-legend .L-fm-item[data-on] dt { color: var(--k); }
 .L-fm-item dt { font-family: var(--font-display); font-weight: var(--display-weight); font-style: var(--display-style, normal); letter-spacing: var(--display-tracking); font-size: 18px; }
 /* the nested key: the team in the primary, the other two plain. The Venn
    key takes the circle colours above */
@@ -503,7 +514,7 @@
 .L-fm-item dd { margin: 0; font-size: 13px; line-height: 1.5; color: var(--muted); }
 .L-fm-item dd strong { font-weight: 600; color: var(--text); }
 @media (prefers-reduced-motion: reduce) {
-  .L-fm-venn, .L-fm-cap, .L-fm-item { transition: none; }
+  .L-fm-venn, .L-fm-ring, .L-fm-cap, .L-fm-item, .L-fm .L-c-t { transition: none; }
 }
 /* narrow: the heads over the picture, the key in two columns */
 @container page (max-width: 900px) {
@@ -1307,6 +1318,7 @@
   letter-spacing: 0.12em;
   text-transform: uppercase;
   white-space: nowrap;
+  line-height: 1.35;
   color: var(--muted);
 }
 .L-brand-rule { width: var(--rule-thin); height: 30px; flex: none; background: var(--border); }
