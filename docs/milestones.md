@@ -67,9 +67,12 @@ the copy of B made on 5 Oct. B itself does not change.
 - [ ] Teaser explanatory copy, and the insight and testimonial lines it
       interlaces
 - [ ] Contact page email, Google Voice number, response time
-- [ ] Insights: transcripts for the twelve-video launch set via
-      `scripts/transcribe.sh`, posts written per `docs/insights-pipeline.md`
-- [ ] Video hosting: YouTube or Vimeo URLs for the twelve, from SAMUH
+- [x] Insights: transcripts and posts for episodes 1 to 18, 12 Oct 2026.
+      Rahul to review summaries and confirm which of 1 to 10 stay
+- [ ] Insights: keynotes, Sapien Labs long cuts and HBR piece. Need hosting
+      and files from SAMUH
+- [x] Video hosting: all eighteen episodes are on the Human Expansion
+      YouTube channel, URLs in the post frontmatter
 - [ ] WordPress migration decision: migrate all, curate, or leave. Redirect
       list either way
 - [ ] CMS decision. See below

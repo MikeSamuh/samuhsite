@@ -23,9 +23,9 @@ from `RahulN_` to `Episode N -`.
 | 2 | Core Purpose / Smartphones | May 2023 | yes | yes | 3 | Loosely |
 | 3 | Let's Redefine Success | Jun 2023 | yes | yes | 5 | Yes |
 | 4 | Decline in Wellbeing | Jun 2023 | yes | yes | 2 | Loosely |
-| 5 | Paradox | Jul 2023 | **missing** | yes | 2 | Unknown |
-| 6 | (title unknown) | Aug 2023 | **missing** | **missing** | 3 | Unknown |
-| 7 | (title unknown) | Aug 2023 | **missing** | **missing** | 4 | Unknown |
+| 5 | The Paradox | Jul 2023 | **missing** | yes | 2 | Loosely |
+| 6 | Insights from One Million Minds (with Tara, Sapien Labs) | Aug 2023 | **missing** | **missing** | 3 | Yes, research |
+| 7 | Wellbeing: More Than Happiness (with Tara, Sapien Labs) | Sep 2023 | **missing** | **missing** | 4 | Yes, research |
 | 8 | Let's Seek Inspiration | Sep 2023 | yes | yes | 2 | Loosely |
 | 9 | Social Self | Oct 2023 | yes | yes | 5 | Yes |
 | 10 | Smartphones Harm Kids | Nov 2023 | yes | yes | 3 | **No** |
@@ -128,3 +128,28 @@ site as "as seen in HBR".
 - Which of episodes 1 to 9 belong on a B2B site?
 - Do transcripts or captions exist anywhere? The LinkedIn cuts have burned-in
   captions, which suggests a caption file exists for at least those
+
+## Update, 12 Oct 2026
+
+Wilfred supplied the channel: youtube.com/@HumanExpansion-ACorePurpose.
+All eighteen episodes are on it, including 5, 6 and 7, so the Drive gaps do
+not matter. Titles for 6 and 7 are above. Video IDs, upload dates and
+durations are in the frontmatter of `content/insights/*.mdx`.
+
+Decision, Wilfred, 12 Oct 2026: add all eighteen episodes, 1 to 18. That
+supersedes the launch-set suggestion above. Episode 10 (smartphones and
+children) is in because he asked for 1 to 18; it remains the one most likely
+to be cut on Rahul's review.
+
+Episodes 6, 7, 9 and 10 are conversations with Tara Thiagarajan, so the two
+Sapien Labs conversations in the Drive folder are episodes 6 and 7 of the
+series, not separate pieces.
+
+Transcripts: YouTube auto-captions exist for all eighteen and were pulled
+with `yt-dlp`, but they have no punctuation. Final transcripts were run with
+Whisper locally per `docs/insights-pipeline.md`. Rahul's name is clipped at
+the top of episode 1 in the YouTube captions.
+
+Still open with Rahul: HBR publication status, the keynotes (not on the
+channel), and which of 1 to 10 he wants on a B2B site.
+

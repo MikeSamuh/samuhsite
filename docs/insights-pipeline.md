@@ -42,15 +42,20 @@ Output lands in `content/insights/transcripts/` as `.txt`, `.srt` and
 `.json`. Commit the `.txt` and `.srt`. The `.srt` is what the scope means by
 "transcript where there is video", and it doubles as captions.
 
-**Shortcut if these are already on YouTube.** Auto-captions exist and are
-decent. `yt-dlp --write-auto-sub --skip-download URL` pulls them in seconds.
-Ask Rahul for the channel. Nobody has answered that yet.
+**YouTube captions, checked 12 Oct 2026.** The channel is
+youtube.com/@HumanExpansion-ACorePurpose and auto-captions exist for all
+eighteen episodes. `yt-dlp --write-auto-sub --skip-download URL` pulls them
+in seconds, but they have no punctuation or sentence breaks, so they are not
+publishable as transcripts. Use them to read and summarise; run Whisper for
+the published `.txt` and `.srt`. Audio only is enough:
+`yt-dlp -f "ba[ext=m4a]" -o "episode-NN.%(ext)s" URL`.
 
 ## 2. Host the video
 
-Scope rules out self-hosting. Each post embeds from YouTube or Vimeo. If a
-channel exists, the URLs exist. If not, someone uploads the twelve. That is
-SAMUH's account and SAMUH's upload, not ours.
+Scope rules out self-hosting. Each post embeds from YouTube. The eighteen
+episodes are on youtube.com/@HumanExpansion-ACorePurpose and the `videoUrl`
+in each post points there. The keynotes and the Sapien Labs long cuts are not
+on the channel; SAMUH uploads those if they are to be posts.
 
 ## 3. Write the posts, with Claude Code
 
@@ -63,7 +68,8 @@ slug: ""
 date: ""            # original publish date from docs/insights-inventory.md
 type: video
 author: Rahul Varma
-videoUrl: ""        # YouTube or Vimeo, TODO(content) until supplied
+videoUrl: ""        # YouTube watch URL
+episode: 0          # series number, for ordering
 duration: ""        # from the transcript json
 tags: []            # from: capacity, team practices, rituals, measurement
 summary: ""         # one sentence, for the index card and Open Graph
