@@ -79,9 +79,14 @@ export function TeamQIntro({ baseline }: { baseline: TeaserResult }) {
         <div className="L-wrap">
           <p className="eyebrow L-eyebrow">Explore TeamQ</p>
           <h1 className="display L-page-title">Optimize your team, with science</h1>
-          <a className="btn" href="#tool">
-            Skip to the tool <span className="arrow">&darr;</span>
-          </a>
+          <div className="cta-row">
+            <a className="btn" href="#ask">
+              Assess your team <span className="arrow">&rarr;</span>
+            </a>
+            <a className="btn btn-secondary" href="#tool">
+              Skip to the tool <span className="arrow">&darr;</span>
+            </a>
+          </div>
         </div>
       </section>
 

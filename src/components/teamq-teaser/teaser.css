@@ -520,6 +520,7 @@
 /* ---------- the ask ---------- */
 
 .teaser-ask {
+  scroll-margin-top: calc(var(--nav-h, 0px) + 24px);
   display: grid;
   grid-template-columns: 1fr 1.2fr;
   gap: 40px;

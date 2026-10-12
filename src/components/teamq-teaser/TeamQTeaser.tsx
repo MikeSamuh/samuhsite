@@ -282,7 +282,7 @@ function Ask({ values }: { values: Values }) {
 
   if (state === "done") {
     return (
-      <div className="teaser-ask teaser-done" ref={success} tabIndex={-1} role="status">
+      <div className="teaser-ask teaser-done" id="ask" ref={success} tabIndex={-1} role="status">
         <h2 className="teaser-ask-title">Thank you.</h2>
         <p>A person at SAMUH will be in touch about your team.</p>
         <Link className="btn btn-secondary" href="/talk">
@@ -322,7 +322,7 @@ function Ask({ values }: { values: Values }) {
   const pending = state === "pending";
 
   return (
-    <section className="teaser-ask" aria-labelledby="teaser-ask-title">
+    <section className="teaser-ask" id="ask" aria-labelledby="teaser-ask-title">
       <div>
         <h2 className="teaser-ask-title" id="teaser-ask-title">
           Want to get your team&rsquo;s TeamQ?
