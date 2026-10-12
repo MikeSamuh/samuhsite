@@ -128,7 +128,7 @@ export function Nav({ page, go, menu, links: order, brand = "wordmark", partner 
           </nav>
           <div className="L-overlay-foot L-wrap">
             <button className="btn" onClick={() => jump("start")}>Explore TeamQ <span className="arrow">&rarr;</span></button>
-            <span className="L-cap">In partnership with Sapien Labs</span>
+            <span className="L-cap">Partnered with<br />Sapien Labs</span>
           </div>
         </div>
       ) : null}
@@ -515,7 +515,7 @@ export function Footer({ go }: { go: (p: PageId) => void }) {
             <Image src="/samuh-logo.png" alt="SAMUH" width={960} height={LOGO_H} />
           </a>
           <p className="L-foot-line">High performance <em className="L-hl">without</em> the cost to people.</p>
-          <span className="L-cap">Partnered with Sapien Labs</span>
+          <span className="L-cap L-foot-partner">Partnered with<br />Sapien Labs</span>
         </div>
         <nav className="L-foot-col L-foot-links" aria-label="Footer">
           <span className="L-cap L-foot-h">Explore</span>
