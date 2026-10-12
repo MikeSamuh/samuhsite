@@ -28,6 +28,10 @@
 
 /* ---------- research, distinct from the feed ---------- */
 
+/* the page opens on the research section, no page head above it, so it
+   takes the head's breathing room */
+.L-page .ins-first { border-top: 0; padding-top: calc(72px * var(--space, 1)); }
+
 .ins-research { display: grid; gap: 16px; }
 .ins-research-card {
   display: grid;

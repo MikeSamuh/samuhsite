@@ -22,20 +22,8 @@ export default function InsightsPage() {
   const feed = posts.filter((p) => p.type !== "research").map(toCard);
   return (
     <DraftShell draft={WORKING}>
-      <section className="L-sec L-page-head ins-head">
-        <div className="L-wrap">
-          <div className="L-head">
-            <div>
-              <p className="eyebrow L-eyebrow">Insights</p>
-              <h1 className="display L-page-title">Perspectives based on cutting-edge research, and guided by timeless wisdom.</h1>
-              <p className="lede">Video, articles and research on how teams perform, from Rahul Varma and SAMUH, in partnership with Sapien Labs.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {research.length ? (
-        <section className="L-sec L-sec-h ins-research-sec" aria-labelledby="research-title">
+        <section className="L-sec L-sec-h ins-research-sec ins-first" aria-labelledby="research-title">
           <div className="L-wrap">
             <div className="L-head">
               <div>
