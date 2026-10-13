@@ -103,7 +103,7 @@ export function TeamQIntro({ baseline }: { baseline: TeaserResult }) {
           </p>
           <p className="L-mid">
             Below, you can see how different factors could positively or negatively affect a team, using example
-            test case data: a demonstration team of {TEAM_SIZE}, and ten factors, eight in the work environment
+            test case data: a demonstration team of {TEAM_SIZE}, and eleven factors, nine in the work environment
             and two in how people live. First, what the numbers mean.
           </p>
         </div>
@@ -115,10 +115,10 @@ export function TeamQIntro({ baseline }: { baseline: TeaserResult }) {
         </div>
       </section>
 
-      <Part kicker="The factors" title="Ten factors, rated 1 to 9." cls="guide-step">
+      <Part kicker="The factors" title="Eleven factors, rated 1 to 9." cls="guide-step">
         <div className="guide-step-body">
           <p className="L-mid">
-            Eight are about the work environment. Each slider starts where this team&rsquo;s average sits today.
+            Nine are about the work environment. Each slider starts where this team&rsquo;s average sits today.
             Drag it to see what happens when the whole team&rsquo;s experience of that factor improves, or slips.
           </p>
           <p className="L-mid">

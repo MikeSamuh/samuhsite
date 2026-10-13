@@ -1,7 +1,7 @@
-// The TeamQ teaser's inputs: the ten factors and the demo team's baseline.
+// The TeamQ teaser's inputs: the eleven factors and the demo team's baseline.
 //
 // Follows the SAMUH dashboard, github.com/jerzybala/samuh-dashboard at
-// commit 53eb9f8, the v2 dashboard in samuh/ and static_samuh/: the survey
+// commit 1703158, the tested baseline Jerzy named on 13 Oct 2026: the survey
 // questions it reads, the 1 to 9 scale it shows every factor on, lifestyle
 // included, and the models it scores with. This file is safe to send to the
 // browser. The scoring is not here: it lives in src/lib/teaser/score.ts and
@@ -28,6 +28,7 @@ export interface Factor {
  *  five answers (static_samuh/js/samuh.js, 2v - 1), and so does this. */
 export const FACTORS: Factor[] = [
   { id: "work_control_time", label: "Flexibility over Time", group: "environment", min: 1, max: 9, step: 1 },
+  { id: "work_control_job", label: "Flexibility over Work", group: "environment", min: 1, max: 9, step: 1 },
   { id: "work_amount", label: "Workload", group: "environment", min: 1, max: 9, step: 1 },
   { id: "work_purpose", label: "Pride & Purpose", group: "environment", min: 1, max: 9, step: 1 },
   { id: "work_learning", label: "Learning & Growth", group: "environment", min: 1, max: 9, step: 1 },
@@ -39,12 +40,11 @@ export const FACTORS: Factor[] = [
   { id: "UPF_freq_ord", label: "Healthy Diet", group: "lifestyle", min: 1, max: 9, step: 1 },
 ];
 
-// The survey behind the sample also asks about flexibility over how people
-// do their work, and about sleep. The dashboard shows both but its models
-// take neither, so a slider for either would move nothing. Left out. Job
-// Security, which the models do take, is no longer asked: the dashboard
-// holds it at its default (data/feature_config.json), and so does
-// score.ts.
+// The survey behind the sample also asks about sleep, and SAMUH's own CES
+// survey asks about job security. Neither is a model input (Jerzy, 9 Oct
+// 2026: both are display-only in the dashboard), so neither is a slider.
+// Before 13 Oct the models' second input was wrongly fed Job Security;
+// it is Flexibility over Work, and now it is a slider.
 
 /** The dashboard's group headings, samuh.js. */
 export const GROUP_LABELS: Record<Factor["group"], string> = {
@@ -68,15 +68,18 @@ export const LIFESTYLE_HINTS: Record<string, string> = {
 };
 
 /** The demo team's averages: the 20 rows of the dashboard repo's
- *  training/data/sample/new_sample_20.csv, one mean per factor, on the 1 to
- *  9 scale. Computed once; the CSV is not shipped. Each names the CSV
- *  column it came from, mapped by samuh/data_loader.py WORK_FACTOR_MAP and
- *  LIFESTYLE_MAP. All ten mapped; none were guessed. The dashboard shows
- *  these as the bar lengths on its factors chart. */
+ *  training/demo_samples/dashboard_format/sample_20.csv (the file Mike sent
+ *  on 9 and 13 Oct: real respondents, picked so the averages match the
+ *  32,107-person population), one mean per factor, on the 1 to 9 scale.
+ *  Computed once; the CSV is not shipped. Each names the CSV column it came
+ *  from, mapped by samuh/data_loader.py WORK_FACTOR_MAP and LIFESTYLE_MAP.
+ *  All eleven mapped; none were guessed. */
 export const BASELINE_AVERAGES: Record<string, number> = {
   // "Please rate how much control and flexibility you have over your time
   // (e.g. to leave work to take care of a personal matter)"
   work_control_time: 5.3,
+  // "Please rate how much control and flexibility you have over how you do your work"
+  work_control_job: 5.75,
   // "Please rate how you feel about the amount of work you have to do"
   work_amount: 5.95,
   // "Please rate how you feel about the nature of your work"
@@ -104,6 +107,7 @@ export const BASELINE_AVERAGES: Record<string, number> = {
  *  rounded to the slider's whole step. */
 export const BASELINE: Record<string, number> = {
   work_control_time: 5,
+  work_control_job: 6,
   work_amount: 6,
   work_purpose: 6,
   work_learning: 6,

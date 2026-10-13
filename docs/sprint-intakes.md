@@ -224,10 +224,13 @@ visitor's team. "See how TeamQ thinks" is fine. "Your TeamQ score" is not.
 ### Source of truth
 
 **The SAMUH dashboard**, repo `github.com/jerzybala/samuh-dashboard` at
-commit `53eb9f8`: the v2 dashboard in `samuh/` and `static_samuh/`, which
-shows every factor on a 1 to 9 scale. We have repo access. The model gets
-ported from there, not reinvented. (Until 10 Oct the source was the older
-simulator deployed on Railway, with lifestyle on 1 to 5 and a TeamQ figure.)
+commit `1703158`, the tested baseline Jerzy named on 13 Oct 2026: the v2
+dashboard in `samuh/` and `static_samuh/`, which shows every factor on a 1
+to 9 scale. We have repo access. The model gets ported from there, not
+reinvented. (Until 10 Oct the source was the older simulator deployed on
+Railway, with lifestyle on 1 to 5 and a TeamQ figure; from 10 to 13 Oct it
+was commit `53eb9f8`, whose models were fed Job Security in place of
+Flexibility over Work and trained on lifestyle 0 to 4.)
 
 | | |
 |---|---|
@@ -243,46 +246,47 @@ Labels exactly as the dashboard shows them. Every input is a slider from 1
 to 9 in whole steps, lifestyle included (decided 10 Oct: lifestyle on the
 same scale as the other factors, as the dashboard draws it).
 
-**Work environment, eight sliders, 1 to 9**
+**Work environment, nine sliders, 1 to 9**
 
 1. Flexibility over Time
-2. Workload
-3. Pride & Purpose
-4. Learning & Growth
-5. Relationship with Colleagues
-6. Relationship with Manager
-7. Flow of Information
-8. Reward & Recognition
+2. Flexibility over Work
+3. Workload
+4. Pride & Purpose
+5. Learning & Growth
+6. Relationship with Colleagues
+7. Relationship with Manager
+8. Flow of Information
+9. Reward & Recognition
 
 **Lifestyle, two sliders, 1 to 9**
 
-9. Exercise. Higher is more frequent
-10. Healthy Diet. Higher is healthier, meaning less ultra-processed food.
+10. Exercise. Higher is more frequent
+11. Healthy Diet. Higher is healthier, meaning less ultra-processed food.
     The CSV answer is a frequency; the dashboard inverts it
 
 The survey has five answers for each lifestyle question. The dashboard shows
 them at 1, 3, 5, 7 and 9 (`samuh.js`, 2v - 1) and converts back to 1 to 5
 before the models see them. So do we.
 
-Three columns the survey asks are not sliders. Flexibility over Work and
-Sleep: the dashboard shows both, but its models take neither, so a slider
-would move nothing. Job Security: the models take it, but the sample no
-longer asks it; the dashboard feeds its default, 5, and so does `score.ts`.
-If the client wants any of the three shown, that is a model question for
-Jerzy, not a copy change.
+Two questions are not sliders, and are not model inputs: Sleep, which the
+sample asks, and Job Security, which SAMUH's own CES survey asks and the
+GMP training data does not. Jerzy, 9 Oct: both are display-only in the
+dashboard.
 
 One fold on desktop (decided 10 Oct): the readout on the left, the team
-line, productive days and capacity to perform stacked; the ten sliders on
-the right in two columns, lifestyle under work environment, Reset under
+line, productive days and capacity to perform stacked; the eleven sliders
+on the right in two columns, lifestyle under work environment, Reset under
 them. Stacked on mobile with the readout sticky at the top so the number
 stays visible while scrolling the sliders. No "Baseline avg" under the
 sliders: it did not help tell the story (10 Oct).
 
 ### Baseline
 
-`training/data/sample/new_sample_20.csv` in the dashboard repo, a team of
-20, supplied by the client on 10 Oct (with `new_sample_10.csv` and
-`new_sample_5.csv`, smaller teams in the same shape, not used). The baseline
+`training/demo_samples/dashboard_format/sample_20.csv` in the dashboard
+repo, a team of 20: real respondents from the 32,107-person training set,
+picked so the averages match the population (Jerzy, 9 Oct; Mike sent the
+same file again on 13 Oct as "TeamQ sample_20.csv"). `sample_10.csv` and
+`sample_5.csv` are smaller teams in the same shape, not used. The baseline
 is the team's averages per factor, computed once and committed as a constant
 in `model.ts` with the CSV's column names noted beside each value. The CSV
 itself is not shipped to the browser.
@@ -302,7 +306,8 @@ row of the team. So the models themselves are copied, not approximated, and
 they run on our server.
 
 - `src/lib/teaser/models.json`: the two `models_west` models, exported tree
-  for tree from `samuh-dashboard` at commit `53eb9f8`
+  for tree from `samuh-dashboard` at commit `1703158` (retrained 9 Oct on
+  lifestyle 1 to 5, Flexibility over Work as the second input)
 - `src/lib/teaser/score.ts`: the dashboard's scoring. Server only. Holds the
   20 team rows, which never reach the browser
 - `POST /api/teaser`: scores one slider setting, returns `{ mhq, days }`.
@@ -317,7 +322,8 @@ The figures follow the dashboard's anchoring rule
 (`docs/metrics_and_anchoring.md` there): what the team measured, plus the
 change the models predict. Capacity to perform starts at the sample's mean
 "Overall MHQ"; productive days at 22 working days less the mean days lost
-the team reported. Moving a slider shifts every row by the same amount,
+the team reported, a day unable to work counting 1 and a day of reduced
+output 0.3, the definition the model was trained on (Jerzy, 13 Oct). Moving a slider shifts every row by the same amount,
 the models score the shifted team, and the difference from the unshifted
 team is added to the measured figure. At baseline the change is exactly
 zero. The band comes from the dashboard's thresholds, 50 wide from -100.

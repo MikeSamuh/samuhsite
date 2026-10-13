@@ -365,3 +365,13 @@ correct. Light on purpose: no phone, no team size, no message. No prefill
 from Clarify: a public form that shows what the CRM knows about an email
 address would show it to anyone who typed that address. Clarify's own
 enrichment on their side does that job. — Client, via Wilfred
+
+**2026-10-13 — The teaser follows Jerzy's tested baseline, commit 1703158.**
+From his 9 and 13 Oct emails to Mike: models retrained on lifestyle 1 to 5;
+the models' second input is Flexibility over Work, not Job Security, so
+Flexibility over Work is now a slider and Job Security stays out with Sleep,
+both display-only in the dashboard; days lost counts a day unable as 1 and
+a day of reduced output as 0.3, so the demo team's productive days read
+16.5, not 11.6. The demo file is his `sample_20.csv`, real respondents
+matching the population; the file Mike sent on 13 Oct is the same one. —
+Jerzy and Mike, via Wilfred
