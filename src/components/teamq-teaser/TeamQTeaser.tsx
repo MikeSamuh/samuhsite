@@ -349,6 +349,7 @@ function Ask({ values }: { values: Values }) {
       name,
       organization,
       role: text("role") || undefined,
+      phone: text("phone") || undefined,
       answers: values,
       stage: "complete",
       company_website: text("company_website") || undefined,
@@ -395,6 +396,7 @@ function Ask({ values }: { values: Values }) {
               error={error === "Enter your company." ? error : undefined}
             />
             <Field label="Role" name="role" autoComplete="organization-title" placeholder="Head of People, Team Lead, CEO" />
+            <Field label="Phone" name="phone" type="tel" autoComplete="tel" inputMode="tel" />
             <Honeypot />
           </div>
         )}

@@ -374,8 +374,9 @@ visitor's team (rule 4).
    a sentence
 6. The ask, always visible below. Optional, never a gate. Heading "Want to
    get your team's TeamQ?" A light B2B intake in two steps (decided
-   12 Oct): first the work email alone, then name, company and role, the
-   company offered from the email's domain for the visitor to correct
+   12 Oct): first the work email alone, then name, company, role and
+   phone (role and phone optional), the company offered from the email's
+   domain for the visitor to correct
    (nothing offered for a personal address). The email is posted as soon
    as it is given, `stage: "email"`, so the CRM has the person if the
    rest never comes; the whole thing is posted at the end,
