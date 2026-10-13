@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState, type TouchEvent } from "react";
+import { REPORT } from "@/lib/report";
 import Image from "next/image";
 import { PAGES, SECTIONS, type PageId } from "@/lib/layout";
 import { TEAM_SIZE } from "@/components/teamq-teaser/model";
@@ -506,6 +507,28 @@ export function MetaphorGallery({ cards = ARCHETYPES }: { cards?: [string, strin
   );
 }
 
+/** The Sapien Labs report: its cover, the one-line claim, and the download.
+ *  The research spine of the site, so it shows on the home page and again
+ *  at the top of Insights. */
+export function ReportCard({ cls }: { cls?: string }) {
+  return (
+    <blockquote className={`L-research L-report${cls ? ` ${cls}` : ""}`}>
+      <a className="L-report-cover" href={REPORT.pdf} target="_blank" rel="noopener noreferrer" aria-label={`${REPORT.title}, PDF`}>
+        <Image src={REPORT.cover} alt="" width={REPORT.coverWidth} height={REPORT.coverHeight} sizes="(max-width: 900px) 60vw, 220px" />
+      </a>
+      <div className="L-report-copy">
+        <span className="card-tag">Research · in partnership with Sapien Labs</span>
+        <p className="L-big">The environment inside a team shapes how much capacity its people can bring to the work. What was previously inferred can now be measured.</p>
+        <span className="L-cap">{REPORT.kicker}</span>
+        <p className="L-report-links">
+          <a href={REPORT.pdf} className="inline-link" target="_blank" rel="noopener noreferrer">Download the report <span className="arrow">&rarr;</span></a>
+          <a href={REPORT.page} className="inline-link" target="_blank" rel="noopener noreferrer">On sapienlabs.org</a>
+        </p>
+      </div>
+    </blockquote>
+  );
+}
+
 export function Footer({ go }: { go: (p: PageId) => void }) {
   return (
     <footer className="L-foot">
@@ -669,6 +692,8 @@ export interface CopyOverrides {
   caseWithResearch?: boolean;
   /** which metaphor cards to show, in order; default is every card */
   cards?: [string, string, string][];
+  /** the tool section's words: its head, the pitch under the demo and the button */
+  tool?: { kicker?: string; title?: string; /** null: no pitch, the button alone */ pitch?: string | null; cta?: string };
 }
 
 export function Section({ def, variant, go, copy = {}, demo }: { def: (typeof SECTIONS)[number]; variant: string; go: (p: PageId) => void; copy?: CopyOverrides; /** the tool's numbers, scored on the server; with them, section 9 shows the bars moving */ demo?: TeaserDemoProps }) {
@@ -762,10 +787,7 @@ export function Section({ def, variant, go, copy = {}, demo }: { def: (typeof SE
         {def.id === "research" && (
           <>
             <Head def={def} />
-            <blockquote className="L-research">
-              <p className="L-big">The environment inside a team shapes how much capacity its people can bring to the work. What was previously inferred can now be measured.</p>
-              <a href="#" className="inline-link" onClick={stay}>Sapien Labs Work Culture Report</a>
-            </blockquote>
+            <ReportCard />
           </>
         )}
 
@@ -790,10 +812,7 @@ export function Section({ def, variant, go, copy = {}, demo }: { def: (typeof SE
             <Head def={def} />
             <div className="L-case-wrap">
             {copy.caseWithResearch ? (
-              <blockquote className="L-research L-case-research">
-                <p className="L-big">The environment inside a team shapes how much capacity its people can bring to the work. What was previously inferred can now be measured.</p>
-                <a href="#" className="inline-link" onClick={stay}>Sapien Labs Work Culture Report</a>
-              </blockquote>
+              <ReportCard cls="L-case-research" />
             ) : null}
             <div className="L-case">
               <span className="L-case-img">
@@ -823,13 +842,15 @@ export function Section({ def, variant, go, copy = {}, demo }: { def: (typeof SE
 
         {def.id === "tool" && (
           <>
-            <Head def={def} />
+            <Head def={{ ...def, kicker: copy.tool?.kicker ?? def.kicker, title: copy.tool?.title ?? def.title }} />
             {demo ? <TeaserDemo {...demo} /> : null}
             {/* TODO(content): draft pitch, for SAMUH to replace. It describes and does not claim */}
             <div className="teaser-pitch">
-              <p className="L-mid">That was a demonstration team of {TEAM_SIZE}, three factors moved. Every team leaks performance somewhere different. A TeamQ assessment finds where yours does, and what to move first.</p>
+              {copy.tool?.pitch === null ? null : (
+                <p className="L-mid">{copy.tool?.pitch ?? `That was a demonstration team of ${TEAM_SIZE}, three factors moved. Every team leaks performance somewhere different. A TeamQ assessment finds where yours does, and what to move first.`}</p>
+              )}
               <div className="cta-row">
-                <button className="btn" onClick={() => go("start")}>Explore TeamQ <span className="arrow">&rarr;</span></button>
+                <button className="btn" onClick={() => go("start")}>{copy.tool?.cta ?? "Explore TeamQ"} <span className="arrow">&rarr;</span></button>
               </div>
             </div>
           </>

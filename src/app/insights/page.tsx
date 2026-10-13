@@ -3,6 +3,7 @@ import { InsightsFeed } from "@/components/insights/InsightsFeed";
 import { toCard } from "@/components/insights/InsightCard";
 import { publishedPosts } from "@/lib/insights";
 import DraftShell from "../draft/DraftShell";
+import { ReportCard } from "../layout/sections";
 import { WORKING } from "../draft/drafts";
 import "@/components/insights/insights.css";
 
@@ -22,7 +23,7 @@ export default function InsightsPage() {
   const feed = posts.filter((p) => p.type !== "research").map(toCard);
   return (
     <DraftShell draft={WORKING}>
-      {research.length ? (
+      {research.length ? ( // the MDX entry keeps the report in the feed data; the card itself is shared with the home page
         <section className="L-sec L-sec-h ins-research-sec ins-first" aria-labelledby="research-title">
           <div className="L-wrap">
             <div className="L-head">
@@ -31,16 +32,7 @@ export default function InsightsPage() {
                 <h2 className="sec" id="research-title">The research we build on.</h2>
               </div>
             </div>
-            <div className="ins-research">
-              {research.map((r) => (
-                <a key={r.slug} className="card ins-research-card" href={r.externalUrl} target="_blank" rel="noopener noreferrer">
-                  <span className="card-tag">Research · in partnership with Sapien Labs</span>
-                  <h3 className="ins-card-title">{r.title}</h3>
-                  <p className="ins-card-stand">{r.summary}</p>
-                  <span className="inline-link">Read the report on sapienlabs.org <span className="arrow">&rarr;</span></span>
-                </a>
-              ))}
-            </div>
+            <ReportCard />
           </div>
         </section>
       ) : null}

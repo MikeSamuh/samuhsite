@@ -87,7 +87,7 @@
   padding-bottom: 22px;
   border-bottom: var(--rule-thin) solid var(--border);
 }
-.L-nav .nav-logo img { height: 30px; width: auto; filter: brightness(0) invert(1); }
+.L-nav .nav-logo img { height: 37.5px; width: auto; filter: brightness(0) invert(1); }
 .L-links { margin-left: auto; }
 /* the small-screen burger is hidden on desktop; the selector outranks the
    generic .L-burger rule below, which sets display: grid */
@@ -448,82 +448,100 @@
 .L-c-right > .L-c-call { grid-area: 1 / 1; }
 .L-page[data-align="align-center"] .L-c-call { margin-left: auto; margin-right: auto; }
 
-/* the morph: the nested circles become the four capacities as you scroll.
-   The section is the track, tall enough to scroll through; its content pins
-   under the nav and FocusMorph reads how far the track has gone, writing
-   --p, the eased progress, on the pinned content: 0 nested, 1 Venn. The
-   circles cross-fade through the middle of the travel, so something is
-   always on screen; the words, the head and the key leave early and arrive
-   late, so the two sets never overlap. Two heads and two keys share one
-   cell each and take turns */
-.L-s-circles[data-v="morph"] { min-height: 230vh; }
-.L-s-circles[data-v="morph"] > .L-wrap { position: sticky; top: var(--nav-h, 0px); padding-top: calc(32px * var(--space, 1)); }
+/* the morph: two nested circles become three, then the four capacities,
+   as you scroll. The section is the track, tall enough to scroll through;
+   its content pins under the nav and FocusMorph reads how far the track
+   has gone, writing two eased numbers on the pinned content: --q, the
+   team circle arriving (0 absent, 1 there), then --p, the Venn (0 nested,
+   1 Venn). The circles cross-fade through the middle of the Venn travel,
+   so something is always on screen; the words, the heads and the key
+   leave early and arrive late, so no two sets overlap. Three heads share
+   one cell and take turns, two keys share another */
+.L-s-circles[data-v="morph"] { min-height: 300vh; }
+/* the pinned stage fills the view under the nav, its content centred in
+   it, so the picture is not left sitting over a blank half-screen */
+.L-s-circles[data-v="morph"] > .L-wrap { position: sticky; top: var(--nav-h, 0px); min-height: calc(100vh - var(--nav-h, 0px)); padding-top: calc(32px * var(--space, 1)); padding-bottom: calc(32px * var(--space, 1)); align-content: center; }
 .L-s-circles[data-v="morph"] .L-fm-out { opacity: clamp(0, 1 - (var(--p, 0) - 0.25) / 0.5, 1); }
 .L-s-circles[data-v="morph"] .L-fm-in { opacity: clamp(0, (var(--p, 0) - 0.25) / 0.5, 1); }
 .L-s-circles[data-v="morph"] .L-c-t.L-fm-out { opacity: clamp(0, 1 - var(--p, 0) / 0.4, 1); }
 .L-s-circles[data-v="morph"] :is(.L-c-t, .L-fm-mark).L-fm-in { opacity: clamp(0, (var(--p, 0) - 0.6) / 0.4, 1); }
-/* the head and the key hand over in the middle, one straight after the other */
-.L-s-circles[data-v="morph"] :is(.L-fm-head, .L-fm-legend).L-fm-out { opacity: clamp(0, 1 - (var(--p, 0) - 0.3) / 0.2, 1); }
+/* the team arrives: its ring and its word grow in with --q, its key entry after */
+.L-s-circles[data-v="morph"] .L-fm-arrive { opacity: clamp(0, (var(--q, 0) - 0.15) / 0.5, 1); }
+/* its key entry, first in the list, is shut until the circle is there, then
+   opens and fades up, so the two under it slide down to make room */
+.L-s-circles[data-v="morph"] .L-fm-legend-3 .L-fm-item-team { opacity: clamp(0, (var(--q, 0) - 0.45) / 0.35, 1); max-height: calc(var(--q, 0) * 160px); overflow: hidden; margin-bottom: calc(-16px * (1 - var(--q, 0))); }
+/* the heads take turns: where others focus leaves as the team arrives,
+   where we focus holds until the Venn, SAMUH at the centre comes with it */
+.L-s-circles[data-v="morph"] .L-fm-head.L-fm-h0 { opacity: clamp(0, 1 - (var(--q, 0) - 0.3) / 0.25, 1); }
+.L-s-circles[data-v="morph"] .L-fm-head.L-fm-h1 { opacity: min(clamp(0, (var(--q, 0) - 0.55) / 0.25, 1), clamp(0, 1 - (var(--p, 0) - 0.3) / 0.2, 1)); }
+.L-s-circles[data-v="morph"] .L-fm-legend.L-fm-out { opacity: clamp(0, 1 - (var(--p, 0) - 0.3) / 0.2, 1); }
 .L-s-circles[data-v="morph"] :is(.L-fm-head, .L-fm-legend).L-fm-in { opacity: clamp(0, (var(--p, 0) - 0.5) / 0.2, 1); }
+/* whatever has faded out takes no pointer. The two keys share a cell, and
+   the hidden one was catching hovers meant for the one on show, lighting
+   the wrong circle */
+.L-fm-head[aria-hidden="true"], .L-fm-legend[aria-hidden="true"], .L-fm-item[data-off] { pointer-events: none; }
 /* the picture takes the whole content column, so it draws large */
 .L-page[data-comp="comp-editorial"] .L-s-circles[data-v="morph"] .L-circ { grid-template-columns: 1fr; justify-items: center; gap: 28px; }
-.L-fm .L-c-svg { max-width: 720px; cursor: default; }
+.L-fm .L-c-svg { max-width: none; cursor: default; }
 .L-fm[data-venn] .L-c-svg { cursor: pointer; }
 .L-fm-ring { fill: none; }
 .L-fm-ring.L-c-team { fill: color-mix(in srgb, var(--accent-4) 8%, transparent); }
+/* each circle's colour, --k: in the Venn its own, the fourth in the
+   yellow; nested, the individual and the organization stay in the text
+   colour, hot or not, and the team is always in the primary */
+.L-fm-g-org, .L-fm-item-org { --k: var(--accent-2); }
+.L-fm-g-team, .L-fm-item-team { --k: var(--accent); }
+.L-fm-g-ind, .L-fm-item-ind { --k: color-mix(in srgb, var(--accent) 45%, var(--accent-2)); }
+.L-fm-g-phys, .L-fm-item-phys { --k: var(--accent-yellow); }
+:is(.L-fm, .L-fm-side):not([data-venn]) :is(.L-fm-g-org, .L-fm-g-ind, .L-fm-item-org, .L-fm-item-ind) { --k: var(--text); }
 /* the Venn: the nested circles' stroke, no fill, each its own colour */
-.L-fm-venn { fill: none; stroke-width: var(--c-stroke); vector-effect: non-scaling-stroke; transition: stroke-width var(--dur) var(--ease); }
-.L-fm-venn-org, .L-fm-item-org dt, .L-fm-cap-org[data-on] { stroke: var(--accent-2); color: var(--accent-2); }
-.L-fm-venn-team, .L-fm-item-team dt, .L-fm-cap-team[data-on] { stroke: var(--accent); color: var(--accent); }
-.L-fm-venn-ind, .L-fm-item-ind dt, .L-fm-cap-ind[data-on] { stroke: color-mix(in srgb, var(--accent) 45%, var(--accent-2)); color: color-mix(in srgb, var(--accent) 45%, var(--accent-2)); }
-.L-fm-venn-phys, .L-fm-item-phys dt, .L-fm-cap-phys[data-on] { stroke: var(--text); color: var(--text); }
-/* hover, in both states: the circle's stroke grows, its label takes the
-   circle's colour. The individual and the organization take the secondary,
-   as the Circles diagram has it; the team is already in the primary */
+.L-fm-venn { fill: none; stroke: var(--k); stroke-width: var(--c-stroke); vector-effect: non-scaling-stroke; transition: stroke-width var(--dur) var(--ease); }
+/* hover, in both states: the circle takes a light fill of its colour, its
+   stroke grows, its label and its key entry take the colour. Where two
+   hot circles overlap the fills screen together, a third colour in the
+   lens. Light on purpose: an overlay, not a flood */
+.L-fm-fill { fill: var(--k); opacity: 0; mix-blend-mode: screen; pointer-events: none; transition: opacity var(--dur) var(--ease); }
+.L-fm-g[data-on] .L-fm-fill { opacity: 0.22; }
 .L-fm-g[data-on] :is(.L-fm-venn, .L-fm-ring) { stroke-width: calc(var(--c-stroke) * 1.8); }
 .L-fm-ring { transition: stroke-width var(--dur) var(--ease), stroke var(--dur) var(--ease); }
-.L-fm-g[data-on] :is(.L-c-ind, .L-c-org) { stroke: var(--accent-2); }
-.L-fm-g[data-on] :is(.L-c-t-ind, .L-c-t-org) { fill: var(--accent-2); }
 .L-fm-cap { font-size: 20px; fill: var(--text); transition: fill var(--dur) var(--ease); }
-.L-fm-g[data-on] .L-fm-cap { fill: currentColor; }
+.L-fm-g[data-on] .L-fm-cap { fill: var(--k); }
 .L-fm .L-c-t { transition: fill var(--dur) var(--ease); }
 .L-fm .L-c-t { pointer-events: none; }
-/* the mark is black on transparent; shown white, as the nav shows it */
-.L-fm-mark { pointer-events: none; filter: brightness(0) invert(1); }
-/* the head: both states in the margin column's first cell */
+/* the star is white on transparent, placed as supplied; the loop moves it */
+.L-fm-mark { pointer-events: none; }
+/* the left column sits level with the middle of the picture, so the eye
+   lands on the head and the picture together, not at the top of the
+   screen. The heads share one cell, every state in it; the key stacks
+   under them, both states in one cell */
+.L-page[data-comp="comp-editorial"] .L-s-circles[data-v="morph"] > .L-wrap { grid-template-columns: minmax(220px, 320px) 1fr; align-items: center; }
+.L-page[data-comp="comp-editorial"] .L-s-circles[data-v="morph"] > .L-wrap > .L-fm-side { grid-column: 1; grid-row: 1; }
+.L-fm-side { display: grid; gap: 28px; align-content: center; }
+.L-fm-heads { display: grid; }
 .L-fm-head { grid-area: 1 / 1; }
-.L-page[data-comp="comp-editorial"] .L-sec-h .L-fm-head.L-fm-in .L-eyebrow { color: var(--accent); }
-.L-fm { grid-area: 1 / 2; width: 100%; }
-/* the key: both states in one cell under the picture */
+.L-page[data-comp="comp-editorial"] .L-sec-h .L-fm-head { position: static; }
+.L-page[data-comp="comp-editorial"] .L-s-circles[data-v="morph"] > .L-wrap > .L-fm { grid-column: 2; grid-row: 1; }
+.L-fm { width: 100%; }
 .L-fm-key { display: grid; width: 100%; }
-.L-fm-legend { grid-area: 1 / 1; display: grid; gap: 20px 28px; margin: 0; align-content: start; }
-.L-fm-legend-3 { grid-template-columns: repeat(3, 1fr); }
-.L-fm-legend-4 { grid-template-columns: repeat(4, 1fr); }
-.L-fm-item { --k: var(--text); display: grid; gap: 6px; border-top: var(--rule-thin) solid var(--border); padding-top: 12px; cursor: default; transition: border-color var(--dur) var(--ease); }
-.L-fm-item-org { --k: var(--accent-2); }
-.L-fm-item-team { --k: var(--accent); }
-.L-fm-item-ind { --k: color-mix(in srgb, var(--accent) 45%, var(--accent-2)); }
-.L-fm-legend-3 :is(.L-fm-item-ind, .L-fm-item-org) { --k: var(--accent-2); }
+.L-fm-legend { grid-area: 1 / 1; display: grid; grid-template-columns: 1fr; gap: 16px; margin: 0; align-content: start; }
+.L-fm-item { display: grid; gap: 6px; border-top: var(--rule-thin) solid var(--border); padding-top: 12px; cursor: default; transition: border-color var(--dur) var(--ease); }
 .L-fm-item[data-on] { border-top-color: var(--k); }
 .L-fm-legend .L-fm-item[data-on] dt { color: var(--k); }
-.L-fm-item dt { font-family: var(--font-display); font-weight: var(--display-weight); font-style: var(--display-style, normal); letter-spacing: var(--display-tracking); font-size: 18px; }
-/* the nested key: the team in the primary, the other two plain. The Venn
-   key takes the circle colours above */
+.L-fm-item dt { font-family: var(--font-display); font-weight: var(--display-weight); font-style: var(--display-style, normal); letter-spacing: var(--display-tracking); font-size: 18px; color: var(--k); }
+/* the nested key: the team in the primary, the other two plain until hot */
 .L-fm-legend-3 :is(.L-fm-item-ind, .L-fm-item-org) dt { color: var(--text); }
-.L-fm-legend-3 .L-fm-item-team dt { color: var(--accent); }
-.L-fm-item dd { margin: 0; font-size: 13px; line-height: 1.5; color: var(--muted); }
+.L-fm-item dd { margin: 0; font-size: 17px; line-height: 1.5; color: var(--muted); }
 .L-fm-item dd strong { font-weight: 600; color: var(--text); }
 @media (prefers-reduced-motion: reduce) {
-  .L-fm-venn, .L-fm-ring, .L-fm-cap, .L-fm-item, .L-fm .L-c-t { transition: none; }
+  .L-fm-venn, .L-fm-ring, .L-fm-fill, .L-fm-cap, .L-fm-item, .L-fm .L-c-t { transition: none; }
 }
 /* narrow: the heads over the picture, the key in two columns */
 @container page (max-width: 900px) {
-  .L-fm-head { grid-area: 1 / 1; }
-  .L-fm { grid-area: 2 / 1; }
+  .L-page[data-comp="comp-editorial"] .L-s-circles[data-v="morph"] > .L-wrap { grid-template-columns: 1fr; }
+  .L-page[data-comp="comp-editorial"] .L-s-circles[data-v="morph"] > .L-wrap > .L-fm-side { grid-column: 1; grid-row: 1; }
+  .L-page[data-comp="comp-editorial"] .L-s-circles[data-v="morph"] > .L-wrap > .L-fm { grid-column: 1; grid-row: 2; }
+  .L-fm-legend { grid-template-columns: 1fr 1fr; gap: 14px 18px; }
   .L-page[data-comp="comp-editorial"] .L-s-circles[data-v="morph"] .L-circ { gap: 18px; }
-}
-@container page (max-width: 600px) {
-  .L-fm-legend-3, .L-fm-legend-4 { grid-template-columns: 1fr 1fr; gap: 14px 18px; }
 }
 
 /* ---------- 05 aspire ---------- */
@@ -569,6 +587,16 @@
 /* ---------- 06 research ---------- */
 
 .L-research { margin: 0; display: grid; gap: 18px; }
+/* the report: cover beside the claim, the download under it */
+.L-report { grid-template-columns: 200px 1fr; gap: 32px; align-items: center; }
+.L-report-cover { display: block; aspect-ratio: 1236 / 1600; overflow: hidden; border-radius: min(var(--radius), 10px); border: var(--rule-thin) solid var(--border); box-shadow: 0 18px 40px -24px color-mix(in srgb, var(--accent) 50%, transparent); transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease); }
+.L-report-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.L-report-cover:hover { transform: translateY(-4px); box-shadow: 0 26px 48px -24px color-mix(in srgb, var(--accent) 70%, transparent); }
+.L-report-cover:focus-visible { outline: var(--rule-fat) solid var(--accent-2); outline-offset: 4px; }
+.L-report-copy { display: grid; gap: 12px; justify-items: start; }
+.L-report-copy .card-tag { margin-bottom: 0; }
+.L-report-copy .L-big { max-width: 30ch; }
+.L-report-links { margin: 6px 0 0; display: flex; flex-wrap: wrap; gap: 8px 24px; }
 .L-sec[data-v="card"] .L-research { background: var(--surface); border: var(--rule-thin) solid var(--border); border-radius: min(var(--radius), 22px); padding: 32px; }
 .L-sec[data-v="quote"] .L-research { border-left: var(--rule-fat) solid var(--accent); padding-left: 28px; }
 .L-sec[data-v="quote"] .L-big { font-size: clamp(26px, 3.4cqw, 46px); }
@@ -811,7 +839,7 @@
   /* the bar shows the Samuh mark at every scroll position: the full
      wordmark does not fit beside the call to action and the burger */
   .L-nav .L-brand { gap: 12px; }
-  .L-nav .L-brand-samuh { width: calc(30px * 181 / 240); }
+  .L-nav .L-brand-samuh { width: calc(37.5px * 181 / 240); }
   .L-nav .L-brand-samuh .L-brand-full { opacity: 0; }
   .L-nav .L-brand-samuh .L-brand-mark { opacity: 1; transform: none; }
   .L-nav .L-brand-partner { font-size: 9px; }
@@ -998,6 +1026,8 @@
   .L-tier, .L-steps, .L-feed, .L-team, .L-logos, .L-contact, .L-voices-grid { grid-template-columns: 1fr 1fr; }
   .L-stage { --stage-art: 200px; }
   .L-research-card, .L-partner { grid-template-columns: 1fr; }
+  .L-report { grid-template-columns: 1fr; }
+  .L-report-cover { max-width: 220px; }
 }
 @container page (max-width: 560px) {
   .L-tier, .L-steps, .L-feed, .L-team, .L-logos, .L-contact, .L-voices-grid { grid-template-columns: 1fr; }
@@ -1304,14 +1334,14 @@
 .L-brand { display: inline-flex; align-items: center; gap: 16px; }
 .L-brand-samuh { position: relative; display: inline-grid; align-items: center; justify-items: start; }
 .L-brand-samuh > * { grid-area: 1 / 1; }
-/* the logo is 30px tall, set by .L-nav .nav-logo img above */
+/* the logo is 37.5px tall, set by .L-nav .nav-logo img above */
 .L-brand img { width: auto; max-width: none; filter: brightness(0) invert(1); transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease); }
 /* the cell is as wide as the logo it is showing, and the width eases, so
    the rule and the partner line glide left to sit an even 16px from the
-   Samuh mark once the page has scrolled. Widths are 30px tall by the PNG
+   Samuh mark once the page has scrolled. Widths are 37.5px tall by the PNG
    aspect ratios: samuh-logo 960x285, samuh-icon 181x240 */
-.L-brand-samuh { width: calc(30px * 960 / 285); transition: width var(--dur) var(--ease); }
-.L-nav-icons[data-scrolled="true"] .L-brand-samuh { width: calc(30px * 181 / 240); }
+.L-brand-samuh { width: calc(37.5px * 960 / 285); transition: width var(--dur) var(--ease); }
+.L-nav-icons[data-scrolled="true"] .L-brand-samuh { width: calc(37.5px * 181 / 240); }
 /* "Partnered with Sapien Labs" sits beside the logo at every scroll position */
 .L-brand-partner {
   font-family: var(--font-caption);
@@ -1322,7 +1352,7 @@
   line-height: 1.35;
   color: var(--muted);
 }
-.L-brand-rule { width: var(--rule-thin); height: 30px; flex: none; background: var(--border); }
+.L-brand-rule { width: var(--rule-thin); height: 37.5px; flex: none; background: var(--border); }
 /* at rest the full logo shows; once scrolled, only the mark, which stays
    put and fades up in place */
 .L-brand-mark { opacity: 0; transform: translateY(-4px); pointer-events: none; }
@@ -1373,12 +1403,27 @@
 .L-thesis-eyebrow::after { display: none; }
 .D-stage:is([data-draft="b"], [data-draft="working"]) .L-dict-say { width: 48px; height: 48px; }
 .D-stage:is([data-draft="b"], [data-draft="working"]) .L-dict-say svg { width: 27px; height: 27px; }
-/* thesis and dictionary side by side on desktop */
-.L-thesis-duo { grid-template-columns: 1.1fr 1fr; column-gap: clamp(32px, 5cqw, 80px); align-items: start; }
-.L-thesis-duo .L-dict { max-width: none; border-top: 0; border-bottom: 0; border-left: var(--rule-fat) solid var(--accent-2); padding: 4px 0 4px 22px; }
-.L-page[data-comp="comp-editorial"] .L-s-thesis[data-v="under"] .L-thesis-duo { grid-template-columns: 1.1fr 1fr; align-items: start; }
-.L-page[data-comp="comp-editorial"] .L-s-thesis[data-v="under"] .L-thesis-duo .L-cap { text-align: left; }
-@container page (max-width: 900px) { .L-thesis-duo { grid-template-columns: 1fr; row-gap: 32px; } }
+/* 12 October: the dictionary is one row straight under the hero, the word,
+   how to say it and its origin on the left, the sense on the right, under
+   the rule the thesis used to carry. The leak line follows as its own
+   section, under its own rule */
+.D-stage[data-draft="working"] .L-s-hero:has(+ .L-s-meaning[data-v="block"]) { padding-bottom: calc(28px * var(--space, 1)); }
+/* 13 October: both rules are hairlines */
+.D-stage[data-draft="working"] .L-s-thesis[data-v="under"] .L-thesis-in { border-top-width: var(--rule-thin); }
+.D-stage[data-draft="working"] .L-s-meaning[data-v="block"] .L-dict {
+  max-width: none;
+  border: 0;
+  border-top: var(--rule-thin) solid var(--accent-2);
+  padding: 22px 0 0;
+  grid-template-columns: 1fr 1.2fr;
+  column-gap: clamp(32px, 5cqw, 80px);
+  align-items: center;
+}
+.D-stage[data-draft="working"] .L-s-meaning[data-v="block"] .L-dict-pos { flex-basis: 100%; }
+.D-stage[data-draft="working"] .L-s-meaning[data-v="block"] .L-dict-defs { font-size: clamp(22px, 2.4cqw, 32px); line-height: 1.35; }
+@container page (max-width: 900px) {
+  .D-stage[data-draft="working"] .L-s-meaning[data-v="block"] .L-dict { grid-template-columns: 1fr; }
+}
 /* the thesis under the hero carries the leak line, so it reads as the argument, not a caption */
 .D-stage:is([data-draft="b"], [data-draft="working"]) .L-s-thesis .L-big { font-size: clamp(30px, 3.6cqw, 50px); max-width: 26ch; line-height: 1.15; }
 /* copy over the hero video, editorial alignment, a scrim so it reads */
