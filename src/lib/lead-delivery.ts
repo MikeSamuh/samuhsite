@@ -23,6 +23,8 @@ const LABELS: Record<keyof Lead, string> = {
   email: "Email",
   phone: "Phone",
   organization: "Organization",
+  role: "Role",
+  stage: "Stage",
   reason: "Reason",
   teamSize: "Team size",
   tier: "Tier",
@@ -75,6 +77,9 @@ function body(lead: Lead): string {
 
 async function notify(lead: Lead): Promise<SinkResult> {
   if (!notifyEnabled()) return "skipped";
+  // the intake's first post is the email alone; the CRM takes that, the
+  // inbox waits for the whole thing
+  if (lead.stage === "email") return "skipped";
 
   const key = process.env.RESEND_API_KEY;
   const to = process.env.LEAD_NOTIFY_TO;

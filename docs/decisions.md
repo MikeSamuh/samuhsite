@@ -357,3 +357,11 @@ pieces from the Drive stay in the repo as `draft` and `review` and do not
 render until Rahul says so. Content is MDX in `content/insights/`, read at
 build time; a CMS is a retainer item after launch. — Wilfred
 
+
+**2026-10-13 — The teaser ask is a two-step B2B intake.** Work email
+first, posted at once so Clarify has the person; then name, company and
+role, with the company guessed from the email's domain for the visitor to
+correct. Light on purpose: no phone, no team size, no message. No prefill
+from Clarify: a public form that shows what the CRM knows about an email
+address would show it to anyone who typed that address. Clarify's own
+enrichment on their side does that job. — Client, via Wilfred

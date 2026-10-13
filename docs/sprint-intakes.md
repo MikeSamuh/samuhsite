@@ -367,13 +367,20 @@ visitor's team (rule 4).
    days, the same search as its Optimize) to the inputs and explains it in
    a sentence
 6. The ask, always visible below. Optional, never a gate. Heading "Want to
-   get your team's TeamQ?" Fields: email (required), name, organization.
-   Honeypot and Turnstile. Inline success with "Or book a time" to `/talk`.
+   get your team's TeamQ?" A light B2B intake in two steps (decided
+   12 Oct): first the work email alone, then name, company and role, the
+   company offered from the email's domain for the visitor to correct
+   (nothing offered for a personal address). The email is posted as soon
+   as it is given, `stage: "email"`, so the CRM has the person if the
+   rest never comes; the whole thing is posted at the end,
+   `stage: "complete"`. The notify email goes once, on complete. Honeypot
+   and Turnstile. Inline success with "Or book a time" to `/talk`.
    `teaser_interact` fires on the first input change
 
 ### Posts
 
-`flow: "teaser"`, `answers` is the full input state keyed by factor id.
+`flow: "teaser"`, `answers` is the full input state keyed by factor id,
+`role` is the job title, `stage` says which of the two posts it is.
 
 ### Where it lives
 

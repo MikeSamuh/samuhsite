@@ -22,6 +22,8 @@ const schema = z
     email: z.email().max(200),
     phone: optional(short),
     organization: optional(short),
+    role: optional(short),
+    stage: z.enum(["email", "complete"]).optional(),
     message: optional(long),
     reason: z.enum(["general", "solutions", "partnership", "other"]).optional(),
     teamSize: z.enum(["1-10", "11-50", "51-200", "200+"]).optional(),

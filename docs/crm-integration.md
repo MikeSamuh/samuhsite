@@ -91,6 +91,8 @@ campaign.
 | name | `person.attributes.name.first_name` / `last_name` | Split on first space if the form takes one field |
 | email | `person.attributes.email_addresses.items[0]` | Match key |
 | organization | `company` record via `domains` or name, linked by `company_id` | Skip company creation for personal email domains |
+| role | `person.attributes.title` | The teaser intake's job title field |
+| stage | nothing | The teaser posts the email alone first, then everything. Both upsert on the email; the second overwrites |
 | message | custom attribute on person | Name TBD |
 | goal | custom attribute on person | Name TBD |
 | recommended tier | custom attribute on person | Self-guided / Supported / Guided |

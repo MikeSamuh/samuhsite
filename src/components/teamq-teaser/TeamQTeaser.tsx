@@ -267,18 +267,50 @@ function Gauge({ values }: { values: Values }) {
   );
 }
 
-/** The optional ask. Always there, below the tool, and never between the
- *  visitor and the readout. */
+/** Mail providers whose domain says nothing about a company. */
+const PERSONAL_DOMAINS = new Set([
+  "gmail.com", "googlemail.com", "yahoo.com", "yahoo.co.uk", "hotmail.com", "hotmail.co.uk", "outlook.com", "live.com",
+  "msn.com", "icloud.com", "me.com", "mac.com", "aol.com", "proton.me", "protonmail.com", "pm.me", "hey.com",
+  "mail.com", "yandex.com", "zoho.com", "fastmail.com", "gmx.com",
+]);
+
+/** A first guess at the company from a work email's domain, for the
+ *  visitor to correct: "jane@acme-corp.co.uk" offers "Acme Corp". Nothing
+ *  for a personal address. */
+function companyFromEmail(email: string): string {
+  const domain = email.split("@")[1]?.toLowerCase();
+  if (!domain || PERSONAL_DOMAINS.has(domain)) return "";
+  const label = domain.split(".")[0];
+  return label
+    .split(/[-_]+/)
+    .filter(Boolean)
+    .map((word) => word[0].toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
+/** The optional ask, as a light intake. Always there, below the tool, and
+ *  never between the visitor and the readout. Two steps: the email, which
+ *  is posted the moment it is given so the CRM has the person; then name,
+ *  company and role, posted together with the slider state. The company is
+ *  offered from the email's domain and can be changed. */
 function Ask({ values }: { values: Values }) {
-  const { submit, state, attempt } = useLeadSubmit("teaser");
+  const { submit, send, state, attempt } = useLeadSubmit("teaser");
+  const [step, setStep] = useState<1 | 2>(1);
+  const [email, setEmail] = useState("");
+  const [company, setCompany] = useState("");
   const [error, setError] = useState<string>();
   const [token, setToken] = useState<string>();
   const form = useRef<HTMLFormElement>(null);
   const success = useRef<HTMLDivElement>(null);
+  const second = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (state === "done") success.current?.focus();
   }, [state]);
+
+  useEffect(() => {
+    if (step === 2) second.current?.querySelector<HTMLElement>("input")?.focus();
+  }, [step]);
 
   if (state === "done") {
     return (
@@ -292,28 +324,50 @@ function Ask({ values }: { values: Values }) {
     );
   }
 
-  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const focusField = (name: string) => form.current?.querySelector<HTMLElement>(`[name="${name}"]`)?.focus();
+
+  const onContinue = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const text = (field: string) => String(data.get(field) ?? "").trim();
-    const email = text("email");
-
-    const found = !email
+    const given = String(data.get("email") ?? "").trim();
+    const found = !given
       ? "Enter your email address."
-      : !EMAIL_SHAPE.test(email)
+      : !EMAIL_SHAPE.test(given)
         ? "Enter an email address like name@company.com."
         : undefined;
     setError(found);
     if (found) {
-      form.current?.querySelector<HTMLElement>('[name="email"]')?.focus();
+      focusField("email");
+      return;
+    }
+    setEmail(given);
+    setCompany((current) => current || companyFromEmail(given));
+    setStep(2);
+    // the CRM gets the person now, in case the rest never comes
+    void send({ email: given, answers: values, stage: "email", company_website: String(data.get("company_website") ?? "") || undefined, turnstileToken: token });
+  };
+
+  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const text = (field: string) => String(data.get(field) ?? "").trim();
+
+    const name = text("name");
+    const organization = text("organization");
+    const found = !name ? "Enter your name." : !organization ? "Enter your company." : undefined;
+    setError(found);
+    if (found) {
+      focusField(name ? "organization" : "name");
       return;
     }
 
     void submit({
       email,
-      name: text("name") || undefined,
-      organization: text("organization") || undefined,
+      name,
+      organization,
+      role: text("role") || undefined,
       answers: values,
+      stage: "complete",
       company_website: text("company_website") || undefined,
       turnstileToken: token,
     });
@@ -332,11 +386,35 @@ function Ask({ values }: { values: Values }) {
           yours.
         </p>
       </div>
-      <form className="lead-form" ref={form} onSubmit={onSubmit} noValidate>
-        <Field label="Email" name="email" type="email" autoComplete="email" required error={error} />
-        <Field label="Name" name="name" autoComplete="name" />
-        <Field label="Organization" name="organization" autoComplete="organization" />
-        <Honeypot />
+      <form className="lead-form" ref={form} onSubmit={step === 1 ? onContinue : onSubmit} noValidate>
+        <p className="lead-step L-cap" aria-live="polite">Step {step} of 2</p>
+        {step === 1 ? (
+          <>
+            <Field label="Work email" name="email" type="email" autoComplete="email" required error={error} />
+            <Honeypot />
+          </>
+        ) : (
+          <div className="lead-steps" ref={second}>
+            <p className="lead-step-lead">
+              {email}{" "}
+              <button type="button" className="inline-link lead-back" onClick={() => { setStep(1); setError(undefined); }}>
+                Change
+              </button>
+            </p>
+            <Field label="Name" name="name" autoComplete="name" required error={error === "Enter your name." ? error : undefined} />
+            <Field
+              label="Company"
+              name="organization"
+              autoComplete="organization"
+              required
+              value={company}
+              onChange={(event) => setCompany(event.target.value)}
+              error={error === "Enter your company." ? error : undefined}
+            />
+            <Field label="Role" name="role" autoComplete="organization-title" placeholder="Head of People, Team Lead, CEO" />
+            <Honeypot />
+          </div>
+        )}
         <Turnstile onToken={setToken} resetKey={attempt} />
         {state === "error" ? (
           <p className="lead-error" role="alert">
@@ -350,7 +428,7 @@ function Ask({ values }: { values: Values }) {
           </p>
         ) : null}
         <button className="btn" type="submit" disabled={pending}>
-          {pending ? "Sending" : "Send"} <span className="arrow">&rarr;</span>
+          {step === 1 ? "Continue" : pending ? "Sending" : "Send"} <span className="arrow">&rarr;</span>
         </button>
       </form>
     </section>

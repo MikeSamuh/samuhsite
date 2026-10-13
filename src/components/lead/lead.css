@@ -80,6 +80,33 @@
   border: 0;
 }
 
+/* the two-step intake: a step line, the given email with a way back, the
+   second step's fields in their own block */
+.lead-step {
+  margin: 0;
+}
+
+.lead-steps {
+  display: grid;
+  gap: 18px;
+  width: 100%;
+}
+
+.lead-step-lead {
+  margin: 0;
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 14px;
+}
+
+.lead-back {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .lead-field :is(input, textarea, select) {
     transition: none;

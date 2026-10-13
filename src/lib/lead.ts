@@ -10,6 +10,12 @@ export interface Lead {
   email: string;
   phone?: string;
   organization?: string;
+  /** job title, the teaser's intake */
+  role?: string;
+  /** the teaser's intake posts twice: the email alone as soon as it is
+   *  given, then everything once the rest is filled in. Clarify takes
+   *  both, matched on the email; the notify email goes once, on complete */
+  stage?: "email" | "complete";
   message?: string;
   /** flow 1 */
   reason?: "general" | "solutions" | "partnership" | "other";

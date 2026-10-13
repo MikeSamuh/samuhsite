@@ -38,5 +38,23 @@ export function useLeadSubmit(flow: LeadFlow) {
     [flow, utm],
   );
 
-  return { submit, state, attempt };
+  /** Posts without touching the form's state or tracking: the intake's
+   *  early email-only post, which the visitor never sees succeed or fail. */
+  const send = useCallback(
+    async (input: LeadInput): Promise<boolean> => {
+      try {
+        const response = await fetch("/api/lead", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ ...input, ...utm, flow }),
+        });
+        return response.ok;
+      } catch {
+        return false;
+      }
+    },
+    [flow, utm],
+  );
+
+  return { submit, send, state, attempt };
 }
