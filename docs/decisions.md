@@ -375,3 +375,10 @@ a day of reduced output as 0.3, so the demo team's productive days read
 16.5, not 11.6. The demo file is his `sample_20.csv`, real respondents
 matching the population; the file Mike sent on 13 Oct is the same one. —
 Jerzy and Mike, via Wilfred
+
+**2026-10-13 — Leads go to Clarify through our own server route.** Mike
+supplied an API key. `src/lib/clarify.ts` upserts the company on the email
+domain, the person on the email with job title and company, and leaves the
+rest of the form as a note on the person. Nothing is prefilled from Clarify
+on the public site. Needs the workspace slug set as CLARIFY_WORKSPACE
+before it does anything. — Mike, via Wilfred

@@ -8,7 +8,7 @@ import { Turnstile } from "@/components/lead/Turnstile";
 import { useLeadSubmit } from "@/components/lead/useLeadSubmit";
 import { track } from "@/lib/analytics";
 import { CONTACT_EMAIL } from "@/lib/contact-details";
-import { EMAIL_SHAPE } from "@/lib/lead";
+import { EMAIL_SHAPE, PERSONAL_DOMAINS } from "@/lib/lead";
 import { mhqBand } from "@/lib/tokens";
 import { Capacity } from "./Capacity";
 import {
@@ -256,13 +256,6 @@ function Gauge({ values }: { values: Values }) {
     </div>
   );
 }
-
-/** Mail providers whose domain says nothing about a company. */
-const PERSONAL_DOMAINS = new Set([
-  "gmail.com", "googlemail.com", "yahoo.com", "yahoo.co.uk", "hotmail.com", "hotmail.co.uk", "outlook.com", "live.com",
-  "msn.com", "icloud.com", "me.com", "mac.com", "aol.com", "proton.me", "protonmail.com", "pm.me", "hey.com",
-  "mail.com", "yandex.com", "zoho.com", "fastmail.com", "gmx.com",
-]);
 
 /** A first guess at the company from a work email's domain, for the
  *  visitor to correct: "jane@acme-corp.co.uk" offers "Acme Corp". Nothing

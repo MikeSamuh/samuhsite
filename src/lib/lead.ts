@@ -42,6 +42,14 @@ export interface Lead {
 /** Enough to catch a typo before posting. The server validates properly. */
 export const EMAIL_SHAPE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+/** Mail providers whose domain says nothing about a company. The intake
+ *  offers no company for these, and the CRM sink makes no company record. */
+export const PERSONAL_DOMAINS = new Set([
+  "gmail.com", "googlemail.com", "yahoo.com", "yahoo.co.uk", "hotmail.com", "hotmail.co.uk", "outlook.com", "live.com",
+  "msn.com", "icloud.com", "me.com", "mac.com", "aol.com", "proton.me", "protonmail.com", "pm.me", "hey.com",
+  "mail.com", "yandex.com", "zoho.com", "fastmail.com", "gmx.com",
+]);
+
 /** What a form hands to useLeadSubmit. The hook adds flow and UTM, the server
  *  adds page and submittedAt. The last two never reach a Lead: the honeypot
  *  and the Turnstile token are checked by the route and dropped. */

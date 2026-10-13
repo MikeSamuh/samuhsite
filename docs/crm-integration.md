@@ -48,6 +48,33 @@ Content-Type: application/json
 Company is the same shape against `/objects/company/records` with
 `domains: { items: ["company.com"] }` as the match key.
 
+## What is built (13 Oct 2026)
+
+`src/lib/clarify.ts`, called from `lead-delivery.ts` for every accepted
+lead when `CLARIFY_API_KEY` and `CLARIFY_WORKSPACE` are both set. Option A
+below, as written. Three calls per lead:
+
+1. Company: `POST /objects/company/records` with `match_on: "domains"`,
+   on the email's domain, named from the form or from the domain. Not for
+   a personal address (gmail and the like): a name alone has no unique key.
+2. Person: `POST /objects/person/records` with `match_on:
+   "email_addresses"`: name split on the first space, `job_title` from the
+   role field, `company_id` from step 1. The teaser's two posts (email
+   alone, then everything) land on the same person.
+3. Note: `POST /comments` on the person with everything that has no field
+   of its own: flow and stage, page and time, phone, reason, team size,
+   tier, message, the slider answers, and the UTM values. Not for the
+   teaser's email-only post.
+
+The key alone, without the slug, logs an error and counts as a failed
+delivery, the same as notify without its key, so a half-configured deploy
+fails loudly. A failed company call does not stop the person. Custom
+attributes on the person are not used until Jake adds fields for them; the
+note carries the same information meanwhile.
+
+Checked against the OpenAPI spec and with a stubbed API on 13 Oct. Not yet
+run against the real workspace: that needs the slug.
+
 ## Two ways to wire it
 
 ### Option A: server route calling the API (recommended)

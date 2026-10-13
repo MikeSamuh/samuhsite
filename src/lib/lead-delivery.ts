@@ -4,11 +4,13 @@
 // Behind it are two sinks, each of which reports rather than throws:
 //
 //   notify()   the email Jake and Mike asked for. Every lead, every time
-//   clarify()  the CRM upsert. Additive, and only when a key is set
+//   clarify()  the CRM upsert, src/lib/clarify.ts. Additive, and only when
+//              a key and a workspace slug are set
 //
 // Neither stops the other. Spec: docs/sprint-intakes.md, "Delivery".
 
 import { Resend } from "resend";
+import { upsertLead } from "./clarify";
 import type { Lead } from "./lead";
 
 type SinkResult = "ok" | "failed" | "skipped";
@@ -110,25 +112,7 @@ async function notify(lead: Lead): Promise<SinkResult> {
 }
 
 async function clarify(lead: Lead): Promise<SinkResult> {
-  if (!process.env.CLARIFY_API_KEY) return "skipped";
-
-  try {
-    // ------------------------------------------------------------------
-    // STUB. Runbook step 6 fills this in, per docs/crm-integration.md:
-    // upsert the company on the email domain, upsert the person with
-    // match_on email_addresses, set the custom attributes. Return "ok" once
-    // Clarify has accepted the person.
-    //
-    // Until then a key being set delivers nothing, so this reports
-    // "skipped" and never counts as a delivery.
-    // ------------------------------------------------------------------
-    void lead;
-    console.warn("[lead] CLARIFY_API_KEY is set but the Clarify upsert is not built yet");
-    return "skipped";
-  } catch (error) {
-    console.error("[lead] clarify failed", error);
-    return "failed";
-  }
+  return upsertLead(lead);
 }
 
 /** Send the lead to every configured sink. `delivered` is false only when a
