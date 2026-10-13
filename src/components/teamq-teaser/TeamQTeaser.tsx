@@ -70,7 +70,7 @@ export function TeamQTeaser({ baseline, answer }: { baseline: TeaserResult; answ
   const [failed, setFailed] = useState(false);
   const [touched, setTouched] = useState(false);
   const [shown, setShown] = useState(false);
-  const answerRef = useRef<HTMLDivElement>(null);
+  const answerRef = useRef<HTMLParagraphElement>(null);
 
   useEffect(() => {
     if (shown) answerRef.current?.focus();
@@ -125,39 +125,43 @@ export function TeamQTeaser({ baseline, answer }: { baseline: TeaserResult; answ
     setValues(answer.values);
     setShown(true);
   };
+  /** the sliders sit exactly where the optimizer put them */
+  const optimized = FACTORS.every((factor) => values[factor.id] === answer.values[factor.id]);
 
   const environment = FACTORS.filter((factor) => factor.group === "environment");
   const lifestyle = FACTORS.filter((factor) => factor.group === "lifestyle");
 
   return (
     <div className="teaser">
-      {/* one fold: the readout on the left, the ten sliders on the right */}
+      {/* one fold: the readout on the left, the eleven sliders on the right */}
       <div className="teaser-fold">
-        {MODEL_VERIFIED ? (
-          <div className="teaser-readout" data-stale={stale} aria-live="polite" aria-atomic="true">
-            <p className="teaser-team">
-              A team of {TEAM_SIZE}, as they are today.
-              <span className="teaser-team-base">
-                {" "}
-                {one(baseline.days)} productive days a month. Capacity to perform {one(baseline.mhq)},{" "}
-                {mhqBand(baseline.mhq).name}.
-              </span>
-            </p>
-            <div className="teaser-headline">
-              <span className="teaser-label">Productive days per month</span>
-              <span className="teaser-days">{one(result.days)}</span>
-              <span className="teaser-delta">{change(result.days, baseline.days, " days")}</span>
+        <div className="teaser-left">
+          {MODEL_VERIFIED ? (
+            <div className="teaser-readout" data-stale={stale} aria-live="polite" aria-atomic="true">
+              <div className="teaser-headline">
+                <span className="teaser-label">Productive days per month</span>
+                <span className="teaser-days">{one(result.days)}</span>
+                <span className="teaser-delta">{change(result.days, baseline.days, " days")}</span>
+              </div>
+              <Capacity value={result.mhq} delta={change(result.mhq, baseline.mhq)} />
+              {failed ? (
+                <p className="teaser-failed" role="alert">
+                  That change could not be scored. These are the last figures we have.
+                </p>
+              ) : null}
             </div>
-            <Capacity value={result.mhq} delta={change(result.mhq, baseline.mhq)} />
-            {failed ? (
-              <p className="teaser-failed" role="alert">
-                That change could not be scored. These are the last figures we have.
-              </p>
-            ) : null}
-          </div>
-        ) : (
-          <Gauge values={values} />
-        )}
+          ) : (
+            <Gauge values={values} />
+          )}
+          <p className="teaser-team">
+            A team of {TEAM_SIZE}, as they are today.
+            <span className="teaser-team-base">
+              {" "}
+              {one(baseline.days)} productive days a month. Capacity to perform {one(baseline.mhq)},{" "}
+              {mhqBand(baseline.mhq).name}.
+            </span>
+          </p>
+        </div>
 
         <div className="teaser-inputs">
           <fieldset className="teaser-group">
@@ -172,45 +176,31 @@ export function TeamQTeaser({ baseline, answer }: { baseline: TeaserResult; answ
               <Slider key={factor.id} factor={factor} value={values[factor.id]} onChange={move} />
             ))}
           </fieldset>
-          <button
-            className="btn btn-secondary teaser-reset"
-            type="button"
-            onClick={() => setValues(BASELINE)}
-            disabled={atBaseline(values)}
-          >
-            Reset
-          </button>
+          <div className="teaser-actions">
+            {MODEL_VERIFIED ? (
+              <button className="btn" type="button" onClick={showOptimized} disabled={optimized}>
+                Show me the optimized TeamQ <span className="arrow">&rarr;</span>
+              </button>
+            ) : null}
+            <button
+              className="btn btn-secondary teaser-reset"
+              type="button"
+              onClick={() => setValues(BASELINE)}
+              disabled={atBaseline(values)}
+            >
+              Reset
+            </button>
+          </div>
+          {/* the moves, once applied. Brief: the readout tells the story */}
+          {MODEL_VERIFIED && shown ? (
+            <p className="teaser-moves" ref={answerRef} tabIndex={-1}>
+              The model&rsquo;s best {OPTIMIZER_MOVES} moves for this team:{" "}
+              {list(answer.levers.map((lever) => `${lever.label} to ${lever.value}`))}. Applied above; keep moving
+              things, or Reset.
+            </p>
+          ) : null}
         </div>
       </div>
-
-      {MODEL_VERIFIED ? (
-        <div className="teaser-answer" ref={answerRef} tabIndex={-1}>
-          {shown ? (
-            <>
-              <p className="teaser-ask-title">The factors optimized, for this team.</p>
-              <p className="L-mid">
-                The model&rsquo;s best {OPTIMIZER_MOVES} moves are{" "}
-                {list(answer.levers.map((lever) => `${lever.label} to ${lever.value}`))}. They take this team to{" "}
-                <strong>{one(answer.days)} productive days a month</strong>, {change(answer.days, baseline.days)} on
-                today. They are applied above; keep moving things, or Reset.
-              </p>
-              <p className="L-mid">
-                That is this demonstration team. Every team leaks somewhere different, which is why the first step
-                with a real team is finding out where.
-              </p>
-            </>
-          ) : (
-            <>
-              <p className="L-mid">
-                Done exploring? See the {OPTIMIZER_MOVES} moves the model would make for the most productive days.
-              </p>
-              <button className="btn" type="button" onClick={showOptimized}>
-                Show me the factors optimized <span className="arrow">&rarr;</span>
-              </button>
-            </>
-          )}
-        </div>
-      ) : null}
 
       <Ask values={values} />
     </div>
@@ -382,8 +372,8 @@ function Ask({ values }: { values: Values }) {
           Want to get your team&rsquo;s TeamQ?
         </h2>
         <p>
-          This was a demonstration team. Leave your details and a person at SAMUH will be in touch about measuring
-          yours.
+          Let&rsquo;s see how optimized your team is. Leave your details and a person at SAMUH will be in touch
+          about measuring it.
         </p>
       </div>
       <form className="lead-form" ref={form} onSubmit={step === 1 ? onContinue : onSubmit} noValidate>

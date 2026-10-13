@@ -176,33 +176,37 @@
   align-items: start;
 }
 
-.teaser-answer {
-  scroll-margin-top: calc(var(--nav-h, 0px) + 24px);
+/* the left column pins as a whole: the readout box, the team line under it */
+.teaser-left {
+  position: sticky;
+  top: var(--nav-h, 0px);
+  z-index: 2;
   display: grid;
-  gap: 16px;
-  justify-items: start;
-  padding: 28px 26px 32px;
-  background: var(--surface);
-  border: var(--rule-thin) solid var(--border);
-  border-radius: min(var(--radius), 22px);
+  gap: 18px;
 }
 
-.teaser-answer:focus {
-  outline: none;
+.teaser-left .teaser-readout {
+  position: static;
 }
 
-.teaser-answer .L-mid {
+/* the two buttons under the sliders, and the moves once applied */
+.teaser-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.teaser-moves {
   margin: 0;
   max-width: 60ch;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--muted);
 }
 
-.teaser-answer .teaser-ask-title {
-  margin: 0;
-}
-
-.teaser-answer strong {
-  color: var(--text);
-  font-weight: 600;
+.teaser-moves:focus {
+  outline: none;
 }
 
 /* the readout: who the team is, productive days, then capacity to perform
@@ -596,20 +600,31 @@
     gap: 32px;
   }
 
-  /* the pinned readout gets short: the team line, then days and capacity
-     side by side with a shorter scale, so the sliders keep their room */
+  /* the pinned readout gets short: days and capacity side by side with a
+     shorter scale, so the sliders keep their room; the team line waits
+     until the sliders are done */
   .teaser-readout {
     grid-template-columns: 1fr auto;
     gap: 8px 20px;
     padding: 12px 16px;
   }
 
-  .teaser-readout .teaser-team {
-    grid-column: 1 / -1;
+  .teaser-left {
+    position: static;
+    gap: 12px;
+  }
+
+  .teaser-left .teaser-readout {
+    position: sticky;
+    top: var(--nav-h, 0px);
+  }
+
+  .teaser-left .teaser-team {
+    order: 1;
     font-size: 16px;
   }
 
-  .teaser-readout .teaser-team-base {
+  .teaser-left .teaser-team-base {
     display: inline;
     margin: 0;
   }
