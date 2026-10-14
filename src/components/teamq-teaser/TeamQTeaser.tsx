@@ -9,7 +9,6 @@ import { useLeadSubmit } from "@/components/lead/useLeadSubmit";
 import { track } from "@/lib/analytics";
 import { CONTACT_EMAIL } from "@/lib/contact-details";
 import { EMAIL_SHAPE, PERSONAL_DOMAINS } from "@/lib/lead";
-import type { Lead } from "@/lib/lead";
 import { mhqBand } from "@/lib/tokens";
 import { Capacity } from "./Capacity";
 import {
@@ -272,28 +271,66 @@ function companyFromEmail(email: string): string {
     .join(" ");
 }
 
+/** Mailbox names that are a desk, not a person. */
+const ROLE_MAILBOXES = new Set(["info", "hello", "contact", "admin", "office", "team", "sales", "support", "hr", "people", "mail", "enquiries", "inquiries"]);
+
+/** A first guess at the name from the part before the @, for the visitor
+ *  to correct: "jane.doe@" offers "Jane Doe", "j_doe@" offers "J Doe".
+ *  Nothing for a desk address or a name that is only digits. */
+function nameFromEmail(email: string): string {
+  const local = email.split("@")[0]?.toLowerCase() ?? "";
+  if (!local || ROLE_MAILBOXES.has(local)) return "";
+  const words = local
+    .split(/[._\-+]+/)
+    .map((word) => word.replace(/\d+/g, ""))
+    .filter(Boolean);
+  if (!words.length) return "";
+  return words.map((word) => word[0].toUpperCase() + word.slice(1)).join(" ");
+}
+
+const TEAM_SIZES = [
+  { value: "", label: "Choose" },
+  { value: "1-10", label: "1 to 10" },
+  { value: "11-50", label: "11 to 50" },
+  { value: "51-200", label: "51 to 200" },
+  { value: "200+", label: "More than 200" },
+];
+
+type TeamSize = "1-10" | "11-50" | "51-200" | "200+";
+
+interface Intake {
+  email: string;
+  name: string;
+  role: string;
+  phone: string;
+  organization: string;
+  teamSize: "" | TeamSize;
+  change: string;
+}
+
+const EMPTY: Intake = { email: "", name: "", role: "", phone: "", organization: "", teamSize: "", change: "" };
+
 /** The optional ask, as a light intake. Always there, below the tool, and
- *  never between the visitor and the readout. Two steps: the email, which
- *  is posted the moment it is given so the CRM has the person; then name,
- *  company and role, posted together with the slider state. The company is
- *  offered from the email's domain and can be changed. */
+ *  never between the visitor and the readout. Three steps: the email,
+ *  posted the moment it is given so the CRM has the person; then name,
+ *  role and phone, the name offered from the address; then company, team
+ *  size and what they hope to change, the company offered from the
+ *  domain. Everything posts together at the end, with the slider state. */
 function Ask({ values }: { values: Values }) {
   const { submit, send, state, attempt } = useLeadSubmit("teaser");
-  const [step, setStep] = useState<1 | 2>(1);
-  const [email, setEmail] = useState("");
-  const [company, setCompany] = useState("");
+  const [step, setStep] = useState<1 | 2 | 3>(1);
+  const [intake, setIntake] = useState<Intake>(EMPTY);
   const [error, setError] = useState<string>();
   const [token, setToken] = useState<string>();
   const form = useRef<HTMLFormElement>(null);
   const success = useRef<HTMLDivElement>(null);
-  const second = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (state === "done") success.current?.focus();
   }, [state]);
 
   useEffect(() => {
-    if (step === 2) second.current?.querySelector<HTMLElement>("input")?.focus();
+    if (step > 1) form.current?.querySelector<HTMLElement>(".lead-steps input, .lead-steps select")?.focus();
   }, [step]);
 
   if (state === "done") {
@@ -308,119 +345,111 @@ function Ask({ values }: { values: Values }) {
     );
   }
 
+  const set = (field: keyof Intake) => (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) =>
+    setIntake((current) => ({ ...current, [field]: event.target.value }));
   const focusField = (name: string) => form.current?.querySelector<HTMLElement>(`[name="${name}"]`)?.focus();
+  const honeypot = () => String(new FormData(form.current ?? undefined).get("company_website") ?? "") || undefined;
 
-  const onContinue = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const given = String(data.get("email") ?? "").trim();
-    const found = !given
+  const onStep1 = () => {
+    const email = intake.email.trim();
+    const found = !email
       ? "Enter your email address."
-      : !EMAIL_SHAPE.test(given)
+      : !EMAIL_SHAPE.test(email)
         ? "Enter an email address like name@company.com."
         : undefined;
     setError(found);
-    if (found) {
-      focusField("email");
-      return;
-    }
-    setEmail(given);
-    setCompany((current) => current || companyFromEmail(given));
+    if (found) return focusField("email");
+    setIntake((current) => ({
+      ...current,
+      email,
+      name: current.name || nameFromEmail(email),
+      organization: current.organization || companyFromEmail(email),
+    }));
     setStep(2);
     // the CRM gets the person now, in case the rest never comes
-    void send({ email: given, answers: values, stage: "email", company_website: String(data.get("company_website") ?? "") || undefined, turnstileToken: token });
+    void send({ email, answers: values, stage: "email", company_website: honeypot(), turnstileToken: token });
   };
 
-  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const text = (field: string) => String(data.get(field) ?? "").trim();
-
-    const name = text("name");
-    const organization = text("organization");
-    const teamSize = text("teamSize") as Lead["teamSize"] | "";
-    const found = !name ? "Enter your name." : !organization ? "Enter your company." : !teamSize ? "Pick a team size." : undefined;
+  const onStep2 = () => {
+    const found = !intake.name.trim() ? "Enter your name." : undefined;
     setError(found);
-    if (found) {
-      focusField(!name ? "name" : !organization ? "organization" : "teamSize");
-      return;
-    }
+    if (found) return focusField("name");
+    setStep(3);
+  };
 
+  const onStep3 = () => {
+    const found = !intake.organization.trim() ? "Enter your company." : !intake.teamSize ? "Pick a team size." : undefined;
+    setError(found);
+    if (found) return focusField(!intake.organization.trim() ? "organization" : "teamSize");
     void submit({
-      email,
-      name,
-      organization,
-      teamSize: teamSize || undefined,
-      change: text("change") || undefined,
-      role: text("role") || undefined,
-      phone: text("phone") || undefined,
+      email: intake.email,
+      name: intake.name.trim(),
+      role: intake.role.trim() || undefined,
+      phone: intake.phone.trim() || undefined,
+      organization: intake.organization.trim(),
+      teamSize: intake.teamSize || undefined,
+      change: intake.change.trim() || undefined,
       answers: values,
       stage: "complete",
-      company_website: text("company_website") || undefined,
+      company_website: honeypot(),
       turnstileToken: token,
     });
   };
 
+  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (step === 1) onStep1();
+    else if (step === 2) onStep2();
+    else onStep3();
+  };
+
+  const back = (to: 1 | 2) => () => { setStep(to); setError(undefined); };
   const pending = state === "pending";
+  const errorFor = (message: string) => (error === message ? error : undefined);
 
   return (
     <section className="teaser-ask" id="ask" aria-labelledby="teaser-ask-title">
       <div>
-        {/* TODO(content): the client's words, 14 Oct: start here */}
-        <p className="eyebrow L-eyebrow">TeamQ assessment</p>
         <h2 className="teaser-ask-title" id="teaser-ask-title">
           Start here to get your team&rsquo;s TeamQ assessment.
         </h2>
         <p>
-          Leave your details and a person at SAMUH will be in touch about measuring your team. Two short steps.
+          Let&rsquo;s see how optimized your team is. Leave your details and a person at SAMUH will be in touch
+          about measuring it.
         </p>
       </div>
-      <form className="lead-form" ref={form} onSubmit={step === 1 ? onContinue : onSubmit} noValidate>
-        <p className="lead-step L-cap" aria-live="polite">Step {step} of 2</p>
+      <form className="lead-form" ref={form} onSubmit={onSubmit} noValidate>
+        <p className="lead-step L-cap" aria-live="polite">Step {step} of 3</p>
         {step === 1 ? (
-          <>
-            <Field label="Work email" name="email" type="email" autoComplete="email" required error={error} />
-            <Honeypot />
-          </>
-        ) : (
-          <div className="lead-steps" ref={second}>
+          <Field label="Work email" name="email" type="email" autoComplete="email" required value={intake.email} onChange={set("email")} error={error} />
+        ) : null}
+        {step === 2 ? (
+          <div className="lead-steps">
             <p className="lead-step-lead">
-              {email}{" "}
-              <button type="button" className="inline-link lead-back" onClick={() => { setStep(1); setError(undefined); }}>
+              {intake.email}{" "}
+              <button type="button" className="inline-link lead-back" onClick={back(1)}>
                 Change
               </button>
             </p>
-            <Field label="Name" name="name" autoComplete="name" required error={error === "Enter your name." ? error : undefined} />
-            <Field
-              label="Company"
-              name="organization"
-              autoComplete="organization"
-              required
-              value={company}
-              onChange={(event) => setCompany(event.target.value)}
-              error={error === "Enter your company." ? error : undefined}
-            />
-            <Field
-              label="Roughly how many people are on your team"
-              name="teamSize"
-              as="select"
-              required
-              defaultValue=""
-              options={[
-                { value: "", label: "Pick one" },
-                { value: "1-10", label: "1 to 10" },
-                { value: "11-50", label: "11 to 50" },
-                { value: "51-200", label: "51 to 200" },
-                { value: "200+", label: "More than 200" },
-              ]}
-              error={error === "Pick a team size." ? error : undefined}
-            />
-            <Field label="Role" name="role" autoComplete="organization-title" placeholder="Head of People, Team Lead, CEO" />
-            <Field label="Phone" name="phone" type="tel" autoComplete="tel" inputMode="tel" />
-            <Field label="What are you hoping to change" name="change" as="textarea" rows={3} placeholder="Optional. A line or two." />
-            <Honeypot />
+            <Field label="Name" name="name" autoComplete="name" required value={intake.name} onChange={set("name")} error={errorFor("Enter your name.")} />
+            <Field label="Role" name="role" autoComplete="organization-title" placeholder="Head of People, Team Lead, CEO" value={intake.role} onChange={set("role")} />
+            <Field label="Phone" name="phone" type="tel" autoComplete="tel" inputMode="tel" value={intake.phone} onChange={set("phone")} />
           </div>
-        )}
+        ) : null}
+        {step === 3 ? (
+          <div className="lead-steps">
+            <p className="lead-step-lead">
+              {intake.name}, {intake.email}{" "}
+              <button type="button" className="inline-link lead-back" onClick={back(2)}>
+                Change
+              </button>
+            </p>
+            <Field label="Company" name="organization" autoComplete="organization" required value={intake.organization} onChange={set("organization")} error={errorFor("Enter your company.")} />
+            <Field as="select" label="Team size" name="teamSize" options={TEAM_SIZES} required value={intake.teamSize} onChange={set("teamSize")} error={errorFor("Pick a team size.")} />
+            <Field as="textarea" label="What are you hoping to change?" name="change" rows={3} value={intake.change} onChange={set("change")} />
+          </div>
+        ) : null}
+        <Honeypot />
         <Turnstile onToken={setToken} resetKey={attempt} />
         {state === "error" ? (
           <p className="lead-error" role="alert">
@@ -434,7 +463,7 @@ function Ask({ values }: { values: Values }) {
           </p>
         ) : null}
         <button className="btn" type="submit" disabled={pending}>
-          {step === 1 ? "Continue" : pending ? "Sending" : "Send"} <span className="arrow">&rarr;</span>
+          {step < 3 ? "Continue" : pending ? "Sending" : "Send"} <span className="arrow">&rarr;</span>
         </button>
       </form>
     </section>
