@@ -71,12 +71,12 @@ export const DRAFTS: Draft[] = [
     // with the case study, and the close. Aspirational, research and the
     // equation sections go, folded into their neighbours.
     layout: { ...B_SHAPE.layout, sections: { ...B_SHAPE.layout.sections, circles: "circles-morph" } },
-    order: ["hero", "meaning", "thesis", "circles", "tool", "cards", "voices", "case", "start"],
+    order: ["hero", "meaning", "thesis", "circles", "tool", "cards", "voices", "case", "faq", "start"],
     copy: {
       ...B_SHAPE.copy,
       thesis: "Most teams ~leak performance through their environment, not their effort~. Samuh finds where yours is leaking, and gives you the practices to close it.",
       revealIntro: true,
-      revealSections: ["tool"],
+      revealSections: ["tool", "faq"],
       startSub: null,
       // TODO(content): the tool asks for the assessment, draft words
       tool: {

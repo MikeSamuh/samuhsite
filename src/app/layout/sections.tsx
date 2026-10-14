@@ -430,6 +430,23 @@ export function Dictionary() {
   );
 }
 
+// TODO(content): ten questions and our draft answers, written from
+// docs/brief.md and the confirmed items in docs/content.md. Nothing here is
+// a figure or a claim SAMUH has not made; SAMUH to approve the wording.
+// *words* take the primary, ~words~ the secondary (rich()).
+export const FAQ: [string, string][] = [
+  ["What does SAMUH do?", "Organizational and high-performance consulting, in partnership with Sapien Labs. We work with teams on the conditions they work in, so performance rises without the cost to people."],
+  ["Who is it for?", "Teams. Leadership teams in multi-team organizations, team leads, store managers, and founders of fast-growing companies. If people do their work in a team, this applies."],
+  ["Why the team, and not the individual or the organization?", "Because the team is where people experience their work life. Organizations invest in individuals and look at the whole, and the team in between is where capacity is won or lost."],
+  ["What is TeamQ?", "SAMUH\u2019s read on how a team works: what the work is like for the people doing it, how they live outside it, and what that does to their capacity to perform. It is built on Sapien Labs team environment factors."],
+  ["Is the tool on this page TeamQ?", "No. It shows how TeamQ thinks, with a demonstration team and a few factors moving. A TeamQ assessment is done with your own team, and the result is yours."],
+  ["What is the Sapien Labs partnership?", "Sapien Labs is our research partner and the source of the research this site leans on. Their Work Culture Report is the spine of the argument, and the team environment factors we assess come from their work."],
+  ["Is this about performance or about wellbeing?", "Both, at once. People thriving and results thriving reinforce each other rather than trading off. That is the whole point, and the reason we measure the environment instead of pushing on effort."],
+  ["How do you work with a team?", "Three ways. Self-guided, where the team works through the material on its own. Supported, which adds periodic calls with us. Guided, where we deliver in person. The team process is the method in all three, and organization-wide work layers on top of it."],
+  ["What does it cost?", "It depends on the way you work with us and the number of teams. Talk to us and we will put a number on it."],
+  ["How do we start?", "With a TeamQ assessment of your team, which shows where it leaks and what to move first. Explore TeamQ, or write to us and we will take it from there."],
+];
+
 // The six team metaphors SAMUH already uses, drawn for the Bangalore keynote
 // (July 2026, pages 33 and 34). The captions are theirs; the one-liners are
 // draft. Pulled from the deck PDF at 509 by 720, so originals are wanted.
@@ -572,22 +589,38 @@ export function ReportCard({ cls, onlyDownload }: { cls?: string; /** the downlo
   );
 }
 
+/** Rahul's channel, where every Insights episode lives (docs/insights-inventory.md) */
+const YOUTUBE = "https://www.youtube.com/@HumanExpansion-ACorePurpose";
+
 export function Footer({ go }: { go: (p: PageId) => void }) {
+  const page = (id: PageId) => (e: React.MouseEvent) => { stay(e); go(id); };
   return (
     <footer className="L-foot">
       <div className="L-wrap L-foot-grid">
         <div className="L-foot-brand">
-          <a href="#" className="L-foot-logo" onClick={(e) => { stay(e); go("home"); }} aria-label="SAMUH home">
+          <a href="#" className="L-foot-logo" onClick={page("home")} aria-label="SAMUH home">
             <Image src="/samuh-logo.png" alt="SAMUH" width={960} height={LOGO_H} />
           </a>
           <p className="L-foot-line">High performance <em className="L-hl">without</em> the cost to people.</p>
-          <span className="L-cap L-foot-partner">Partnered with<br />Sapien Labs</span>
+          <p className="L-foot-about">Organizational and high-performance consulting. We work with teams on the conditions they work in.</p>
+          <a className="L-foot-partner" href={REPORT.page} target="_blank" rel="noopener noreferrer" aria-label="In partnership with Sapien Labs">
+            <span className="L-cap">In partnership with</span>
+            <Image src="/sapien-labs.png" alt="Sapien Labs" width={820} height={240} />
+          </a>
         </div>
-        <nav className="L-foot-col L-foot-links" aria-label="Footer">
-          <span className="L-cap L-foot-h">Explore</span>
-          {PAGES.filter((x) => x.nav && x.id !== "home").map((x) => (
-            <a key={x.id} className="L-foot-link" onClick={() => go(x.id)}>{x.name}</a>
-          ))}
+        <nav className="L-foot-col" aria-label="Company">
+          <span className="L-cap L-foot-h">Company</span>
+          <a className="L-foot-link" href="#" onClick={page("about")}>About</a>
+          <a className="L-foot-link" href="#" onClick={page("process")}>Process</a>
+          <a className="L-foot-link" href="#" onClick={page("solutions")}>Solutions</a>
+          <a className="L-foot-link" href="#" onClick={page("contact")}>Contact</a>
+        </nav>
+        <nav className="L-foot-col" aria-label="Resources">
+          <span className="L-cap L-foot-h">Resources</span>
+          <a className="L-foot-link" href="#" onClick={page("insights")}>Insights</a>
+          <a className="L-foot-link" href="#" onClick={page("start")}>TeamQ</a>
+          <a className="L-foot-link" href={REPORT.page} target="_blank" rel="noopener noreferrer">Work Culture Report</a>
+          <a className="L-foot-link" href={YOUTUBE} target="_blank" rel="noopener noreferrer">Human Expansion on YouTube</a>
         </nav>
         <div className="L-foot-col">
           <span className="L-cap L-foot-h">Talk to us</span>
@@ -596,12 +629,19 @@ export function Footer({ go }: { go: (p: PageId) => void }) {
           ) : (
             <span className="L-foot-link L-foot-todo">TODO(content): email address</span>
           )}
+          <a className="L-foot-link" href="#" onClick={page("contact")}>Book a call</a>
           <button className="btn L-foot-cta" onClick={() => go("start")}>Get started <span className="arrow">&rarr;</span></button>
         </div>
       </div>
       <div className="L-wrap L-foot-base">
-        <span className="L-cap">&copy; {new Date().getFullYear()} SAMUH</span>
-        <span className="L-cap">Privacy · Terms · Cookies</span>
+        <span className="L-cap">&copy; {new Date().getFullYear()} SAMUH. All rights reserved.</span>
+        {/* TODO(content): the privacy, terms and cookie pages, from SAMUH's counsel */}
+        <nav className="L-foot-legal" aria-label="Legal">
+          <a className="L-cap" href="#" onClick={stay}>Privacy</a>
+          <a className="L-cap" href="#" onClick={stay}>Terms</a>
+          <a className="L-cap" href="#" onClick={stay}>Cookies</a>
+          <a className="L-cap" href="#top" onClick={(e) => { stay(e); window.scrollTo({ top: 0, behavior: "smooth" }); }}>Back to top <span className="arrow">&uarr;</span></a>
+        </nav>
       </div>
     </footer>
   );
@@ -984,6 +1024,23 @@ export function Section({ def, variant, go, copy = {}, demo }: { def: (typeof SE
                 <p className="L-big">Team practices shape the team environment. The environment sets the capacity people can bring. Capacity turns into performance.</p>
                 <p className="L-mid">Team environment + team practices = capacity to perform, and capacity is what becomes performance. The film walks the equation one term at a time.</p>
               </div>
+            </div>
+          </>
+        )}
+
+        {def.id === "faq" && (
+          <>
+            <Head def={def} />
+            <div className="L-faq">
+              {FAQ.map(([q, a], i) => (
+                <details className="L-faq-item" key={q} name="faq" open={i === 0 || undefined}>
+                  <summary className="L-faq-q">
+                    <span>{rich(q)}</span>
+                    <span className="L-faq-mark" aria-hidden>+</span>
+                  </summary>
+                  <p className="L-faq-a">{rich(a)}</p>
+                </details>
+              ))}
             </div>
           </>
         )}

@@ -148,7 +148,7 @@ export const PAGES: PageDef[] = [
 
 export type SectionId =
   | "hero" | "thesis" | "meaning" | "circles" | "aspire" | "research"
-  | "voices" | "case" | "tool" | "cards" | "equation" | "start";
+  | "voices" | "case" | "tool" | "cards" | "equation" | "faq" | "start";
 
 export interface SectionDef {
   id: SectionId;
@@ -162,6 +162,8 @@ export interface SectionDef {
   sub?: string;
   /** every variant id is prefixed with the section id so hashes stay unique */
   variants: Opt[];
+  /** renders only when a draft's order names it; frozen drafts without an order never pick it up */
+  optIn?: boolean;
 }
 
 export const SECTIONS: SectionDef[] = [
@@ -265,6 +267,13 @@ export const SECTIONS: SectionDef[] = [
     variants: [
       { id: "equation-centered", name: "Centered", note: "The equation on its own, large." },
       { id: "equation-split", name: "Split", note: "The equation one side, the explanation the other." },
+    ],
+  },
+  {
+    id: "faq", n: 13, kicker: "FAQ", title: "Questions we get asked", optIn: true,
+    intent: "Ten questions a cold visitor asks before they book a call. Added 14 October 2026, working draft only.",
+    variants: [
+      { id: "faq-list", name: "List", note: "Questions down the page, each opens on click." },
     ],
   },
   {
