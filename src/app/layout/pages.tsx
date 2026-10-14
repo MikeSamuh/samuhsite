@@ -283,13 +283,13 @@ function Insights() {
 /* ------------------------------------------------------------------ */
 
 // photos: the 141px headshots from the current samuh.work, until the
-// client sends proper ones. Jake has none there
+// client sends proper ones. Jake's is his own, sent 14 October 2026
 const TEAM: [string, string, string, string?][] = [
   ["Rahul Varma", "Co-Founder & CEO", "Former CHRO, Accenture Technology.", "/team/rahul-varma.webp"],
   ["Calina Mircea", "Co-Founder & Methodology Lead", "Systemic coach, learning and leadership expert.", "/team/calina-mircea.webp"],
   ["Mike Gabour", "Co-Founder & CTO", "Global analytics strategy and design leader.", "/team/mike-gabour.webp"],
   ["Dr. Tara Thiagarajan", "Chief Scientific Advisor", "Founder, Sapien Labs. Ph.D., Stanford.", "/team/tara-thiagarajan.webp"],
-  ["Jake DeBerry", "Lead, Enterprise Growth", "CEB/Gartner, Deloitte, NeuroLeadership Institute."],
+  ["Jake DeBerry", "Lead, Enterprise Growth", "CEB/Gartner, Deloitte, NeuroLeadership Institute.", "/team/jake-deberry.webp"],
 ];
 
 function About() {
