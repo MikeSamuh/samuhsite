@@ -93,7 +93,7 @@ export function ToolTour({ baseline, steps }: { baseline: TeaserResult; steps: T
               ))}
               <span className="tour-more">and {work.length - WORK_SHOWN} more</span>
             </div>
-            <div className="tour-group" data-dim={dim("life")}>
+            <div className="tour-group tour-group-life" data-dim={dim("life")}>
               <span className="tour-legend">{GROUP_LABELS.lifestyle}</span>
               {life.map((factor) => (
                 <SliderExhibit factor={factor} key={factor.id} />

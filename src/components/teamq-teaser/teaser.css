@@ -117,6 +117,16 @@
   color: var(--muted);
 }
 
+/* the two lifestyle sliders side by side, so the exhibit stays in view */
+.tour-group-life {
+  grid-template-columns: 1fr 1fr;
+  column-gap: 28px;
+}
+
+.tour-group-life .tour-legend {
+  grid-column: 1 / -1;
+}
+
 .tour-step > * {
   opacity: 0;
   pointer-events: none;
@@ -682,7 +692,8 @@
 }
 
 @container page (max-width: 600px) {
-  .teaser-group {
+  .teaser-group,
+  .tour-group-life {
     grid-template-columns: 1fr;
   }
 }
