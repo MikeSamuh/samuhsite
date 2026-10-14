@@ -551,12 +551,18 @@
 @media (prefers-reduced-motion: reduce) {
   .L-fm-venn, .L-fm-ring, .L-fm-fill, .L-fm-cap, .L-fm-item, .L-fm .L-c-t { transition: none; }
 }
-/* narrow: the heads over the picture, the key in two columns */
+/* narrow: the picture first, the head and the key under it, the key in
+   two columns. In the nested key the team entry takes the full row, so
+   that while it is shut (before the team arrives) it leaves no empty cell
+   and the individual and the organization sit side by side under it. The
+   row gap matches the shut entries' negative margin, so a shut row takes
+   no height */
 @container page (max-width: 900px) {
-  .L-page[data-comp="comp-editorial"] .L-s-circles[data-v="morph"] > .L-wrap { grid-template-columns: 1fr; }
-  .L-page[data-comp="comp-editorial"] .L-s-circles[data-v="morph"] > .L-wrap > .L-fm-side { grid-column: 1; grid-row: 1; }
-  .L-page[data-comp="comp-editorial"] .L-s-circles[data-v="morph"] > .L-wrap > .L-fm { grid-column: 1; grid-row: 2; }
-  .L-fm-legend { grid-template-columns: 1fr 1fr; gap: 14px 18px; }
+  .L-page[data-comp="comp-editorial"] .L-s-circles[data-v="morph"] > .L-wrap { grid-template-columns: 1fr; row-gap: 24px; padding-top: 16px; padding-bottom: 16px; }
+  .L-page[data-comp="comp-editorial"] .L-s-circles[data-v="morph"] > .L-wrap > .L-fm { grid-column: 1; grid-row: 1; }
+  .L-page[data-comp="comp-editorial"] .L-s-circles[data-v="morph"] > .L-wrap > .L-fm-side { grid-column: 1; grid-row: 2; gap: 20px; }
+  .L-fm-legend { grid-template-columns: 1fr 1fr; gap: 16px 18px; }
+  .L-fm-legend-3 .L-fm-item-team { grid-column: 1 / -1; }
   .L-page[data-comp="comp-editorial"] .L-s-circles[data-v="morph"] .L-circ { gap: 18px; }
 }
 
@@ -924,6 +930,10 @@
 
 /* the tiers table: pick a column, it lights; the form below carries the pick */
 .L-tiers thead th { vertical-align: bottom; padding: 0 14px 12px; }
+/* on phones the three columns do not fit: the pick moves above the table
+   as a row of three, the head goes, and only the picked tier's column
+   shows beside the row labels */
+.L-tiers-pick { display: none; }
 .L-tier-pick {
   display: grid;
   gap: 4px;
@@ -1069,6 +1079,23 @@
   .L-scale { grid-template-columns: repeat(7, 1fr); gap: 4px; }
   .L-scale-opt { padding: 12px 0; font-size: 15px; }
   .L-table { font-size: 12px; }
+  .L-tiers { font-size: 14px; }
+  .L-tiers-pick { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
+  .L-tiers-pick .L-tier-pick { font-size: 15px; padding: 8px 10px; gap: 2px; }
+  .L-tiers thead { display: none; }
+  .L-tiers td:not([data-on="true"]) { display: none; }
+  .L-tiers tbody th { width: 38%; }
+  /* the morph on a short screen: the key's type a step down and the
+     picture capped by the view's height, so the pinned stage fits */
+  .L-fm-item dt { font-size: 17px; }
+  .L-fm-item dd { font-size: 15px; }
+  .L-fm .L-c-svg { width: min(100%, calc(44svh * 640 / 440)); aspect-ratio: 640 / 440; }
+}
+/* the smallest phones: the bar keeps the mark, the call to action and the
+   burger; the partner credit beside the mark goes, it stays in the menu,
+   the hero and the footer */
+@container page (max-width: 420px) {
+  .L-nav .L-brand-rule, .L-nav .L-brand-partner { display: none; }
 }
 
 /* ==================================================================

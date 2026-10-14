@@ -81,6 +81,14 @@ function Solutions({ go }: { go: (p: PageId) => void }) {
     <>
       <PageHead n="01" kicker="Three ways to engage" title="Same process, three levels of support." lede="One methodology, the team process, delivered with as much or as little of us in the room as the team needs. Organization-wide work layers on top of it." />
       <Sec n="02" kicker="Side by side" title="The three tiers">
+        <div className="L-tiers-pick" aria-label="Which tier">
+          {TIERS.map((t) => (
+            <button key={t.name} type="button" className="L-tier-pick" onClick={() => setTier(t.name)} aria-pressed={t.name === tier}>
+              <span className="L-cap">{t.tag}</span>
+              <span>{t.name}</span>
+            </button>
+          ))}
+        </div>
         <table className="L-table L-tiers" data-tier={tier}>
           <thead>
             <tr>
