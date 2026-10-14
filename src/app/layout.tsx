@@ -32,6 +32,7 @@ import {
   Tenor_Sans,
   IBM_Plex_Mono,
 } from "next/font/google";
+import { UtmCapture } from "@/components/lead/UtmCapture";
 import "./globals.css";
 
 // All pairings load here so the preview switches with no flash.
@@ -150,7 +151,10 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body className={fontVars}>{children}</body>
+      <body className={fontVars}>
+        <UtmCapture />
+        {children}
+      </body>
     </html>
   );
 }

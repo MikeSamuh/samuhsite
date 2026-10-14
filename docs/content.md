@@ -39,6 +39,47 @@ Confirmed in writing or in meetings:
   different setting). Details are in Rahul's emails, not yet cleared for
   publication. The likely homepage reference is an anonymised Sankora
 
+## Supplied in writing by Rahul, not yet confirmed current
+
+From the Drive folder Rahul shared on 24 Sep 2026, read 12 Oct 2026.
+These are his or Tara's own words, so they clear hard rule 1 as "supplied
+in writing", but each is dated. Confirm with Rahul before it goes on a
+page as a present-tense claim. Quote with the date if in doubt.
+
+- Sapien Labs' MHQ: "almost 2 million people across 70 countries,
+  17 languages, over 1000 new completions daily" (Nov 2024, HBR editor
+  answers). The Aug 2026 HBR outline says "over 1.8 million respondents,
+  72 plus countries"
+- Capacity to perform "declines of 3 to 5x between Baby Boomers and
+  Gen Z" (Rahul, LinkedIn, 9 Jun 2026)
+- "The difference between thriving and struggling in our mental
+  well-being is a 3 to 5X drop in productivity and a 10 to 12X drop in
+  simply being able to show up for work" (episode 16 script; the video
+  says "more than tenfold")
+- First five SAMUH partners, as Rahul described them publicly in May 2025:
+  the senior leadership team of a Fortune 10 healthcare company, a top
+  team within a Fortune 500 global tech services giant, a fast-growing
+  restaurant chain in Romania, a specialized advisory firm, and a
+  pro-bono non-profit in Egypt
+- Rahul led the 2015 removal of performance ratings at Accenture for
+  375,000 people, "Performance Achievement" (booklet, 2023)
+- Rahul is a named subject in HBS case 9-408-095, "Accenture's War for
+  Talent in India" (2011). A biographical line, not a publication credit
+- The HBR article with Tara is a draft in submission (Aug 2026). Nothing
+  on the site may say "as seen in HBR" until it is published
+
+## Live copy we can reuse as is
+
+- Insights intro on samuh.work today: "Perspectives based on cutting-edge
+  research, and guided by timeless wisdom"
+- Samuh, from the Superchicken article: "In Sanskrit, Samuh signifies a
+  group coming together for a purpose larger than themselves. Our purpose
+  is to help organizations create conditions where people and toplines
+  thrive. Scientifically. Measurably. Sustainably."
+- Rahul's live bio names "a Harvard Business School case study on
+  hyper-growth in India". That is HBS case 9-408-095, so the biographical
+  line is already public and approved
+
 ## What we cannot state yet
 
 - Any sample size or research figure

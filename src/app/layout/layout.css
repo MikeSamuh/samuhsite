@@ -87,7 +87,7 @@
   padding-bottom: 22px;
   border-bottom: var(--rule-thin) solid var(--border);
 }
-.L-nav .nav-logo img { height: 30px; width: auto; filter: brightness(0) invert(1); }
+.L-nav .nav-logo img { height: 37.5px; width: auto; filter: brightness(0) invert(1); }
 .L-links { margin-left: auto; }
 /* the small-screen burger is hidden on desktop; the selector outranks the
    generic .L-burger rule below, which sets display: grid */
@@ -210,6 +210,7 @@
 .L-eyebrow::after { display: none; }
 .L-sub { margin: 10px 0 0; font-size: 17px; line-height: 1.5; color: var(--muted); max-width: 40ch; }
 .L-hl { font-style: normal; color: var(--accent); }
+.L-hl-2 { font-style: normal; color: var(--accent-2); }
 
 .L-cap {
   font-family: var(--font-caption);
@@ -448,6 +449,134 @@
 .L-c-right > .L-c-call { grid-area: 1 / 1; }
 .L-page[data-align="align-center"] .L-c-call { margin-left: auto; margin-right: auto; }
 
+/* the morph: two nested circles become three, then the four capacities,
+   as you scroll. The section is the track, tall enough to scroll through;
+   its content pins under the nav and FocusMorph reads how far the track
+   has gone, writing two eased numbers on the pinned content: --q, the
+   team circle arriving (0 absent, 1 there), then --p, the Venn (0 nested,
+   1 Venn). The circles cross-fade through the middle of the Venn travel,
+   so something is always on screen; the words, the heads and the key
+   leave early and arrive late, so no two sets overlap. Three heads share
+   one cell and take turns, two keys share another */
+/* long enough that each state holds under the hand: where we focus has
+   close to a screen's worth of scroll to itself */
+.L-s-circles[data-v="morph"] { min-height: 380vh; }
+/* the head and key arrive with the circles, as the section climbs into view */
+.L-s-circles[data-v="morph"] .L-fm-side { opacity: clamp(0, (var(--g, 0) - 0.15) / 0.6, 1); transform: translateY(calc((1 - var(--g, 0)) * 24px)); }
+/* the pinned stage fills the view under the nav, its content centred in
+   it, so the picture is not left sitting over a blank half-screen */
+.L-s-circles[data-v="morph"] > .L-wrap { position: sticky; top: var(--nav-h, 0px); min-height: calc(100vh - var(--nav-h, 0px)); padding-top: calc(32px * var(--space, 1)); padding-bottom: calc(32px * var(--space, 1)); align-content: center; }
+.L-s-circles[data-v="morph"] .L-fm-out { opacity: clamp(0, 1 - (var(--p, 0) - 0.25) / 0.5, 1); }
+.L-s-circles[data-v="morph"] .L-fm-in { opacity: clamp(0, (var(--p, 0) - 0.25) / 0.5, 1); }
+/* the words and the key wait for the circles to have grown from the dot */
+.L-s-circles[data-v="morph"] .L-c-t.L-fm-out { opacity: min(clamp(0, 1 - var(--p, 0) / 0.4, 1), clamp(0, (var(--g, 0) - 0.6) / 0.4, 1)); }
+.L-s-circles[data-v="morph"] .L-fm-legend-3 { opacity: min(clamp(0, 1 - (var(--p, 0) - 0.3) / 0.2, 1), clamp(0, (var(--g, 0) - 0.5) / 0.5, 1)); }
+.L-s-circles[data-v="morph"] :is(.L-c-t, .L-fm-mark).L-fm-in { opacity: clamp(0, (var(--p, 0) - 0.6) / 0.4, 1); }
+/* the team arrives: its ring and its word grow in with --q, its key entry after */
+.L-s-circles[data-v="morph"] .L-fm-arrive { opacity: clamp(0, (var(--q, 0) - 0.15) / 0.5, 1); }
+/* the key swaps as it arrives: the individual and the organization shut
+   and fade, the team opens and fades up in their place */
+.L-s-circles[data-v="morph"] .L-fm-legend-3 .L-fm-item { overflow: hidden; }
+.L-s-circles[data-v="morph"] .L-fm-legend-3 .L-fm-item-team { opacity: clamp(0, (var(--q, 0) - 0.45) / 0.35, 1); max-height: calc(var(--q, 0) * 200px); margin-bottom: calc(-16px * (1 - var(--q, 0))); }
+.L-s-circles[data-v="morph"] .L-fm-legend-3 :is(.L-fm-item-ind, .L-fm-item-org) { opacity: clamp(0, 1 - var(--q, 0) / 0.4, 1); max-height: calc((1 - var(--q, 0)) * 200px); margin-bottom: calc(-16px * var(--q, 0)); }
+/* the heads take turns: where others focus leaves as the team arrives,
+   where we focus holds until the Venn, SAMUH at the centre comes with it */
+.L-s-circles[data-v="morph"] .L-fm-head.L-fm-h0 { opacity: clamp(0, 1 - (var(--q, 0) - 0.3) / 0.25, 1); }
+.L-s-circles[data-v="morph"] .L-fm-head.L-fm-h1 { opacity: min(clamp(0, (var(--q, 0) - 0.55) / 0.25, 1), clamp(0, 1 - (var(--p, 0) - 0.3) / 0.2, 1)); }
+.L-s-circles[data-v="morph"] :is(.L-fm-head, .L-fm-legend).L-fm-in { opacity: clamp(0, (var(--p, 0) - 0.5) / 0.2, 1); }
+/* whatever has faded out takes no pointer. The two keys share a cell, and
+   the hidden one was catching hovers meant for the one on show, lighting
+   the wrong circle */
+.L-fm-head[aria-hidden="true"], .L-fm-legend[aria-hidden="true"], .L-fm-item[data-off] { pointer-events: none; }
+/* the picture takes the whole content column, so it draws large */
+.L-page[data-comp="comp-editorial"] .L-s-circles[data-v="morph"] .L-circ { grid-template-columns: 1fr; justify-items: center; gap: 28px; }
+.L-fm .L-c-svg { max-width: none; cursor: default; }
+.L-fm[data-venn] .L-c-svg { cursor: pointer; }
+.L-fm-ring { fill: none; }
+.L-fm-ring.L-c-team { fill: color-mix(in srgb, var(--accent-4) 8%, transparent); }
+/* each circle's colour, --k: in the Venn its own, the fourth in the
+   yellow; nested, the individual and the organization light in the
+   secondary (fill, stroke, the key's rule) while their names stay in the
+   text colour, and the team is always in the primary */
+.L-fm-g-org, .L-fm-item-org { --k: var(--accent-2); }
+.L-fm-g-team, .L-fm-item-team { --k: var(--accent); }
+.L-fm-g-ind, .L-fm-item-ind { --k: color-mix(in srgb, var(--accent) 45%, var(--accent-2)); }
+.L-fm-g-phys, .L-fm-item-phys { --k: var(--accent-yellow); }
+:is(.L-fm, .L-fm-side):not([data-venn]) :is(.L-fm-g-org, .L-fm-g-ind, .L-fm-item-org, .L-fm-item-ind) { --k: var(--accent-2); }
+.L-fm:not([data-venn]) .L-fm-g[data-on] :is(.L-c-ind, .L-c-org) { stroke: var(--k); }
+.L-fm-legend-3 .L-fm-item:is(.L-fm-item-ind, .L-fm-item-org)[data-on] dt { color: var(--text); }
+/* the Venn: the nested circles' stroke, no fill, each its own colour */
+.L-fm-venn { fill: none; stroke: var(--k); stroke-width: var(--c-stroke); vector-effect: non-scaling-stroke; transition: stroke-width var(--dur) var(--ease); }
+/* hover, in both states: the circle takes a light fill of its colour, its
+   stroke grows, its label and its key entry take the colour. Where two
+   hot circles overlap the fills screen together, a third colour in the
+   lens. Light on purpose: an overlay, not a flood */
+.L-fm-fill { fill: var(--k); opacity: 0; mix-blend-mode: screen; pointer-events: none; transition: opacity var(--dur) var(--ease); }
+.L-fm-g[data-on] .L-fm-fill { opacity: 0.22; }
+.L-fm-g[data-on] :is(.L-fm-venn, .L-fm-ring) { stroke-width: calc(var(--c-stroke) * 1.8); }
+.L-fm-ring { transition: stroke-width var(--dur) var(--ease), stroke var(--dur) var(--ease); }
+.L-fm-cap { font-size: 20px; fill: var(--text); transition: fill var(--dur) var(--ease); }
+.L-fm-g[data-on] .L-fm-cap { fill: var(--k); }
+.L-fm .L-c-t { transition: fill var(--dur) var(--ease); }
+.L-fm .L-c-t { pointer-events: none; }
+/* the star is white on transparent, placed as supplied; the loop moves it */
+.L-fm-mark { pointer-events: none; }
+/* the left column sits level with the middle of the picture, so the eye
+   lands on the head and the picture together, not at the top of the
+   screen. The heads share one cell, every state in it; the key stacks
+   under them, both states in one cell */
+.L-page[data-comp="comp-editorial"] .L-s-circles[data-v="morph"] > .L-wrap { grid-template-columns: minmax(220px, 320px) 1fr; align-items: center; }
+.L-page[data-comp="comp-editorial"] .L-s-circles[data-v="morph"] > .L-wrap > .L-fm-side { grid-column: 1; grid-row: 1; }
+.L-fm-side { display: grid; gap: 28px; align-content: center; }
+.L-fm-heads { display: grid; }
+.L-fm-head { grid-area: 1 / 1; }
+.L-page[data-comp="comp-editorial"] .L-sec-h .L-fm-head { position: static; }
+.L-page[data-comp="comp-editorial"] .L-s-circles[data-v="morph"] > .L-wrap > .L-fm { grid-column: 2; grid-row: 1; }
+.L-fm { width: 100%; }
+.L-fm-key { display: grid; width: 100%; }
+.L-fm-legend { grid-area: 1 / 1; display: grid; grid-template-columns: 1fr; gap: 16px; margin: 0; align-content: start; }
+.L-fm-item { display: grid; gap: 6px; border-top: var(--rule-thin) solid var(--border); padding-top: 12px; cursor: default; transition: border-color var(--dur) var(--ease); }
+.L-fm-item[data-on] { border-top-color: var(--k); }
+.L-fm-legend .L-fm-item[data-on] dt { color: var(--k); }
+.L-fm-item dt { font-family: var(--font-display); font-weight: var(--display-weight); font-style: var(--display-style, normal); letter-spacing: var(--display-tracking); font-size: 18px; color: var(--k); transition: color var(--dur) var(--ease), font-weight var(--dur) var(--ease); }
+/* hot: the title goes bold with the description. The display face has one
+   weight, so the browser synthesises the bold */
+.L-fm-item[data-on] dt { font-weight: 700; }
+/* the nested key: the team in the primary, the other two plain until hot */
+.L-fm-legend-3 :is(.L-fm-item-ind, .L-fm-item-org) dt { color: var(--text); }
+.L-fm-item dd { margin: 0; font-size: 17px; line-height: 1.5; color: var(--muted); transition: color var(--dur) var(--ease), font-weight var(--dur) var(--ease); }
+/* hot: the description comes forward too, brighter and bolder */
+.L-fm-item[data-on] dd { color: var(--text); font-weight: 600; }
+.L-fm-item dd strong { font-weight: 600; color: var(--text); }
+@media (prefers-reduced-motion: reduce) {
+  .L-fm-venn, .L-fm-ring, .L-fm-fill, .L-fm-cap, .L-fm-item, .L-fm .L-c-t { transition: none; }
+}
+/* narrow: the picture first, the head and the key under it, the key in
+   two columns. In the nested key the team entry takes the full row, so
+   that while it is shut (before the team arrives) it leaves no empty cell
+   and the individual and the organization sit side by side under it. The
+   row gap matches the shut entries' negative margin, so a shut row takes
+   no height */
+@container page (max-width: 900px) {
+  .L-page[data-comp="comp-editorial"] .L-s-circles[data-v="morph"] > .L-wrap { grid-template-columns: 1fr; row-gap: 24px; padding-top: 16px; padding-bottom: 16px; }
+  .L-page[data-comp="comp-editorial"] .L-s-circles[data-v="morph"] > .L-wrap > .L-fm { grid-column: 1; grid-row: 1; }
+  .L-page[data-comp="comp-editorial"] .L-s-circles[data-v="morph"] > .L-wrap > .L-fm-side { grid-column: 1; grid-row: 2; gap: 20px; }
+  .L-fm-legend { grid-template-columns: 1fr 1fr; gap: 16px 18px; }
+  .L-fm-legend-3 .L-fm-item-team { grid-column: 1 / -1; }
+  .L-page[data-comp="comp-editorial"] .L-s-circles[data-v="morph"] .L-circ { gap: 18px; }
+}
+
+/* ---------- reveal: content that fades up as it comes into view ---------- */
+
+/* --r is written by the scroll (sections.tsx, useScrollReveal): 0 at the
+   foot of the view, 1 at the middle. A short transition smooths the steps
+   between scroll events */
+.L-reveal, .L-sec[data-reveal] > .L-wrap > * { opacity: var(--r, 0); transform: translateY(calc((1 - var(--r, 0)) * 36px)); transition: opacity calc(var(--dur) * 0.8) var(--ease), transform calc(var(--dur) * 0.8) var(--ease); }
+.L-reveal[data-in], .L-sec[data-reveal][data-in] > .L-wrap > * { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .L-reveal, .L-sec[data-reveal] > .L-wrap > * { opacity: 1; transform: none; transition: none; }
+}
+
 /* ---------- 05 aspire ---------- */
 
 .L-aspire { display: grid; gap: 28px; }
@@ -491,6 +620,22 @@
 /* ---------- 06 research ---------- */
 
 .L-research { margin: 0; display: grid; gap: 18px; }
+/* the report: cover beside the claim, the download under it */
+.L-report { grid-template-columns: 200px 1fr; gap: 32px; align-items: center; }
+.L-report-cover { display: block; aspect-ratio: 1236 / 1600; overflow: hidden; border-radius: min(var(--radius), 10px); border: var(--rule-thin) solid var(--border); box-shadow: 0 18px 40px -24px color-mix(in srgb, var(--accent) 50%, transparent); transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease); }
+.L-report-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.L-report-cover:hover { transform: translateY(-4px); box-shadow: 0 26px 48px -24px color-mix(in srgb, var(--accent) 70%, transparent); }
+.L-report-cover:focus-visible { outline: var(--rule-fat) solid var(--accent-2); outline-offset: 4px; }
+.L-report-copy { display: grid; gap: 12px; justify-items: start; }
+.L-report-copy .card-tag { margin-bottom: 0; }
+.L-report-copy .L-big { max-width: 30ch; }
+.L-report-links { margin: 6px 0 0; display: flex; flex-wrap: wrap; gap: 8px 24px; }
+/* the case study in the report's shape: its cover is the mark and the tag
+   on black, the same portrait as the report beside it */
+.L-case-cover { display: grid; align-content: center; justify-items: center; gap: 18px; padding: 22px; background: var(--base); text-align: center; }
+.L-case-cover img { width: 68%; height: auto; filter: brightness(0) invert(1); }
+.L-case-cover-tag { font-family: var(--font-caption); font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; line-height: 1.5; color: var(--muted); max-width: 22ch; }
+.L-case-report .L-case-stats { margin: 6px 0 0; }
 .L-sec[data-v="card"] .L-research { background: var(--surface); border: var(--rule-thin) solid var(--border); border-radius: min(var(--radius), 22px); padding: 32px; }
 .L-sec[data-v="quote"] .L-research { border-left: var(--rule-fat) solid var(--accent); padding-left: 28px; }
 .L-sec[data-v="quote"] .L-big { font-size: clamp(26px, 3.4cqw, 46px); }
@@ -564,6 +709,9 @@
 
 /* ---------- 08 case ---------- */
 
+.L-case-wrap { display: grid; gap: calc(40px * var(--space, 1)); }
+/* the research claim opening the case study: the claim, then the proof.
+   It takes the section's panel style, like the case card under it */
 .L-case { display: grid; gap: 28px; align-items: center; }
 /* the case study card, a 16:9 export on black, kept inside a hairline */
 .L-case-img { display: block; aspect-ratio: 2490 / 1404; overflow: hidden; border-radius: min(var(--radius), 14px); border: var(--rule-thin) solid var(--border); background: #000; }
@@ -661,9 +809,24 @@
 
 /* ---------- footer ---------- */
 
-.L-foot { display: flex; justify-content: space-between; gap: 16px; padding-top: 32px; padding-bottom: 40px; border-top: var(--rule-thin) solid var(--border); flex-wrap: wrap; }
-.L-foot-links { display: flex; gap: 18px; flex-wrap: wrap; }
-.L-foot-links a:hover { color: var(--accent); }
+/* ---------- footer ---------- */
+
+/* a band on the surface colour: the logo and the line on the left, two
+   short columns on the right, the legal row under a hairline */
+.L-foot { margin-top: calc(40px * var(--space, 1)); padding: calc(72px * var(--space, 1)) 0 0; background: var(--surface); border-top: var(--rule-thin) solid var(--border); }
+.L-foot-grid { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(140px, 0.6fr) minmax(200px, 0.8fr); gap: 40px clamp(32px, 5cqw, 80px); align-items: start; padding-bottom: calc(56px * var(--space, 1)); }
+.L-foot-brand { display: grid; gap: 22px; justify-items: start; }
+.L-foot-logo { display: inline-block; width: calc(44px * 960 / 285); }
+.L-foot-logo img { width: 100%; height: auto; filter: brightness(0) invert(1); }
+.L-foot-partner { line-height: 1.6; }
+.L-foot-line { margin: 0; max-width: 18ch; font-family: var(--font-display); font-weight: var(--display-weight); font-style: var(--display-style); letter-spacing: var(--display-tracking); line-height: 1.1; font-size: clamp(26px, 3cqw, 40px); color: var(--text); text-wrap: balance; }
+.L-foot-col { display: grid; gap: 12px; justify-items: start; align-content: start; }
+.L-foot-h { color: var(--accent); margin-bottom: 6px; }
+.L-foot-link { font-family: var(--font-ui); font-size: 16px; color: var(--text); cursor: pointer; text-decoration: none; transition: color var(--dur) var(--ease); }
+.L-foot-link:hover { color: var(--accent); }
+.L-foot-todo { color: var(--muted); cursor: default; }
+.L-foot-cta { margin-top: 10px; }
+.L-foot-base { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-top: 22px; padding-bottom: 30px; border-top: var(--rule-thin) solid var(--border); }
 
 /* ---------- narrow frames ---------- */
 
@@ -704,16 +867,21 @@
   .L-sec { padding: calc(56px * var(--space, 1)) 0; }
 }
 
+@container page (max-width: 900px) {
+  .L-foot-grid { grid-template-columns: 1fr 1fr; }
+  .L-foot-brand { grid-column: 1 / -1; }
+}
+
 @container page (max-width: 560px) {
-  /* the bar shows the two marks at every scroll position: the full
-     wordmarks do not fit beside the call to action and the burger */
+  .L-foot-grid { grid-template-columns: 1fr; }
+  .L-foot-base { flex-direction: column; gap: 10px; }
+  /* the bar shows the Samuh mark at every scroll position: the full
+     wordmark does not fit beside the call to action and the burger */
   .L-nav .L-brand { gap: 12px; }
-  .L-nav .L-brand-samuh { width: calc(30px * 181 / 240); }
-  .L-nav .L-brand-sapien { width: calc(30px * 243 / 240); grid-template-rows: 0 auto; row-gap: 0; }
-  .L-nav .L-brand-samuh .L-brand-full, .L-nav .L-brand-sapien .L-brand-full, .L-nav .L-brand-sapien .L-brand-powered { opacity: 0; }
-  .L-nav .L-brand-sapien .L-brand-full { transform: translateX(-12px); }
-  .L-nav .L-brand-samuh .L-brand-mark, .L-nav .L-brand-sapien .L-brand-mark { opacity: 1; transform: none; }
-  .L-nav .L-brand-sapien .L-brand-mark { opacity: 0.9; }
+  .L-nav .L-brand-samuh { width: calc(37.5px * 181 / 240); }
+  .L-nav .L-brand-samuh .L-brand-full { opacity: 0; }
+  .L-nav .L-brand-samuh .L-brand-mark { opacity: 1; transform: none; }
+  .L-nav .L-brand-partner { font-size: 9px; }
   .L-overlay-foot { flex-direction: column; align-items: flex-start; gap: 20px; }
   .L-nav .L-cta { padding: 10px 14px; font-size: 13px; }
   .L-nav-icons[data-scrolled="true"] .L-nav { padding-top: 10px; padding-bottom: 10px; }
@@ -762,6 +930,10 @@
 
 /* the tiers table: pick a column, it lights; the form below carries the pick */
 .L-tiers thead th { vertical-align: bottom; padding: 0 14px 12px; }
+/* on phones the three columns do not fit: the pick moves above the table
+   as a row of three, the head goes, and only the picked tier's column
+   shows beside the row labels */
+.L-tiers-pick { display: none; }
 .L-tier-pick {
   display: grid;
   gap: 4px;
@@ -793,63 +965,51 @@
 .L-steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 14px; }
 .L-step { display: grid; gap: 10px; }
 .L-step .ph { min-height: 72px; }
-/* the arc timeline: copy | lane | art, the lane is where the line winds.
-   Rows alternate which side the copy is on, and each side always keeps
-   room for the art, which is a small piece of illustration to come */
-.L-arc-run { --arc-gold: #F5D547; position: relative; } /* the palette's Butter, the lighter of its golds */
-.L-arc-run > .L-sec:first-of-type { border-top: 0; }
-/* the first section in the run loses its rule to :first-of-type, so the
-   run draws it back */
-/* no rule between the page head and the six moves: the arc runs straight out of the intro */
-.L-arc-run::before { display: none; }
-.L-page[data-rule="rule-none"] .L-arc-run::before { display: none; }
-/* the note under the moves stays in the first column, left of the line */
-.L-arc-run .L-arc + .L-cap { display: block; max-width: 30ch; }
-.L-arc-moves .step-n { margin: 0; }
-.L-arc { --arc-lane: 200px; --arc-art: 112px; position: relative; list-style: none; margin: 0 0 28px; padding: 0; display: grid; gap: 8px; }
-.L-arc-svg { position: absolute; inset: 0 0 auto; z-index: 2; pointer-events: none; overflow: visible; }
-.L-arc-path { mask: url(#L-arc-end); fill: none; stroke: var(--arc-gold); stroke-width: 1.5px; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; opacity: 0.9; }
-/* the one ball that rides the line */
-.L-arc-ball-core { fill: var(--arc-gold); }
-.L-arc-ball-glow { fill: var(--arc-gold); opacity: 0.55; }
-/* what the ball is beside lights up, and its icon glows gold */
-.L-arc-item .L-arc-what, .L-arc-item .L-arc-note, .L-arc-item .L-arc-art { transition: color var(--dur) var(--ease), box-shadow var(--dur) var(--ease), transform var(--dur) var(--ease); }
-.L-arc-item[data-on] .L-arc-what { color: var(--arc-gold); }
-.L-arc-item[data-on] .L-arc-note { color: var(--text); }
-.L-arc-item[data-on] .L-arc-art { box-shadow: 0 0 0 1.5px var(--arc-gold), 0 0 28px color-mix(in srgb, var(--arc-gold) 55%, transparent); }
-/* the six icons: 30 percent until the ball is level with them, then full and a step larger */
-.L-arc-art.L-arc-icon { background: transparent; box-shadow: none; border: 0; padding: 0; display: grid; place-items: center; color: transparent; overflow: visible; }
-.L-arc-icon img { width: 100%; height: 100%; object-fit: contain; opacity: 0.3; transform: scale(1); transition: opacity var(--dur) var(--ease), transform calc(var(--dur) * 1.4) var(--ease); }
-.L-arc-item[data-on] .L-arc-art.L-arc-icon { box-shadow: none; }
-.L-arc-item[data-on] .L-arc-icon img { opacity: 1; transform: scale(1.28); }
-.L-arc-item { position: relative; display: grid; grid-template-columns: 1fr var(--arc-lane) 1fr; align-items: center; min-height: 168px; }
-.L-arc-copy { display: grid; gap: 6px; text-align: right; justify-items: end; padding: 12px 0; }
-.L-arc-art {
-  width: var(--arc-art);
-  height: var(--arc-art);
-  display: grid;
-  place-items: center;
-  border-radius: min(var(--radius), 18px);
-  background: #fff;
-  color: #000;
-  font-family: var(--font-caption);
-  font-size: 10.5px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  justify-self: start;
+/* the three stages, one section. Each stage: its eyebrow line, its verb,
+   the copy one side and its figure or icon the other. Stages stack with a
+   hairline between. The running head (.L-stages-head) is off here and
+   comes on in slot mode, below */
+.L-stage-list { list-style: none; margin: 0; padding: 0; }
+.L-stage { display: grid; grid-template-columns: minmax(0, 1fr) var(--stage-art, 280px); gap: 10px 40px; align-items: center; padding-bottom: calc(56px * var(--space, 1)); }
+.L-stage + .L-stage { border-top: var(--rule-thin) solid var(--border); padding-top: calc(56px * var(--space, 1)); }
+.L-stage:last-child { padding-bottom: 0; }
+.L-stage-line { grid-column: 1 / -1; order: -3; margin: 0; color: var(--accent); }
+.L-stage-verb { grid-column: 1 / -1; order: -2; margin: 0 0 6px; }
+.L-stage-copy { display: grid; gap: 8px; }
+.L-stage-copy .L-mid { font-size: 17px; max-width: 48ch; transition: color calc(var(--dur) * 2) var(--ease); }
+.L-stage-art { width: var(--stage-art, 280px); aspect-ratio: 1; display: grid; place-items: center; justify-self: end; }
+.L-stage-art :is(img, .process-figure) { width: 100%; height: 100%; object-fit: contain; opacity: 0.35; transform: scale(1); transition: opacity calc(var(--dur) * 2) var(--ease), transform calc(var(--dur) * 2.5) var(--ease); }
+.L-stage:hover .L-stage-art :is(img, .process-figure) { opacity: 1; transform: scale(1.1); }
+.L-stage:nth-child(even) { grid-template-columns: var(--stage-art, 280px) minmax(0, 1fr); }
+.L-stage:nth-child(even) .L-stage-art { order: -1; justify-self: start; }
+/* the traced figure: the text colour, flat. Mid-morph it is at full strength */
+.process-figure { display: block; fill: var(--text); overflow: visible; }
+.L-stage-art .process-figure.is-moving { opacity: 1; }
+/* the running head, and the list across the full width while it is off */
+.L-stages-head { display: none; }
+.L-page[data-comp="comp-editorial"] .L-sec.L-stages > .L-wrap { grid-template-columns: 1fr; }
+.L-page[data-comp="comp-editorial"] .L-sec.L-stages > .L-wrap > :not(.L-head) { grid-column: 1; }
+/* slot mode: the editorial columns at desktop width, figures on. The
+   running head sticks (the editorial head rule) and shows the active
+   stage: eyebrow and title fade in on each swap, the figure under them
+   morphs. Each stage takes most of a screen so the swap has room, its
+   own line and art are off, its verb is kept for readers only, and the
+   active body comes up to full text colour */
+@keyframes L-stage-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.L-stages-head .L-eyebrow, .L-stages-head h2.sec { animation: L-stage-in calc(var(--dur) * 2) var(--ease) both; }
+.L-stage-fig { display: block; order: 5; width: 100%; max-width: var(--stage-fig, 200px); aspect-ratio: 1; margin-top: 14px; }
+.L-stage-fig .process-figure { width: 100%; height: 100%; opacity: 0.9; }
+@container page (min-width: 901px) {
+  .L-page[data-comp="comp-editorial"] .L-sec.L-stages[data-slot] > .L-wrap { grid-template-columns: minmax(180px, 240px) 1fr; }
+  .L-page[data-comp="comp-editorial"] .L-sec.L-stages[data-slot] > .L-wrap > :not(.L-head) { grid-column: 2; }
+  .L-page[data-comp="comp-editorial"] .L-stages[data-slot] .L-stages-head { display: flex; }
+  .L-page[data-comp="comp-editorial"] .L-stages[data-slot] .L-stage, .L-page[data-comp="comp-editorial"] .L-stages[data-slot] .L-stage:nth-child(even) { grid-template-columns: minmax(0, 1fr); min-height: 56vh; align-content: start; }
+  .L-page[data-comp="comp-editorial"] .L-stages[data-slot] :is(.L-stage-art, .L-stage-line) { display: none; }
+  .L-page[data-comp="comp-editorial"] .L-stages[data-slot] .L-stage-verb { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .L-page[data-comp="comp-editorial"] .L-stages[data-slot] .L-stage[data-on] .L-mid { color: var(--text); }
 }
-/* odd rows swap sides: art left, copy right. nth-of-type, because the svg
-   is the list's first child */
-.L-arc-item:nth-of-type(odd) .L-arc-copy { order: 3; text-align: left; justify-items: start; }
-.L-arc-item:nth-of-type(odd) .L-arc-lane { order: 2; }
-.L-arc-item:nth-of-type(odd) .L-arc-art { order: 1; justify-self: end; }
-.L-arc-what { font-family: var(--font-display); font-weight: var(--display-weight); font-size: 19px; }
-.L-arc-note { font-size: 13px; color: var(--muted); line-height: 1.5; max-width: 34ch; }
-.L-page[data-align="align-center"] .L-arc-copy { text-align: inherit; }
 
 /* insights */
-.L-filters { display: grid; gap: 12px; }
-.L-pills { display: flex; flex-wrap: wrap; gap: 8px; }
 .L-research-card { display: grid; grid-template-columns: 200px 1fr; gap: 28px; align-items: center; padding: 28px; }
 .L-research-card .ph { min-height: 220px; }
 .L-feed { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 16px; }
@@ -907,21 +1067,35 @@
 
 @container page (max-width: 900px) {
   .L-tier, .L-steps, .L-feed, .L-team, .L-logos, .L-contact, .L-voices-grid { grid-template-columns: 1fr 1fr; }
-  .L-arc { --arc-lane: 140px; --arc-art: 96px; }
+  .L-stage { --stage-art: 200px; }
   .L-research-card, .L-partner { grid-template-columns: 1fr; }
+  .L-report { grid-template-columns: 1fr; }
+  .L-report-cover { max-width: 220px; }
 }
 @container page (max-width: 560px) {
   .L-tier, .L-steps, .L-feed, .L-team, .L-logos, .L-contact, .L-voices-grid { grid-template-columns: 1fr; }
-  /* one row per move on a phone: the line runs down the left, the art
-     sits beside it, the copy to the right */
-  .L-arc { --arc-lane: 44px; --arc-art: 72px; }
-  .L-arc-item, .L-arc-item:nth-of-type(odd) { grid-template-columns: var(--arc-lane) var(--arc-art) 1fr; column-gap: 16px; min-height: 0; }
-  .L-arc-item .L-arc-lane, .L-arc-item:nth-of-type(odd) .L-arc-lane { order: 1; grid-row: auto; }
-  .L-arc-item .L-arc-art, .L-arc-item:nth-of-type(odd) .L-arc-art { order: 2; justify-self: start; margin-top: 0; }
-  .L-arc-item .L-arc-copy, .L-arc-item:nth-of-type(odd) .L-arc-copy { order: 3; text-align: left; justify-items: start; }
+  .L-stage, .L-stage:nth-child(even) { --stage-art: 120px; grid-template-columns: 1fr; gap: 16px; }
+  .L-stage-art, .L-stage:nth-child(even) .L-stage-art { order: -1; justify-self: start; }
   .L-scale { grid-template-columns: repeat(7, 1fr); gap: 4px; }
   .L-scale-opt { padding: 12px 0; font-size: 15px; }
   .L-table { font-size: 12px; }
+  .L-tiers { font-size: 14px; }
+  .L-tiers-pick { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
+  .L-tiers-pick .L-tier-pick { font-size: 15px; padding: 8px 10px; gap: 2px; }
+  .L-tiers thead { display: none; }
+  .L-tiers td:not([data-on="true"]) { display: none; }
+  .L-tiers tbody th { width: 38%; }
+  /* the morph on a short screen: the key's type a step down and the
+     picture capped by the view's height, so the pinned stage fits */
+  .L-fm-item dt { font-size: 17px; }
+  .L-fm-item dd { font-size: 15px; }
+  .L-fm .L-c-svg { width: min(100%, calc(44svh * 640 / 440)); aspect-ratio: 640 / 440; }
+}
+/* the smallest phones: the bar keeps the mark, the call to action and the
+   burger; the partner credit beside the mark goes, it stays in the menu,
+   the hero and the footer */
+@container page (max-width: 420px) {
+  .L-nav .L-brand-rule, .L-nav .L-brand-partner { display: none; }
 }
 
 /* ==================================================================
@@ -965,7 +1139,7 @@
   color: var(--text);
 }
 .L-page[data-comp="comp-editorial"] .L-sec-h h2.sec { font-size: clamp(22px, 2.2cqw, 28px); line-height: 1.2; }
-.L-page[data-comp="comp-editorial"] .L-sec-h .L-eyebrow { margin: 0; font-size: 12px; letter-spacing: 0.12em; }
+.L-page[data-comp="comp-editorial"] .L-sec-h .L-eyebrow { margin: 0; font-size: 14px; letter-spacing: 0.12em; }
 .L-page[data-comp="comp-editorial"] .L-eyebrow::after { display: none; }
 .L-page[data-comp="comp-editorial"] .L-big { font-size: clamp(22px, 2.4cqw, 30px); }
 .L-page[data-comp="comp-editorial"] .L-s-thesis[data-v="under"] .L-thesis-in {
@@ -982,7 +1156,7 @@
 .L-page[data-comp="comp-editorial"] :is(.card, .step) { border-radius: 0; background: transparent; border-width: 0; border-top: var(--rule-thin) solid var(--border); padding-left: 0; padding-right: 0; }
 .L-page[data-comp="comp-editorial"] :is(.card, .step):hover { background: transparent; box-shadow: none; transform: none; border-top-color: var(--accent); }
 .L-page[data-comp="comp-editorial"] .card::before, .L-page[data-comp="comp-editorial"] .step::after { display: none; }
-.L-page[data-comp="comp-editorial"] .L-foot { flex-direction: column; align-items: flex-start; }
+.L-page[data-comp="comp-editorial"] .L-foot-grid { align-items: start; }
 /* the circles keep the margin column like every other section; the diagram fills the content column */
 .L-page[data-comp="comp-editorial"] .L-s-circles .L-circ { grid-template-columns: minmax(170px, 1fr) minmax(260px, 520px) minmax(170px, 1fr); }
 .L-page[data-comp="comp-editorial"] .L-s-circles .L-c-call { font-size: clamp(16px, 1.7cqw, 22px); padding: 0 8px; }
@@ -1047,7 +1221,7 @@
 .L-page[data-comp="comp-keynote"] .L-mid { font-size: 18px; max-width: 46ch; }
 .L-page[data-comp="comp-keynote"] .L-sec { text-align: center; }
 .L-page[data-comp="comp-keynote"] :is(.L-big, .L-mid, h1.display, .lede, h2.sec, .L-dict, .L-research, .L-page-title) { margin-left: auto; margin-right: auto; }
-.L-page[data-comp="comp-keynote"] :is(.cta-row, .L-eq, .field, .L-head, .L-pills) { justify-content: center; }
+.L-page[data-comp="comp-keynote"] :is(.cta-row, .L-eq, .field, .L-head) { justify-content: center; }
 .L-page[data-comp="comp-keynote"] .L-s-hero h1.display { font-size: clamp(40px, 6.4cqw, 92px); max-width: 16ch; }
 .L-page[data-comp="comp-keynote"] .L-page-title { font-size: clamp(40px, 6cqw, 84px); }
 .L-page[data-comp="comp-keynote"] .L-s-meaning .L-dict { margin-left: auto; margin-right: auto; text-align: center; border: 0; }
@@ -1063,7 +1237,9 @@
 .L-page[data-comp="comp-keynote"] .L-c-left { order: -1; }
 .L-page[data-comp="comp-keynote"] .L-tier { grid-template-columns: 1fr; max-width: 52ch; margin: 0 auto; gap: 18px; }
 .L-page[data-comp="comp-keynote"] .L-table { max-width: 720px; margin-left: auto; margin-right: auto; }
-.L-page[data-comp="comp-keynote"] .L-foot { justify-content: center; text-align: center; }
+.L-page[data-comp="comp-keynote"] .L-foot-grid { grid-template-columns: 1fr; justify-items: center; text-align: center; }
+.L-page[data-comp="comp-keynote"] .L-foot-brand, .L-page[data-comp="comp-keynote"] .L-foot-col { justify-items: center; }
+.L-page[data-comp="comp-keynote"] .L-foot-base { justify-content: center; }
 .L-page[data-comp="comp-keynote"] .L-s-thesis[data-v="under"] { min-height: 0; padding: 0 0 10vh; }
 .L-page[data-comp="comp-keynote"] .L-s-hero:has(+ .L-s-thesis[data-v="under"]) { min-height: 0; padding-bottom: 6vh; }
 
@@ -1181,6 +1357,7 @@
 .L-video { position: relative; padding: 0; overflow: hidden; cursor: pointer; place-items: stretch; border-style: solid; }
 .L-video video { width: 100%; height: 100%; object-fit: cover; display: block; }
 .L-video.is-full { cursor: default; }
+.L-video.is-bg { cursor: default; }
 .L-video-hint {
   position: absolute;
   left: 50%;
@@ -1215,44 +1392,32 @@
 .L-nav-icons .L-nav { border-bottom: 0; transition: padding var(--dur) var(--ease); }
 .L-nav-icons[data-scrolled="true"] .L-nav { padding-top: 12px; padding-bottom: 12px; }
 .L-brand { display: inline-flex; align-items: center; gap: 16px; }
-.L-brand-samuh, .L-brand-sapien { position: relative; display: inline-grid; align-items: center; justify-items: start; }
-.L-brand-samuh > *, .L-brand-sapien > img { grid-area: 1 / 1; }
-/* every logo is 30px tall, set by .L-nav .nav-logo img above */
+.L-brand-samuh { position: relative; display: inline-grid; align-items: center; justify-items: start; }
+.L-brand-samuh > * { grid-area: 1 / 1; }
+/* the logo is 37.5px tall, set by .L-nav .nav-logo img above */
 .L-brand img { width: auto; max-width: none; filter: brightness(0) invert(1); transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease); }
-.L-brand-sapien .L-brand-full { opacity: 0.9; }
-/* each cell is as wide as the logo it is showing, and the width eases, so
-   the rule and the Sapien mark glide left to sit an even 16px from the
-   Samuh mark once the page has scrolled. Widths are 30px tall by the PNG
-   aspect ratios: samuh-logo 960x285, samuh-icon 181x240, sapien-labs
-   820x240, sapien-icon 243x240 */
-.L-brand-samuh { width: calc(30px * 960 / 285); transition: width var(--dur) var(--ease); }
-.L-brand-sapien { width: calc(30px * 820 / 240); transition: width var(--dur) var(--ease), row-gap var(--dur) var(--ease); }
-.L-nav-icons[data-scrolled="true"] .L-brand-samuh { width: calc(30px * 181 / 240); }
-.L-nav-icons[data-scrolled="true"] .L-brand-sapien { width: calc(30px * 243 / 240); }
-.L-brand-sapien { grid-template-rows: auto auto; row-gap: 3px; }
-.L-brand-sapien > img { grid-row: 2; }
-.L-brand-powered {
-  grid-row: 1;
+/* the cell is as wide as the logo it is showing, and the width eases, so
+   the rule and the partner line glide left to sit an even 16px from the
+   Samuh mark once the page has scrolled. Widths are 37.5px tall by the PNG
+   aspect ratios: samuh-logo 960x285, samuh-icon 181x240 */
+.L-brand-samuh { width: calc(37.5px * 960 / 285); transition: width var(--dur) var(--ease); }
+.L-nav-icons[data-scrolled="true"] .L-brand-samuh { width: calc(37.5px * 181 / 240); }
+/* "Partnered with Sapien Labs" sits beside the logo at every scroll position */
+.L-brand-partner {
   font-family: var(--font-caption);
-  font-size: 8.5px;
-  letter-spacing: 0.16em;
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   white-space: nowrap;
+  line-height: 1.35;
   color: var(--muted);
-  transition: opacity var(--dur) var(--ease);
 }
-.L-brand-rule { width: var(--rule-thin); height: 30px; flex: none; background: var(--border); }
-/* at rest the full logos show; once scrolled, only the two marks. The Samuh
-   mark stays put and fades up in place; the Sapien mark arrives from the
-   right, out of where its wordmark was */
+.L-brand-rule { width: var(--rule-thin); height: 37.5px; flex: none; background: var(--border); }
+/* at rest the full logo shows; once scrolled, only the mark, which stays
+   put and fades up in place */
 .L-brand-mark { opacity: 0; transform: translateY(-4px); pointer-events: none; }
-.L-brand-sapien .L-brand-mark { transform: translateX(28px); }
 .L-nav-icons[data-scrolled="true"] .L-brand-full { opacity: 0; transform: translateY(4px); }
-.L-nav-icons[data-scrolled="true"] .L-brand-sapien .L-brand-full { transform: translateX(-12px); }
 .L-nav-icons[data-scrolled="true"] .L-brand-mark { opacity: 1; transform: none; }
-.L-nav-icons[data-scrolled="true"] .L-brand-sapien .L-brand-mark { opacity: 0.9; }
-.L-nav-icons[data-scrolled="true"] .L-brand-powered { opacity: 0; }
-.L-nav-icons[data-scrolled="true"] .L-brand-sapien { grid-template-rows: 0 auto; row-gap: 0; }
 
 /* ---------- circles: motion and hover notes ---------- */
 
@@ -1288,27 +1453,42 @@
 }
 /* ---------- draft B (Wilfred's 28 September edits) ---------- */
 
-.D-stage[data-draft="b"] .L-dict { max-width: 72ch; }
-.D-stage[data-draft="b"] .L-dict-word { font-size: clamp(44px, 5.2cqw, 76px); }
-.D-stage[data-draft="b"] .L-dict-pron { font-size: 18px; }
-.D-stage[data-draft="b"] .L-dict-pos { font-size: 16px; }
-.D-stage[data-draft="b"] .L-dict-defs { font-size: clamp(18px, 1.7cqw, 22px); }
-.D-stage[data-draft="b"] .L-dict-hi { color: var(--accent-2); }
+.D-stage:is([data-draft="b"], [data-draft="working"]) .L-dict { max-width: 72ch; }
+.D-stage:is([data-draft="b"], [data-draft="working"]) .L-dict-word { font-size: clamp(44px, 5.2cqw, 76px); }
+.D-stage:is([data-draft="b"], [data-draft="working"]) .L-dict-pron { font-size: 18px; }
+.D-stage:is([data-draft="b"], [data-draft="working"]) .L-dict-pos { font-size: 16px; }
+.D-stage:is([data-draft="b"], [data-draft="working"]) .L-dict-defs { font-size: clamp(18px, 1.7cqw, 22px); }
+.D-stage:is([data-draft="b"], [data-draft="working"]) .L-dict-hi { color: var(--accent-2); }
 .L-thesis-eyebrow { margin: 0 0 14px; }
 .L-thesis-eyebrow::after { display: none; }
-.D-stage[data-draft="b"] .L-dict-say { width: 48px; height: 48px; }
-.D-stage[data-draft="b"] .L-dict-say svg { width: 27px; height: 27px; }
-/* thesis and dictionary side by side on desktop */
-.L-thesis-duo { grid-template-columns: 1.1fr 1fr; column-gap: clamp(32px, 5cqw, 80px); align-items: start; }
-.L-thesis-duo .L-dict { max-width: none; border-top: 0; border-bottom: 0; border-left: var(--rule-fat) solid var(--accent-2); padding: 4px 0 4px 22px; }
-.L-page[data-comp="comp-editorial"] .L-s-thesis[data-v="under"] .L-thesis-duo { grid-template-columns: 1.1fr 1fr; align-items: start; }
-.L-page[data-comp="comp-editorial"] .L-s-thesis[data-v="under"] .L-thesis-duo .L-cap { text-align: left; }
-@container page (max-width: 900px) { .L-thesis-duo { grid-template-columns: 1fr; row-gap: 32px; } }
+.D-stage:is([data-draft="b"], [data-draft="working"]) .L-dict-say { width: 48px; height: 48px; }
+.D-stage:is([data-draft="b"], [data-draft="working"]) .L-dict-say svg { width: 27px; height: 27px; }
+/* 12 October: the dictionary is one row straight under the hero, the word,
+   how to say it and its origin on the left, the sense on the right, under
+   the rule the thesis used to carry. The leak line follows as its own
+   section, under its own rule */
+.D-stage[data-draft="working"] .L-s-hero:has(+ .L-s-meaning[data-v="block"]) { padding-bottom: calc(28px * var(--space, 1)); }
+/* 13 October: both rules are hairlines */
+.D-stage[data-draft="working"] .L-s-thesis[data-v="under"] .L-thesis-in { border-top-width: var(--rule-thin); }
+.D-stage[data-draft="working"] .L-s-meaning[data-v="block"] .L-dict {
+  max-width: none;
+  border: 0;
+  border-top: var(--rule-thin) solid var(--accent-2);
+  padding: 22px 0 0;
+  grid-template-columns: 1fr 1.2fr;
+  column-gap: clamp(32px, 5cqw, 80px);
+  align-items: center;
+}
+.D-stage[data-draft="working"] .L-s-meaning[data-v="block"] .L-dict-pos { flex-basis: 100%; }
+.D-stage[data-draft="working"] .L-s-meaning[data-v="block"] .L-dict-defs { font-size: clamp(22px, 2.4cqw, 32px); line-height: 1.35; }
+@container page (max-width: 900px) {
+  .D-stage[data-draft="working"] .L-s-meaning[data-v="block"] .L-dict { grid-template-columns: 1fr; }
+}
 /* the thesis under the hero carries the leak line, so it reads as the argument, not a caption */
-.D-stage[data-draft="b"] .L-s-thesis .L-big { font-size: clamp(30px, 3.6cqw, 50px); max-width: 26ch; line-height: 1.15; }
+.D-stage:is([data-draft="b"], [data-draft="working"]) .L-s-thesis .L-big { font-size: clamp(30px, 3.6cqw, 50px); max-width: 26ch; line-height: 1.15; }
 /* copy over the hero video, editorial alignment, a scrim so it reads */
-.D-stage[data-draft="b"] .L-s-hero[data-v="cinema"] .L-video { position: absolute; inset: 0; border: 0; border-radius: 0; z-index: 0; background: var(--base); }
-.D-stage[data-draft="b"] .L-s-hero[data-v="cinema"] .L-video::after {
+.D-stage:is([data-draft="b"], [data-draft="working"]) .L-s-hero[data-v="cinema"] .L-video { position: absolute; inset: 0; border: 0; border-radius: 0; z-index: 0; background: var(--base); }
+.D-stage:is([data-draft="b"], [data-draft="working"]) .L-s-hero[data-v="cinema"] .L-video::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -1316,7 +1496,7 @@
               linear-gradient(180deg, transparent 50%, var(--base) 100%);
   pointer-events: none;
 }
-.D-stage[data-draft="b"] .L-s-hero[data-v="cinema"] .L-video-hint { top: auto; left: auto; right: 24px; bottom: 24px; transform: none; z-index: 1; }
-.D-stage[data-draft="b"] .L-s-hero[data-v="cinema"] .L-hero-grid { min-height: min(86vh, 820px); }
-.D-stage[data-draft="b"] .L-s-hero[data-v="cinema"] .L-hero-copy { padding-top: calc(140px * var(--space, 1)); }
-.D-stage[data-draft="b"] .L-s-hero[data-v="cinema"] h1.display { font-size: clamp(42px, 6.4cqw, 92px); }
+.D-stage:is([data-draft="b"], [data-draft="working"]) .L-s-hero[data-v="cinema"] .L-video-hint { top: auto; left: auto; right: 24px; bottom: 24px; transform: none; z-index: 1; }
+.D-stage:is([data-draft="b"], [data-draft="working"]) .L-s-hero[data-v="cinema"] .L-hero-grid { min-height: min(86vh, 820px); }
+.D-stage:is([data-draft="b"], [data-draft="working"]) .L-s-hero[data-v="cinema"] .L-hero-copy { padding-top: calc(140px * var(--space, 1)); }
+.D-stage:is([data-draft="b"], [data-draft="working"]) .L-s-hero[data-v="cinema"] h1.display { font-size: clamp(42px, 6.4cqw, 92px); }

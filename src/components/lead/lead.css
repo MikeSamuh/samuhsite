@@ -1,0 +1,114 @@
+/* Lead form primitives. Every design value is a custom property from
+   src/lib/tokens.ts. Carries the same look as .L-form in layout.css. */
+
+.lead-form {
+  display: grid;
+  gap: 18px;
+  justify-items: start;
+}
+
+.lead-form > .lead-field {
+  width: 100%;
+}
+
+.lead-form .btn:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.lead-field {
+  display: grid;
+  gap: 6px;
+}
+
+/* the nav's font, at full text color and a step heavier so it holds on the
+   dark background */
+.lead-field label {
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.lead-optional {
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.lead-field :is(input, textarea, select) {
+  width: 100%;
+  background: var(--surface);
+  border: var(--rule-thin) solid var(--border);
+  border-radius: min(var(--radius), 12px);
+  padding: 12px 14px;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 16px;
+  transition: border-color var(--dur) var(--ease);
+}
+
+.lead-field textarea {
+  resize: vertical;
+}
+
+.lead-field :is(input, textarea, select):focus-visible {
+  border-color: var(--accent);
+  outline: var(--rule-fat) solid var(--accent);
+  outline-offset: 2px;
+}
+
+.lead-field :is(input, textarea, select)[aria-invalid="true"] {
+  border-color: var(--accent);
+}
+
+.lead-error {
+  margin: 0;
+  color: var(--accent);
+  font-family: var(--font-body);
+  font-size: 14px;
+}
+
+.lead-honeypot {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* the two-step intake: a step line, the given email with a way back, the
+   second step's fields in their own block */
+.lead-step {
+  margin: 0;
+}
+
+.lead-steps {
+  display: grid;
+  gap: 18px;
+  width: 100%;
+}
+
+.lead-step-lead {
+  margin: 0;
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 14px;
+}
+
+.lead-back {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lead-field :is(input, textarea, select) {
+    transition: none;
+  }
+}

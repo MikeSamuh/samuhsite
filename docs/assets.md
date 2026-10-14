@@ -67,6 +67,11 @@ cropped to the lettering and scaled to 960px wide. It is dark lettering, so on
 the dark stage it is turned white with a CSS filter rather than by editing the
 file. Good enough for the style picker, not for launch.
 
+**The star.** `public/samuh-star.png` is the seven-point star the client
+supplied on 12 October, 2000 by 2000, white on transparent. It sits where
+the four capacities meet in the Where we focus picture. Placed as is, no
+filter, never redrawn.
+
 ## Received but out of scope
 
 Mike and the team have shared material for the platform rather than the site.
@@ -75,3 +80,12 @@ Read it for context, do not build from it.
 - Platform collateral inventory v7
 - welcome-team-journey script (the in-platform welcome)
 - Productivity Simulator (Railway app)
+
+## Hero background, 12 October
+
+`public/hero-bg.mp4`: the client's stand-in background for the hero, a
+technology network loop, transcoded from
+`vecteezy_technology-network-background_2021681.mp4` on Wilfred's desktop
+(1920 wide, no audio, 2.2 MB). Video never enters git, so the file has to
+be put in `public/` on whatever machine builds, or hosted and the path
+changed in `drafts.ts`. It stays until SAMUH's own film arrives.

@@ -245,6 +245,44 @@ export function customAccent(hex: string): Accent {
 }
 
 /* ------------------------------------------------------------------ */
+/* Capacity to perform                                                 */
+/* ------------------------------------------------------------------ */
+
+// The six bands of Sapien Labs' MHQ scale, -100 to 200, as the TeamQ teaser
+// draws capacity to perform. The fills are sampled from SAMUH's own
+// dashboard (screenshot of 7 October 2026), so the site shows the scale the
+// way a client sees it in the product. Decorative: a band's name is always
+// printed beside its colour, so nothing depends on telling them apart.
+
+export interface MhqBand {
+  id: string;
+  name: string;
+  /** the lowest score in the band */
+  min: number;
+  /** where the next band starts; the top band ends at the scale's maximum */
+  max: number;
+  hex: string;
+}
+
+export const MHQ_SCALE = { min: -100, max: 200 } as const;
+
+/** top band first, the way the scale is drawn */
+export const MHQ_BANDS: MhqBand[] = [
+  { id: "thriving", name: "Thriving", min: 150, max: 200, hex: "#5BA364" },
+  { id: "succeeding", name: "Succeeding", min: 100, max: 150, hex: "#498ACE" },
+  { id: "managing", name: "Managing", min: 50, max: 100, hex: "#6CB6E5" },
+  { id: "enduring", name: "Enduring", min: 0, max: 50, hex: "#B0B0B0" },
+  { id: "struggling", name: "Struggling", min: -50, max: 0, hex: "#DB8F41" },
+  { id: "distressed", name: "Distressed", min: -100, max: -50, hex: "#CF4D37" },
+];
+
+/** The band a score falls in: the dashboard's rule, samuh/data_loader.py
+ *  _bucket_label, where 100 is Succeeding and 150 is Thriving. */
+export function mhqBand(score: number): MhqBand {
+  return MHQ_BANDS.find((band) => score >= band.min) ?? MHQ_BANDS[MHQ_BANDS.length - 1];
+}
+
+/* ------------------------------------------------------------------ */
 /* Typography                                                          */
 /* ------------------------------------------------------------------ */
 
@@ -1104,6 +1142,10 @@ export function cssVars(combo: Combo): React.CSSProperties {
     "--accent-3": data.hex,
     "--on-accent-3": data.on,
     "--accent-4": wash.hex,
+    /* the fourth capacity in the Where we focus picture: a yellow that sits
+       apart from both accents, whatever they are. Butter, the softest of
+       the three, since it fills a circle */
+    "--accent-yellow": (ACCENTS.find((a) => a.id === "yellow-butter") ?? accent).hex,
     "--accent-grad": accent3
       ? `linear-gradient(135deg, ${accent.hex}, ${accent2.hex}, ${accent3.hex})`
       : `linear-gradient(135deg, ${accent.hex}, ${accent2.hex})`,
@@ -1119,5 +1161,7 @@ export function cssVars(combo: Combo): React.CSSProperties {
     "--display-style": type.displayStyle ?? "normal",
     "--display-tracking": type.displayTracking,
     "--display-leading": type.displayLeading,
+    /* the capacity to perform scale, --band-thriving to --band-distressed */
+    ...Object.fromEntries(MHQ_BANDS.map((band) => [`--band-${band.id}`, band.hex])),
   } as React.CSSProperties;
 }

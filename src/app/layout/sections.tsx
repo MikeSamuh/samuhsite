@@ -1,9 +1,15 @@
 "use client";
 
 import { useEffect, useId, useRef, useState, type TouchEvent } from "react";
+import { REPORT } from "@/lib/report";
 import Image from "next/image";
-import { PAGES, SECTIONS, type PageId } from "@/lib/layout";
+import { PAGES, SECTIONS, type PageId, type SectionId } from "@/lib/layout";
+import { TEAM_SIZE } from "@/components/teamq-teaser/model";
+import { TeaserDemo, type TeaserDemoProps } from "@/components/teamq-teaser/TeaserDemo";
+import { CONTACT_EMAIL } from "@/lib/contact-details";
+import "@/components/teamq-teaser/teaser.css";
 import Synapse from "../design/Synapse";
+import { FocusMorph } from "@/components/focus-morph/FocusMorph";
 
 const stay = (e: React.MouseEvent) => e.preventDefault();
 const LOGO_H = 285;
@@ -19,9 +25,9 @@ export interface NavProps {
   explore: boolean;
   /** which pages appear as links, in order. Default: every nav page but home */
   links?: PageId[];
-  /** "wordmark" is the Samuh logo alone. "icons" shows the Samuh mark and the
-   *  Sapien Labs mark at rest and swaps to both full logos once the page has
-   *  scrolled, with the nav stuck to the top */
+  /** "wordmark" is the Samuh logo alone. "icons" shows the Samuh wordmark
+   *  with "Partnered with Sapien Labs" beside it, and swaps the wordmark for
+   *  the Samuh mark once the page has scrolled, with the nav stuck to the top */
   brand?: "wordmark" | "icons";
   /** "in partnership with Sapien Labs" beside the wordmark, per the scope */
   partner?: boolean;
@@ -85,11 +91,7 @@ export function Nav({ page, go, menu, links: order, brand = "wordmark", partner 
               <Image className="L-brand-full" src="/samuh-logo.png" alt="SAMUH" width={960} height={LOGO_H} priority />
             </span>
             <span className="L-brand-rule" aria-hidden />
-            <span className="L-brand-sapien">
-              <span className="L-brand-powered">Powered by</span>
-              <Image className="L-brand-mark" src="/sapien-icon.png" alt="" width={240} height={240} />
-              <Image className="L-brand-full" src="/sapien-labs.png" alt="Sapien Labs" width={820} height={240} />
-            </span>
+            <span className="L-brand-partner">Partnered with<br />Sapien Labs</span>
           </a>
         ) : (
           <a href="#" className="nav-logo" onClick={(e) => { stay(e); jump("home"); }} aria-label="SAMUH home">
@@ -103,7 +105,7 @@ export function Nav({ page, go, menu, links: order, brand = "wordmark", partner 
           ))}
         </nav>
         <button className="btn btn-secondary btn-small L-menu" onClick={() => setOpen(true)} aria-expanded={open} aria-controls="L-overlay">Explore</button>
-        <button className="btn btn-small L-cta" onClick={() => jump("start")}>Get started <span className="arrow">&rarr;</span></button>
+        <button className="btn btn-small L-cta" onClick={() => jump("start")}>Explore TeamQ <span className="arrow">&rarr;</span></button>
         {/* on small screens every nav collapses to this: the links and the
             Explore button hide, and the burger opens the full menu */}
         {!menu ? (
@@ -126,8 +128,8 @@ export function Nav({ page, go, menu, links: order, brand = "wordmark", partner 
             ))}
           </nav>
           <div className="L-overlay-foot L-wrap">
-            <button className="btn" onClick={() => jump("start")}>Get started <span className="arrow">&rarr;</span></button>
-            <span className="L-cap">In partnership with Sapien Labs</span>
+            <button className="btn" onClick={() => jump("start")}>Explore TeamQ <span className="arrow">&rarr;</span></button>
+            <span className="L-cap">Partnered with<br />Sapien Labs</span>
           </div>
         </div>
       ) : null}
@@ -143,6 +145,16 @@ export function Nav({ page, go, menu, links: order, brand = "wordmark", partner 
 // deck and the brief. No figures, no invented endorsements. Frames stand in
 // for imagery and video.
 
+/** Inline colour in copy strings: *words* take the primary, ~words~ the
+ *  secondary. Nothing else is parsed. */
+export function rich(text: string): React.ReactNode[] {
+  return text.split(/(\*[^*]+\*|~[^~]+~)/).map((part, i) => {
+    if (part.startsWith("*") && part.endsWith("*")) return <em className="L-hl" key={i}>{part.slice(1, -1)}</em>;
+    if (part.startsWith("~") && part.endsWith("~")) return <em className="L-hl-2" key={i}>{part.slice(1, -1)}</em>;
+    return part;
+  });
+}
+
 export function Head({ def }: { def: (typeof SECTIONS)[number] }) {
   return (
     <div className="L-head">
@@ -151,9 +163,7 @@ export function Head({ def }: { def: (typeof SECTIONS)[number] }) {
         {def.kicker ? <p className="eyebrow L-eyebrow">{def.kicker}</p> : null}
         <h2 className="sec">{def.title}</h2>
         {def.sub ? (
-          <p className="L-sub">
-            {def.sub.split(/\*([^*]+)\*/).map((part, i) => (i % 2 ? <em className="L-hl" key={i}>{part}</em> : part))}
-          </p>
+          <p className="L-sub">{rich(def.sub)}</p>
         ) : null}
       </div>
     </div>
@@ -359,6 +369,41 @@ export function Circles() {
   );
 }
 
+/** Scroll-linked arrival: --r goes from 0, the element's top at the foot of
+ *  the view, to 1, its top at the middle, and stays at 1 once there. The
+ *  fade and the rise read --r (layout.css, "reveal"), so they move with the
+ *  hand, not on a timer. Reduced motion shows the element in place. */
+function useScrollReveal<T extends HTMLElement>(ref: React.RefObject<T | null>) {
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) { el.style.setProperty("--r", "1"); el.dataset.in = "true"; return; }
+    let raf = 0;
+    let done = false;
+    const read = () => {
+      raf = 0;
+      if (done) return;
+      const vh = window.innerHeight;
+      const top = el.getBoundingClientRect().top;
+      const r = Math.max(0, Math.min(1, (vh - top) / (vh * 0.5)));
+      el.style.setProperty("--r", r.toFixed(3));
+      if (r >= 1) { done = true; el.dataset.in = "true"; }
+    };
+    const on = () => { if (!raf) raf = requestAnimationFrame(read); };
+    read();
+    window.addEventListener("scroll", on, { passive: true });
+    window.addEventListener("resize", on);
+    return () => { window.removeEventListener("scroll", on); window.removeEventListener("resize", on); cancelAnimationFrame(raf); };
+  }, [ref]);
+}
+
+/** Fades its content up as it scrolls into view. */
+export function Reveal({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  useScrollReveal(ref);
+  return <div className={`L-reveal${className ? ` ${className}` : ""}`} ref={ref}>{children}</div>;
+}
+
 export function Dictionary() {
   const say = () => {
     const a = new Audio("/samuh.m4a");
@@ -505,16 +550,59 @@ export function MetaphorGallery({ cards = ARCHETYPES }: { cards?: [string, strin
   );
 }
 
+/** The Sapien Labs report: its cover, the one-line claim, and the download.
+ *  The research spine of the site, so it shows on the home page and again
+ *  at the top of Insights. */
+export function ReportCard({ cls, onlyDownload }: { cls?: string; /** the download alone, no link to the page on sapienlabs.org */ onlyDownload?: boolean }) {
+  return (
+    <blockquote className={`L-research L-report${cls ? ` ${cls}` : ""}`}>
+      <a className="L-report-cover" href={REPORT.pdf} target="_blank" rel="noopener noreferrer" aria-label={`${REPORT.title}, PDF`}>
+        <Image src={REPORT.cover} alt="" width={REPORT.coverWidth} height={REPORT.coverHeight} sizes="(max-width: 900px) 60vw, 220px" />
+      </a>
+      <div className="L-report-copy">
+        <span className="card-tag">Research · in partnership with Sapien Labs</span>
+        <p className="L-big">The environment inside a team shapes how much capacity its people can bring to the work. What was previously inferred can now be measured.</p>
+        <span className="L-cap">{REPORT.kicker}</span>
+        <p className="L-report-links">
+          <a href={REPORT.pdf} className="inline-link" target="_blank" rel="noopener noreferrer">Download the report <span className="arrow">&rarr;</span></a>
+          {onlyDownload ? null : <a href={REPORT.page} className="inline-link" target="_blank" rel="noopener noreferrer">On sapienlabs.org</a>}
+        </p>
+      </div>
+    </blockquote>
+  );
+}
+
 export function Footer({ go }: { go: (p: PageId) => void }) {
   return (
-    <footer className="L-foot L-wrap">
-      <span className="L-cap">SAMUH · in partnership with Sapien Labs</span>
-      <nav className="L-foot-links" aria-label="Footer">
-        {PAGES.filter((x) => x.nav && x.id !== "home").map((x) => (
-          <a key={x.id} className="L-cap" onClick={() => go(x.id)}>{x.name}</a>
-        ))}
-      </nav>
-      <span className="L-cap">Privacy · Terms · Cookies</span>
+    <footer className="L-foot">
+      <div className="L-wrap L-foot-grid">
+        <div className="L-foot-brand">
+          <a href="#" className="L-foot-logo" onClick={(e) => { stay(e); go("home"); }} aria-label="SAMUH home">
+            <Image src="/samuh-logo.png" alt="SAMUH" width={960} height={LOGO_H} />
+          </a>
+          <p className="L-foot-line">High performance <em className="L-hl">without</em> the cost to people.</p>
+          <span className="L-cap L-foot-partner">Partnered with<br />Sapien Labs</span>
+        </div>
+        <nav className="L-foot-col L-foot-links" aria-label="Footer">
+          <span className="L-cap L-foot-h">Explore</span>
+          {PAGES.filter((x) => x.nav && x.id !== "home").map((x) => (
+            <a key={x.id} className="L-foot-link" onClick={() => go(x.id)}>{x.name}</a>
+          ))}
+        </nav>
+        <div className="L-foot-col">
+          <span className="L-cap L-foot-h">Talk to us</span>
+          {CONTACT_EMAIL ? (
+            <a className="L-foot-link" href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+          ) : (
+            <span className="L-foot-link L-foot-todo">TODO(content): email address</span>
+          )}
+          <button className="btn L-foot-cta" onClick={() => go("start")}>Get started <span className="arrow">&rarr;</span></button>
+        </div>
+      </div>
+      <div className="L-wrap L-foot-base">
+        <span className="L-cap">&copy; {new Date().getFullYear()} SAMUH</span>
+        <span className="L-cap">Privacy · Terms · Cookies</span>
+      </div>
     </footer>
   );
 }
@@ -593,14 +681,23 @@ export function Carousel({ quotes = QUOTES }: { quotes?: typeof QUOTES }) {
  * The hero video. A muted loop; click for the full video with sound and
  * controls, click again to go back to the loop. /hero-test.mp4 is a stock
  * clip for testing the flow, not committed (video is never committed).
+ * As a `background` it only loops: a moving picture behind the copy, with
+ * nothing to click, until SAMUH's own film arrives.
  */
-export function HeroVideo() {
+export function HeroVideo({ src = "/hero-test.mp4", background = false }: { src?: string; background?: boolean }) {
   const [full, setFull] = useState(false);
+  if (background) {
+    return (
+      <div className="ph ph-tall L-video is-bg" aria-hidden>
+        <video src={src} muted loop autoPlay playsInline preload="metadata" />
+      </div>
+    );
+  }
   return (
     <div className={`ph ph-tall L-video${full ? " is-full" : ""}`} onClick={() => setFull((f) => !f)} role="button" aria-label={full ? "Back to the loop" : "Play the full video"}>
       <video
         key={full ? "full" : "loop"}
-        src="/hero-test.mp4"
+        src={src}
         muted={!full}
         loop={!full}
         autoPlay
@@ -619,6 +716,7 @@ export function Frame({ label, tall }: { label: string; tall?: boolean }) {
 export interface CopyOverrides {
   /** null removes the hero lede */
   heroLede?: string | null;
+  /** *words* in the primary, ~words~ in the secondary */
   thesis?: string;
   /** the dictionary entry sits beside the thesis on desktop, and the meaning section is not rendered on its own */
   thesisWithMeaning?: boolean;
@@ -630,15 +728,33 @@ export interface CopyOverrides {
   noEyebrow?: boolean;
   /** no buttons in the hero */
   noHeroCtas?: boolean;
+  /** the hero's video file; default is the stock test clip */
+  heroVideo?: string;
+  /** the hero video is a background loop, nothing to click */
+  heroBackground?: boolean;
+  /** the research claim opens the case study section, and the research section is not rendered on its own */
+  caseWithResearch?: boolean;
   /** which metaphor cards to show, in order; default is every card */
   cards?: [string, string, string][];
+  /** the line under the close's question; null for none */
+  startSub?: string | null;
+  /** the dictionary and the leak line fade up as they come into view */
+  revealIntro?: boolean;
+  /** whole sections whose content fades up as they come into view */
+  revealSections?: SectionId[];
+  /** the tool section's words: its head, the pitch under the demo and the button */
+  tool?: { kicker?: string; title?: string; /** null: no pitch, the button alone */ pitch?: string | null; cta?: string };
 }
 
-export function Section({ def, variant, go, copy = {} }: { def: (typeof SECTIONS)[number]; variant: string; go: (p: PageId) => void; copy?: CopyOverrides }) {
+export function Section({ def, variant, go, copy = {}, demo }: { def: (typeof SECTIONS)[number]; variant: string; go: (p: PageId) => void; copy?: CopyOverrides; /** the tool's numbers, scored on the server; with them, section 9 shows the bars moving */ demo?: TeaserDemoProps }) {
   const v = variant.replace(`${def.id}-`, "");
   const headed = !["hero", "thesis", "meaning", "start"].includes(def.id) && !(def.id === "voices" && v === "carousel");
+  const reveal = !!copy.revealSections?.includes(def.id);
+  const secRef = useRef<HTMLElement>(null);
+  const noRef = useRef<HTMLElement>(null);
+  useScrollReveal(reveal ? secRef : noRef);
   return (
-    <section className={`L-sec L-s-${def.id}${headed ? " L-sec-h" : ""}`} data-v={v} data-n={String(def.n).padStart(2, "0")} id={def.id}>
+    <section className={`L-sec L-s-${def.id}${headed ? " L-sec-h" : ""}`} data-v={v} data-n={String(def.n).padStart(2, "0")} id={def.id} ref={secRef} data-reveal={reveal || undefined}>
       {/* the close carries the synapse field, parallaxed against the band */}
       {def.id === "start" && <Synapse scope="section" />}
       <div className="L-wrap">
@@ -652,27 +768,32 @@ export function Section({ def, variant, go, copy = {} }: { def: (typeof SECTIONS
               )}
               {copy.noHeroCtas ? null : (
                 <div className="cta-row">
-                  <button className="btn" onClick={() => go("start")}>Get started <span className="arrow">&rarr;</span></button>
+                  <button className="btn" onClick={() => go("start")}>Explore TeamQ <span className="arrow">&rarr;</span></button>
                   <button className="btn btn-secondary" onClick={() => go("contact")}>Talk to us</button>
                 </div>
               )}
             </div>
-            <HeroVideo />
+            <HeroVideo src={copy.heroVideo} background={copy.heroBackground} />
           </div>
         )}
 
         {def.id === "thesis" && (
           <>
           {copy.eyebrowOnThesis && !copy.noEyebrow ? <p className="eyebrow L-thesis-eyebrow">Organizational and high-performance consulting</p> : null}
-          <div className={`L-thesis-in${copy.thesisWithMeaning ? " L-thesis-duo" : ""}`}>
-            <p className="L-big">{copy.thesis ?? "Every leadership team leaks performance. Few can see where. You have already paid for the talent. The question is whether the team\u2019s conditions let you get the full return."}</p>
-            {copy.thesisWithMeaning ? <Dictionary /> : null}
-            {copy.noPartnerLine ? null : <span className="L-cap">In partnership with Sapien Labs</span>}
-          </div>
+          {(() => {
+            const inner = (
+              <div className={`L-thesis-in${copy.thesisWithMeaning ? " L-thesis-duo" : ""}`}>
+                <p className="L-big">{rich(copy.thesis ?? "Every leadership team leaks performance. Few can see where. You have already paid for the talent. The question is whether the team\u2019s conditions let you get the full return.")}</p>
+                {copy.thesisWithMeaning ? <Dictionary /> : null}
+                {copy.noPartnerLine ? null : <span className="L-cap">In partnership with Sapien Labs</span>}
+              </div>
+            );
+            return copy.revealIntro ? <Reveal>{inner}</Reveal> : inner;
+          })()}
           </>
         )}
 
-        {def.id === "meaning" && !copy.thesisWithMeaning && <Dictionary />}
+        {def.id === "meaning" && !copy.thesisWithMeaning && (copy.revealIntro ? <Reveal><Dictionary /></Reveal> : <Dictionary />)}
 
         {def.id === "circles" && v === "nested" && (
           <>
@@ -681,7 +802,10 @@ export function Section({ def, variant, go, copy = {} }: { def: (typeof SECTIONS
           </>
         )}
 
-        {def.id === "circles" && v !== "nested" && (
+        {/* the morph carries its own head: it changes as the picture does */}
+        {def.id === "circles" && v === "morph" && <FocusMorph />}
+
+        {def.id === "circles" && v !== "nested" && v !== "morph" && (
           <>
             <Head def={def} />
             <div className="L-circles">
@@ -722,10 +846,7 @@ export function Section({ def, variant, go, copy = {} }: { def: (typeof SECTIONS
         {def.id === "research" && (
           <>
             <Head def={def} />
-            <blockquote className="L-research">
-              <p className="L-big">The environment inside a team shapes how much capacity its people can bring to the work. What was previously inferred can now be measured.</p>
-              <a href="#" className="inline-link" onClick={stay}>Sapien Labs Work Culture Report</a>
-            </blockquote>
+            <ReportCard />
           </>
         )}
 
@@ -748,6 +869,40 @@ export function Section({ def, variant, go, copy = {} }: { def: (typeof SECTIONS
         {def.id === "case" && (
           <>
             <Head def={def} />
+            <div className="L-case-wrap">
+            {copy.caseWithResearch ? (
+              <ReportCard cls="L-case-research" onlyDownload />
+            ) : null}
+            {copy.caseWithResearch ? (
+              /* the case study in the report's shape: a portrait cover, the
+                 mark and the tag on black, beside the line and the numbers.
+                 TODO(content): the case study PDF, when SAMUH supplies it */
+              <blockquote className="L-research L-report L-case-report">
+                <a className="L-report-cover L-case-cover" href="#" onClick={stay} aria-label="SAMUH case study, PDF">
+                  <Image src="/samuh-logo.png" alt="" width={960} height={LOGO_H} sizes="160px" />
+                  <span className="L-case-cover-tag">Case study &middot; Senior leadership team, Fortune 10 healthcare company</span>
+                </a>
+                <div className="L-report-copy">
+                  <span className="card-tag">Case study &middot; Senior leadership team, Fortune 10 healthcare company</span>
+                  <p className="L-big">1 high-performance ritual. 90 days. Measurable change.</p>
+                  <dl className="L-case-stats">
+                    {[
+                      ["+39%", "most improved practice"],
+                      ["12/13", "team practices improved"],
+                      ["Embedded", "a new way of working that has stuck"],
+                    ].map(([n, l]) => (
+                      <div className="L-stat" key={n}>
+                        <dt className="L-stat-n">{n}</dt>
+                        <dd className="L-cap">{l}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                  <p className="L-report-links">
+                    <a href="#" className="inline-link" onClick={stay}>Download the case study <span className="arrow">&rarr;</span></a>
+                  </p>
+                </div>
+              </blockquote>
+            ) : (
             <div className="L-case">
               <span className="L-case-img">
                 <Image src="/case-study.png" alt="Samuh case study: 1 high-performance practice. 90 days. Measurable change." width={2490} height={1404} sizes="(max-width: 900px) 100vw, 560px" />
@@ -770,25 +925,22 @@ export function Section({ def, variant, go, copy = {} }: { def: (typeof SECTIONS
                 <a href="#" className="inline-link" onClick={stay}>Read the case study</a>
               </div>
             </div>
+            )}
+            </div>
           </>
         )}
 
         {def.id === "tool" && (
           <>
-            <Head def={def} />
-            <div className="L-tool">
-              <div className="L-sliders">
-                {["Social", "Autonomous", "Meaningful", "Healthy"].map((f) => (
-                  <label className="L-slider" key={f}>
-                    <span>{f}</span>
-                    <span className="L-track"><span className="L-thumb" /></span>
-                  </label>
-                ))}
-              </div>
-              <div className="L-result">
-                <span className="L-cap">Estimated productive days lost per month</span>
-                <span className="L-number">&mdash;</span>
-                <span className="L-cap">Your estimate appears here as you move the sliders. Our own intake tool, not TeamQ, not diagnostic.</span>
+            <Head def={{ ...def, kicker: copy.tool?.kicker ?? def.kicker, title: copy.tool?.title ?? def.title }} />
+            {demo ? <TeaserDemo {...demo} /> : null}
+            {/* TODO(content): draft pitch, for SAMUH to replace. It describes and does not claim */}
+            <div className="teaser-pitch">
+              {copy.tool?.pitch === null ? null : (
+                <p className="L-mid">{copy.tool?.pitch ?? `That was a demonstration team of ${TEAM_SIZE}, three factors moved. Every team leaks performance somewhere different. A TeamQ assessment finds where yours does, and what to move first.`}</p>
+              )}
+              <div className="cta-row">
+                <button className="btn" onClick={() => go("start")}>{copy.tool?.cta ?? "Explore TeamQ"} <span className="arrow">&rarr;</span></button>
               </div>
             </div>
           </>
@@ -840,7 +992,7 @@ export function Section({ def, variant, go, copy = {} }: { def: (typeof SECTIONS
           <div className="L-start">
             <div>
               <h2 className="sec">What could stronger performance look like for your team?</h2>
-              <p className="L-mid">Free and ungated. The first insight lands before the first ask.</p>
+              {copy.startSub === null ? null : <p className="L-mid">{copy.startSub ?? "Free and ungated. The first insight lands before the first ask."}</p>}
             </div>
             <div className="L-start-actions">
               <div className="field">
@@ -848,7 +1000,7 @@ export function Section({ def, variant, go, copy = {} }: { def: (typeof SECTIONS
                 <button className="btn">Start</button>
               </div>
               <div className="cta-row">
-                <button className="btn" onClick={() => go("start")}>Get started <span className="arrow">&rarr;</span></button>
+                <button className="btn" onClick={() => go("start")}>Explore TeamQ <span className="arrow">&rarr;</span></button>
                 <button className="btn btn-secondary" onClick={() => go("contact")}>Talk to us</button>
               </div>
             </div>

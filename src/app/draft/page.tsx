@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { cssVars, bodyName } from "@/lib/tokens";
 import { VIEWS, PRESETS, lockedCombo, type ViewId } from "@/lib/layout";
-import { DRAFTS, draftBase, type DraftId } from "./drafts";
+import { DRAFTS, WORKING, draftBase, type DraftId } from "./drafts";
 import { Steps } from "../steps";
 import "../design/design.css";
 import "./draft.css";
@@ -15,7 +15,7 @@ import "./draft.css";
  * share, then each draft in a frame at desktop, tablet and phone width.
  */
 export default function DraftIndex() {
-  const [draft, setDraft] = useState<DraftId>("a");
+  const [draft, setDraft] = useState<DraftId>(WORKING);
   const [view, setView] = useState<ViewId>("desktop");
 
   // the hash records the state, #<draft>.<view>, so a link opens where it was made
@@ -35,7 +35,7 @@ export default function DraftIndex() {
     window.history.replaceState(null, "", `#${draft}${view === "desktop" ? "" : `.${view}`}`);
   }, [draft, view]);
 
-  const base = DRAFTS[0].layout;
+  const base = DRAFTS.find((d) => d.id === WORKING)!.layout;
   const combo = lockedCombo(base.bg);
   const preset = PRESETS[0];
   const px = VIEWS.find((v) => v.id === view)?.px ?? 1440;
@@ -92,8 +92,8 @@ export default function DraftIndex() {
 
         <section className="I-intro">
           <p className="eyebrow">Step three</p>
-          <h1 className="display I-title">Three drafts, one style.</h1>
-          <p className="lede">The design set the style. The layout set the frame. These are the site itself, sculpted three ways from the same choices. Pick a draft, then a width.</p>
+          <h1 className="display I-title">One working draft, one style.</h1>
+          <p className="lede">The design set the style. The layout set the frame. The working draft is the site itself and the only one that moves. B is frozen for comparison; A and C are retired. Pick a draft, then a width.</p>
         </section>
 
         <section className="I-guide" aria-label="Style guide">

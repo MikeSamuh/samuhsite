@@ -1,10 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-import { useEffect, useRef } from "react";
 import Image from "next/image";
 import type { PageId } from "@/lib/layout";
+import { ContactAside } from "@/components/contact/ContactAside";
+import { ContactForm } from "@/components/contact/ContactForm";
+import { ProcessFigure, StageFigure } from "@/components/process-figure/ProcessFigure";
+import type { PoseId } from "@/components/process-figure/figures";
 
 /**
  * The pages behind the nav, composed from docs/scope.md and docs/brief.md.
@@ -78,6 +81,14 @@ function Solutions({ go }: { go: (p: PageId) => void }) {
     <>
       <PageHead n="01" kicker="Three ways to engage" title="Same process, three levels of support." lede="One methodology, the team process, delivered with as much or as little of us in the room as the team needs. Organization-wide work layers on top of it." />
       <Sec n="02" kicker="Side by side" title="The three tiers">
+        <div className="L-tiers-pick" aria-label="Which tier">
+          {TIERS.map((t) => (
+            <button key={t.name} type="button" className="L-tier-pick" onClick={() => setTier(t.name)} aria-pressed={t.name === tier}>
+              <span className="L-cap">{t.tag}</span>
+              <span>{t.name}</span>
+            </button>
+          ))}
+        </div>
         <table className="L-table L-tiers" data-tier={tier}>
           <thead>
             <tr>
@@ -140,293 +151,100 @@ function Solutions({ go }: { go: (p: PageId) => void }) {
 
 /* ------------------------------------------------------------------ */
 
-// name, note, icon (Wilfred's, public/icons, 30 September; file names as supplied)
-const STEPS: [string, string, string][] = [
-  ["Prepare", "Baseline the team before anything changes.", "/icons/prepare.png"],
-  ["Launch", "Put the practices into the working week.", "/icons/Launch.png"],
-  ["Discover", "Surface what the team does under load.", "/icons/Discover.png"],
-  ["Awareness", "Name the patterns nobody could see.", "/icons/Awareness.png"],
-  ["Belonging", "Build the conditions people stay for.", "/icons/Belonging.png"],
-  ["Action", "Turn insight into standing rituals.", "/icons/Action.png"],
+// verb, line, body, icon (Wilfred's, public/icons, the same files the poses are traced from),
+// and the traced pose the working draft morphs between (scripts/figures)
+const STAGES: [string, string, string, string, PoseId][] = [
+  ["Discover", "The team turns the lens on itself.", "Through confidential conversations and a TeamQ baseline, the team gets a clear read on its own environment: what it is working toward, what already goes well, and what is quietly getting in the way.", "/icons/Discover%202.png", "discover"],
+  ["Align", "The team agrees on what better looks like.", "With that picture in front of it, the team decides what better performance means here, and where one change would do the most for the work and for the people doing it.", "/icons/Align%202.png", "align"],
+  ["Co-create", "Together, we turn moments into practice.", "Decisions, feedback, disagreement, change: the moments that shape performance become specific, repeatable practices. The team designs them, tests them, and runs them inside the work it already does.", "/icons/Belonging%202.png", "cocreate"],
 ];
 
-const ARC = [
-  ["Pre-sprint month", "Discovery + TeamQ", "Confidential interviews and a TeamQ baseline."],
-  ["Day 1", "Agree goals, co-create the ritual", "The team reviews its findings and designs one practice it owns."],
-  ["Day 45", "Refine the ritual", "A check-in to see how the practice is landing, and adjust."],
-  ["Day 90", "Re-measure and close", "TeamQ is repeated and change is measured against the baseline."],
-];
+const HEAD_TOP = 28; // the sticky head's offset below the nav, as in layout.css
+const STAGE_LINE = 96; // a stage takes over once its top is this far below that
 
-
-/**
- * The arc run: sections 02 and 03 of the process page share one line, in
- * gold, that winds down both like a backwards S. The wavelength is the
- * arc's four rows, so the six moves above get the same curve at the same
- * scale, and the arc is one S from its top. Everything is measured from the
- * DOM, and the line fades in at its start and out at its end.
- *
- * One ball rides the line: the point of the line nearest the pointer (the
- * middle of the view when there is no pointer), eased a little behind it.
- * The point it is level with lights up and its icon glows. No other marks
- * on the line. Reduced motion drops the easing.
- */
-function ArcRun({ children }: { children: React.ReactNode }) {
-  const runRef = useRef<HTMLDivElement>(null);
-  const svgRef = useRef<SVGSVGElement>(null);
-  const pathRef = useRef<SVGPathElement>(null);
-  const ballRef = useRef<SVGGElement>(null);
+/** The three stages in one section. On the editorial columns at desktop
+ *  width, with figures on, the section's running head is the active stage's
+ *  eyebrow, title and figure: it sticks in the left column and swaps in
+ *  place as the bodies scroll past on the right, the figure morphing into
+ *  the next pose. The running head is decorative; every stage carries its
+ *  own heading, visually hidden there. Everywhere else the running head is
+ *  off and the stages stack, each with its head and its own figure or icon. */
+function Process({ go, figures }: { go: (p: PageId) => void; figures?: boolean }) {
+  const ref = useRef<HTMLElement>(null);
+  const [active, setActive] = useState(0);
 
   useEffect(() => {
-    const run = runRef.current;
-    const svg = svgRef.current;
-    const path = pathRef.current;
-    const ball = ballRef.current;
-    if (!run || !svg || !path || !ball) return;
-    const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-    // the line, sampled every few pixels, in run coordinates
-    let pts: { x: number; y: number }[] = [];
-    let ys: number[] = [];
-    let items: HTMLElement[] = [];
-    let span = { top: 0, bottom: 0 }; // the line's extent, in run coordinates
-    // the ball runs ahead of the pointer: pointer travel is scaled by this
-    // about the middle of the part of the line on screen, so a modest move
-    // carries the ball down the journey without the pointer straying off
-    const LEAD = 1.7;
-
-    const setRect = (sel: string, x: number, y: number, w: number, h: number) => {
-      const el = svg.querySelector<SVGRectElement>(sel);
-      if (!el) return;
-      el.setAttribute("x", String(x)); el.setAttribute("y", String(y));
-      el.setAttribute("width", String(Math.max(0, w))); el.setAttribute("height", String(Math.max(0, h)));
-    };
-
-    const measure = () => {
-      const box = run.getBoundingClientRect();
-      const rel = (r: DOMRect) => new DOMRect(r.left - box.left, r.top - box.top, r.width, r.height);
-      const lists = Array.from(run.querySelectorAll<HTMLElement>(".L-arc"));
-      const arc = lists[lists.length - 1];
-      const lane = arc?.querySelector<HTMLElement>(".L-arc-lane");
-      if (!arc || !lane) return;
-      const first = rel(lists[0].getBoundingClientRect());
-      const ar = rel(arc.getBoundingClientRect());
-      const la = rel(lane.getBoundingClientRect());
-      const top = first.top;
-      const bottom = ar.bottom;
-      const cx = la.left + la.width / 2;
-      const amp = Math.max(0, la.width / 2 - 14);
-      const wave = Math.max(1, ar.height);
-      items = Array.from(run.querySelectorAll<HTMLElement>(".L-arc-item"));
-      ys = Array.from(run.querySelectorAll<HTMLElement>(".L-arc-lane")).map((el) => { const r = rel(el.getBoundingClientRect()); return r.top + r.height / 2; });
-
-      // one sine, phase zero at the arc's top so the arc bows right first
-      const xAt = (y: number) => cx + amp * Math.sin((2 * Math.PI * (y - ar.top)) / wave);
-      const n = Math.max(24, Math.round((bottom - top) / 5));
-      const d = Array.from({ length: n + 1 }, (_, i) => { const y = top + ((bottom - top) * i) / n; return `${i ? "L" : "M"} ${xAt(y).toFixed(1)} ${y.toFixed(1)}`; }).join(" ");
-
-      const F = 120; // the fade at either end
-      setRect(".L-arc-fade-in", 0, top, box.width, F);
-      setRect(".L-arc-fade-solid", 0, top + F, box.width, bottom - top - 2 * F);
-      setRect(".L-arc-fade-out", 0, bottom - F, box.width, F);
-      svg.setAttribute("viewBox", `0 0 ${box.width} ${bottom}`);
-      svg.setAttribute("width", String(box.width));
-      svg.setAttribute("height", String(bottom));
-      path.setAttribute("d", d);
-      span = { top, bottom };
-      const L = path.getTotalLength();
-      const k = Math.max(2, Math.round(L / 4));
-      pts = Array.from({ length: k + 1 }, (_, i) => { const q = path.getPointAtLength((L * i) / k); return { x: q.x, y: q.y }; });
-    };
-
-    const nearest = (x: number, y: number) => {
-      let best = 0;
-      let bd = Infinity;
-      for (let i = 0; i < pts.length; i++) {
-        const dx = pts[i].x - x;
-        const dy = pts[i].y - y;
-        const dd = dx * dx + dy * dy;
-        if (dd < bd) { bd = dd; best = i; }
-      }
-      return best;
-    };
-
-    // the ball: an index along the line that eases toward the nearest
-    // point to the pointer
-    let pointer: { x: number; y: number } | null = null;
-    let overItem = false; // the pointer is on one of the moves: the ball eases a quarter slower
-    const EASE = 0.1;
-    let at = -1;
+    const root = ref.current;
+    if (!root || !figures) return;
+    const items = Array.from(root.querySelectorAll<HTMLElement>(".L-stage"));
+    if (!items.length) return;
     let raf = 0;
-    let lastOn = -2;
     const tick = () => {
       raf = 0;
-      if (!pts.length) return;
-      const box = run.getBoundingClientRect();
-      let px = window.innerWidth / 2 - box.left;
-      let py = window.innerHeight / 2 - box.top;
-      if (pointer) {
-        px = pointer.x - box.left;
-        const vTop = Math.max(span.top, -box.top);
-        const vBottom = Math.min(span.bottom, window.innerHeight - box.top);
-        const mid = vBottom > vTop ? (vTop + vBottom) / 2 : (span.top + span.bottom) / 2;
-        py = mid + (pointer.y - box.top - mid) * LEAD;
-      }
-      const target = nearest(px, py);
-      if (at < 0) at = target;
-      at += (target - at) * (still ? 1 : overItem ? EASE * 0.75 : EASE);
-      if (Math.abs(target - at) < 0.05) at = target;
-      const q = pts[Math.min(pts.length - 1, Math.max(0, Math.round(at)))];
-      ball.setAttribute("transform", `translate(${q.x.toFixed(1)} ${q.y.toFixed(1)})`);
-      // the point the ball is level with
-      const near = ys.reduce((best, y, j) => (Math.abs(y - q.y) < 56 && (best < 0 || Math.abs(y - q.y) < Math.abs(ys[best] - q.y)) ? j : best), -1);
-      if (near !== lastOn) {
-        lastOn = near;
-        items.forEach((el, j) => el.toggleAttribute("data-on", j === near));
-      }
-      if (Math.abs(target - at) > 0.05) raf = requestAnimationFrame(tick);
+      const navH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--nav-h")) || 0;
+      const line = navH + HEAD_TOP + STAGE_LINE;
+      let i = 0;
+      items.forEach((el, j) => { if (el.getBoundingClientRect().top <= line) i = j; });
+      setActive(i);
     };
     const kick = () => { if (!raf) raf = requestAnimationFrame(tick); };
-    const onMove = (e: PointerEvent) => {
-      pointer = { x: e.clientX, y: e.clientY };
-      overItem = !!(e.target as Element | null)?.closest?.(".L-arc-item");
-      kick();
-    };
-    const onLeave = () => { pointer = null; overItem = false; kick(); };
-    const onScroll = () => kick();
-    const ro = new ResizeObserver(() => { measure(); kick(); });
-    ro.observe(run);
-    measure();
+    const ro = new ResizeObserver(kick);
+    ro.observe(root);
     kick();
-    window.addEventListener("pointermove", onMove, { passive: true });
-    document.addEventListener("mouseleave", onLeave);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      ro.disconnect();
-      cancelAnimationFrame(raf);
-      window.removeEventListener("pointermove", onMove);
-      document.removeEventListener("mouseleave", onLeave);
-      window.removeEventListener("scroll", onScroll);
-    };
-  }, []);
+    window.addEventListener("scroll", kick, { passive: true });
+    return () => { ro.disconnect(); cancelAnimationFrame(raf); window.removeEventListener("scroll", kick); };
+  }, [figures]);
 
-  return (
-    <div className="L-arc-run" ref={runRef}>
-      <svg ref={svgRef} className="L-arc-svg" aria-hidden>
-        <defs>
-          <filter id="L-arc-blur" x="-100%" y="-100%" width="300%" height="300%">
-            <feGaussianBlur stdDeviation="10" />
-          </filter>
-          <linearGradient id="L-arc-grad-in" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#fff" stopOpacity="0" />
-            <stop offset="1" stopColor="#fff" />
-          </linearGradient>
-          <linearGradient id="L-arc-grad-out" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#fff" />
-            <stop offset="1" stopColor="#fff" stopOpacity="0" />
-          </linearGradient>
-          <mask id="L-arc-end" maskUnits="userSpaceOnUse" x="0" y="0" width="100000" height="100000">
-            <rect className="L-arc-fade-in" fill="url(#L-arc-grad-in)" />
-            <rect className="L-arc-fade-solid" fill="#fff" />
-            <rect className="L-arc-fade-out" fill="url(#L-arc-grad-out)" />
-          </mask>
-        </defs>
-        <path ref={pathRef} className="L-arc-path" />
-        <g ref={ballRef} className="L-arc-ball">
-          <circle className="L-arc-ball-glow" r={20} filter="url(#L-arc-blur)" />
-          <circle className="L-arc-ball-core" r={7} />
-        </g>
-      </svg>
-      {children}
-    </div>
-  );
-}
-
-/** The six moves, in order, on the line: number, name and note one side,
- *  the icon the other, swapping sides each row. The icon the ball is level
- *  with grows and comes to full strength; the rest sit at 30 percent. */
-function ArcMoves() {
-  return (
-    <ol className="L-arc L-arc-moves">
-      {STEPS.map(([name, note, icon], i) => (
-        <li key={name} className="L-arc-item">
-          <div className="L-arc-copy">
-            <span className="step-n">0{i + 1}</span>
-            <span className="L-arc-what">{name}</span>
-            <span className="L-arc-note">{note}</span>
-          </div>
-          <span className="L-arc-lane" aria-hidden />
-          <span className="L-arc-art L-arc-icon">
-            <Image src={icon} alt="" width={2048} height={2048} sizes="160px" />
-          </span>
-        </li>
-      ))}
-    </ol>
-  );
-}
-
-/** The arc's four points: copy one side of the line, a spot for a small
- *  piece of art the other, swapping sides each row. Art is a white
- *  placeholder for now. The line itself is drawn by ArcRun. */
-function ArcTimeline() {
-  return (
-    <ol className="L-arc">
-      {ARC.map(([when, what, note]) => (
-        <li key={when} className="L-arc-item">
-          <div className="L-arc-copy">
-            <span className="L-cap">{when}</span>
-            <span className="L-arc-what">{what}</span>
-            <span className="L-arc-note">{note}</span>
-          </div>
-          <span className="L-arc-lane" aria-hidden />
-          <span className="L-arc-art">Art</span>
-        </li>
-      ))}
-    </ol>
-  );
-}
-
-function Process({ go }: { go: (p: PageId) => void }) {
+  const [verb, line, , , pose] = STAGES[active];
   return (
     <>
       <PageHead n="01" kicker="The methodology across all three tiers" title="The team process." lede="See the team clearly. Choose the practice together. Ritualize it in the flow of work." />
-      <ArcRun>
-      <Sec n="02" kicker="Six moves" title="From baseline to standing ritual">
-        <ArcMoves />
-      </Sec>
-      <Sec n="03" kicker="About four months, end to end" title="The arc">
-        <ArcTimeline />
-        <p className="L-mid">Two ritual keepers are coached every two weeks, and the ritual runs inside work the team already does.</p>
-      </Sec>
-      </ArcRun>
-      <Sec n="04" kicker="Why it holds" title="Elite teams ritualize high-performance practices">
-        <p className="L-big">A ritual turns an important behavior into a specific, repeatable practice the team owns and runs.</p>
-        <p className="L-mid">Repeated over weeks, it converts intent into the way the team actually operates. The team creates its ritual from its own data, its own context, and its own commitment, which is why it holds.</p>
-        <div className="cta-row">
-          <button className="btn" onClick={() => go("start")}>Get started <span className="arrow">&rarr;</span></button>
-          <button className="btn btn-secondary" onClick={() => go("solutions")}>Ways to engage</button>
+      <section className="L-sec L-sec-h L-stages" data-n="02" ref={ref} data-slot={figures ? "" : undefined}>
+        <div className="L-wrap">
+          <div className="L-head L-stages-head" aria-hidden>
+            <span className="L-n">02</span>
+            <div>
+              <p className="eyebrow L-eyebrow" key={`line-${active}`}>{line}</p>
+              <h2 className="sec" key={`verb-${active}`}>{verb}</h2>
+            </div>
+            {figures ? <span className="L-stage-fig"><StageFigure pose={pose} /></span> : null}
+          </div>
+          <ol className="L-stage-list">
+            {STAGES.map(([verb, line, body, icon, pose], i) => (
+              <li key={verb} className="L-stage" data-on={i === active ? "" : undefined}>
+                <p className="eyebrow L-eyebrow L-stage-line">{line}</p>
+                <h2 className="sec L-stage-verb">{verb}</h2>
+                <div className="L-stage-copy">
+                  <p className="L-mid">{body}</p>
+                  {i === STAGES.length - 1 ? (
+                    <div className="cta-row">
+                      <button className="btn" onClick={() => go("start")}>Explore TeamQ <span className="arrow">&rarr;</span></button>
+                      <button className="btn btn-secondary" onClick={() => go("solutions")}>Ways to engage</button>
+                    </div>
+                  ) : null}
+                </div>
+                <span className="L-stage-art" aria-hidden>
+                  {figures ? (
+                    <ProcessFigure pose={pose} from={i ? STAGES[i - 1][4] : undefined} />
+                  ) : (
+                    <Image src={icon} alt="" width={2048} height={2048} sizes="320px" />
+                  )}
+                </span>
+              </li>
+            ))}
+          </ol>
         </div>
-      </Sec>
+      </section>
     </>
   );
 }
 
 /* ------------------------------------------------------------------ */
 
-const KINDS = ["All", "Foundations", "Articles", "Video", "Research"];
-const HUBS = ["Capacity", "Team practices", "Rituals", "Measurement"];
-
 function Insights() {
   return (
     <>
       <PageHead n="01" kicker="The education layer" title="Insights." lede="Foundations, articles, video and research in one feed. Start with the foundations if the argument is new to you." />
-      <section className="L-sec L-sec-tight">
-        <div className="L-wrap">
-          <div className="L-filters">
-            <div className="L-pills">{KINDS.map((k, i) => <span className={`pill${i === 0 ? " is-accent" : ""}`} key={k}>{k}</span>)}</div>
-            <div className="L-pills">{HUBS.map((h) => <span className="pill" key={h}>{h}</span>)}</div>
-          </div>
-        </div>
-      </section>
       <Sec n="02" kicker="Research · distinct treatment" title="Sapien Labs Work Culture Report">
         <div className="L-research-card card">
           <Frame label="Report cover" />
@@ -517,32 +335,12 @@ function About() {
 function Contact() {
   return (
     <>
-      <PageHead n="01" kicker="Contact" title="Tell us about your team." lede="A short form or a call. Either way a person reads it, not a funnel." />
-      <section className="L-sec">
+      <PageHead n="01" kicker="Contact" title={"Let\u2019s talk, human to human."} />
+      <section className="L-sec contact-sec">
         <div className="L-wrap">
-          <div className="L-contact">
-            <form className="L-form" onSubmit={(e) => e.preventDefault()}>
-              <label><span className="L-cap">Name</span><input type="text" placeholder="Your name" /></label>
-              <label><span className="L-cap">Email</span><input type="email" placeholder="you@company.com" /></label>
-              <label><span className="L-cap">Organization</span><input type="text" placeholder="Where the team works" /></label>
-              <label><span className="L-cap">What are you hoping to change?</span><textarea rows={4} placeholder="A sentence or two is plenty" /></label>
-              <label><span className="L-cap">Goal</span>
-                <select defaultValue=""><option value="" disabled>Choose one</option><option>Understand the model</option><option>Assess a team</option><option>Talk about a 90-day sprint</option><option>Something else</option></select>
-              </label>
-              <button className="btn" type="submit">Send <span className="arrow">&rarr;</span></button>
-              <span className="L-cap">A person reads every message. No newsletter, no drip.</span>
-            </form>
-            <aside className="L-contact-side">
-              <div className="card L-book">
-                <span className="card-tag">Talk to us</span>
-                <Frame label="Calendar embed" tall />
-              </div>
-              <div className="L-details">
-                <span className="L-cap">Email</span><span>jake@samuh.work</span>
-                <span className="L-cap">Partner</span><span>Sapien Labs</span>
-                <span className="L-cap">Where</span><span>Working with teams across time zones.</span>
-              </div>
-            </aside>
+          <div className="contact-grid">
+            <ContactForm />
+            <ContactAside />
           </div>
         </div>
       </section>
@@ -579,10 +377,10 @@ function Start({ go }: { go: (p: PageId) => void }) {
 
 /* ------------------------------------------------------------------ */
 
-export function Page({ id, go }: { id: PageId; go: (p: PageId) => void }) {
+export function Page({ id, go, figures }: { id: PageId; go: (p: PageId) => void; figures?: boolean }) {
   switch (id) {
     case "solutions": return <Solutions go={go} />;
-    case "process": return <Process go={go} />;
+    case "process": return <Process go={go} figures={figures} />;
     case "insights": return <Insights />;
     case "about": return <About />;
     case "contact": return <Contact />;

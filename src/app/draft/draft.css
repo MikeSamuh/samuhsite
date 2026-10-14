@@ -159,4 +159,4 @@
 
 /* draft B: the outline buttons and fields keep their line but take soft
    corners. Void has no radius of its own, so this is set here. */
-.D-stage[data-draft="b"] .L-page[data-btn="btn-outline"] :is(.btn, .field input, .L-form input, .L-form textarea, .L-form select) { border-radius: 10px; }
+.D-stage:is([data-draft="b"], [data-draft="working"]) .L-page[data-btn="btn-outline"] :is(.btn, .field input, .L-form input, .L-form textarea, .L-form select) { border-radius: 10px; }

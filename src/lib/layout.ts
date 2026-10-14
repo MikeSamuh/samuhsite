@@ -198,6 +198,7 @@ export const SECTIONS: SectionDef[] = [
     intent: "Team, individual, organization. Establishes teams as the subject.",
     variants: [
       { id: "circles-nested", name: "Nested", note: "The organization houses the team, the team houses the individual." },
+      { id: "circles-morph", name: "Nested, then the Venn", note: "The nested circles, and as you scroll they become four overlapping circles, Cognitive, Relational, Emotional and Physical, with SAMUH at the centre. Takes the Aspirational section's place too." },
       { id: "circles-row", name: "Row", note: "Three circles side by side, each with a line under." },
       { id: "circles-stack", name: "Stacked", note: "Three short bands, one per circle." },
     ],
@@ -239,7 +240,7 @@ export const SECTIONS: SectionDef[] = [
     ],
   },
   {
-    id: "tool", kicker: "Try it on your own team", n: 9, title: "Interactive data tool",
+    id: "tool", kicker: "Explore TeamQ", n: 9, title: "See how TeamQ thinks",
     intent: "Visitor adjusts team environment factors, sees estimated productive days lost update live.",
     variants: [
       { id: "tool-card", name: "Card", note: "Sliders and result in one panel." },

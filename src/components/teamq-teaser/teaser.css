@@ -1,0 +1,873 @@
+/* /teamq: the intro, the readout, the ten inputs and the ask. Also the
+   pitch that stands in for the tool on the home page. Every design value is
+   a custom property from src/lib/tokens.ts. */
+
+/* ---------- home section 9 ---------- */
+
+.teaser-pitch {
+  display: grid;
+  gap: 24px;
+  justify-items: start;
+}
+
+/* ---------- intro ---------- */
+
+.teaser-intro {
+  padding-bottom: calc(48px * var(--space, 1));
+}
+
+/* where the heading has to wrap, it breaks into even lines */
+.teaser-intro .L-page-title {
+  max-width: none;
+  text-wrap: balance;
+}
+
+/* ---------- the guide ---------- */
+
+.guide-copy .L-mid:last-child {
+  margin-bottom: 0;
+}
+
+.guide-step-body {
+  display: grid;
+  gap: 28px;
+}
+
+.guide-step-body .L-mid {
+  margin-bottom: 0;
+}
+
+/* the readout tour. The track is 80vh per step; the stage pins inside it
+   and shows one step and one readout at a time, on the same two columns
+   as the editorial sections above it: heading left, text and readout
+   right */
+.tour {
+  height: calc(var(--tour-steps, 2) * 80vh + 20vh);
+}
+
+.tour-stage {
+  position: sticky;
+  top: var(--nav-h, 0px);
+  display: grid;
+  grid-template-columns: minmax(180px, 240px) 1fr;
+  grid-template-rows: auto auto;
+  column-gap: clamp(28px, 5cqw, 72px);
+  row-gap: 28px;
+  align-items: start;
+  padding: calc(88px * var(--space, 1)) 0 calc(48px * var(--space, 1));
+}
+
+/* the steps share the same cells and take turns */
+.tour-step {
+  display: contents;
+}
+
+/* the heading runs down the left of both rows, so the longest heading does
+   not push the readout away from the text */
+.tour-head {
+  grid-area: 1 / 1 / span 2;
+}
+
+.tour-text {
+  grid-area: 1 / 2;
+  margin: 0;
+}
+
+.tour-stage .tour-exhibit {
+  grid-area: 2 / 2;
+}
+
+/* the exhibit: a frozen copy of the tool, sliders left, readout right. The
+   lit part is the one the step is about; the rest dims */
+.tour-exhibit {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: 32px;
+  align-items: start;
+}
+
+.tour-exhibit .teaser-readout {
+  position: static;
+}
+
+.tour-sliders {
+  display: grid;
+  gap: 26px;
+}
+
+.tour-group {
+  display: grid;
+  gap: 14px;
+  transition: opacity var(--dur) var(--ease);
+}
+
+.tour-legend {
+  font-family: var(--font-display);
+  font-weight: var(--display-weight);
+  font-style: var(--display-style);
+  letter-spacing: var(--display-tracking);
+  font-size: 20px;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.tour-more {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* the two lifestyle sliders side by side, so the exhibit stays in view */
+.tour-group-life {
+  grid-template-columns: 1fr 1fr;
+  column-gap: 28px;
+}
+
+.tour-group-life .tour-legend {
+  grid-column: 1 / -1;
+}
+
+.tour-step > * {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur) var(--ease);
+}
+
+.tour-step[data-active] > * {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.tour-head .sec {
+  margin: 0;
+}
+
+.tour-count {
+  margin: 14px 0 0;
+}
+
+/* a frozen copy of a piece of the tool. Not sticky, not interactive */
+.guide-exhibit {
+  position: static;
+  pointer-events: none;
+}
+
+.guide-exhibit [data-dim] {
+  opacity: 0.28;
+}
+
+.guide-exhibit .teaser-delta[data-lit] {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.guide-exhibit-label {
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.guide-tour {
+  padding: 0;
+}
+
+/* ---------- the tool ---------- */
+
+.teaser-sec {
+  scroll-margin-top: var(--nav-h, 0px);
+}
+
+.teaser-title {
+  margin: 0 0 32px;
+}
+
+.teaser {
+  display: grid;
+  gap: 28px;
+}
+
+.teaser-team {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: var(--display-weight);
+  font-style: var(--display-style);
+  letter-spacing: var(--display-tracking);
+  font-size: 20px;
+  color: var(--text);
+}
+
+
+.teaser-team-base {
+  display: block;
+  margin-top: 4px;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-style: normal;
+  letter-spacing: 0;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+/* one fold: the readout on the left, the sliders on the right */
+.teaser-fold {
+  display: grid;
+  grid-template-columns: minmax(280px, 2fr) 3fr;
+  gap: 32px clamp(32px, 5cqw, 72px);
+  align-items: start;
+}
+
+/* the left column pins as a whole: the readout box, the team line under it */
+.teaser-left {
+  position: sticky;
+  top: var(--nav-h, 0px);
+  z-index: 2;
+  display: grid;
+  gap: 18px;
+}
+
+.teaser-left .teaser-readout {
+  position: static;
+}
+
+/* the two buttons under the sliders, and the moves once applied */
+.teaser-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+}
+
+.teaser-moves {
+  margin: 0;
+  max-width: 60ch;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+.teaser-moves:focus {
+  outline: none;
+}
+
+/* the readout: who the team is, productive days, then capacity to perform
+   with its scale, stacked. It stays in view while the inputs scroll */
+.teaser-readout {
+  position: sticky;
+  top: var(--nav-h, 0px);
+  z-index: 2;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 22px;
+  align-items: start;
+  padding: 24px;
+  background: var(--surface);
+  border: var(--rule-thin) solid var(--border);
+  border-radius: min(var(--radius), 22px);
+}
+
+.teaser-headline {
+  display: grid;
+  gap: 2px;
+}
+
+.teaser-label {
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.teaser-days,
+.teaser-figure {
+  font-family: var(--font-display);
+  font-weight: var(--display-weight);
+  letter-spacing: var(--display-tracking);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  color: var(--text);
+  transition: opacity var(--dur) var(--ease);
+}
+
+.teaser-days {
+  font-size: clamp(48px, 8cqw, 84px);
+  color: var(--accent);
+}
+
+.teaser-figure {
+  font-size: 32px;
+}
+
+/* a figure that is about to be replaced dims until the new one lands */
+.teaser-readout[data-stale="true"] :is(.teaser-days, .teaser-figure) {
+  opacity: 0.55;
+}
+
+.teaser-delta {
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+}
+
+.teaser-failed {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: 14px;
+  color: var(--accent);
+}
+
+.teaser-gauge {
+  display: block;
+  height: var(--rule-fat);
+  margin: 18px 0 10px;
+  background: var(--border);
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.teaser-gauge span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transition: width var(--dur) var(--ease);
+}
+
+.teaser-pending {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* ---------- capacity to perform ---------- */
+
+/* the words on the left: how far from Thriving, and the change; the meter
+   on the right: a half circle from -100 to 200 with the six bands along it
+   and a needle at the figure, the figure inside */
+.teaser-capacity {
+  display: grid;
+  gap: 8px;
+}
+
+.capacity-body {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px 16px;
+  align-items: center;
+}
+
+.capacity-words {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.capacity-line {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: var(--display-weight);
+  font-style: var(--display-style, normal);
+  letter-spacing: var(--display-tracking);
+  font-size: 22px;
+  line-height: 1.15;
+  color: var(--text);
+}
+
+.capacity-band-word {
+  color: var(--band);
+}
+
+.capacity-gauge {
+  width: 170px;
+  height: auto;
+  overflow: visible;
+}
+
+.gauge-band {
+  fill: none;
+  stroke: var(--band);
+  stroke-width: 18;
+  stroke-linecap: butt;
+  opacity: 0.55;
+  transition: opacity var(--dur) var(--ease);
+}
+
+.gauge-band[data-on] {
+  opacity: 1;
+}
+
+.gauge-needle {
+  stroke: var(--text);
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  transform-box: view-box;
+  transform-origin: 100px 100px;
+  transition: transform calc(var(--dur) * 1.6) var(--ease);
+}
+
+.gauge-value {
+  fill: var(--text);
+  text-anchor: middle;
+  font-family: var(--font-display);
+  font-weight: var(--display-weight);
+  letter-spacing: var(--display-tracking);
+  font-size: 32px;
+  font-variant-numeric: tabular-nums;
+}
+
+.gauge-end {
+  fill: var(--muted);
+  text-anchor: middle;
+  font-family: var(--font-caption);
+  font-size: 9px;
+  letter-spacing: 0.06em;
+}
+
+/* ---------- inputs ---------- */
+
+/* work environment, then lifestyle under it, each in two columns so the
+   ten sliders sit in one fold beside the readout */
+.teaser-inputs {
+  display: grid;
+  gap: 24px;
+  align-items: start;
+}
+
+.teaser-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px 32px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+
+.teaser-group legend {
+  padding: 0;
+  margin-bottom: 12px;
+  font-family: var(--font-display);
+  font-weight: var(--display-weight);
+  font-style: var(--display-style);
+  letter-spacing: var(--display-tracking);
+  font-size: 22px;
+  color: var(--text);
+}
+
+.teaser-input {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4px 16px;
+  align-items: baseline;
+}
+
+.teaser-input label {
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.teaser-value {
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--accent);
+}
+
+.teaser-note {
+  grid-column: 1 / -1;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.teaser-reset {
+  justify-self: start;
+}
+
+.teaser-reset:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+/* the native range, drawn from tokens. --fill is how far along the value is */
+.teaser-range {
+  grid-column: 1 / -1;
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 24px;
+  margin: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.teaser-range::-webkit-slider-runnable-track {
+  height: var(--rule-fat);
+  border-radius: 99px;
+  background: linear-gradient(to right, var(--accent) var(--fill), var(--border) var(--fill));
+}
+
+.teaser-range::-moz-range-track {
+  height: var(--rule-fat);
+  border-radius: 99px;
+  background: var(--border);
+}
+
+.teaser-range::-moz-range-progress {
+  height: var(--rule-fat);
+  border-radius: 99px;
+  background: var(--accent);
+}
+
+.teaser-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  margin-top: calc((var(--rule-fat) - 22px) / 2);
+  border-radius: 50%;
+  background: var(--accent);
+  border: var(--rule-fat) solid var(--base);
+  transition: transform var(--dur) var(--ease);
+}
+
+.teaser-range::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: var(--rule-fat) solid var(--base);
+  box-sizing: border-box;
+}
+
+.teaser-range:hover::-webkit-slider-thumb {
+  transform: scale(1.12);
+}
+
+.teaser-range:focus-visible {
+  outline: var(--rule-fat) solid var(--accent);
+  outline-offset: 4px;
+  border-radius: 99px;
+}
+
+/* ---------- the ask ---------- */
+
+.teaser-ask {
+  scroll-margin-top: calc(var(--nav-h, 0px) + 24px);
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 40px;
+  align-items: start;
+  padding-top: 40px;
+  border-top: var(--rule-thin) solid var(--border);
+}
+
+.teaser-ask-title {
+  margin: 0 0 12px;
+  font-family: var(--font-display);
+  font-weight: var(--display-weight);
+  font-style: var(--display-style);
+  letter-spacing: var(--display-tracking);
+  font-size: 28px;
+  color: var(--text);
+}
+
+.teaser-ask p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.teaser-done {
+  grid-template-columns: 1fr;
+  gap: 16px;
+  justify-items: start;
+}
+
+.teaser-done .teaser-ask-title {
+  margin: 0;
+}
+
+.teaser-done:focus {
+  outline: none;
+}
+
+/* ---------- narrow ---------- */
+
+/* the editorial sections stack at 900px, so the tour does too */
+@container page (max-width: 900px) {
+  /* on a phone: readout, heading, text, stacked */
+  .tour-stage {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+    row-gap: 20px;
+    padding-top: 24px;
+  }
+
+  .tour-stage .tour-exhibit {
+    grid-area: 1 / 1;
+    grid-template-columns: 1fr;
+  }
+
+  /* on a phone the exhibit shows the readout and the lifestyle pair only */
+  .tour-exhibit .tour-sliders {
+    order: 1;
+  }
+
+  .tour-head {
+    grid-area: 2 / 1;
+  }
+
+  .tour-text {
+    grid-area: 3 / 1;
+  }
+}
+
+@container page (max-width: 900px) {
+  /* the fold stacks: the readout pins at the top, the sliders scroll under */
+  .teaser-fold {
+    grid-template-columns: 1fr;
+  }
+}
+
+@container page (max-width: 760px) {
+  .teaser-ask {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  /* the pinned readout gets short: days and capacity side by side with a
+     shorter scale, so the sliders keep their room; the team line waits
+     until the sliders are done */
+  .teaser-readout {
+    grid-template-columns: 1fr auto;
+    gap: 8px 20px;
+    padding: 12px 16px;
+  }
+
+  .teaser-left {
+    position: static;
+    gap: 12px;
+  }
+
+  .teaser-left .teaser-readout {
+    position: sticky;
+    top: var(--nav-h, 0px);
+  }
+
+  .teaser-left .teaser-team {
+    order: 1;
+    font-size: 16px;
+  }
+
+  .teaser-left .teaser-team-base {
+    display: inline;
+    margin: 0;
+  }
+
+  .teaser-days {
+    font-size: 40px;
+  }
+
+  .teaser-figure {
+    font-size: 22px;
+  }
+
+  /* the words over the meter, each at full width */
+  .capacity-body {
+    grid-template-columns: 1fr;
+    gap: 6px;
+    justify-items: start;
+  }
+
+  .capacity-gauge {
+    width: 140px;
+  }
+
+  .capacity-line {
+    font-size: 18px;
+  }
+}
+
+@container page (max-width: 600px) {
+  .teaser-group,
+  .tour-group-life {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tour-step > *,
+  .teaser-days,
+  .teaser-figure,
+  .teaser-gauge span,
+  .gauge-needle,
+  .gauge-band,
+  .tour-group,
+  .teaser-range::-webkit-slider-thumb {
+    transition: none;
+  }
+
+  .teaser-range:hover::-webkit-slider-thumb {
+    transform: none;
+  }
+}
+
+/* ---------- home section 9: the demonstration ---------- */
+
+/* three bars on the left, the readout on the right. Nothing is interactive:
+   the bars glide to the optimizer's setting and the readout follows */
+.teaser-demo {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 40px clamp(32px, 5cqw, 72px);
+  align-items: start;
+  margin-bottom: 36px;
+}
+
+/* the bars take the readout's height and no more: the list runs on past
+   it and fades out at the foot, so the three that move read as a sample
+   of many */
+.demo-bars-wrap {
+  position: relative;
+  align-self: stretch;
+  min-height: 320px;
+}
+
+.demo-bars-wrap .demo-bars {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  align-content: start;
+  mask-image: linear-gradient(to bottom, black 55%, transparent 96%);
+}
+
+.demo-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.demo-bars {
+  display: grid;
+  gap: 26px;
+}
+
+.demo-bar {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px 16px;
+  align-items: baseline;
+}
+
+.demo-bar-label {
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.demo-bar-value {
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
+  transition: color var(--dur) var(--ease);
+}
+
+.demo-bar[data-moved="true"] .demo-bar-value {
+  color: var(--accent);
+}
+
+/* the same track and thumb as the real range on /teamq, drawn by hand so
+   there is nothing to grab. --fill is how far along the value is */
+.demo-track {
+  grid-column: 1 / -1;
+  position: relative;
+  display: block;
+  height: 22px;
+}
+
+.demo-track::before {
+  content: "";
+  position: absolute;
+  inset: calc((22px - var(--rule-fat)) / 2) 0;
+  border-radius: 99px;
+  background: var(--border);
+}
+
+.demo-fill {
+  position: absolute;
+  top: calc((22px - var(--rule-fat)) / 2);
+  left: 0;
+  width: var(--fill);
+  height: var(--rule-fat);
+  border-radius: 99px;
+  background: var(--accent);
+  transition: width calc(var(--dur) * 2.2) var(--ease);
+}
+
+.demo-thumb {
+  position: absolute;
+  top: 0;
+  left: var(--fill);
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: var(--rule-fat) solid var(--base);
+  box-sizing: border-box;
+  transform: translateX(-50%);
+  transition: left calc(var(--dur) * 2.2) var(--ease), transform var(--dur) var(--ease);
+}
+
+.demo-bar[data-moved="true"] .demo-thumb {
+  transform: translateX(-50%) scale(1.12);
+}
+
+/* the readout sits in the flow here, not stuck to the top */
+.demo-readout {
+  position: static;
+  grid-template-columns: 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.demo-readout .teaser-delta {
+  transition: color var(--dur) var(--ease);
+}
+
+.demo-readout[data-landed="true"] .teaser-delta {
+  color: var(--accent);
+}
+
+@container page (max-width: 900px) {
+  .teaser-demo {
+    grid-template-columns: 1fr;
+  }
+  .demo-bars-wrap {
+    min-height: 0;
+  }
+  .demo-bars-wrap .demo-bars {
+    position: static;
+    max-height: 440px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .demo-fill,
+  .demo-thumb,
+  .demo-bar-value,
+  .demo-readout .teaser-delta {
+    transition: none;
+  }
+}
