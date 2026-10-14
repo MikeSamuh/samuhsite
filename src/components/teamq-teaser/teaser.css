@@ -73,8 +73,48 @@
   margin: 0;
 }
 
-.tour-stage .teaser-readout {
+.tour-stage .tour-exhibit {
   grid-area: 2 / 2;
+}
+
+/* the exhibit: a frozen copy of the tool, sliders left, readout right. The
+   lit part is the one the step is about; the rest dims */
+.tour-exhibit {
+  display: grid;
+  grid-template-columns: 1fr 1.15fr;
+  gap: 32px;
+  align-items: start;
+}
+
+.tour-exhibit .teaser-readout {
+  position: static;
+}
+
+.tour-sliders {
+  display: grid;
+  gap: 26px;
+}
+
+.tour-group {
+  display: grid;
+  gap: 14px;
+  transition: opacity var(--dur) var(--ease);
+}
+
+.tour-legend {
+  font-family: var(--font-display);
+  font-weight: var(--display-weight);
+  font-style: var(--display-style);
+  letter-spacing: var(--display-tracking);
+  font-size: 20px;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.tour-more {
+  font-family: var(--font-ui);
+  font-size: 13px;
+  color: var(--muted);
 }
 
 .tour-step > * {
@@ -109,15 +149,6 @@
 .guide-exhibit .teaser-delta[data-lit] {
   color: var(--accent);
   font-weight: 600;
-}
-
-.guide-exhibit-input {
-  display: grid;
-  gap: 22px;
-  padding: 20px 24px;
-  background: var(--surface);
-  border: var(--rule-thin) solid var(--border);
-  border-radius: min(var(--radius), 22px);
 }
 
 .guide-exhibit-label {
@@ -300,95 +331,86 @@
 
 /* ---------- capacity to perform ---------- */
 
-/* the figure and its band on the left, the six-band scale with a marker at
-   the figure, then the band names. --band-h is one band's height; the six
-   stack from Thriving down to Distressed, as the dashboard draws them */
+/* the words on the left: how far from Thriving, and the change; the meter
+   on the right: a half circle from -100 to 200 with the six bands along it
+   and a needle at the figure, the figure inside */
 .teaser-capacity {
-  --band-h: 20px;
   display: grid;
   gap: 8px;
 }
 
 .capacity-body {
   display: grid;
-  grid-template-columns: auto auto auto;
-  gap: 0 14px;
+  grid-template-columns: 1fr auto;
+  gap: 8px 16px;
   align-items: center;
 }
 
-.capacity-figure {
+.capacity-words {
   display: grid;
-  gap: 4px;
-  justify-items: start;
-  min-width: 5ch;
-}
-
-.capacity-band-name {
-  display: inline-flex;
-  align-items: center;
   gap: 6px;
-  font-family: var(--font-ui);
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text);
+  min-width: 0;
 }
 
-.capacity-band-name::before {
-  content: "";
-  width: 10px;
-  height: 10px;
-  border-radius: 2px;
-  background: var(--band);
-}
-
-.capacity-scale {
-  position: relative;
-  display: grid;
-  grid-template-rows: repeat(6, var(--band-h));
-  width: 18px;
-}
-
-.capacity-band {
-  background: var(--band);
-}
-
-.capacity-band:first-child {
-  border-radius: 3px 3px 0 0;
-}
-
-.capacity-band:last-child {
-  border-radius: 0 0 3px 3px;
-}
-
-/* the marker sits at the figure's place on the scale, --top from Thriving */
-.capacity-marker {
-  position: absolute;
-  top: var(--top);
-  left: -5px;
-  right: -5px;
-  height: var(--rule-fat);
-  transform: translateY(-50%);
-  background: var(--text);
-  outline: var(--rule-thin) solid var(--surface);
-  border-radius: 99px;
-  transition: top var(--dur) var(--ease);
-}
-
-.capacity-names {
-  list-style: none;
+.capacity-line {
   margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-rows: repeat(6, var(--band-h));
-  align-items: center;
-  font-family: var(--font-ui);
-  font-size: 13px;
-  color: var(--muted);
+  font-family: var(--font-display);
+  font-weight: var(--display-weight);
+  font-style: var(--display-style, normal);
+  letter-spacing: var(--display-tracking);
+  font-size: 22px;
+  line-height: 1.15;
+  color: var(--text);
 }
 
-.capacity-names li[data-on] {
-  color: var(--text);
-  font-weight: 600;
+.capacity-band-word {
+  color: var(--band);
+}
+
+.capacity-gauge {
+  width: 170px;
+  height: auto;
+  overflow: visible;
+}
+
+.gauge-band {
+  fill: none;
+  stroke: var(--band);
+  stroke-width: 18;
+  stroke-linecap: butt;
+  opacity: 0.55;
+  transition: opacity var(--dur) var(--ease);
+}
+
+.gauge-band[data-on] {
+  opacity: 1;
+}
+
+.gauge-needle {
+  stroke: var(--text);
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  transform-box: view-box;
+  transform-origin: 100px 100px;
+  transition: transform calc(var(--dur) * 1.6) var(--ease);
+}
+
+.gauge-value {
+  fill: var(--text);
+  text-anchor: middle;
+  font-family: var(--font-display);
+  font-weight: var(--display-weight);
+  letter-spacing: var(--display-tracking);
+  font-size: 32px;
+  font-variant-numeric: tabular-nums;
+}
+
+.gauge-end {
+  fill: var(--muted);
+  text-anchor: middle;
+  font-family: var(--font-caption);
+  font-size: 9px;
+  letter-spacing: 0.06em;
 }
 
 /* ---------- inputs ---------- */
@@ -574,8 +596,14 @@
     padding-top: 24px;
   }
 
-  .tour-stage .teaser-readout {
+  .tour-stage .tour-exhibit {
     grid-area: 1 / 1;
+    grid-template-columns: 1fr;
+  }
+
+  /* on a phone the exhibit shows the readout and the lifestyle pair only */
+  .tour-exhibit .tour-sliders {
+    order: 1;
   }
 
   .tour-head {
@@ -637,13 +665,19 @@
     font-size: 22px;
   }
 
-  .teaser-capacity {
-    --band-h: 14px;
-    gap: 4px;
+  /* the words over the meter, each at full width */
+  .capacity-body {
+    grid-template-columns: 1fr;
+    gap: 6px;
+    justify-items: start;
   }
 
-  .capacity-names {
-    font-size: 12px;
+  .capacity-gauge {
+    width: 140px;
+  }
+
+  .capacity-line {
+    font-size: 18px;
   }
 }
 
@@ -658,7 +692,9 @@
   .teaser-days,
   .teaser-figure,
   .teaser-gauge span,
-  .capacity-marker,
+  .gauge-needle,
+  .gauge-band,
+  .tour-group,
   .teaser-range::-webkit-slider-thumb {
     transition: none;
   }

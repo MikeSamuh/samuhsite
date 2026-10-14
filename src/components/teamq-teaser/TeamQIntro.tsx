@@ -1,15 +1,15 @@
-import { BASELINE, FACTORS, LIFESTYLE_HINTS, TEAM_SIZE, type Factor } from "./model";
-import { ReadoutTour, type TourStep } from "./ReadoutTour";
+import { TEAM_SIZE } from "./model";
 import type { TeaserResult } from "./TeamQTeaser";
+import { ToolTour, type TourStep } from "./ToolTour";
 import "./teaser.css";
 
 // TODO(content): every line of copy here is our draft, for SAMUH to replace.
 // It describes and does not claim: no statistics, no outcomes, no client
 // names. See CLAUDE.md rules 1 and 4.
 
-/** The readout, one figure at a time. One frozen readout stays on screen
- *  and the lit figure follows these as they scroll. */
-const READOUT_STEPS: TourStep[] = [
+/** The tool, one part at a time. One frozen copy of it stays on screen and
+ *  the lit part follows these as they scroll. */
+const TOUR_STEPS: TourStep[] = [
   {
     lit: "days",
     kicker: "Productive days per month",
@@ -19,8 +19,20 @@ const READOUT_STEPS: TourStep[] = [
   {
     lit: "mhq",
     kicker: "Capacity to perform",
-    title: "How much the people on this team have to give.",
-    text: "The team’s average Mental Health Quotient, the measure from our partner Sapien Labs that TeamQ is built on, on its scale from Distressed to Thriving. The marker shows where this team sits today. As the factors change, it moves along the scale.",
+    title: "How far the team is from Thriving.",
+    text: "The team’s average Mental Health Quotient, the measure from our partner Sapien Labs that TeamQ is built on, read on its scale from Distressed to Thriving. The meter runs from -100 to 200 and the needle moves as the factors change. The number says how many points separate this team from Thriving.",
+  },
+  {
+    lit: "work",
+    kicker: "Work environment",
+    title: "Nine factors, rated 1 to 9.",
+    text: "What the work is like for the people doing it: flexibility, workload, purpose, learning, colleagues, manager, information and recognition. Each slider starts where this team’s average sits today. Drag it to see what happens when the whole team’s experience of that factor improves, or slips.",
+  },
+  {
+    lit: "life",
+    kicker: "Lifestyle factors",
+    title: "Beyond the team, to the individual.",
+    text: "Two factors from outside work, on the same 1 to 9 scale: exercise, and healthy diet, which is how rarely people eat ultra-processed food. This is what sets SAMUH apart. We do not stop at the team inside the organization. We go to individual habits and rituals, because a team performs with the whole person.",
   },
 ];
 
@@ -41,37 +53,8 @@ function Part({ kicker, title, children, cls }: { kicker: string; title: string;
   );
 }
 
-/** One slider, frozen at the baseline. Decorative. */
-function SliderExhibit({ factor }: { factor: Factor }) {
-  const value = BASELINE[factor.id];
-  const fill = ((value - factor.min) / (factor.max - factor.min)) * 100;
-  const hint = LIFESTYLE_HINTS[factor.id];
-  return (
-    <div className="teaser-input">
-      <span className="guide-exhibit-label">{factor.label}</span>
-      <span className="teaser-value">{value}</span>
-      <input className="teaser-range" type="range" min={factor.min} max={factor.max} step={factor.step} value={value} readOnly tabIndex={-1} style={{ "--fill": `${fill}%` } as React.CSSProperties} />
-      {hint ? <span className="teaser-note">{hint}</span> : null}
-    </div>
-  );
-}
-
-/** The first work environment slider and the two lifestyle sliders, frozen. */
-function FactorsExhibit() {
-  return (
-    <div className="guide-exhibit guide-exhibit-input" aria-hidden="true">
-      <SliderExhibit factor={FACTORS[0]} />
-      {FACTORS.filter((factor) => factor.group === "lifestyle").map((factor) => (
-        <SliderExhibit factor={factor} key={factor.id} />
-      ))}
-    </div>
-  );
-}
-
-/** The top of /teamq: a short education that leads into the tool. The
- *  heading, what TeamQ is and how SAMUH uses it in one section, then each
- *  part of the tool explained one at a time on a frozen copy of the real
- *  thing. */
+/** The top of /teamq: the heading, what TeamQ is in one section, then the
+ *  tool explained one part at a time on a frozen copy of the real thing. */
 export function TeamQIntro({ baseline }: { baseline: TeaserResult }) {
   return (
     <>
@@ -104,32 +87,16 @@ export function TeamQIntro({ baseline }: { baseline: TeaserResult }) {
           <p className="L-mid">
             Below, you can see how different factors could positively or negatively affect a team, using example
             test case data: a demonstration team of {TEAM_SIZE}, and eleven factors, nine in the work environment
-            and two in how people live. First, what the numbers mean.
+            and two in how people live. First, what you are looking at.
           </p>
         </div>
       </Part>
 
       <section className="L-sec guide-tour">
         <div className="L-wrap">
-          <ReadoutTour baseline={baseline} steps={READOUT_STEPS} />
+          <ToolTour baseline={baseline} steps={TOUR_STEPS} />
         </div>
       </section>
-
-      <Part kicker="The factors" title="Eleven factors, rated 1 to 9." cls="guide-step">
-        <div className="guide-step-body">
-          <p className="L-mid">
-            Nine are about the work environment. Each slider starts where this team&rsquo;s average sits today.
-            Drag it to see what happens when the whole team&rsquo;s experience of that factor improves, or slips.
-          </p>
-          <p className="L-mid">
-            Two are from outside work, on the same scale: exercise, and healthy diet, which is how rarely people
-            eat ultra-processed food. This is what sets SAMUH apart. We do not stop at the team inside the
-            organization. We go to individual habits and rituals, because a team performs with the whole person.
-          </p>
-          <FactorsExhibit />
-        </div>
-      </Part>
-
     </>
   );
 }

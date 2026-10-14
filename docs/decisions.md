@@ -412,3 +412,13 @@ domain, the person on the email with job title and company, and leaves the
 rest of the form as a note on the person. Nothing is prefilled from Clarify
 on the public site. Needs the workspace slug set as CLARIFY_WORKSPACE
 before it does anything. — Mike, via Wilfred
+
+**2026-10-14 — /teamq: the meter, and the tour on the whole tool.** Capacity
+to perform reads as points from Thriving with a half-circle meter from -100
+to 200, the six bands along it and a needle at the figure, the way the
+client's dashboard draws it; the band column is gone. The page is hero,
+what TeamQ is, then one frozen copy of the tool pinned while four steps
+light its parts with their explanations, then the tool. The separate
+readout tour and the factors section are gone. Sleep stays out of the
+sliders: the dashboard shows it but its models do not use it (Jerzy,
+9 Oct), so a slider would move nothing. — Client, via Wilfred

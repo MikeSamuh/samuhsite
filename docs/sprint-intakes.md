@@ -235,7 +235,7 @@ Flexibility over Work and trained on lifestyle 0 to 4.)
 | | |
 |---|---|
 | Headline | **Productive days per month**, with change from baseline |
-| Also shown | **Capacity to perform**: the team's MHQ, with change from baseline, on the dashboard's six-band scale from Distressed to Thriving, a marker at the figure |
+| Also shown | **Capacity to perform**: how many points the team is from Thriving, with change from baseline, and a half-circle meter from -100 to 200 with the six bands along it, a needle at the team's MHQ and the figure inside (decided 14 Oct; until then a six-band column with a marker) |
 | Not shown | TeamQ as a number. Decided 10 Oct: the readout is productive days and capacity to perform, that is it |
 | Mode | Team only. Individual mode and CSV upload are not in the teaser |
 | Not in the teaser | The Optimize function, baseline setting, Max All, reports |
@@ -343,13 +343,12 @@ One page, two parts: the intro, then the tool.
 
 **Intro**
 
-An education that leads into the tool, one section at a time: the heading,
-one bold line, What is TeamQ, How we use it, then How to understand it, with
-each part of the tool explained on a frozen copy of the real readout and
-inputs, the part in question lit. The lifestyle step says the values are
-the sample team's averages and why SAMUH looks beyond the team to
-individual habits. A "Skip to the tool" button at the top. The tool is on
-the same page, so nothing stops a visitor scrolling straight past.
+The heading with "Assess your team" and "Skip to the tool", one section on
+what TeamQ is, then the tour (decided 14 Oct): a frozen copy of the whole
+tool, sliders left and readout right, pinned while four steps scroll by,
+each one lighting the part it is about and explaining it in the margin
+column: productive days, capacity to perform, the nine work factors, the
+two lifestyle factors. Nothing else before "Try it out".
 
 Copy is our draft for now, marked `TODO(content)` in the source for client
 review. Rule 1 still applies to a draft: describe, do not claim. No
