@@ -176,6 +176,8 @@
   transform: none;
   box-shadow: none;
 }
+.L-page[data-btn="btn-outline"] .btn-alt { color: var(--accent-2); border-color: var(--accent-2); }
+.L-page[data-btn="btn-outline"] .btn-alt:hover { background: var(--accent-2); color: var(--on-accent-2); }
 .L-page[data-btn="btn-outline"] .btn-secondary { color: var(--text); border-color: var(--border); }
 .L-page[data-btn="btn-outline"] .btn-secondary:hover { background: transparent; color: var(--accent); border-color: var(--accent); }
 .L-page[data-btn="btn-outline"] :is(.field input, .L-form input, .L-form textarea, .L-form select) { border-radius: 0; }

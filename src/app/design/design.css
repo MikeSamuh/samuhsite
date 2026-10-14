@@ -991,6 +991,18 @@ h1.display em {
   box-shadow: none;
 }
 
+/* the alternate: accent 2, the cyan, for a call to action that sits beside
+   the primary without competing with it */
+.btn-alt {
+  background: var(--accent-2);
+  color: var(--on-accent-2);
+}
+
+.btn-alt:hover {
+  box-shadow: 0 6px 0 -2px color-mix(in srgb, var(--accent-2) 34%, transparent),
+              0 0 32px color-mix(in srgb, var(--accent-2) 26%, transparent);
+}
+
 /* ---------- sections ---------- */
 
 section.band {

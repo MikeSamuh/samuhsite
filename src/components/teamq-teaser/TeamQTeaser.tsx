@@ -9,6 +9,7 @@ import { useLeadSubmit } from "@/components/lead/useLeadSubmit";
 import { track } from "@/lib/analytics";
 import { CONTACT_EMAIL } from "@/lib/contact-details";
 import { EMAIL_SHAPE, PERSONAL_DOMAINS } from "@/lib/lead";
+import type { Lead } from "@/lib/lead";
 import { mhqBand } from "@/lib/tokens";
 import { Capacity } from "./Capacity";
 import {
@@ -178,7 +179,7 @@ export function TeamQTeaser({ baseline, answer }: { baseline: TeaserResult; answ
           </fieldset>
           <div className="teaser-actions">
             {MODEL_VERIFIED ? (
-              <button className="btn" type="button" onClick={showOptimized} disabled={optimized}>
+              <button className="btn btn-alt" type="button" onClick={showOptimized} disabled={optimized}>
                 Show me the optimized TeamQ <span className="arrow">&rarr;</span>
               </button>
             ) : null}
@@ -337,10 +338,11 @@ function Ask({ values }: { values: Values }) {
 
     const name = text("name");
     const organization = text("organization");
-    const found = !name ? "Enter your name." : !organization ? "Enter your company." : undefined;
+    const teamSize = text("teamSize") as Lead["teamSize"] | "";
+    const found = !name ? "Enter your name." : !organization ? "Enter your company." : !teamSize ? "Pick a team size." : undefined;
     setError(found);
     if (found) {
-      focusField(name ? "organization" : "name");
+      focusField(!name ? "name" : !organization ? "organization" : "teamSize");
       return;
     }
 
@@ -348,6 +350,8 @@ function Ask({ values }: { values: Values }) {
       email,
       name,
       organization,
+      teamSize: teamSize || undefined,
+      change: text("change") || undefined,
       role: text("role") || undefined,
       phone: text("phone") || undefined,
       answers: values,
@@ -362,12 +366,13 @@ function Ask({ values }: { values: Values }) {
   return (
     <section className="teaser-ask" id="ask" aria-labelledby="teaser-ask-title">
       <div>
+        {/* TODO(content): the client's words, 14 Oct: start here */}
+        <p className="eyebrow L-eyebrow">TeamQ assessment</p>
         <h2 className="teaser-ask-title" id="teaser-ask-title">
-          Assess your team.
+          Start here to get your team&rsquo;s TeamQ assessment.
         </h2>
         <p>
-          Let&rsquo;s see how optimized your team is. Leave your details and a person at SAMUH will be in touch
-          about measuring it.
+          Leave your details and a person at SAMUH will be in touch about measuring your team. Two short steps.
         </p>
       </div>
       <form className="lead-form" ref={form} onSubmit={step === 1 ? onContinue : onSubmit} noValidate>
@@ -395,8 +400,24 @@ function Ask({ values }: { values: Values }) {
               onChange={(event) => setCompany(event.target.value)}
               error={error === "Enter your company." ? error : undefined}
             />
+            <Field
+              label="Roughly how many people are on your team"
+              name="teamSize"
+              as="select"
+              required
+              defaultValue=""
+              options={[
+                { value: "", label: "Pick one" },
+                { value: "1-10", label: "1 to 10" },
+                { value: "11-50", label: "11 to 50" },
+                { value: "51-200", label: "51 to 200" },
+                { value: "200+", label: "More than 200" },
+              ]}
+              error={error === "Pick a team size." ? error : undefined}
+            />
             <Field label="Role" name="role" autoComplete="organization-title" placeholder="Head of People, Team Lead, CEO" />
             <Field label="Phone" name="phone" type="tel" autoComplete="tel" inputMode="tel" />
+            <Field label="What are you hoping to change" name="change" as="textarea" rows={3} placeholder="Optional. A line or two." />
             <Honeypot />
           </div>
         )}
