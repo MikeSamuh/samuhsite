@@ -371,12 +371,18 @@ visitor's team (rule 4).
    simulator's own optimizer result (its best three levers for productive
    days, the same search as its Optimize) to the inputs and explains it in
    a sentence
-6. The ask, always visible below. Optional, never a gate. Heading "Want to
-   get your team's TeamQ?" A light B2B intake in two steps (decided
-   12 Oct): first the work email alone, then name, company, role and
-   phone (role and phone optional), the company offered from the email's
-   domain for the visitor to correct
-   (nothing offered for a personal address). The email is posted as soon
+6. The ask, always visible below, standing clear of the tool under its own
+   rule. Optional, never a gate. Heading "Start here to get your team's
+   TeamQ assessment." (decided 14 Oct; the home's "Get your team's
+   assessment" lands on it, `#ask`). A light B2B intake in three steps
+   (decided 12 Oct, three steps from 14 Oct): first the work email alone;
+   then name, role and phone, the name offered from the address
+   ("jane.doe@" offers "Jane Doe", nothing for a desk address like
+   "info@"); then company, roughly how many people are on the team (the
+   flow 3 bands) and what they are hoping to change. Name, company and
+   team size required, the rest optional; the company offered from the
+   email's domain for the visitor to correct (nothing offered for a
+   personal address). The email is posted as soon
    as it is given, `stage: "email"`, so the CRM has the person if the
    rest never comes; the whole thing is posted at the end,
    `stage: "complete"`. The notify email goes once, on complete. Honeypot
@@ -386,7 +392,8 @@ visitor's team (rule 4).
 ### Posts
 
 `flow: "teaser"`, `answers` is the full input state keyed by factor id,
-`role` is the job title, `stage` says which of the two posts it is.
+`role` is the job title, `teamSize` and `change` as in flow 3, `stage` says
+which of the two posts it is.
 
 ### Where it lives
 
