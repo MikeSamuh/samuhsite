@@ -461,8 +461,10 @@
 /* long enough that each state holds under the hand: where we focus has
    close to a screen's worth of scroll to itself */
 .L-s-circles[data-v="morph"] { min-height: 380vh; }
-/* the head and key arrive with the circles, as the section climbs into view */
-.L-s-circles[data-v="morph"] .L-fm-side { opacity: clamp(0, (var(--g, 0) - 0.15) / 0.6, 1); transform: translateY(calc((1 - var(--g, 0)) * 24px)); }
+/* the head arrives first as the section climbs into view (--h), the key
+   and the circles close behind it (--g) */
+.L-s-circles[data-v="morph"] .L-fm-head { opacity: var(--h, var(--g, 0)); transform: translateY(calc((1 - var(--h, var(--g, 0))) * 20px)); }
+.L-s-circles[data-v="morph"] .L-fm-key { opacity: clamp(0, (var(--g, 0) - 0.1) / 0.5, 1); transform: translateY(calc((1 - clamp(0, (var(--g, 0) - 0.1) / 0.5, 1)) * 20px)); }
 /* the pinned stage fills the view under the nav, its content centred in
    it, so the picture is not left sitting over a blank half-screen */
 .L-s-circles[data-v="morph"] > .L-wrap { position: sticky; top: var(--nav-h, 0px); min-height: calc(100vh - var(--nav-h, 0px)); padding-top: calc(32px * var(--space, 1)); padding-bottom: calc(32px * var(--space, 1)); align-content: center; }
@@ -470,7 +472,7 @@
 .L-s-circles[data-v="morph"] .L-fm-in { opacity: clamp(0, (var(--p, 0) - 0.25) / 0.5, 1); }
 /* the words and the key wait for the circles to have grown from the dot */
 .L-s-circles[data-v="morph"] .L-c-t.L-fm-out { opacity: min(clamp(0, 1 - var(--p, 0) / 0.4, 1), clamp(0, (var(--g, 0) - 0.6) / 0.4, 1)); }
-.L-s-circles[data-v="morph"] .L-fm-legend-3 { opacity: min(clamp(0, 1 - (var(--p, 0) - 0.3) / 0.2, 1), clamp(0, (var(--g, 0) - 0.5) / 0.5, 1)); }
+.L-s-circles[data-v="morph"] .L-fm-legend-3 { opacity: clamp(0, 1 - (var(--p, 0) - 0.3) / 0.2, 1); }
 .L-s-circles[data-v="morph"] :is(.L-c-t, .L-fm-mark).L-fm-in { opacity: clamp(0, (var(--p, 0) - 0.6) / 0.4, 1); }
 /* the team arrives: its ring and its word grow in with --q, its key entry after */
 .L-s-circles[data-v="morph"] .L-fm-arrive { opacity: clamp(0, (var(--q, 0) - 0.15) / 0.5, 1); }
@@ -479,15 +481,16 @@
 .L-s-circles[data-v="morph"] .L-fm-legend-3 .L-fm-item { overflow: hidden; }
 .L-s-circles[data-v="morph"] .L-fm-legend-3 .L-fm-item-team { opacity: clamp(0, (var(--q, 0) - 0.45) / 0.35, 1); max-height: calc(var(--q, 0) * 200px); margin-bottom: calc(-16px * (1 - var(--q, 0))); }
 .L-s-circles[data-v="morph"] .L-fm-legend-3 :is(.L-fm-item-ind, .L-fm-item-org) { opacity: clamp(0, 1 - var(--q, 0) / 0.4, 1); max-height: calc((1 - var(--q, 0)) * 200px); margin-bottom: calc(-16px * var(--q, 0)); }
-/* the heads take turns: where others focus leaves as the team arrives,
-   where we focus holds until the Venn, SAMUH at the centre comes with it */
-.L-s-circles[data-v="morph"] .L-fm-head.L-fm-h0 { opacity: clamp(0, 1 - (var(--q, 0) - 0.3) / 0.25, 1); }
-.L-s-circles[data-v="morph"] .L-fm-head.L-fm-h1 { opacity: min(clamp(0, (var(--q, 0) - 0.55) / 0.25, 1), clamp(0, 1 - (var(--p, 0) - 0.3) / 0.2, 1)); }
-.L-s-circles[data-v="morph"] :is(.L-fm-head, .L-fm-legend).L-fm-in { opacity: clamp(0, (var(--p, 0) - 0.5) / 0.2, 1); }
+/* the titles take turns under one fixed eyebrow and rule: where others
+   focus leaves as the team arrives, where we focus holds until the Venn,
+   SAMUH at the centre comes with it */
+.L-s-circles[data-v="morph"] .L-fm-title.L-fm-h0 { opacity: clamp(0, 1 - (var(--q, 0) - 0.3) / 0.25, 1); }
+.L-s-circles[data-v="morph"] .L-fm-title.L-fm-h1 { opacity: min(clamp(0, (var(--q, 0) - 0.55) / 0.25, 1), clamp(0, 1 - (var(--p, 0) - 0.3) / 0.2, 1)); }
+.L-s-circles[data-v="morph"] :is(.L-fm-title, .L-fm-legend).L-fm-in { opacity: clamp(0, (var(--p, 0) - 0.5) / 0.2, 1); }
 /* whatever has faded out takes no pointer. The two keys share a cell, and
    the hidden one was catching hovers meant for the one on show, lighting
    the wrong circle */
-.L-fm-head[aria-hidden="true"], .L-fm-legend[aria-hidden="true"], .L-fm-item[data-off] { pointer-events: none; }
+.L-fm-title[aria-hidden="true"], .L-fm-legend[aria-hidden="true"], .L-fm-item[data-off] { pointer-events: none; }
 /* the picture takes the whole content column, so it draws large */
 .L-page[data-comp="comp-editorial"] .L-s-circles[data-v="morph"] .L-circ { grid-template-columns: 1fr; justify-items: center; gap: 28px; }
 .L-fm .L-c-svg { max-width: none; cursor: default; }
@@ -528,9 +531,12 @@
 .L-page[data-comp="comp-editorial"] .L-s-circles[data-v="morph"] > .L-wrap { grid-template-columns: minmax(220px, 320px) 1fr; align-items: center; }
 .L-page[data-comp="comp-editorial"] .L-s-circles[data-v="morph"] > .L-wrap > .L-fm-side { grid-column: 1; grid-row: 1; }
 .L-fm-side { display: grid; gap: 28px; align-content: center; }
-.L-fm-heads { display: grid; }
-.L-fm-head { grid-area: 1 / 1; }
 .L-page[data-comp="comp-editorial"] .L-sec-h .L-fm-head { position: static; }
+/* the titles share one cell under the rule, which stays put while they swap */
+.L-fm-titles { display: grid; width: 100%; }
+.L-fm-title { grid-area: 1 / 1; }
+.L-page[data-comp="comp-editorial"] .L-fm-titles { order: 3; border-top: var(--rule-fat) solid var(--accent); padding-top: 12px; }
+.L-page[data-comp="comp-editorial"] .L-s-circles[data-v="morph"] .L-head h2.sec.L-fm-title { border-top: 0; padding-top: 0; }
 .L-page[data-comp="comp-editorial"] .L-s-circles[data-v="morph"] > .L-wrap > .L-fm { grid-column: 2; grid-row: 1; }
 .L-fm { width: 100%; }
 .L-fm-key { display: grid; width: 100%; }
@@ -807,18 +813,53 @@
 .L-sec[data-v="split"] .L-start { grid-template-columns: 1.2fr 1fr; align-items: center; }
 .L-sec[data-v="split"] .field { display: none; }
 
-/* ---------- footer ---------- */
+/* ---------- 13 faq ---------- */
+
+/* questions down the page, one open at a time (the details share a name).
+   Hairlines between, the question in the display face, a plus that turns
+   to a cross */
+.L-faq { display: grid; border-top: var(--rule-thin) solid var(--border); }
+.L-faq-item { border-bottom: var(--rule-thin) solid var(--border); }
+.L-faq-q {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  gap: 24px;
+  padding: 20px 0;
+  cursor: pointer;
+  list-style: none;
+  font-family: var(--font-display);
+  font-weight: var(--display-weight);
+  font-style: var(--display-style, normal);
+  letter-spacing: var(--display-tracking);
+  font-size: clamp(19px, 1.9cqw, 24px);
+  line-height: 1.25;
+  transition: color var(--dur) var(--ease);
+}
+.L-faq-q::-webkit-details-marker { display: none; }
+.L-faq-q:hover, .L-faq-item[open] .L-faq-q { color: var(--accent); }
+.L-faq-q:focus-visible { outline: var(--rule-fat) solid var(--accent-2); outline-offset: 4px; }
+.L-faq-mark { font-family: var(--font-caption); font-size: 1.1em; line-height: 1; color: var(--muted); transition: transform var(--dur) var(--ease), color var(--dur) var(--ease); }
+.L-faq-item[open] .L-faq-mark { transform: rotate(45deg); color: var(--accent); }
+.L-faq-a { margin: 0; padding: 0 0 24px; max-width: 64ch; font-size: 17px; line-height: 1.6; color: var(--muted); }
+@media (prefers-reduced-motion: reduce) {
+  .L-faq-q, .L-faq-mark { transition: none; }
+}
 
 /* ---------- footer ---------- */
 
 /* a band on the surface colour: the logo and the line on the left, two
    short columns on the right, the legal row under a hairline */
 .L-foot { margin-top: calc(40px * var(--space, 1)); padding: calc(72px * var(--space, 1)) 0 0; background: var(--surface); border-top: var(--rule-thin) solid var(--border); }
-.L-foot-grid { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(140px, 0.6fr) minmax(200px, 0.8fr); gap: 40px clamp(32px, 5cqw, 80px); align-items: start; padding-bottom: calc(56px * var(--space, 1)); }
+/* the brand with the partner mark, then three link columns */
+.L-foot-grid { display: grid; grid-template-columns: minmax(0, 1.5fr) repeat(3, minmax(150px, 0.7fr)); gap: 40px clamp(28px, 4cqw, 64px); align-items: start; padding-bottom: calc(56px * var(--space, 1)); }
 .L-foot-brand { display: grid; gap: 22px; justify-items: start; }
-.L-foot-logo { display: inline-block; width: calc(44px * 960 / 285); }
+.L-foot-logo { display: inline-block; width: calc(52px * 960 / 285); }
 .L-foot-logo img { width: 100%; height: auto; filter: brightness(0) invert(1); }
-.L-foot-partner { line-height: 1.6; }
+.L-foot-about { margin: 0; max-width: 34ch; font-size: 15px; line-height: 1.55; color: var(--muted); }
+.L-foot-partner { display: grid; gap: 10px; justify-items: start; text-decoration: none; }
+.L-foot-partner img { width: 132px; height: auto; filter: brightness(0) invert(1); opacity: 0.85; transition: opacity var(--dur) var(--ease); }
+.L-foot-partner:hover img { opacity: 1; }
 .L-foot-line { margin: 0; max-width: 18ch; font-family: var(--font-display); font-weight: var(--display-weight); font-style: var(--display-style); letter-spacing: var(--display-tracking); line-height: 1.1; font-size: clamp(26px, 3cqw, 40px); color: var(--text); text-wrap: balance; }
 .L-foot-col { display: grid; gap: 12px; justify-items: start; align-content: start; }
 .L-foot-h { color: var(--accent); margin-bottom: 6px; }
@@ -827,6 +868,9 @@
 .L-foot-todo { color: var(--muted); cursor: default; }
 .L-foot-cta { margin-top: 10px; }
 .L-foot-base { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-top: 22px; padding-bottom: 30px; border-top: var(--rule-thin) solid var(--border); }
+.L-foot-legal { display: flex; flex-wrap: wrap; gap: 8px 22px; }
+.L-foot-legal a { text-decoration: none; cursor: pointer; transition: color var(--dur) var(--ease); }
+.L-foot-legal a:hover { color: var(--accent); }
 
 /* ---------- narrow frames ---------- */
 
@@ -868,12 +912,12 @@
 }
 
 @container page (max-width: 900px) {
-  .L-foot-grid { grid-template-columns: 1fr 1fr; }
+  .L-foot-grid { grid-template-columns: 1fr 1fr 1fr; }
   .L-foot-brand { grid-column: 1 / -1; }
 }
 
 @container page (max-width: 560px) {
-  .L-foot-grid { grid-template-columns: 1fr; }
+  .L-foot-grid { grid-template-columns: 1fr 1fr; }
   .L-foot-base { flex-direction: column; gap: 10px; }
   /* the bar shows the Samuh mark at every scroll position: the full
      wordmark does not fit beside the call to action and the burger */

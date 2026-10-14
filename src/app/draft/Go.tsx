@@ -21,7 +21,7 @@ export function useGo(draft: DraftId) {
 export function DraftHome({ draft, demo }: { draft: DraftId; demo?: TeaserDemoProps }) {
   const go = useGo(draft);
   const d = getDraft(draft);
-  const sections = d.order ? d.order.map((id) => SECTIONS.find((s) => s.id === id)!).filter(Boolean) : SECTIONS;
+  const sections = d.order ? d.order.map((id) => SECTIONS.find((s) => s.id === id)!).filter(Boolean) : SECTIONS.filter((s) => !s.optIn);
   return (
     <>
       {sections.map((s) => {

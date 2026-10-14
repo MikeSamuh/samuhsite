@@ -348,6 +348,15 @@ follows the pointer on a short tether and never leaves the lens. The tool
 section asks for the assessment: "Find out where your team is leaking",
 with the button "Get your team's assessment". — Client
 
+**2026-10-14 — FAQ and the footer, on the working draft.** Ten questions
+sit before the close, one open at a time, written from the brief and the
+confirmed content only and marked for SAMUH to approve. The section is
+opt-in, so B does not get it. The footer carries the logo, the line, a
+sentence on what SAMUH does, the Sapien Labs mark, and three columns:
+Company, Resources (Insights, TeamQ, the Work Culture Report, the Human
+Expansion channel) and Talk to us. Privacy, Terms and Cookies are links to
+pages that do not exist yet. — Wilfred
+
 **2026-10-13 — Home, third pass, on the working draft.** Where we focus
 opens from a dot, the individual at the organization's centre, and the
 head and key sit in a left column level with the picture, under the eyebrow
