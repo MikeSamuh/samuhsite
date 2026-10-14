@@ -413,10 +413,6 @@ function Ask({ values }: { values: Values }) {
         <h2 className="teaser-ask-title" id="teaser-ask-title">
           Start here to get your team&rsquo;s TeamQ assessment.
         </h2>
-        <p>
-          Let&rsquo;s see how optimized your team is. Leave your details and a person at SAMUH will be in touch
-          about measuring it.
-        </p>
       </div>
       <form className="lead-form" ref={form} onSubmit={onSubmit} noValidate>
         <p className="lead-step L-cap" aria-live="polite">Step {step} of 3</p>
