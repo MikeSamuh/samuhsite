@@ -561,8 +561,9 @@
   grid-template-columns: 1fr 1.2fr;
   gap: 40px;
   align-items: start;
-  padding-top: 40px;
-  border-top: var(--rule-thin) solid var(--border);
+  margin-top: calc(72px * var(--space, 1));
+  padding-top: calc(64px * var(--space, 1));
+  border-top: var(--rule-fat) solid var(--accent);
 }
 
 .teaser-ask-title {
