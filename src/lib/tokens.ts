@@ -1142,6 +1142,10 @@ export function cssVars(combo: Combo): React.CSSProperties {
     "--accent-3": data.hex,
     "--on-accent-3": data.on,
     "--accent-4": wash.hex,
+    /* the fourth capacity in the Where we focus picture: a yellow that sits
+       apart from both accents, whatever they are. Butter, the softest of
+       the three, since it fills a circle */
+    "--accent-yellow": (ACCENTS.find((a) => a.id === "yellow-butter") ?? accent).hex,
     "--accent-grad": accent3
       ? `linear-gradient(135deg, ${accent.hex}, ${accent2.hex}, ${accent3.hex})`
       : `linear-gradient(135deg, ${accent.hex}, ${accent2.hex})`,

@@ -41,12 +41,13 @@ function list(items: string[]): string {
   return `${items.slice(0, -1).join(", ")} and ${items[items.length - 1]}`;
 }
 
-/* the timeline, in ms */
-const LEAD_IN = 700;
-const PER_BAR = 950;
+/* the timeline, in ms. No pause longer than half a second: the bars go one
+   after another, the readout rolls, holds a beat, and it starts again */
+const LEAD_IN = 400;
+const PER_BAR = 800;
 const ROLL = 900;
-const HOLD = 3400;
-const RESET = 1500;
+const HOLD = 500;
+const RESET = 500;
 
 /** A number that rolls from where it was to `target` over `ms`, or snaps
  *  when rolling is off. */
@@ -138,6 +139,10 @@ export function TeaserDemo({ baseline, answer }: TeaserDemoProps) {
   }, [inView, reduced, cycle, count]);
 
   const shown = landed ? answer.score : baseline;
+  const bars = [
+    ...answer.levers.flatMap((lever) => { const factor = FACTORS.find((f) => f.id === lever.id); return factor ? [{ factor, lever }] : []; }),
+    ...FACTORS.filter((f) => !answer.levers.some((l) => l.id === f.id)).map((factor) => ({ factor, lever: undefined })),
+  ];
   const days = useRolling(shown.days, ROLL, !reduced);
   const mhq = useRolling(shown.mhq, ROLL, !reduced);
 
@@ -147,16 +152,18 @@ export function TeaserDemo({ baseline, answer }: TeaserDemoProps) {
         A demonstration team of {TEAM_SIZE}. Moving {list(answer.levers.map((l) => `${l.label} to ${l.value}`))} takes
         them from {one(baseline.days)} to {one(answer.score.days)} productive days a month.
       </p>
-      <div className="demo-bars" aria-hidden="true">
-        {answer.levers.map((lever, i) => {
-          const factor = FACTORS.find((f) => f.id === lever.id);
-          if (!factor) return null;
-          const moved = step > i;
-          const value = moved ? lever.value : BASELINE[lever.id];
+      {/* every factor, the three that move at the top, the rest resting at
+          the baseline and fading out at the foot: there are many more than
+          three, and this is a glimpse */}
+      <div className="demo-bars-wrap" aria-hidden="true">
+      <div className="demo-bars">
+        {bars.map(({ factor, lever }, i) => {
+          const moved = !!lever && step > i;
+          const value = moved && lever ? lever.value : BASELINE[factor.id];
           const fill = ((value - factor.min) / (factor.max - factor.min)) * 100;
           return (
-            <div className="demo-bar" data-moved={moved} key={lever.id}>
-              <span className="demo-bar-label">{lever.label}</span>
+            <div className="demo-bar" data-moved={moved} key={factor.id}>
+              <span className="demo-bar-label">{factor.label}</span>
               <span className="demo-bar-value">{value}</span>
               <span className="demo-track" style={{ "--fill": `${fill}%` } as React.CSSProperties}>
                 <span className="demo-fill" />
@@ -165,6 +172,7 @@ export function TeaserDemo({ baseline, answer }: TeaserDemoProps) {
             </div>
           );
         })}
+      </div>
       </div>
       <div className="teaser-readout demo-readout" data-landed={landed} aria-hidden="true">
         <div className="teaser-headline">

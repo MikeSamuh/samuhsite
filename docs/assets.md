@@ -67,6 +67,11 @@ cropped to the lettering and scaled to 960px wide. It is dark lettering, so on
 the dark stage it is turned white with a CSS filter rather than by editing the
 file. Good enough for the style picker, not for launch.
 
+**The star.** `public/samuh-star.png` is the seven-point star the client
+supplied on 12 October, 2000 by 2000, white on transparent. It sits where
+the four capacities meet in the Where we focus picture. Placed as is, no
+filter, never redrawn.
+
 ## Received but out of scope
 
 Mike and the team have shared material for the platform rather than the site.

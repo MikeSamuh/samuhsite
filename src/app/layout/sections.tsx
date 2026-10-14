@@ -3,7 +3,7 @@
 import { useEffect, useId, useRef, useState, type TouchEvent } from "react";
 import { REPORT } from "@/lib/report";
 import Image from "next/image";
-import { PAGES, SECTIONS, type PageId } from "@/lib/layout";
+import { PAGES, SECTIONS, type PageId, type SectionId } from "@/lib/layout";
 import { TEAM_SIZE } from "@/components/teamq-teaser/model";
 import { TeaserDemo, type TeaserDemoProps } from "@/components/teamq-teaser/TeaserDemo";
 import { CONTACT_EMAIL } from "@/lib/contact-details";
@@ -145,6 +145,16 @@ export function Nav({ page, go, menu, links: order, brand = "wordmark", partner 
 // deck and the brief. No figures, no invented endorsements. Frames stand in
 // for imagery and video.
 
+/** Inline colour in copy strings: *words* take the primary, ~words~ the
+ *  secondary. Nothing else is parsed. */
+export function rich(text: string): React.ReactNode[] {
+  return text.split(/(\*[^*]+\*|~[^~]+~)/).map((part, i) => {
+    if (part.startsWith("*") && part.endsWith("*")) return <em className="L-hl" key={i}>{part.slice(1, -1)}</em>;
+    if (part.startsWith("~") && part.endsWith("~")) return <em className="L-hl-2" key={i}>{part.slice(1, -1)}</em>;
+    return part;
+  });
+}
+
 export function Head({ def }: { def: (typeof SECTIONS)[number] }) {
   return (
     <div className="L-head">
@@ -153,9 +163,7 @@ export function Head({ def }: { def: (typeof SECTIONS)[number] }) {
         {def.kicker ? <p className="eyebrow L-eyebrow">{def.kicker}</p> : null}
         <h2 className="sec">{def.title}</h2>
         {def.sub ? (
-          <p className="L-sub">
-            {def.sub.split(/\*([^*]+)\*/).map((part, i) => (i % 2 ? <em className="L-hl" key={i}>{part}</em> : part))}
-          </p>
+          <p className="L-sub">{rich(def.sub)}</p>
         ) : null}
       </div>
     </div>
@@ -361,6 +369,41 @@ export function Circles() {
   );
 }
 
+/** Scroll-linked arrival: --r goes from 0, the element's top at the foot of
+ *  the view, to 1, its top at the middle, and stays at 1 once there. The
+ *  fade and the rise read --r (layout.css, "reveal"), so they move with the
+ *  hand, not on a timer. Reduced motion shows the element in place. */
+function useScrollReveal<T extends HTMLElement>(ref: React.RefObject<T | null>) {
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) { el.style.setProperty("--r", "1"); el.dataset.in = "true"; return; }
+    let raf = 0;
+    let done = false;
+    const read = () => {
+      raf = 0;
+      if (done) return;
+      const vh = window.innerHeight;
+      const top = el.getBoundingClientRect().top;
+      const r = Math.max(0, Math.min(1, (vh - top) / (vh * 0.5)));
+      el.style.setProperty("--r", r.toFixed(3));
+      if (r >= 1) { done = true; el.dataset.in = "true"; }
+    };
+    const on = () => { if (!raf) raf = requestAnimationFrame(read); };
+    read();
+    window.addEventListener("scroll", on, { passive: true });
+    window.addEventListener("resize", on);
+    return () => { window.removeEventListener("scroll", on); window.removeEventListener("resize", on); cancelAnimationFrame(raf); };
+  }, [ref]);
+}
+
+/** Fades its content up as it scrolls into view. */
+export function Reveal({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  useScrollReveal(ref);
+  return <div className={`L-reveal${className ? ` ${className}` : ""}`} ref={ref}>{children}</div>;
+}
+
 export function Dictionary() {
   const say = () => {
     const a = new Audio("/samuh.m4a");
@@ -510,7 +553,7 @@ export function MetaphorGallery({ cards = ARCHETYPES }: { cards?: [string, strin
 /** The Sapien Labs report: its cover, the one-line claim, and the download.
  *  The research spine of the site, so it shows on the home page and again
  *  at the top of Insights. */
-export function ReportCard({ cls }: { cls?: string }) {
+export function ReportCard({ cls, onlyDownload }: { cls?: string; /** the download alone, no link to the page on sapienlabs.org */ onlyDownload?: boolean }) {
   return (
     <blockquote className={`L-research L-report${cls ? ` ${cls}` : ""}`}>
       <a className="L-report-cover" href={REPORT.pdf} target="_blank" rel="noopener noreferrer" aria-label={`${REPORT.title}, PDF`}>
@@ -522,7 +565,7 @@ export function ReportCard({ cls }: { cls?: string }) {
         <span className="L-cap">{REPORT.kicker}</span>
         <p className="L-report-links">
           <a href={REPORT.pdf} className="inline-link" target="_blank" rel="noopener noreferrer">Download the report <span className="arrow">&rarr;</span></a>
-          <a href={REPORT.page} className="inline-link" target="_blank" rel="noopener noreferrer">On sapienlabs.org</a>
+          {onlyDownload ? null : <a href={REPORT.page} className="inline-link" target="_blank" rel="noopener noreferrer">On sapienlabs.org</a>}
         </p>
       </div>
     </blockquote>
@@ -673,6 +716,7 @@ export function Frame({ label, tall }: { label: string; tall?: boolean }) {
 export interface CopyOverrides {
   /** null removes the hero lede */
   heroLede?: string | null;
+  /** *words* in the primary, ~words~ in the secondary */
   thesis?: string;
   /** the dictionary entry sits beside the thesis on desktop, and the meaning section is not rendered on its own */
   thesisWithMeaning?: boolean;
@@ -692,6 +736,12 @@ export interface CopyOverrides {
   caseWithResearch?: boolean;
   /** which metaphor cards to show, in order; default is every card */
   cards?: [string, string, string][];
+  /** the line under the close's question; null for none */
+  startSub?: string | null;
+  /** the dictionary and the leak line fade up as they come into view */
+  revealIntro?: boolean;
+  /** whole sections whose content fades up as they come into view */
+  revealSections?: SectionId[];
   /** the tool section's words: its head, the pitch under the demo and the button */
   tool?: { kicker?: string; title?: string; /** null: no pitch, the button alone */ pitch?: string | null; cta?: string };
 }
@@ -699,8 +749,12 @@ export interface CopyOverrides {
 export function Section({ def, variant, go, copy = {}, demo }: { def: (typeof SECTIONS)[number]; variant: string; go: (p: PageId) => void; copy?: CopyOverrides; /** the tool's numbers, scored on the server; with them, section 9 shows the bars moving */ demo?: TeaserDemoProps }) {
   const v = variant.replace(`${def.id}-`, "");
   const headed = !["hero", "thesis", "meaning", "start"].includes(def.id) && !(def.id === "voices" && v === "carousel");
+  const reveal = !!copy.revealSections?.includes(def.id);
+  const secRef = useRef<HTMLElement>(null);
+  const noRef = useRef<HTMLElement>(null);
+  useScrollReveal(reveal ? secRef : noRef);
   return (
-    <section className={`L-sec L-s-${def.id}${headed ? " L-sec-h" : ""}`} data-v={v} data-n={String(def.n).padStart(2, "0")} id={def.id}>
+    <section className={`L-sec L-s-${def.id}${headed ? " L-sec-h" : ""}`} data-v={v} data-n={String(def.n).padStart(2, "0")} id={def.id} ref={secRef} data-reveal={reveal || undefined}>
       {/* the close carries the synapse field, parallaxed against the band */}
       {def.id === "start" && <Synapse scope="section" />}
       <div className="L-wrap">
@@ -726,15 +780,20 @@ export function Section({ def, variant, go, copy = {}, demo }: { def: (typeof SE
         {def.id === "thesis" && (
           <>
           {copy.eyebrowOnThesis && !copy.noEyebrow ? <p className="eyebrow L-thesis-eyebrow">Organizational and high-performance consulting</p> : null}
-          <div className={`L-thesis-in${copy.thesisWithMeaning ? " L-thesis-duo" : ""}`}>
-            <p className="L-big">{copy.thesis ?? "Every leadership team leaks performance. Few can see where. You have already paid for the talent. The question is whether the team\u2019s conditions let you get the full return."}</p>
-            {copy.thesisWithMeaning ? <Dictionary /> : null}
-            {copy.noPartnerLine ? null : <span className="L-cap">In partnership with Sapien Labs</span>}
-          </div>
+          {(() => {
+            const inner = (
+              <div className={`L-thesis-in${copy.thesisWithMeaning ? " L-thesis-duo" : ""}`}>
+                <p className="L-big">{rich(copy.thesis ?? "Every leadership team leaks performance. Few can see where. You have already paid for the talent. The question is whether the team\u2019s conditions let you get the full return.")}</p>
+                {copy.thesisWithMeaning ? <Dictionary /> : null}
+                {copy.noPartnerLine ? null : <span className="L-cap">In partnership with Sapien Labs</span>}
+              </div>
+            );
+            return copy.revealIntro ? <Reveal>{inner}</Reveal> : inner;
+          })()}
           </>
         )}
 
-        {def.id === "meaning" && !copy.thesisWithMeaning && <Dictionary />}
+        {def.id === "meaning" && !copy.thesisWithMeaning && (copy.revealIntro ? <Reveal><Dictionary /></Reveal> : <Dictionary />)}
 
         {def.id === "circles" && v === "nested" && (
           <>
@@ -812,8 +871,38 @@ export function Section({ def, variant, go, copy = {}, demo }: { def: (typeof SE
             <Head def={def} />
             <div className="L-case-wrap">
             {copy.caseWithResearch ? (
-              <ReportCard cls="L-case-research" />
+              <ReportCard cls="L-case-research" onlyDownload />
             ) : null}
+            {copy.caseWithResearch ? (
+              /* the case study in the report's shape: a portrait cover, the
+                 mark and the tag on black, beside the line and the numbers.
+                 TODO(content): the case study PDF, when SAMUH supplies it */
+              <blockquote className="L-research L-report L-case-report">
+                <a className="L-report-cover L-case-cover" href="#" onClick={stay} aria-label="SAMUH case study, PDF">
+                  <Image src="/samuh-logo.png" alt="" width={960} height={LOGO_H} sizes="160px" />
+                  <span className="L-case-cover-tag">Case study &middot; Senior leadership team, Fortune 10 healthcare company</span>
+                </a>
+                <div className="L-report-copy">
+                  <span className="card-tag">Case study &middot; Senior leadership team, Fortune 10 healthcare company</span>
+                  <p className="L-big">1 high-performance ritual. 90 days. Measurable change.</p>
+                  <dl className="L-case-stats">
+                    {[
+                      ["+39%", "most improved practice"],
+                      ["12/13", "team practices improved"],
+                      ["Embedded", "a new way of working that has stuck"],
+                    ].map(([n, l]) => (
+                      <div className="L-stat" key={n}>
+                        <dt className="L-stat-n">{n}</dt>
+                        <dd className="L-cap">{l}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                  <p className="L-report-links">
+                    <a href="#" className="inline-link" onClick={stay}>Download the case study <span className="arrow">&rarr;</span></a>
+                  </p>
+                </div>
+              </blockquote>
+            ) : (
             <div className="L-case">
               <span className="L-case-img">
                 <Image src="/case-study.png" alt="Samuh case study: 1 high-performance practice. 90 days. Measurable change." width={2490} height={1404} sizes="(max-width: 900px) 100vw, 560px" />
@@ -836,6 +925,7 @@ export function Section({ def, variant, go, copy = {}, demo }: { def: (typeof SE
                 <a href="#" className="inline-link" onClick={stay}>Read the case study</a>
               </div>
             </div>
+            )}
             </div>
           </>
         )}
@@ -902,7 +992,7 @@ export function Section({ def, variant, go, copy = {}, demo }: { def: (typeof SE
           <div className="L-start">
             <div>
               <h2 className="sec">What could stronger performance look like for your team?</h2>
-              <p className="L-mid">Free and ungated. The first insight lands before the first ask.</p>
+              {copy.startSub === null ? null : <p className="L-mid">{copy.startSub ?? "Free and ungated. The first insight lands before the first ask."}</p>}
             </div>
             <div className="L-start-actions">
               <div className="field">

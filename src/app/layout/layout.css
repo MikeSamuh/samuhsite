@@ -210,6 +210,7 @@
 .L-eyebrow::after { display: none; }
 .L-sub { margin: 10px 0 0; font-size: 17px; line-height: 1.5; color: var(--muted); max-width: 40ch; }
 .L-hl { font-style: normal; color: var(--accent); }
+.L-hl-2 { font-style: normal; color: var(--accent-2); }
 
 .L-cap {
   font-family: var(--font-caption);
@@ -457,24 +458,31 @@
    so something is always on screen; the words, the heads and the key
    leave early and arrive late, so no two sets overlap. Three heads share
    one cell and take turns, two keys share another */
-.L-s-circles[data-v="morph"] { min-height: 300vh; }
+/* long enough that each state holds under the hand: where we focus has
+   close to a screen's worth of scroll to itself */
+.L-s-circles[data-v="morph"] { min-height: 380vh; }
+/* the head and key arrive with the circles, as the section climbs into view */
+.L-s-circles[data-v="morph"] .L-fm-side { opacity: clamp(0, (var(--g, 0) - 0.15) / 0.6, 1); transform: translateY(calc((1 - var(--g, 0)) * 24px)); }
 /* the pinned stage fills the view under the nav, its content centred in
    it, so the picture is not left sitting over a blank half-screen */
 .L-s-circles[data-v="morph"] > .L-wrap { position: sticky; top: var(--nav-h, 0px); min-height: calc(100vh - var(--nav-h, 0px)); padding-top: calc(32px * var(--space, 1)); padding-bottom: calc(32px * var(--space, 1)); align-content: center; }
 .L-s-circles[data-v="morph"] .L-fm-out { opacity: clamp(0, 1 - (var(--p, 0) - 0.25) / 0.5, 1); }
 .L-s-circles[data-v="morph"] .L-fm-in { opacity: clamp(0, (var(--p, 0) - 0.25) / 0.5, 1); }
-.L-s-circles[data-v="morph"] .L-c-t.L-fm-out { opacity: clamp(0, 1 - var(--p, 0) / 0.4, 1); }
+/* the words and the key wait for the circles to have grown from the dot */
+.L-s-circles[data-v="morph"] .L-c-t.L-fm-out { opacity: min(clamp(0, 1 - var(--p, 0) / 0.4, 1), clamp(0, (var(--g, 0) - 0.6) / 0.4, 1)); }
+.L-s-circles[data-v="morph"] .L-fm-legend-3 { opacity: min(clamp(0, 1 - (var(--p, 0) - 0.3) / 0.2, 1), clamp(0, (var(--g, 0) - 0.5) / 0.5, 1)); }
 .L-s-circles[data-v="morph"] :is(.L-c-t, .L-fm-mark).L-fm-in { opacity: clamp(0, (var(--p, 0) - 0.6) / 0.4, 1); }
 /* the team arrives: its ring and its word grow in with --q, its key entry after */
 .L-s-circles[data-v="morph"] .L-fm-arrive { opacity: clamp(0, (var(--q, 0) - 0.15) / 0.5, 1); }
-/* its key entry, first in the list, is shut until the circle is there, then
-   opens and fades up, so the two under it slide down to make room */
-.L-s-circles[data-v="morph"] .L-fm-legend-3 .L-fm-item-team { opacity: clamp(0, (var(--q, 0) - 0.45) / 0.35, 1); max-height: calc(var(--q, 0) * 160px); overflow: hidden; margin-bottom: calc(-16px * (1 - var(--q, 0))); }
+/* the key swaps as it arrives: the individual and the organization shut
+   and fade, the team opens and fades up in their place */
+.L-s-circles[data-v="morph"] .L-fm-legend-3 .L-fm-item { overflow: hidden; }
+.L-s-circles[data-v="morph"] .L-fm-legend-3 .L-fm-item-team { opacity: clamp(0, (var(--q, 0) - 0.45) / 0.35, 1); max-height: calc(var(--q, 0) * 200px); margin-bottom: calc(-16px * (1 - var(--q, 0))); }
+.L-s-circles[data-v="morph"] .L-fm-legend-3 :is(.L-fm-item-ind, .L-fm-item-org) { opacity: clamp(0, 1 - var(--q, 0) / 0.4, 1); max-height: calc((1 - var(--q, 0)) * 200px); margin-bottom: calc(-16px * var(--q, 0)); }
 /* the heads take turns: where others focus leaves as the team arrives,
    where we focus holds until the Venn, SAMUH at the centre comes with it */
 .L-s-circles[data-v="morph"] .L-fm-head.L-fm-h0 { opacity: clamp(0, 1 - (var(--q, 0) - 0.3) / 0.25, 1); }
 .L-s-circles[data-v="morph"] .L-fm-head.L-fm-h1 { opacity: min(clamp(0, (var(--q, 0) - 0.55) / 0.25, 1), clamp(0, 1 - (var(--p, 0) - 0.3) / 0.2, 1)); }
-.L-s-circles[data-v="morph"] .L-fm-legend.L-fm-out { opacity: clamp(0, 1 - (var(--p, 0) - 0.3) / 0.2, 1); }
 .L-s-circles[data-v="morph"] :is(.L-fm-head, .L-fm-legend).L-fm-in { opacity: clamp(0, (var(--p, 0) - 0.5) / 0.2, 1); }
 /* whatever has faded out takes no pointer. The two keys share a cell, and
    the hidden one was catching hovers meant for the one on show, lighting
@@ -487,13 +495,16 @@
 .L-fm-ring { fill: none; }
 .L-fm-ring.L-c-team { fill: color-mix(in srgb, var(--accent-4) 8%, transparent); }
 /* each circle's colour, --k: in the Venn its own, the fourth in the
-   yellow; nested, the individual and the organization stay in the text
-   colour, hot or not, and the team is always in the primary */
+   yellow; nested, the individual and the organization light in the
+   secondary (fill, stroke, the key's rule) while their names stay in the
+   text colour, and the team is always in the primary */
 .L-fm-g-org, .L-fm-item-org { --k: var(--accent-2); }
 .L-fm-g-team, .L-fm-item-team { --k: var(--accent); }
 .L-fm-g-ind, .L-fm-item-ind { --k: color-mix(in srgb, var(--accent) 45%, var(--accent-2)); }
 .L-fm-g-phys, .L-fm-item-phys { --k: var(--accent-yellow); }
-:is(.L-fm, .L-fm-side):not([data-venn]) :is(.L-fm-g-org, .L-fm-g-ind, .L-fm-item-org, .L-fm-item-ind) { --k: var(--text); }
+:is(.L-fm, .L-fm-side):not([data-venn]) :is(.L-fm-g-org, .L-fm-g-ind, .L-fm-item-org, .L-fm-item-ind) { --k: var(--accent-2); }
+.L-fm:not([data-venn]) .L-fm-g[data-on] :is(.L-c-ind, .L-c-org) { stroke: var(--k); }
+.L-fm-legend-3 .L-fm-item:is(.L-fm-item-ind, .L-fm-item-org)[data-on] dt { color: var(--text); }
 /* the Venn: the nested circles' stroke, no fill, each its own colour */
 .L-fm-venn { fill: none; stroke: var(--k); stroke-width: var(--c-stroke); vector-effect: non-scaling-stroke; transition: stroke-width var(--dur) var(--ease); }
 /* hover, in both states: the circle takes a light fill of its colour, its
@@ -527,10 +538,15 @@
 .L-fm-item { display: grid; gap: 6px; border-top: var(--rule-thin) solid var(--border); padding-top: 12px; cursor: default; transition: border-color var(--dur) var(--ease); }
 .L-fm-item[data-on] { border-top-color: var(--k); }
 .L-fm-legend .L-fm-item[data-on] dt { color: var(--k); }
-.L-fm-item dt { font-family: var(--font-display); font-weight: var(--display-weight); font-style: var(--display-style, normal); letter-spacing: var(--display-tracking); font-size: 18px; color: var(--k); }
+.L-fm-item dt { font-family: var(--font-display); font-weight: var(--display-weight); font-style: var(--display-style, normal); letter-spacing: var(--display-tracking); font-size: 18px; color: var(--k); transition: color var(--dur) var(--ease), font-weight var(--dur) var(--ease); }
+/* hot: the title goes bold with the description. The display face has one
+   weight, so the browser synthesises the bold */
+.L-fm-item[data-on] dt { font-weight: 700; }
 /* the nested key: the team in the primary, the other two plain until hot */
 .L-fm-legend-3 :is(.L-fm-item-ind, .L-fm-item-org) dt { color: var(--text); }
-.L-fm-item dd { margin: 0; font-size: 17px; line-height: 1.5; color: var(--muted); }
+.L-fm-item dd { margin: 0; font-size: 17px; line-height: 1.5; color: var(--muted); transition: color var(--dur) var(--ease), font-weight var(--dur) var(--ease); }
+/* hot: the description comes forward too, brighter and bolder */
+.L-fm-item[data-on] dd { color: var(--text); font-weight: 600; }
 .L-fm-item dd strong { font-weight: 600; color: var(--text); }
 @media (prefers-reduced-motion: reduce) {
   .L-fm-venn, .L-fm-ring, .L-fm-fill, .L-fm-cap, .L-fm-item, .L-fm .L-c-t { transition: none; }
@@ -542,6 +558,17 @@
   .L-page[data-comp="comp-editorial"] .L-s-circles[data-v="morph"] > .L-wrap > .L-fm { grid-column: 1; grid-row: 2; }
   .L-fm-legend { grid-template-columns: 1fr 1fr; gap: 14px 18px; }
   .L-page[data-comp="comp-editorial"] .L-s-circles[data-v="morph"] .L-circ { gap: 18px; }
+}
+
+/* ---------- reveal: content that fades up as it comes into view ---------- */
+
+/* --r is written by the scroll (sections.tsx, useScrollReveal): 0 at the
+   foot of the view, 1 at the middle. A short transition smooths the steps
+   between scroll events */
+.L-reveal, .L-sec[data-reveal] > .L-wrap > * { opacity: var(--r, 0); transform: translateY(calc((1 - var(--r, 0)) * 36px)); transition: opacity calc(var(--dur) * 0.8) var(--ease), transform calc(var(--dur) * 0.8) var(--ease); }
+.L-reveal[data-in], .L-sec[data-reveal][data-in] > .L-wrap > * { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .L-reveal, .L-sec[data-reveal] > .L-wrap > * { opacity: 1; transform: none; transition: none; }
 }
 
 /* ---------- 05 aspire ---------- */
@@ -597,6 +624,12 @@
 .L-report-copy .card-tag { margin-bottom: 0; }
 .L-report-copy .L-big { max-width: 30ch; }
 .L-report-links { margin: 6px 0 0; display: flex; flex-wrap: wrap; gap: 8px 24px; }
+/* the case study in the report's shape: its cover is the mark and the tag
+   on black, the same portrait as the report beside it */
+.L-case-cover { display: grid; align-content: center; justify-items: center; gap: 18px; padding: 22px; background: var(--base); text-align: center; }
+.L-case-cover img { width: 68%; height: auto; filter: brightness(0) invert(1); }
+.L-case-cover-tag { font-family: var(--font-caption); font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; line-height: 1.5; color: var(--muted); max-width: 22ch; }
+.L-case-report .L-case-stats { margin: 6px 0 0; }
 .L-sec[data-v="card"] .L-research { background: var(--surface); border: var(--rule-thin) solid var(--border); border-radius: min(var(--radius), 22px); padding: 32px; }
 .L-sec[data-v="quote"] .L-research { border-left: var(--rule-fat) solid var(--accent); padding-left: 28px; }
 .L-sec[data-v="quote"] .L-big { font-size: clamp(26px, 3.4cqw, 46px); }

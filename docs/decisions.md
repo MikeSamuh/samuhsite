@@ -334,6 +334,36 @@ moment" and its eyebrow are gone. The research claim opens the case study
 section. The equation section is off. The hero's background is the client's
 network video, a stand-in until the film, not committed. — Client
 
+**2026-10-12 — The home flow, second pass, on the working draft.** The
+dictionary comes first, straight under the hero, as one row: the word, how
+to say it and its origin on the left, the sense on the right. The leak line
+follows as its own section. Where we focus opens as "Where others focus"
+with only the individual and the organization drawn; scrolling, the team
+circle grows in and the head becomes "Where we focus"; scrolling on, the
+Venn arrives under "SAMUH works at the centre", with the supplied star at
+the middle. The eyebrows on those heads are gone. Hover in the Venn lights
+every circle under the pointer with a light fill of its colour, so a lens
+shows both of its circles and a third colour where the fills meet; the star
+follows the pointer on a short tether and never leaves the lens. The tool
+section asks for the assessment: "Find out where your team is leaking",
+with the button "Get your team's assessment". — Client
+
+**2026-10-13 — Home, third pass, on the working draft.** Where we focus
+opens from a dot, the individual at the organization's centre, and the
+head and key sit in a left column level with the picture, under the eyebrow
+"What makes us different", with "others" and "we" in the primary and the
+Venn headed "We consider all aspects"; the key shows the
+individual and the organization first and the team alone once it arrives;
+hot circles fill in their colour, the secondary for the two nested ones,
+yellow for Physical; the track is long enough to hold each state. The
+dictionary and the leak line fade up on entry under hairline rules. The
+tool's demo lists every factor, the three movers first, the rest fading
+out, with no pause over half a second; the pitch line is gone and the
+button asks for the assessment. The case study takes the report's shape
+beside it, its cover the mark and the tag on black, with one download link
+each and no link to sapienlabs.org on the home. The close keeps its
+question and the buttons, no sub line. — Client
+
 **2026-10-12 — Insights migration: migrate all 21 live posts, keep the Sapien Labs report link.**
 The live samuh.work Insights has 18 Human Expansion episodes (YouTube
 embeds with Rahul's intro blurbs), three SAMUH articles from May and June

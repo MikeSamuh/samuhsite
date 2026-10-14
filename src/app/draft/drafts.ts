@@ -64,16 +64,27 @@ export const DRAFTS: Draft[] = [
     owner: "Wilfred",
     note: "The live draft. Began on 5 October 2026 as an exact copy of B, and every edit from that day forward lands here. B stays as it was for comparison.",
     ...B_SHAPE,
-    // 12 October: the shorter home. Hero, the leak line with the dictionary
-    // beside it, where we focus morphing into the four capacities, the tool,
-    // the metaphors, testimonials, the research claim with the case study,
-    // and the close. Aspirational, research and the equation sections go,
-    // folded into their neighbours.
+    // 12 October: the shorter home. Hero, the dictionary in one row (the
+    // word on the left, the sense on the right), the leak line as its own
+    // section, where others focus becoming where we focus and then the four
+    // capacities, the tool, the metaphors, testimonials, the research claim
+    // with the case study, and the close. Aspirational, research and the
+    // equation sections go, folded into their neighbours.
     layout: { ...B_SHAPE.layout, sections: { ...B_SHAPE.layout.sections, circles: "circles-morph" } },
-    order: ["hero", "thesis", "circles", "tool", "cards", "voices", "case", "start"],
+    order: ["hero", "meaning", "thesis", "circles", "tool", "cards", "voices", "case", "start"],
     copy: {
       ...B_SHAPE.copy,
-      thesisWithMeaning: true,
+      thesis: "Most teams ~leak performance through their environment, not their effort~. Samuh finds where yours is leaking, and gives you the practices to close it.",
+      revealIntro: true,
+      revealSections: ["tool"],
+      startSub: null,
+      // TODO(content): the tool asks for the assessment, draft words
+      tool: {
+        kicker: "TeamQ",
+        title: "Find out where your team is leaking",
+        pitch: null,
+        cta: "Get your team\u2019s assessment",
+      },
       // the client's network background, until the real film arrives. Not
       // in git (video never is): public/hero-bg.mp4 on the machine that
       // builds, see docs/assets.md
