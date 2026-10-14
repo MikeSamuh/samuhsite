@@ -363,7 +363,7 @@ function Ask({ values }: { values: Values }) {
     <section className="teaser-ask" id="ask" aria-labelledby="teaser-ask-title">
       <div>
         <h2 className="teaser-ask-title" id="teaser-ask-title">
-          Want to get your team&rsquo;s TeamQ?
+          Assess your team.
         </h2>
         <p>
           Let&rsquo;s see how optimized your team is. Leave your details and a person at SAMUH will be in touch
