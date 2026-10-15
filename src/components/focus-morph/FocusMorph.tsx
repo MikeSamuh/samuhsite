@@ -66,9 +66,11 @@ const END: Record<Key, Shape> = {
 };
 
 /** the arrival, as a share of the section's climb from the foot of the
- *  view to where it pins: the two circles grow from a dot and the head and
- *  key fade up with them, so the picture is there by the time it stops */
-const GROW = { from: 0.1, to: 0.95 };
+ *  view to where it pins: the head comes first, then the key and the two
+ *  circles growing from a dot close behind it, so the picture is there by
+ *  the time it stops */
+const HEAD = { from: 0.05, to: 0.4 };
+const GROW = { from: 0.2, to: 0.95 };
 /** the track, as a share of the pinned scroll: the team arrives, the Venn
  *  comes last, a pause between each so it reads */
 const ARRIVE = { from: 0.08, to: 0.28 };
@@ -180,6 +182,7 @@ export function FocusMorph() {
       m.current.g = over(enter, GROW);
       m.current.q = over(next, ARRIVE);
       m.current.e = over(next, MORPH);
+      stage.style.setProperty("--h", over(enter, HEAD).toFixed(4));
       stage.style.setProperty("--g", m.current.g.toFixed(4));
       stage.style.setProperty("--q", m.current.q.toFixed(4));
       stage.style.setProperty("--p", m.current.e.toFixed(4));
@@ -194,6 +197,7 @@ export function FocusMorph() {
       window.removeEventListener("scroll", on);
       window.removeEventListener("resize", on);
       cancelAnimationFrame(raf);
+      stage.style.removeProperty("--h");
       stage.style.removeProperty("--g");
       stage.style.removeProperty("--q");
       stage.style.removeProperty("--p");
@@ -324,20 +328,20 @@ export function FocusMorph() {
 
   return (
     <>
-      {/* the left column, centred against the picture: the heads, one for
-          each state taking turns, and under them the key, one for each
-          state crossfading */}
+      {/* the left column, centred against the picture: one head, its
+          eyebrow and rule fixed and its title alone changing, one for each
+          state taking turns, and under it the key, one for each state
+          crossfading */}
       <div className="L-fm-side" data-venn={venn || undefined}>
-        <div className="L-fm-heads">
+        <div className="L-head L-fm-head">
           {/* TODO(content): the client's words, 13 Oct. One eyebrow for all three */}
-          <div className="L-head L-fm-head L-fm-h0" aria-hidden={arrived || undefined}>
-            <div><p className="eyebrow L-eyebrow">What makes us different</p><h2 className="sec">Where <em className="L-hl">others</em> focus</h2></div>
-          </div>
-          <div className="L-head L-fm-head L-fm-h1" aria-hidden={!arrived || venn || undefined}>
-            <div><p className="eyebrow L-eyebrow">What makes us different</p><h2 className="sec">Where <em className="L-hl">we</em> focus</h2></div>
-          </div>
-          <div className="L-head L-fm-head L-fm-in" aria-hidden={!venn || undefined}>
-            <div><p className="eyebrow L-eyebrow">What makes us different</p><h2 className="sec">We consider all aspects</h2></div>
+          <div>
+            <p className="eyebrow L-eyebrow">What makes us different</p>
+            <div className="L-fm-titles">
+              <h2 className="sec L-fm-title L-fm-h0" aria-hidden={arrived || undefined}>Where <em className="L-hl">others</em> focus</h2>
+              <h2 className="sec L-fm-title L-fm-h1" aria-hidden={!arrived || venn || undefined}>Where <em className="L-hl">we</em> focus</h2>
+              <h2 className="sec L-fm-title L-fm-in" aria-hidden={!venn || undefined}>We consider all aspects</h2>
+            </div>
           </div>
         </div>
         <div className="L-fm-key">

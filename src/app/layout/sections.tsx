@@ -567,6 +567,68 @@ export function MetaphorGallery({ cards = ARCHETYPES }: { cards?: [string, strin
   );
 }
 
+/** TODO(content): what others said. Samples until the answers are stored */
+const SAMPLE_RESPONSES = [
+  "Sample answer from another visitor, one or two lines.",
+  "A second sample answer, kept anonymous.",
+  "A third, so the list reads as a list.",
+];
+
+/**
+ * One card, one question. The client's answer on 14 October to what the
+ * cards are for: both, a Rorschach first, and a way to talk to us after.
+ * A card, drawn at random on each visit; "How does this relate to your
+ * team?" as the title, one box, "Share anonymously". "View responses"
+ * flips the card and the list of what others said is on its back. "View
+ * another card" moves on. No counter, no card title: the drawing speaks.
+ * Nothing is stored yet, TODO(content): the lead route needs a
+ * "reflection" flow, and the responses on the back are samples.
+ */
+export function OneCard({ cards = ARCHETYPES, go }: { cards?: [string, string, string][]; go: (p: PageId) => void }) {
+  const [i, setI] = useState(0);
+  const [text, setText] = useState("");
+  const [shared, setShared] = useState<string[]>([]);
+  const [flipped, setFlipped] = useState(false);
+  // a random first card, after mount so the server and the client agree
+  useEffect(() => { setI(Math.floor(Math.random() * cards.length)); }, [cards.length]);
+  const next = () => { setI((x) => (x + 1) % cards.length); setText(""); setShared([]); setFlipped(false); };
+  const share = (e: React.FormEvent) => { e.preventDefault(); if (!text.trim()) return; setShared((v) => [text.trim(), ...v]); setText(""); };
+  const [name, , src] = cards[i];
+  const responses = [...shared, ...SAMPLE_RESPONSES];
+  return (
+    <div className="L-one">
+      {/* the card: the drawing on the front, the responses on the back */}
+      <div className="L-one-card" data-flipped={flipped || undefined} key={src}>
+        <div className="L-one-face L-one-front">
+          <Art src={src} name={name} />
+        </div>
+        <div className="L-one-face L-one-back" aria-hidden={!flipped || undefined}>
+          <span className="card-tag">What others said</span>
+          <ul className="L-one-list">
+            {responses.map((a, k) => (
+              <li key={k}>{a}</li>
+            ))}
+          </ul>
+        </div>
+      </div>
+      <div className="L-one-side">
+        <h3 className="L-one-title">How does this relate to your team?</h3>
+        <form className="L-form L-one-form" onSubmit={share}>
+          <textarea className="L-one-box" rows={4} placeholder="A line or two" aria-label="Your response" value={text} onChange={(e) => setText(e.target.value)} />
+          {shared.length ? (
+            <p className="L-one-thanks">Shared, thank you. A person reads these. If this one hit home, <a href="#" className="inline-link" onClick={(e) => { stay(e); go("contact"); }}>talk to us</a>.</p>
+          ) : null}
+          <div className="cta-row">
+            <button className="btn" type="submit" disabled={!text.trim()}>Share anonymously <span className="arrow">&rarr;</span></button>
+            <button className="btn btn-secondary" type="button" onClick={() => setFlipped((f) => !f)} aria-pressed={flipped}>{flipped ? "Back to the card" : "View responses"}</button>
+            <button className="btn btn-secondary" type="button" onClick={next}>View another card</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
 /** The Sapien Labs report: its cover, the one-line claim, and the download.
  *  The research spine of the site, so it shows on the home page and again
  *  at the top of Insights. */
@@ -783,7 +845,7 @@ export interface CopyOverrides {
   /** whole sections whose content fades up as they come into view */
   revealSections?: SectionId[];
   /** the tool section's words: its head, the pitch under the demo and the button */
-  tool?: { kicker?: string; title?: string; /** null: no pitch, the button alone */ pitch?: string | null; cta?: string };
+  tool?: { kicker?: string; title?: string; /** null: no pitch, the button alone */ pitch?: string | null; cta?: string; /** a link instead of the page button, for an anchor on the live page */ ctaHref?: string };
 }
 
 export function Section({ def, variant, go, copy = {}, demo }: { def: (typeof SECTIONS)[number]; variant: string; go: (p: PageId) => void; copy?: CopyOverrides; /** the tool's numbers, scored on the server; with them, section 9 shows the bars moving */ demo?: TeaserDemoProps }) {
@@ -980,7 +1042,11 @@ export function Section({ def, variant, go, copy = {}, demo }: { def: (typeof SE
                 <p className="L-mid">{copy.tool?.pitch ?? `That was a demonstration team of ${TEAM_SIZE}, three factors moved. Every team leaks performance somewhere different. A TeamQ assessment finds where yours does, and what to move first.`}</p>
               )}
               <div className="cta-row">
-                <button className="btn" onClick={() => go("start")}>{copy.tool?.cta ?? "Explore TeamQ"} <span className="arrow">&rarr;</span></button>
+                {copy.tool?.ctaHref ? (
+                  <a className="btn" href={copy.tool.ctaHref}>{copy.tool?.cta ?? "Explore TeamQ"} <span className="arrow">&rarr;</span></a>
+                ) : (
+                  <button className="btn" onClick={() => go("start")}>{copy.tool?.cta ?? "Explore TeamQ"} <span className="arrow">&rarr;</span></button>
+                )}
               </div>
             </div>
           </>
@@ -1000,7 +1066,14 @@ export function Section({ def, variant, go, copy = {}, demo }: { def: (typeof SE
           </>
         )}
 
-        {def.id === "cards" && v !== "rotate" && v !== "gallery" && (
+        {def.id === "cards" && v === "one" && (
+          <>
+            <Head def={def} />
+            <OneCard cards={copy.cards} go={go} />
+          </>
+        )}
+
+        {def.id === "cards" && v !== "rotate" && v !== "gallery" && v !== "one" && (
           <>
             <Head def={def} />
             <div className="L-cards">

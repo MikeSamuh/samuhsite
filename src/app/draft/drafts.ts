@@ -70,7 +70,7 @@ export const DRAFTS: Draft[] = [
     // capacities, the tool, the metaphors, testimonials, the research claim
     // with the case study, and the close. Aspirational, research and the
     // equation sections go, folded into their neighbours.
-    layout: { ...B_SHAPE.layout, sections: { ...B_SHAPE.layout.sections, circles: "circles-morph" } },
+    layout: { ...B_SHAPE.layout, sections: { ...B_SHAPE.layout.sections, circles: "circles-morph", cards: "cards-one" } },
     order: ["hero", "meaning", "thesis", "circles", "tool", "cards", "voices", "case", "faq", "start"],
     copy: {
       ...B_SHAPE.copy,
@@ -84,6 +84,8 @@ export const DRAFTS: Draft[] = [
         title: "Find out where your team is leaking",
         pitch: null,
         cta: "Get your team\u2019s assessment",
+        // straight to the ask on the live page, not the top of the tool
+        ctaHref: "/teamq#ask",
       },
       // the client's network background, until the real film arrives. Not
       // in git (video never is): public/hero-bg.mp4 on the machine that
