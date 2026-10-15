@@ -48,7 +48,7 @@ export const FACTORS: Factor[] = [
 
 /** The dashboard's group headings, samuh.js. */
 export const GROUP_LABELS: Record<Factor["group"], string> = {
-  environment: "Work Environment",
+  environment: "Team Environment",
   lifestyle: "Lifestyle Factors",
 };
 
