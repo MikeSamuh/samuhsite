@@ -348,6 +348,19 @@ follows the pointer on a short tether and never leaves the lens. The tool
 section asks for the assessment: "Find out where your team is leaking",
 with the button "Get your team's assessment". — Client
 
+**2026-10-14 — The metaphor cards: one card, one question, then the door.**
+Asked what the cards are for, a read on how people see their team or a way
+in to a conversation, the client said both: start with the Rorschach, and
+if they want to talk to us after, a button. So the working draft shows one
+card at a time, drawn at random on each visit, no counter and no card
+title: the question "How does this relate to your team?" is the head, one
+box, "Share anonymously". "View responses" flips the card and what others
+said is on its back; "View another card" moves on; a thank-you line after
+sharing carries the link to talk to us. The three-prompt gallery stays as
+the gallery variant, which B keeps. Nothing is stored yet: the lead route
+needs a reflection flow, and the responses on the back are samples.
+— Client, Wilfred
+
 **2026-10-14 — FAQ and the footer, on the working draft.** Ten questions
 sit before the close, one open at a time, written from the brief and the
 confirmed content only and marked for SAMUH to approve. The section is

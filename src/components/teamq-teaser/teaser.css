@@ -178,8 +178,9 @@
   scroll-margin-top: var(--nav-h, 0px);
 }
 
-.teaser-title {
-  margin: 0 0 32px;
+/* the base h2.sec zeroes the margin, so this outranks it */
+.teaser-sec .teaser-title {
+  margin: 0 0 40px;
 }
 
 .teaser {
@@ -555,6 +556,9 @@
 
 /* ---------- the ask ---------- */
 
+/* the ask stands clear of the tool: a stretch of air, then its own rule,
+   then a head that says where to start. The home's "Get your team's
+   assessment" lands here, #ask */
 .teaser-ask {
   scroll-margin-top: calc(var(--nav-h, 0px) + 24px);
   display: grid;
@@ -566,13 +570,20 @@
   border-top: var(--rule-fat) solid var(--accent);
 }
 
+.teaser-ask .L-eyebrow {
+  margin: 0 0 14px;
+  color: var(--accent);
+}
+
 .teaser-ask-title {
-  margin: 0 0 12px;
+  margin: 0 0 14px;
   font-family: var(--font-display);
   font-weight: var(--display-weight);
   font-style: var(--display-style);
   letter-spacing: var(--display-tracking);
-  font-size: 28px;
+  font-size: clamp(28px, 3.2cqw, 40px);
+  line-height: 1.12;
+  max-width: 16ch;
   color: var(--text);
 }
 
@@ -843,8 +854,23 @@
   align-items: start;
 }
 
+/* the card keeps its height while the figures change, so nothing beside or
+   under it moves: the words on the left hold room for four lines whatever
+   the figure wraps to, the change lines always take a line, and the digits
+   are tabular */
+.demo-readout .capacity-line {
+  min-height: calc(1.15em * 4);
+  font-variant-numeric: tabular-nums;
+}
+
 .demo-readout .teaser-delta {
+  display: block;
+  min-height: 1.45em;
   transition: color var(--dur) var(--ease);
+}
+
+.demo-readout .teaser-days {
+  min-width: 3ch;
 }
 
 .demo-readout[data-landed="true"] .teaser-delta {

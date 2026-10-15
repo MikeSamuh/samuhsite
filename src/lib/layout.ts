@@ -259,6 +259,7 @@ export const SECTIONS: SectionDef[] = [
       { id: "cards-list", name: "List", note: "One per row, illustration beside the text." },
       { id: "cards-rotate", name: "One at a time", note: "A single card, illustration beside the text, rotating through the set every few seconds." },
       { id: "cards-gallery", name: "Gallery", note: "Image only. Click to zoom in, answer three reflection prompts, send them to Samuh, see what others said." },
+      { id: "cards-one", name: "One card, one question", note: "A single card, a different one each visit. How does this relate to your team, one box, send. Then a thank you, the next card, and the door to a conversation." },
     ],
   },
   {
