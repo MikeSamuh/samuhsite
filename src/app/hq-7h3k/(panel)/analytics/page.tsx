@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { TrendChart } from "@/components/admin/TrendChart";
 import { ga4Config, getAnalytics, type Analytics, type Totals } from "@/lib/admin/ga4";
+import { ADMIN_BASE } from "@/lib/admin/paths";
 
 const RANGES = [7, 28, 90];
 
@@ -135,7 +136,7 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
         <div className="adm-actions">
           {cfg ? (
             <span className="adm-range" role="group" aria-label="Range">
-              {RANGES.map((r) => <Link key={r} href={`/admin/analytics?days=${r}`} aria-current={r === days ? "true" : undefined}>{r} days</Link>)}
+              {RANGES.map((r) => <Link key={r} href={`${ADMIN_BASE}/analytics?days=${r}`} aria-current={r === days ? "true" : undefined}>{r} days</Link>)}
             </span>
           ) : null}
           <a className="adm-btn" href={cfg ? `https://analytics.google.com/analytics/web/#/p${cfg.propertyId}/reports/intelligenthome` : "https://analytics.google.com/"} target="_blank" rel="noopener noreferrer">GA4 ↗</a>

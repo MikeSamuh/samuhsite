@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { TOPICS, type Topic } from "@/lib/insights-shared";
 import { ImageField } from "./ImageField";
 import { RichText } from "./RichText";
+import { ADMIN_API, ADMIN_BASE } from "@/lib/admin/paths";
 
 export interface PostDraft {
   slug: string;
@@ -59,7 +60,7 @@ export function PostEditor({ mode, initial, meta }: { mode: Mode; initial: PostD
     setState("saving");
     try {
       const isNew = mode === "new";
-      const res = await fetch(isNew ? "/api/admin/posts" : `/api/admin/posts/${saved.slug}`, {
+      const res = await fetch(isNew ? `${ADMIN_API}/posts` : `${ADMIN_API}/posts/${saved.slug}`, {
         method: isNew ? "POST" : "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
@@ -71,7 +72,7 @@ export function PostEditor({ mode, initial, meta }: { mode: Mode; initial: PostD
       setSaved(next);
       setState("ok");
       setMessage(`Saved ${when(data.post.updatedAt)}.${body.status === "published" ? " Live at /insights." : ""}`);
-      if (isNew || data.post.slug !== saved.slug) router.replace(`/admin/blog/${data.post.slug}`);
+      if (isNew || data.post.slug !== saved.slug) router.replace(`${ADMIN_BASE}/blog/${data.post.slug}`);
       router.refresh();
     } catch (e) {
       setState("error");
@@ -83,8 +84,8 @@ export function PostEditor({ mode, initial, meta }: { mode: Mode; initial: PostD
     const q = mode === "file" ? "Nothing to delete: this post is a file in the repo." : "Delete this post? If it came from a file in the repo, the file shows again.";
     if (mode === "file") { alert(q); return; }
     if (!confirm(q)) return;
-    const res = await fetch(`/api/admin/posts/${saved.slug}`, { method: "DELETE" });
-    if (res.ok) router.push("/admin/blog");
+    const res = await fetch(`${ADMIN_API}/posts/${saved.slug}`, { method: "DELETE" });
+    if (res.ok) router.push(`${ADMIN_BASE}/blog`);
   };
 
   return (

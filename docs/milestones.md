@@ -81,7 +81,7 @@ the copy of B made on 5 Oct. B itself does not change.
 - [x] WordPress migration decision: migrate all, 12 Oct 2026. The 21 live
       posts are in `content/insights/`, redirects in `next.config.ts`
 - [x] CMS decision: MDX in the repo for launch, 12 Oct 2026. Superseded
-      21 Oct: the admin at /admin is the CMS, SAMUH publishes there.
+      21 Oct: the admin at /hq-7h3k is the CMS, SAMUH publishes there.
       `docs/admin.md`
 - [x] Insights built at /insights and /insights/<slug>, 12 Oct 2026. The
       21 live posts plus the Sapien Labs report. Filters by kind and topic,
@@ -129,7 +129,7 @@ scope.
 - [ ] Resend domain verified so email sends from `samuh.work`
 - [ ] Domain cutover
 - [ ] Google Search Console and Google Business Profile
-- [ ] Admin walkthrough recorded for SAMUH (/admin, `docs/admin.md`)
+- [ ] Admin walkthrough recorded for SAMUH (/hq-7h3k, `docs/admin.md`)
 - [ ] Admin env on Vercel: ADMIN_EMAILS, ADMIN_SESSION_SECRET, Upstash
       Redis, Blob token, GA4 property and service account
 - [ ] Hours allowance for the ongoing retainer agreed in writing

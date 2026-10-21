@@ -6,6 +6,7 @@ import StarterKit from "@tiptap/starter-kit";
 import Image from "@tiptap/extension-image";
 import Placeholder from "@tiptap/extension-placeholder";
 import Youtube from "@tiptap/extension-youtube";
+import { ADMIN_API } from "@/lib/admin/paths";
 
 /**
  * The post editor. Tiptap with the usual blocks, images, and YouTube: paste
@@ -53,7 +54,7 @@ export function RichText({ value, onChange }: { value: string; onChange: (html: 
     const form = new FormData();
     form.append("file", file);
     form.append("folder", "insights");
-    const res = await fetch("/api/admin/upload", { method: "POST", body: form });
+    const res = await fetch(`${ADMIN_API}/upload`, { method: "POST", body: form });
     const data = await res.json();
     if (!res.ok) { alert(data.error ?? "Upload failed"); return; }
     editor.chain().focus().setImage({ src: data.url, alt: file.name.replace(/\.[a-z0-9]+$/i, "") }).run();

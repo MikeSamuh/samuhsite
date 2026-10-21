@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { listStoredPosts } from "@/lib/admin/posts";
 import { filePosts, formatDate } from "@/lib/insights";
+import { ADMIN_BASE } from "@/lib/admin/paths";
 
 export default async function BlogIndex() {
   const stored = await listStoredPosts();
@@ -21,7 +22,7 @@ export default async function BlogIndex() {
         </div>
         <div className="adm-actions">
           <a className="adm-btn" href="/insights" target="_blank" rel="noopener noreferrer">Open Insights ↗</a>
-          <Link className="adm-btn adm-btn-primary" href="/admin/blog/new">+ New post</Link>
+          <Link className="adm-btn adm-btn-primary" href={`${ADMIN_BASE}/blog/new`}>+ New post</Link>
         </div>
       </div>
       <div className="adm-card" style={{ padding: "6px 12px" }}>
@@ -33,7 +34,7 @@ export default async function BlogIndex() {
             {rows.map((r) => (
               <tr key={r.slug}>
                 <td>
-                  <Link href={`/admin/blog/${r.slug}`}>{r.title || r.slug}</Link>
+                  <Link href={`${ADMIN_BASE}/blog/${r.slug}`}>{r.title || r.slug}</Link>
                   <div className="adm-mono adm-muted">/insights/{r.slug}</div>
                 </td>
                 <td>{r.type === "video" ? `Video${r.episode ? ` · ep. ${r.episode}` : ""}` : r.type === "research" ? "Research" : "Article"}</td>

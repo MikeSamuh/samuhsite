@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
+import { ADMIN_BASE } from "@/lib/admin/paths";
 
 export default function AdminIndex() {
-  redirect("/admin/content");
+  redirect(`${ADMIN_BASE}/content`);
 }

@@ -445,7 +445,7 @@ readout tour and the factors section are gone. Sleep stays out of the
 sliders: the dashboard shows it but its models do not use it (Jerzy,
 9 Oct), so a slider would move nothing. — Client, via Wilfred
 
-**2026-10-21 — The site gets its own admin at /admin, and it replaces the
+**2026-10-21 — The site gets its own admin at /hq-7h3k, and it replaces the
 Sanity plan.** Magic-link sign in for the team (ADMIN_EMAILS in Vercel), four
 tabs: Content, every page's copy as fields, page by page; Blog, a rich text
 editor for Insights with one-step YouTube embeds, publishing beside the MDX

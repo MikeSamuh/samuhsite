@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { FieldDef, ListDef, PageSchema } from "@/lib/content/schema";
 import { ImageField } from "./ImageField";
+import { ADMIN_API } from "@/lib/admin/paths";
 
 type Section = Record<string, unknown>;
 type PageValue = Record<string, Section>;
@@ -89,7 +90,7 @@ export function ContentEditor({ schema, initial, meta }: { schema: PageSchema; i
   const save = async () => {
     setState("saving");
     try {
-      const res = await fetch(`/api/admin/content/${schema.id}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(value) });
+      const res = await fetch(`${ADMIN_API}/content/${schema.id}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(value) });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Could not save");
       setSaved(value);
@@ -105,7 +106,7 @@ export function ContentEditor({ schema, initial, meta }: { schema: PageSchema; i
   const reset = async () => {
     if (!confirm(`Reset ${schema.name} to the defaults? Everything saved for this page goes.`)) return;
     setState("saving");
-    const res = await fetch(`/api/admin/content/${schema.id}`, { method: "DELETE" });
+    const res = await fetch(`${ADMIN_API}/content/${schema.id}`, { method: "DELETE" });
     if (res.ok) {
       setState("ok");
       setMessage("Reset. Reloading the defaults.");

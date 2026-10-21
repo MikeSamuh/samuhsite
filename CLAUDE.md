@@ -40,7 +40,7 @@ credible, it is the wrong change.
 - Design values come from tokens, Tailwind only for layout and spacing
 - GSAP with ScrollTrigger for scroll sequences, Framer Motion for component
   transitions. Neither is installed yet; wait for the direction decision
-- The admin at `/admin` is the CMS: page copy, Insights posts, the style
+- The admin at `/hq-7h3k` is the CMS: page copy, Insights posts, the style
   guide and analytics. Content lives in Upstash Redis on Vercel, images in
   Vercel Blob. See `docs/admin.md`
 - Clarify (clarify.ai) is the CRM. All lead capture posts there through one
@@ -88,7 +88,7 @@ result. "See how TeamQ thinks" is allowed. "Your TeamQ score" is not.
 user records. If a request implies authentication, Stripe, gated content or
 stored assessment history, it needs a conversation, not an implementation.
 
-The one exception is the team's own admin at `/admin` (21 October 2026):
+The one exception is the team's own admin at `/hq-7h3k` (21 October 2026):
 magic-link sign in for the addresses on `ADMIN_EMAILS`, so SAMUH can edit
 copy and publish Insights. That is staff access, not visitor accounts, and
 nothing about a visitor is stored. See `docs/admin.md`.
@@ -150,5 +150,5 @@ From the signed scope. These are contractual, not aspirational.
 | `docs/sprint-intakes-runbook.md` | Wilfred is driving the sprint step by step. Follow the step he pasted, not the whole spec at once |
 | `docs/insights-inventory.md` | You are working on Insights or the content migration |
 | `docs/insights-pipeline.md` | You are turning a transcript into an Insights post |
-| `docs/admin.md` | You are touching `/admin`, the content layer, or how posts are stored |
+| `docs/admin.md` | You are touching `/hq-7h3k`, the content layer, or how posts are stored |
 | `docs/decisions.md` | You are about to relitigate something |

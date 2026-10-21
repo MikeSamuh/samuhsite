@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { ADMIN_API } from "@/lib/admin/paths";
 
 export function LoginForm() {
   const params = useSearchParams();
@@ -16,7 +17,7 @@ export function LoginForm() {
     setState("sending");
     setDevLink(undefined);
     try {
-      const res = await fetch("/api/admin/login", {
+      const res = await fetch(`${ADMIN_API}/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, next: params.get("next") ?? undefined }),

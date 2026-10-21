@@ -1,12 +1,12 @@
 // Magic-link sign in for the team. Server only.
 //
-//   1. POST /api/admin/login with an email. If it is on ADMIN_EMAILS, a
+//   1. POST <ADMIN_API>/login with an email. If it is on ADMIN_EMAILS, a
 //      single-use token goes into the store for fifteen minutes and a link
 //      carrying it is emailed through Resend. The response is the same
 //      either way, so the form never says who is on the list
-//   2. GET /api/admin/auth?token=... consumes the token and sets the session
+//   2. GET <ADMIN_API>/auth?token=... consumes the token and sets the session
 //      cookie, signed in session.ts. middleware.ts checks that cookie on
-//      every /admin and /api/admin request
+//      every admin page and admin API request (paths.ts)
 //
 // Local dev with no RESEND_API_KEY prints the link to the terminal and hands
 // it back to the login page, so nothing needs sending to sign in.

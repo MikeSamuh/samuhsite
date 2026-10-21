@@ -1,13 +1,17 @@
 # Admin panel
 
-`/admin`. The team's back end for the site: the words on every page, the
+`/hq-7h3k`, with its API under `/api/hq-7h3k`. Not `/admin`, so it is not
+the first thing a stranger types; the pages carry noindex and robots.txt
+does not name the path. Both halves of the path are one constant in
+`src/lib/admin/paths.ts` plus the two folder names and the literal
+matcher in `src/middleware.ts`. The team's back end for the site: the words on every page, the
 Insights posts, the style guide, and the numbers. Built 21 October 2026 on
 `feat/admin`. No visitor accounts: this is the team signing in, which is a
 different thing from CLAUDE.md rule 5 and is called out there.
 
 ## Signing in
 
-Magic link. Enter a work email on `/admin/login`; if it is on
+Magic link. Enter a work email on `/hq-7h3k/login`; if it is on
 `ADMIN_EMAILS`, a single-use link arrives by email (Resend, the same key
 the lead notify uses) and signs the browser in for thirty days. The form
 answers the same way whether or not the address is on the list.
@@ -23,7 +27,7 @@ shows on the login page.
 |---|---|
 | Session cookie, signed JWT, edge-safe | `src/lib/admin/session.ts` |
 | Whitelist, tokens, the email | `src/lib/admin/auth.ts` |
-| The gate on `/admin/*` and `/api/admin/*` | `src/middleware.ts` |
+| The gate on the admin pages and API | `src/middleware.ts` |
 
 ## Where things are stored
 

@@ -3,12 +3,13 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { ADMIN_API, ADMIN_BASE } from "@/lib/admin/paths";
 
 const TABS = [
-  { href: "/admin/content", name: "Content", note: "Every page's words" },
-  { href: "/admin/blog", name: "Blog", note: "Insights posts" },
-  { href: "/admin/brand", name: "Brand", note: "The style guide" },
-  { href: "/admin/analytics", name: "Analytics", note: "GA4 and Vercel" },
+  { href: `${ADMIN_BASE}/content`, name: "Content", note: "Every page's words" },
+  { href: `${ADMIN_BASE}/blog`, name: "Blog", note: "Insights posts" },
+  { href: `${ADMIN_BASE}/brand`, name: "Brand", note: "The style guide" },
+  { href: `${ADMIN_BASE}/analytics`, name: "Analytics", note: "GA4 and Vercel" },
 ];
 
 export function AdminNav({ email }: { email: string }) {
@@ -36,7 +37,7 @@ export function AdminNav({ email }: { email: string }) {
       <div className="adm-side-foot">
         <a className="adm-side-site" href="/" target="_blank" rel="noopener noreferrer">View site &rarr;</a>
         <span className="adm-side-user" title={email}>{email}</span>
-        <form action="/api/admin/logout" method="post">
+        <form action={`${ADMIN_API}/logout`} method="post">
           <button type="submit" className="adm-btn adm-btn-small adm-btn-ghost">Sign out</button>
         </form>
       </div>

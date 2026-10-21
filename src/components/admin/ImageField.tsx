@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { ADMIN_API } from "@/lib/admin/paths";
 
 /** An image path or URL, with an upload button beside it. */
 export function ImageField({ value, onChange, folder = "uploads" }: { value: string; onChange: (v: string) => void; folder?: string }) {
@@ -14,7 +15,7 @@ export function ImageField({ value, onChange, folder = "uploads" }: { value: str
       const form = new FormData();
       form.append("file", file);
       form.append("folder", folder);
-      const res = await fetch("/api/admin/upload", { method: "POST", body: form });
+      const res = await fetch(`${ADMIN_API}/upload`, { method: "POST", body: form });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Upload failed");
       onChange(data.url);

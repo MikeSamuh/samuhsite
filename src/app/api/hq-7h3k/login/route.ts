@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createMagicToken, isAllowed, sendMagicLink } from "@/lib/admin/auth";
 import { sessionSecret } from "@/lib/admin/session";
+import { ADMIN_API, ADMIN_BASE } from "@/lib/admin/paths";
 
 export const runtime = "nodejs";
 
@@ -14,7 +15,8 @@ export async function POST(req: Request) {
     const body = await req.json();
     email = typeof body?.email === "string" ? body.email.trim().toLowerCase() : "";
     // where the link lands after sign in: an admin path only, never elsewhere
-    next = typeof body?.next === "string" && /^\/admin(\/[\w\-/?=&%]*)?$/.test(body.next) ? body.next : "";
+    const n = typeof body?.next === "string" ? body.next : "";
+    next = n === ADMIN_BASE || (n.startsWith(`${ADMIN_BASE}/`) && /^[\w\-/?=&%]*$/.test(n.slice(ADMIN_BASE.length))) ? n : "";
   } catch {
     /* fall through */
   }
@@ -28,7 +30,7 @@ export async function POST(req: Request) {
 
   const token = await createMagicToken(email);
   const origin = process.env.ADMIN_ORIGIN || new URL(req.url).origin;
-  const link = `${origin}/api/admin/auth?token=${token}${next ? `&next=${encodeURIComponent(next)}` : ""}`;
+  const link = `${origin}${ADMIN_API}/auth?token=${token}${next ? `&next=${encodeURIComponent(next)}` : ""}`;
   const { sent, devLink } = await sendMagicLink(email, link);
   if (!sent && !devLink) {
     return NextResponse.json({ ok: false, message: "The sign-in email could not be sent. Check RESEND_API_KEY." }, { status: 500 });
