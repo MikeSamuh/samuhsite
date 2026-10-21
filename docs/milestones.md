@@ -80,9 +80,9 @@ the copy of B made on 5 Oct. B itself does not change.
       YouTube channel, URLs in the post frontmatter
 - [x] WordPress migration decision: migrate all, 12 Oct 2026. The 21 live
       posts are in `content/insights/`, redirects in `next.config.ts`
-- [x] CMS decision: MDX in the repo for launch, 12 Oct 2026. Wilfred
-      publishes. Sanity on the retainer after launch if SAMUH wants to
-      publish themselves
+- [x] CMS decision: MDX in the repo for launch, 12 Oct 2026. Superseded
+      21 Oct: the admin at /admin is the CMS, SAMUH publishes there.
+      `docs/admin.md`
 - [x] Insights built at /insights and /insights/<slug>, 12 Oct 2026. The
       21 live posts plus the Sapien Labs report. Filters by kind and topic,
       YouTube loads on play, transcript folded under each video
@@ -129,7 +129,9 @@ scope.
 - [ ] Resend domain verified so email sends from `samuh.work`
 - [ ] Domain cutover
 - [ ] Google Search Console and Google Business Profile
-- [ ] CMS or publishing training recorded for SAMUH
+- [ ] Admin walkthrough recorded for SAMUH (/admin, `docs/admin.md`)
+- [ ] Admin env on Vercel: ADMIN_EMAILS, ADMIN_SESSION_SECRET, Upstash
+      Redis, Blob token, GA4 property and service account
 - [ ] Hours allowance for the ongoing retainer agreed in writing
 
 **Done when:** samuh.work serves the new site.

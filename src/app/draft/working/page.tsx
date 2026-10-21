@@ -1,11 +1,13 @@
 import { BASELINE, DEMO_CAP, OPTIMIZER_MOVES } from "@/components/teamq-teaser/model";
 import { bestForProductiveDays, score } from "@/lib/teaser/score";
+import { getContent } from "@/lib/content/content";
 import { DraftHome } from "../Go";
 
-export default function WorkingHome() {
+export default async function WorkingHome() {
   // section 9 shows the tool moving. Scored here, on the server, the same
   // way /teamq does it, so the home page carries no typed-in numbers. The
   // moves stop at DEMO_CAP, never the ceiling
   const demo = { baseline: score(BASELINE), answer: bestForProductiveDays(OPTIMIZER_MOVES, DEMO_CAP) };
-  return <DraftHome draft="working" demo={demo} />;
+  const { home, global } = await getContent();
+  return <DraftHome draft="working" demo={demo} content={{ home, global }} />;
 }

@@ -21,8 +21,10 @@ export interface Post {
   readTime?: string;
   externalUrl?: string;
   transcript?: string;
-  /** the markdown body, without the frontmatter */
+  /** the markdown body, without the frontmatter. Empty for a post written in the admin */
   body: string;
+  /** the body as HTML, for a post written in the admin's editor */
+  html?: string;
 }
 
 export const TOPICS: Topic[] = ["capacity", "team practices", "rituals", "measurement"];

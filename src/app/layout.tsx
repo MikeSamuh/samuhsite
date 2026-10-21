@@ -32,7 +32,9 @@ import {
   Tenor_Sans,
   IBM_Plex_Mono,
 } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import { UtmCapture } from "@/components/lead/UtmCapture";
+import { GoogleTag } from "@/components/GoogleTag";
 import "./globals.css";
 
 // All pairings load here so the preview switches with no flash.
@@ -154,6 +156,10 @@ export default function RootLayout({
       <body className={fontVars}>
         <UtmCapture />
         {children}
+        {/* GA4 once NEXT_PUBLIC_GA_ID is set; Vercel Analytics once it is
+            switched on for the project. Both read in the admin's Analytics tab */}
+        <GoogleTag />
+        <Analytics />
       </body>
     </html>
   );

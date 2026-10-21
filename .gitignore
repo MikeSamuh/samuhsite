@@ -53,3 +53,7 @@ next-env.d.ts
 *.sketch
 *.mp4
 *.mov
+
+# admin: the local document store and dev uploads
+/.data
+/public/uploads

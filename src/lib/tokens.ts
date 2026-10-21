@@ -1165,3 +1165,53 @@ export function cssVars(combo: Combo): React.CSSProperties {
     ...Object.fromEntries(MHQ_BANDS.map((band) => [`--band-${band.id}`, band.hex])),
   } as React.CSSProperties;
 }
+
+/* ------------------------------------------------------------------ */
+/* Admin panel                                                         */
+/* ------------------------------------------------------------------ */
+
+// The team's admin at /admin sits on its own light surface, apart from the
+// site's dark stage, so a page preview and the page itself never look like
+// the same thing. Rule 3 keeps every value here; admin.css only reads vars.
+// The two accents are the site's locked pair, so the panel still reads as
+// SAMUH's.
+
+export const ADMIN = {
+  base: "#F6F5F2",
+  surface: "#FFFFFF",
+  surfaceAlt: "#EFEDE8",
+  border: "#DDD9D1",
+  text: "#161616",
+  muted: "#6E6A63",
+  accent: (ACCENTS.find((a) => a.id === "pink-magenta") ?? ACCENTS[0]).hex,
+  onAccent: "#FFFFFF",
+  accent2: (ACCENTS.find((a) => a.id === "cyan-steel") ?? ACCENTS[3]).hex,
+  ok: "#2F7D4F",
+  warn: "#A4681A",
+  danger: "#B4302B",
+  radius: "10px",
+  dur: "160ms",
+  ease: "cubic-bezier(0.2, 0.7, 0.2, 1)",
+} as const;
+
+export function adminVars(): React.CSSProperties {
+  return {
+    "--adm-base": ADMIN.base,
+    "--adm-surface": ADMIN.surface,
+    "--adm-surface-alt": ADMIN.surfaceAlt,
+    "--adm-border": ADMIN.border,
+    "--adm-text": ADMIN.text,
+    "--adm-muted": ADMIN.muted,
+    "--adm-accent": ADMIN.accent,
+    "--adm-on-accent": ADMIN.onAccent,
+    "--adm-accent-2": ADMIN.accent2,
+    "--adm-ok": ADMIN.ok,
+    "--adm-warn": ADMIN.warn,
+    "--adm-danger": ADMIN.danger,
+    "--adm-radius": ADMIN.radius,
+    "--adm-dur": ADMIN.dur,
+    "--adm-ease": ADMIN.ease,
+    "--adm-font": "var(--f-inter)",
+    "--adm-mono": "var(--f-plex-mono)",
+  } as React.CSSProperties;
+}

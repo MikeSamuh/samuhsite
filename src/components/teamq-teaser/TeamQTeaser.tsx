@@ -63,7 +63,19 @@ function list(items: string[]): string {
 /** Flow 2. The dashboard's what-if on a demonstration team: ten inputs, a
  *  live readout, a button that applies the model's own best moves, and the
  *  ask. Nothing is gated. Spec: docs/sprint-intakes.md, "Flow 2". */
-export function TeamQTeaser({ baseline, answer }: { baseline: TeaserResult; answer: Answer }) {
+export interface AskWords {
+  title: string;
+  thanksTitle: string;
+  thanksText: string;
+}
+
+const ASK_WORDS: AskWords = {
+  title: "Start here to get your team\u2019s TeamQ assessment.",
+  thanksTitle: "Thank you.",
+  thanksText: "A person at SAMUH will be in touch about your team.",
+};
+
+export function TeamQTeaser({ baseline, answer, ask = ASK_WORDS }: { baseline: TeaserResult; answer: Answer; /** the ask's words, from the admin */ ask?: AskWords }) {
   const [values, setValues] = useState<Values>(BASELINE);
   const [result, setResult] = useState<TeaserResult>(baseline);
   const [stale, setStale] = useState(false);
@@ -202,7 +214,7 @@ export function TeamQTeaser({ baseline, answer }: { baseline: TeaserResult; answ
         </div>
       </div>
 
-      <Ask values={values} />
+      <Ask values={values} words={ask} />
     </div>
   );
 }
@@ -316,7 +328,7 @@ const EMPTY: Intake = { email: "", name: "", role: "", phone: "", organization: 
  *  role and phone, the name offered from the address; then company, team
  *  size and what they hope to change, the company offered from the
  *  domain. Everything posts together at the end, with the slider state. */
-function Ask({ values }: { values: Values }) {
+function Ask({ values, words }: { values: Values; words: AskWords }) {
   const { submit, send, state, attempt } = useLeadSubmit("teaser");
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [intake, setIntake] = useState<Intake>(EMPTY);
@@ -336,8 +348,8 @@ function Ask({ values }: { values: Values }) {
   if (state === "done") {
     return (
       <div className="teaser-ask teaser-done" id="ask" ref={success} tabIndex={-1} role="status">
-        <h2 className="teaser-ask-title">Thank you.</h2>
-        <p>A person at SAMUH will be in touch about your team.</p>
+        <h2 className="teaser-ask-title">{words.thanksTitle}</h2>
+        <p>{words.thanksText}</p>
         <Link className="btn btn-secondary" href="/talk">
           Or book a time <span className="arrow">&rarr;</span>
         </Link>
@@ -411,7 +423,7 @@ function Ask({ values }: { values: Values }) {
     <section className="teaser-ask" id="ask" aria-labelledby="teaser-ask-title">
       <div>
         <h2 className="teaser-ask-title" id="teaser-ask-title">
-          Start here to get your team&rsquo;s TeamQ assessment.
+          {words.title}
         </h2>
       </div>
       <form className="lead-form" ref={form} onSubmit={onSubmit} noValidate>

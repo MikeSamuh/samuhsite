@@ -4,6 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { cssVars } from "@/lib/tokens";
 import { layoutVars, lockedCombo, type PageId } from "@/lib/layout";
 import { Nav, Footer } from "../layout/sections";
+import type { GlobalContent } from "@/lib/content/defaults";
 import { getDraft, hrefFor, pageFromPath, type DraftId } from "./drafts";
 import "../design/design.css";
 import "../design/backdrops.css";
@@ -15,7 +16,7 @@ import "./draft.css";
  * routes under /draft/<letter>. No rail, no dials. Each draft is sculpted in
  * its own folder; this only frames it.
  */
-export default function DraftShell({ draft, children }: { draft: DraftId; children: React.ReactNode }) {
+export default function DraftShell({ draft, children, content }: { draft: DraftId; children: React.ReactNode; /** site-wide words from the admin, read by the server layout. The frozen drafts pass none and show the defaults */ content?: GlobalContent }) {
   const router = useRouter();
   const path = usePathname();
   const d = getDraft(draft);
@@ -46,9 +47,9 @@ export default function DraftShell({ draft, children }: { draft: DraftId; childr
         data-btn={d.layout.buttons.id}
       >
         <div className="L-body D-body">
-          <Nav page={page} go={go} menu={d.layout.nav.id === "nav-menu"} explore={d.layout.nav.id === "nav-minimal"} {...d.nav} />
+          <Nav page={page} go={go} menu={d.layout.nav.id === "nav-menu"} explore={d.layout.nav.id === "nav-minimal"} {...d.nav} content={content} />
           {children}
-          <Footer go={go} />
+          <Footer go={go} content={content} />
         </div>
       </div>
     </div>

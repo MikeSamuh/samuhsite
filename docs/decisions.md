@@ -444,3 +444,13 @@ light its parts with their explanations, then the tool. The separate
 readout tour and the factors section are gone. Sleep stays out of the
 sliders: the dashboard shows it but its models do not use it (Jerzy,
 9 Oct), so a slider would move nothing. — Client, via Wilfred
+
+**2026-10-21 — The site gets its own admin at /admin, and it replaces the
+Sanity plan.** Magic-link sign in for the team (ADMIN_EMAILS in Vercel), four
+tabs: Content, every page's copy as fields, page by page; Blog, a rich text
+editor for Insights with one-step YouTube embeds, publishing beside the MDX
+posts; Brand, the style guide read from the tokens; Analytics, GA4 through
+the Data API, with Vercel Analytics linked. Content and posts live in
+Upstash Redis, images in Vercel Blob, both set by env. Supersedes the 12
+October "Sanity after launch" default. Rule 5 stands for visitors; this is
+staff access. — Wilfred

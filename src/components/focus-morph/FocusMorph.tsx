@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { DEFAULTS, type HomeContent } from "@/lib/content/defaults";
+import { mark } from "@/lib/content/shared";
 
 // Where others focus, where we focus, then what we aspire to, in one
 // picture. The section is a tall track; its content pins while the visitor
@@ -98,20 +100,20 @@ const STAR_LAG = 1.2;
  *  is the subject; its entry opens up as its circle arrives. The team line
  *  and the two callouts the Circles diagram shows on hover, here always
  *  shown. */
-const FOCUS: { key: Exclude<Key, "phys">; name: string; label: string; note: string; y: number }[] = [
-  { key: "team", name: "Team", label: "Where people experience their work life", note: "Where Samuh works. Goals, feedback, rituals: where capacity is won or lost.", y: 246 },
-  { key: "ind", name: "Individual", label: "Where organizations invest", note: "Hiring, coaching, training: one person at a time.", y: 126 },
-  { key: "org", name: "Organization", label: "Where organizations look", note: "Strategy, structure, culture: the whole at once.", y: 362 },
+const FOCUS_GEOMETRY: { key: Exclude<Key, "phys">; y: number }[] = [
+  { key: "team", y: 246 },
+  { key: "ind", y: 126 },
+  { key: "org", y: 362 },
 ];
 
 /** TODO(content): what each circle becomes, with its one line. The
  *  definitions are the ones the Aspirational section carried. Each label
  *  sits in the part of its circle that no other circle covers. */
-const CAPACITY: Record<Key, { name: string; note: string; x: number; y: number }> = {
-  org: { name: "Cognitive", note: "Judgment and focus that hold under load.", x: 180, y: 100 },
-  team: { name: "Relational", note: "Trust, feedback and how decisions get made.", x: 460, y: 100 },
-  ind: { name: "Emotional", note: "Energy, and the will to keep going.", x: 180, y: 348 },
-  phys: { name: "Physical", note: "The stamina the other three depend on.", x: 460, y: 348 },
+const CAPACITY_GEOMETRY: Record<Key, { x: number; y: number }> = {
+  org: { x: 180, y: 100 },
+  team: { x: 460, y: 100 },
+  ind: { x: 180, y: 348 },
+  phys: { x: 460, y: 348 },
 };
 
 const clamp = (v: number) => Math.max(0, Math.min(1, v));
@@ -134,7 +136,12 @@ const shapesAt = (e: number, q: number, g: number): Record<Key, Shape> =>
 
 const same = (a: Key[], b: Key[]) => a.length === b.length && a.every((k, i) => k === b[i]);
 
-export function FocusMorph() {
+export function FocusMorph({ words = DEFAULTS.home.focus }: { /** the heads and the key, from the admin */ words?: HomeContent["focus"] }) {
+  // the words sit on the geometry: levels in the order team, individual,
+  // organization; capacities in the order Cognitive, Relational, Emotional,
+  // Physical, which is the circle order org, team, ind, phys
+  const FOCUS = FOCUS_GEOMETRY.map((f, i) => ({ ...f, name: words.levels[i]?.name ?? "", label: words.levels[i]?.label ?? "", note: words.levels[i]?.note ?? "" }));
+  const CAPACITY = Object.fromEntries(KEYS.map((k, i) => [k, { ...CAPACITY_GEOMETRY[k], name: words.capacities[i]?.name ?? "", note: words.capacities[i]?.note ?? "" }])) as Record<Key, { name: string; note: string; x: number; y: number }>;
   const root = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
   const gRefs = useRef<Partial<Record<Key, SVGGElement | null>>>({});
@@ -336,11 +343,11 @@ export function FocusMorph() {
         <div className="L-head L-fm-head">
           {/* TODO(content): the client's words, 13 Oct. One eyebrow for all three */}
           <div>
-            <p className="eyebrow L-eyebrow">What makes us different</p>
+            <p className="eyebrow L-eyebrow">{words.eyebrow}</p>
             <div className="L-fm-titles">
-              <h2 className="sec L-fm-title L-fm-h0" aria-hidden={arrived || undefined}>Where <em className="L-hl">others</em> focus</h2>
-              <h2 className="sec L-fm-title L-fm-h1" aria-hidden={!arrived || venn || undefined}>Where <em className="L-hl">we</em> focus</h2>
-              <h2 className="sec L-fm-title L-fm-in" aria-hidden={!venn || undefined}>We consider all aspects</h2>
+              <h2 className="sec L-fm-title L-fm-h0" aria-hidden={arrived || undefined}>{mark(words.titleOthers, "L-hl")}</h2>
+              <h2 className="sec L-fm-title L-fm-h1" aria-hidden={!arrived || venn || undefined}>{mark(words.titleWe, "L-hl")}</h2>
+              <h2 className="sec L-fm-title L-fm-in" aria-hidden={!venn || undefined}>{mark(words.titleAll, "L-hl")}</h2>
             </div>
           </div>
         </div>

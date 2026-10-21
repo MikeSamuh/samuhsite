@@ -1,10 +1,19 @@
-// Insights content. One MDX file per post in content/insights, read at build
-// time. Only `status: published` posts (and video posts, which are live on
-// samuh.work today) are routable. `review` and `draft` posts stay in the
-// repo for Rahul and never render. See docs/insights-pipeline.md.
+// Insights content. Two sources, one list:
+//
+//   content/insights/*.mdx   one file per post, read from disk. The 21
+//                            posts carried over from samuh.work live here
+//   the admin's store        posts written or edited in the admin's Blog
+//                            tab (src/lib/admin/posts.ts). A stored post
+//                            with a file's slug replaces the file
+//
+// Only `status: published` posts (and video posts, which are live on
+// samuh.work today) are routable. `review` and `draft` posts never render.
+// See docs/insights-pipeline.md and docs/admin.md.
 
 import fs from "node:fs";
 import path from "node:path";
+import { unstable_cache } from "next/cache";
+import { INSIGHTS_TAG, listStoredPosts, toPost } from "./admin/posts";
 
 export * from "./insights-shared";
 import { type Post, type PostType, type Topic } from "./insights-shared";
@@ -62,40 +71,58 @@ function parse(file: string): Post {
   };
 }
 
-let cache: Post[] | null = null;
+let fileCache: Post[] | null = null;
 
-/** Every post, newest first. */
-export function allPosts(): Post[] {
-  if (cache) return cache;
-  cache = fs
+/** The posts in content/insights, as files. Synchronous, for the admin. */
+export function filePosts(): Post[] {
+  if (fileCache) return fileCache;
+  fileCache = fs
     .readdirSync(DIR)
     .filter((f) => f.endsWith(".mdx"))
-    .map(parse)
-    .sort((a, b) => (b.date || "").localeCompare(a.date || "") || (b.episode ?? 0) - (a.episode ?? 0));
-  return cache;
+    .map(parse);
+  return fileCache;
+}
+
+function sortPosts(posts: Post[]): Post[] {
+  return posts.sort((a, b) => (b.date || "").localeCompare(a.date || "") || (b.episode ?? 0) - (a.episode ?? 0));
+}
+
+const readAll = unstable_cache(
+  async (): Promise<Post[]> => {
+    const stored = (await listStoredPosts()).map(toPost);
+    const taken = new Set(stored.map((p) => p.slug));
+    return sortPosts([...stored, ...filePosts().filter((p) => !taken.has(p.slug))]);
+  },
+  ["insights-posts"],
+  { tags: [INSIGHTS_TAG] },
+);
+
+/** Every post, newest first, the admin's over the files. */
+export async function allPosts(): Promise<Post[]> {
+  return readAll();
 }
 
 /** The posts that ship: published, with a date. */
-export function publishedPosts(): Post[] {
-  return allPosts().filter((p) => p.status === "published" && p.date);
+export async function publishedPosts(): Promise<Post[]> {
+  return (await allPosts()).filter((p) => p.status === "published" && p.date);
 }
 
-export function getPost(slug: string): Post | undefined {
-  return publishedPosts().find((p) => p.slug === slug);
+export async function getPost(slug: string): Promise<Post | undefined> {
+  return (await publishedPosts()).find((p) => p.slug === slug);
 }
 
 /** Up to three published posts sharing a topic, nearest in the feed first. */
-export function relatedPosts(post: Post, n = 3): Post[] {
-  const pool = publishedPosts().filter((p) => p.slug !== post.slug && p.type !== "research");
+export async function relatedPosts(post: Post, n = 3): Promise<Post[]> {
+  const pool = (await publishedPosts()).filter((p) => p.slug !== post.slug && p.type !== "research");
   const shared = pool.filter((p) => p.tags.some((t) => post.tags.includes(t)));
   const rest = pool.filter((p) => !shared.includes(p));
   return [...shared, ...rest].slice(0, n);
 }
 
 /** The episode before and after, by number. */
-export function neighbours(post: Post): { prev?: Post; next?: Post } {
+export async function neighbours(post: Post): Promise<{ prev?: Post; next?: Post }> {
   if (!post.episode) return {};
-  const eps = publishedPosts().filter((p) => p.episode);
+  const eps = (await publishedPosts()).filter((p) => p.episode);
   return {
     prev: eps.find((p) => p.episode === post.episode! - 1),
     next: eps.find((p) => p.episode === post.episode! + 1),

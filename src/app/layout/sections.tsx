@@ -6,10 +6,28 @@ import Image from "next/image";
 import { PAGES, SECTIONS, type PageId, type SectionId } from "@/lib/layout";
 import { TEAM_SIZE } from "@/components/teamq-teaser/model";
 import { TeaserDemo, type TeaserDemoProps } from "@/components/teamq-teaser/TeaserDemo";
-import { CONTACT_EMAIL } from "@/lib/contact-details";
 import "@/components/teamq-teaser/teaser.css";
 import Synapse from "../design/Synapse";
 import { FocusMorph } from "@/components/focus-morph/FocusMorph";
+import { DEFAULTS, type GlobalContent, type HomeContent } from "@/lib/content/defaults";
+import { lines, mark } from "@/lib/content/shared";
+
+/** The words the admin's Content tab edits, passed down from the server.
+ *  Without it a section shows its hardcoded copy, which is what the frozen
+ *  drafts and the layout tool want. */
+export interface SiteCopy {
+  home: HomeContent;
+  global: GlobalContent;
+}
+
+/** The copy the frozen drafts and the layout tool show when no content is
+ *  passed and no draft override applies. Kept so B never moves. */
+const HARD = {
+  heroLede: "Most teams leak performance through their environment, not their effort. Samuh finds where yours is leaking, and gives you the practices to close it.",
+  thesis: "Every leadership team leaks performance. Few can see where. You have already paid for the talent. The question is whether the team\u2019s conditions let you get the full return.",
+  toolPitch: (size: number) => `That was a demonstration team of ${size}, three factors moved. Every team leaks performance somewhere different. A TeamQ assessment finds where yours does, and what to move first.`,
+  startSub: "Free and ungated. The first insight lands before the first ask.",
+};
 
 const stay = (e: React.MouseEvent) => e.preventDefault();
 const LOGO_H = 285;
@@ -31,9 +49,12 @@ export interface NavProps {
   brand?: "wordmark" | "icons";
   /** "in partnership with Sapien Labs" beside the wordmark, per the scope */
   partner?: boolean;
+  /** site-wide words from the admin; the defaults without it */
+  content?: GlobalContent;
 }
 
-export function Nav({ page, go, menu, links: order, brand = "wordmark", partner = false }: NavProps) {
+export function Nav({ page, go, menu, links: order, brand = "wordmark", partner = false, content }: NavProps) {
+  const g = content ?? DEFAULTS.global;
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const links = order
@@ -91,7 +112,7 @@ export function Nav({ page, go, menu, links: order, brand = "wordmark", partner 
               <Image className="L-brand-full" src="/samuh-logo.png" alt="SAMUH" width={960} height={LOGO_H} priority />
             </span>
             <span className="L-brand-rule" aria-hidden />
-            <span className="L-brand-partner">Partnered with<br />Sapien Labs</span>
+            <span className="L-brand-partner">{lines(g.brand.partnerLine)}</span>
           </a>
         ) : (
           <a href="#" className="nav-logo" onClick={(e) => { stay(e); jump("home"); }} aria-label="SAMUH home">
@@ -105,7 +126,7 @@ export function Nav({ page, go, menu, links: order, brand = "wordmark", partner 
           ))}
         </nav>
         <button className="btn btn-secondary btn-small L-menu" onClick={() => setOpen(true)} aria-expanded={open} aria-controls="L-overlay">Explore</button>
-        <button className="btn btn-small L-cta" onClick={() => jump("start")}>Explore TeamQ <span className="arrow">&rarr;</span></button>
+        <button className="btn btn-small L-cta" onClick={() => jump("start")}>{g.brand.navCta} <span className="arrow">&rarr;</span></button>
         {/* on small screens every nav collapses to this: the links and the
             Explore button hide, and the burger opens the full menu */}
         {!menu ? (
@@ -128,8 +149,8 @@ export function Nav({ page, go, menu, links: order, brand = "wordmark", partner 
             ))}
           </nav>
           <div className="L-overlay-foot L-wrap">
-            <button className="btn" onClick={() => jump("start")}>Explore TeamQ <span className="arrow">&rarr;</span></button>
-            <span className="L-cap">Partnered with<br />Sapien Labs</span>
+            <button className="btn" onClick={() => jump("start")}>{g.brand.navCta} <span className="arrow">&rarr;</span></button>
+            <span className="L-cap">{lines(g.brand.partnerLine)}</span>
           </div>
         </div>
       ) : null}
@@ -404,7 +425,7 @@ export function Reveal({ children, className = "" }: { children: React.ReactNode
   return <div className={`L-reveal${className ? ` ${className}` : ""}`} ref={ref}>{children}</div>;
 }
 
-export function Dictionary() {
+export function Dictionary({ d = DEFAULTS.home.dictionary }: { d?: HomeContent["dictionary"] }) {
   const say = () => {
     const a = new Audio("/samuh.m4a");
     a.play().catch(() => {
@@ -416,15 +437,15 @@ export function Dictionary() {
   return (
     <div className="L-dict">
       <div className="L-dict-head">
-        <span className="L-dict-word">Samuh</span>
+        <span className="L-dict-word">{d.word}</span>
         <button className="L-dict-say" onClick={say} aria-label="Hear how Samuh is pronounced" title="Hear it">
           <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor" /><path d="M16 8.5a4.5 4.5 0 0 1 0 7M18.5 6a8 8 0 0 1 0 12" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" /></svg>
         </button>
-        <span className="L-dict-pron">/s&#601;&#712;mu&#720;/</span>
-        <span className="L-dict-pos">noun &middot; Sanskrit <span lang="sa">&#2360;&#2350;&#2370;&#2361;</span>, <i>sam&#363;ha</i></span>
+        <span className="L-dict-pron">{d.pronunciation}</span>
+        <span className="L-dict-pos">{d.origin}</span>
       </div>
       <ol className="L-dict-defs">
-        <li>A group of people who come together <em className="L-dict-hi">for a purpose larger than themselves.</em></li>
+        <li>{mark(d.definition, "L-dict-hi")}</li>
       </ol>
     </div>
   );
@@ -434,18 +455,7 @@ export function Dictionary() {
 // docs/brief.md and the confirmed items in docs/content.md. Nothing here is
 // a figure or a claim SAMUH has not made; SAMUH to approve the wording.
 // *words* take the primary, ~words~ the secondary (rich()).
-export const FAQ: [string, string][] = [
-  ["What does SAMUH do?", "Organizational and high-performance consulting, in partnership with Sapien Labs. We work with teams on the conditions they work in, so performance rises without the cost to people."],
-  ["Who is it for?", "Teams. Leadership teams in multi-team organizations, team leads, store managers, and founders of fast-growing companies. If people do their work in a team, this applies."],
-  ["Why the team, and not the individual or the organization?", "Because the team is where people experience their work life. Organizations invest in individuals and look at the whole, and the team in between is where capacity is won or lost."],
-  ["What is TeamQ?", "SAMUH\u2019s read on how a team works: what the work is like for the people doing it, how they live outside it, and what that does to their capacity to perform. It is built on Sapien Labs team environment factors."],
-  ["Is the tool on this page TeamQ?", "No. It shows how TeamQ thinks, with a demonstration team and a few factors moving. A TeamQ assessment is done with your own team, and the result is yours."],
-  ["What is the Sapien Labs partnership?", "Sapien Labs is our research partner and the source of the research this site leans on. Their Work Culture Report is the spine of the argument, and the team environment factors we assess come from their work."],
-  ["Is this about performance or about wellbeing?", "Both, at once. People thriving and results thriving reinforce each other rather than trading off. That is the whole point, and the reason we measure the environment instead of pushing on effort."],
-  ["How do you work with a team?", "Three ways. Self-guided, where the team works through the material on its own. Supported, which adds periodic calls with us. Guided, where we deliver in person. The team process is the method in all three, and organization-wide work layers on top of it."],
-  ["What does it cost?", "It depends on the way you work with us and the number of teams. Talk to us and we will put a number on it."],
-  ["How do we start?", "With a TeamQ assessment of your team, which shows where it leaks and what to move first. Explore TeamQ, or write to us and we will take it from there."],
-];
+export const FAQ: [string, string][] = DEFAULTS.home.faq.items.map((i) => [i.q, i.a]);
 
 // The six team metaphors SAMUH already uses, drawn for the Bangalore keynote
 // (July 2026, pages 33 and 34). The captions are theirs; the one-liners are
@@ -477,6 +487,7 @@ export function Rotator() {
     const t = window.setInterval(() => setI((x) => (x + 1) % n), 4200);
     return () => window.clearInterval(t);
   }, [n]);
+  if (!n) return null;
   const [name, line, src] = ARCHETYPES[i];
   return (
     <div className="L-rotator">
@@ -517,6 +528,7 @@ export function MetaphorGallery({ cards = ARCHETYPES }: { cards?: [string, strin
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
   const name = open !== null ? cards[open][0] : "";
+  if (!cards.length) return null;
   return (
     <>
       <div className="L-gallery">
@@ -584,7 +596,7 @@ const SAMPLE_RESPONSES = [
  * Nothing is stored yet, TODO(content): the lead route needs a
  * "reflection" flow, and the responses on the back are samples.
  */
-export function OneCard({ cards = ARCHETYPES, go }: { cards?: [string, string, string][]; go: (p: PageId) => void }) {
+export function OneCard({ cards = ARCHETYPES, go, words = DEFAULTS.home.cards }: { cards?: [string, string, string][]; go: (p: PageId) => void; /** the question and the buttons */ words?: HomeContent["cards"] }) {
   const [i, setI] = useState(0);
   const [text, setText] = useState("");
   const [shared, setShared] = useState<string[]>([]);
@@ -593,7 +605,9 @@ export function OneCard({ cards = ARCHETYPES, go }: { cards?: [string, string, s
   useEffect(() => { setI(Math.floor(Math.random() * cards.length)); }, [cards.length]);
   const next = () => { setI((x) => (x + 1) % cards.length); setText(""); setShared([]); setFlipped(false); };
   const share = (e: React.FormEvent) => { e.preventDefault(); if (!text.trim()) return; setShared((v) => [text.trim(), ...v]); setText(""); };
-  const [name, , src] = cards[i];
+  // no cards in the admin: no section body, rather than a crash
+  if (!cards.length) return null;
+  const [name, , src] = cards[i % cards.length];
   const responses = [...shared, ...SAMPLE_RESPONSES];
   return (
     <div className="L-one">
@@ -612,16 +626,16 @@ export function OneCard({ cards = ARCHETYPES, go }: { cards?: [string, string, s
         </div>
       </div>
       <div className="L-one-side">
-        <h3 className="L-one-title">How does this relate to your team?</h3>
+        <h3 className="L-one-title">{words.question}</h3>
         <form className="L-form L-one-form" onSubmit={share}>
           <textarea className="L-one-box" rows={4} placeholder="A line or two" aria-label="Your response" value={text} onChange={(e) => setText(e.target.value)} />
           {shared.length ? (
-            <p className="L-one-thanks">Shared, thank you. A person reads these. If this one hit home, <a href="#" className="inline-link" onClick={(e) => { stay(e); go("contact"); }}>talk to us</a>.</p>
+            <p className="L-one-thanks">{words.thanks.split(/(\*[^*]+\*)/).map((part, k) => part.startsWith("*") && part.endsWith("*") ? <a href="#" className="inline-link" key={k} onClick={(e) => { stay(e); go("contact"); }}>{part.slice(1, -1)}</a> : part)}</p>
           ) : null}
           <div className="cta-row">
-            <button className="btn" type="submit" disabled={!text.trim()}>Share anonymously <span className="arrow">&rarr;</span></button>
-            <button className="btn btn-secondary" type="button" onClick={() => setFlipped((f) => !f)} aria-pressed={flipped}>{flipped ? "Back to the card" : "View responses"}</button>
-            <button className="btn btn-secondary" type="button" onClick={next}>View another card</button>
+            <button className="btn" type="submit" disabled={!text.trim()}>{words.share} <span className="arrow">&rarr;</span></button>
+            <button className="btn btn-secondary" type="button" onClick={() => setFlipped((f) => !f)} aria-pressed={flipped}>{flipped ? words.back : words.view}</button>
+            <button className="btn btn-secondary" type="button" onClick={next}>{words.next}</button>
           </div>
         </form>
       </div>
@@ -632,29 +646,27 @@ export function OneCard({ cards = ARCHETYPES, go }: { cards?: [string, string, s
 /** The Sapien Labs report: its cover, the one-line claim, and the download.
  *  The research spine of the site, so it shows on the home page and again
  *  at the top of Insights. */
-export function ReportCard({ cls, onlyDownload }: { cls?: string; /** the download alone, no link to the page on sapienlabs.org */ onlyDownload?: boolean }) {
+export function ReportCard({ cls, onlyDownload, report: r = DEFAULTS.global.report }: { cls?: string; /** the download alone, no link to the page on sapienlabs.org */ onlyDownload?: boolean; /** the words and links, from the admin */ report?: GlobalContent["report"] }) {
   return (
     <blockquote className={`L-research L-report${cls ? ` ${cls}` : ""}`}>
-      <a className="L-report-cover" href={REPORT.pdf} target="_blank" rel="noopener noreferrer" aria-label={`${REPORT.title}, PDF`}>
+      <a className="L-report-cover" href={r.pdf} target="_blank" rel="noopener noreferrer" aria-label={`${REPORT.title}, PDF`}>
         <Image src={REPORT.cover} alt="" width={REPORT.coverWidth} height={REPORT.coverHeight} sizes="(max-width: 900px) 60vw, 220px" />
       </a>
       <div className="L-report-copy">
-        <span className="card-tag">Research · in partnership with Sapien Labs</span>
-        <p className="L-big">The environment inside a team shapes how much capacity its people can bring to the work. What was previously inferred can now be measured.</p>
-        <span className="L-cap">{REPORT.kicker}</span>
+        <span className="card-tag">{r.tag}</span>
+        <p className="L-big">{r.line}</p>
+        <span className="L-cap">{r.kicker}</span>
         <p className="L-report-links">
-          <a href={REPORT.pdf} className="inline-link" target="_blank" rel="noopener noreferrer">Download the report <span className="arrow">&rarr;</span></a>
-          {onlyDownload ? null : <a href={REPORT.page} className="inline-link" target="_blank" rel="noopener noreferrer">On sapienlabs.org</a>}
+          <a href={r.pdf} className="inline-link" target="_blank" rel="noopener noreferrer">{r.download} <span className="arrow">&rarr;</span></a>
+          {onlyDownload ? null : <a href={r.page} className="inline-link" target="_blank" rel="noopener noreferrer">{r.onSite}</a>}
         </p>
       </div>
     </blockquote>
   );
 }
 
-/** Rahul's channel, where every Insights episode lives (docs/insights-inventory.md) */
-const YOUTUBE = "https://www.youtube.com/@HumanExpansion-ACorePurpose";
-
-export function Footer({ go }: { go: (p: PageId) => void }) {
+export function Footer({ go, content }: { go: (p: PageId) => void; /** site-wide words from the admin; the defaults without it */ content?: GlobalContent }) {
+  const g = content ?? DEFAULTS.global;
   const page = (id: PageId) => (e: React.MouseEvent) => { stay(e); go(id); };
   return (
     <footer className="L-foot">
@@ -663,9 +675,9 @@ export function Footer({ go }: { go: (p: PageId) => void }) {
           <a href="#" className="L-foot-logo" onClick={page("home")} aria-label="SAMUH home">
             <Image src="/samuh-logo.png" alt="SAMUH" width={960} height={LOGO_H} />
           </a>
-          <p className="L-foot-line">High performance <em className="L-hl">without</em> the cost to people.</p>
-          <p className="L-foot-about">Organizational and high-performance consulting. We work with teams on the conditions they work in.</p>
-          <a className="L-foot-partner" href={REPORT.page} target="_blank" rel="noopener noreferrer" aria-label="In partnership with Sapien Labs">
+          <p className="L-foot-line">{mark(g.footer.line, "L-hl")}</p>
+          <p className="L-foot-about">{g.footer.about}</p>
+          <a className="L-foot-partner" href={g.report.page} target="_blank" rel="noopener noreferrer" aria-label="In partnership with Sapien Labs">
             <span className="L-cap">In partnership with</span>
             <Image src="/sapien-labs.png" alt="Sapien Labs" width={820} height={240} />
           </a>
@@ -681,18 +693,18 @@ export function Footer({ go }: { go: (p: PageId) => void }) {
           <span className="L-cap L-foot-h">Resources</span>
           <a className="L-foot-link" href="#" onClick={page("insights")}>Insights</a>
           <a className="L-foot-link" href="#" onClick={page("start")}>TeamQ</a>
-          <a className="L-foot-link" href={REPORT.page} target="_blank" rel="noopener noreferrer">Work Culture Report</a>
-          <a className="L-foot-link" href={YOUTUBE} target="_blank" rel="noopener noreferrer">Human Expansion on YouTube</a>
+          <a className="L-foot-link" href={g.report.page} target="_blank" rel="noopener noreferrer">{g.footer.reportLabel}</a>
+          <a className="L-foot-link" href={g.footer.youtubeUrl} target="_blank" rel="noopener noreferrer">{g.footer.youtubeLabel}</a>
         </nav>
         <div className="L-foot-col">
-          <span className="L-cap L-foot-h">Talk to us</span>
-          {CONTACT_EMAIL ? (
-            <a className="L-foot-link" href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+          <span className="L-cap L-foot-h">{g.footer.talkHeading}</span>
+          {g.contact.email ? (
+            <a className="L-foot-link" href={`mailto:${g.contact.email}`}>{g.contact.email}</a>
           ) : (
             <span className="L-foot-link L-foot-todo">TODO(content): email address</span>
           )}
-          <a className="L-foot-link" href="#" onClick={page("contact")}>Book a call</a>
-          <button className="btn L-foot-cta" onClick={() => go("start")}>Get started <span className="arrow">&rarr;</span></button>
+          <a className="L-foot-link" href="#" onClick={page("contact")}>{g.footer.bookCall}</a>
+          <button className="btn L-foot-cta" onClick={() => go("start")}>{g.footer.cta} <span className="arrow">&rarr;</span></button>
         </div>
       </div>
       <div className="L-wrap L-foot-base">
@@ -709,11 +721,10 @@ export function Footer({ go }: { go: (p: PageId) => void }) {
   );
 }
 
-export const QUOTES = [
-  { q: "Sample testimonial. Two or three sentences in the client\u2019s own words about what changed for the team, and what it felt like to work this way.", who: "Name", role: "Role, Organization" },
-  { q: "A second sample. Long enough to show how a real quote wraps at this size, short enough to read in one breath.", who: "Name", role: "Role, Organization" },
-  { q: "A third sample, so the arrows and the dots have somewhere to go.", who: "Name", role: "Role, Organization" },
-];
+export const QUOTES = DEFAULTS.global.testimonials.items.map((i) => ({ q: i.quote, who: i.who, role: i.role }));
+
+/** the admin's testimonials in the carousel's shape */
+export const quotesOf = (g: GlobalContent) => g.testimonials.items.map((i) => ({ q: i.quote, who: i.who, role: i.role }));
 
 /** Temporary marks standing in for client logos, one shape per testimonial. */
 function TempMark({ i }: { i: number }) {
@@ -740,7 +751,7 @@ export function Carousel({ quotes = QUOTES }: { quotes?: typeof QUOTES }) {
   const [paused, setPaused] = useState(false);
   const n = quotes.length;
   const go = (d: number) => setI((x) => (x + d + n) % n);
-  const cur = quotes[i];
+  const cur = quotes[i % Math.max(1, n)];
   // a swipe on touch moves one slide, arrows stay for everyone
   const touch = useRef<number | null>(null);
   const onTouchStart = (e: TouchEvent) => { touch.current = e.touches[0].clientX; };
@@ -755,6 +766,7 @@ export function Carousel({ quotes = QUOTES }: { quotes?: typeof QUOTES }) {
     const t = window.setInterval(() => setI((x) => (x + 1) % n), 5550);
     return () => window.clearInterval(t);
   }, [paused, n]);
+  if (!cur) return null;
   return (
     <div className="L-car2" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
       <div className="L-car2-logo" key={`m${i}`} aria-label="Client mark, temporary">
@@ -848,8 +860,22 @@ export interface CopyOverrides {
   tool?: { kicker?: string; title?: string; /** null: no pitch, the button alone */ pitch?: string | null; cta?: string; /** a link instead of the page button, for an anchor on the live page */ ctaHref?: string };
 }
 
-export function Section({ def, variant, go, copy = {}, demo }: { def: (typeof SECTIONS)[number]; variant: string; go: (p: PageId) => void; copy?: CopyOverrides; /** the tool's numbers, scored on the server; with them, section 9 shows the bars moving */ demo?: TeaserDemoProps }) {
+export function Section({ def, variant, go, copy = {}, demo, content }: { def: (typeof SECTIONS)[number]; variant: string; go: (p: PageId) => void; copy?: CopyOverrides; /** the tool's numbers, scored on the server; with them, section 9 shows the bars moving */ demo?: TeaserDemoProps; /** the admin's words. With them, they win over `copy`'s text; the flags in `copy` still apply */ content?: SiteCopy }) {
   const v = variant.replace(`${def.id}-`, "");
+  const h = content?.home ?? DEFAULTS.home;
+  const g = content?.global ?? DEFAULTS.global;
+  // text: the admin's words, else the draft's override, else the hardcoded line
+  const heroLede = content ? h.hero.lede || null : copy.heroLede === null ? null : copy.heroLede ?? HARD.heroLede;
+  const thesisText = content ? h.thesis.text : copy.thesis ?? HARD.thesis;
+  const toolKicker = content ? h.tool.kicker : copy.tool?.kicker ?? def.kicker;
+  const toolTitle = content ? h.tool.title : copy.tool?.title ?? def.title;
+  const toolPitch = content ? h.tool.pitch : copy.tool?.pitch === null ? "" : copy.tool?.pitch ?? HARD.toolPitch(TEAM_SIZE);
+  const toolCta = content ? h.tool.cta : copy.tool?.cta ?? "Explore TeamQ";
+  const startSub = content ? h.start.sub : copy.startSub === null ? "" : copy.startSub ?? HARD.startSub;
+  const cardItems: [string, string, string][] | undefined = content ? h.cards.items.map((c) => [c.name, c.line, c.image]) : copy.cards;
+  const quotes = quotesOf(g);
+  /** a section head with the admin's eyebrow and title */
+  const headOf = (w: { kicker: string; title: string }) => ({ ...def, kicker: w.kicker, title: w.title });
   const headed = !["hero", "thesis", "meaning", "start"].includes(def.id) && !(def.id === "voices" && v === "carousel");
   const reveal = !!copy.revealSections?.includes(def.id);
   const secRef = useRef<HTMLElement>(null);
@@ -863,15 +889,13 @@ export function Section({ def, variant, go, copy = {}, demo }: { def: (typeof SE
         {def.id === "hero" && (
           <div className="L-hero-grid">
             <div className="L-hero-copy">
-              {copy.eyebrowOnThesis || copy.noEyebrow ? null : <p className="eyebrow">Organizational and high-performance consulting</p>}
-              <h1 className="display">High performance <em>without</em> the cost to people.</h1>
-              {copy.heroLede === null ? null : (
-                <p className="lede">{copy.heroLede ?? "Most teams leak performance through their environment, not their effort. Samuh finds where yours is leaking, and gives you the practices to close it."}</p>
-              )}
+              {copy.eyebrowOnThesis || copy.noEyebrow ? null : <p className="eyebrow">{h.hero.eyebrow}</p>}
+              <h1 className="display">{mark(h.hero.title)}</h1>
+              {heroLede ? <p className="lede">{heroLede}</p> : null}
               {copy.noHeroCtas ? null : (
                 <div className="cta-row">
-                  <button className="btn" onClick={() => go("start")}>Explore TeamQ <span className="arrow">&rarr;</span></button>
-                  <button className="btn btn-secondary" onClick={() => go("contact")}>Talk to us</button>
+                  <button className="btn" onClick={() => go("start")}>{h.hero.ctaPrimary} <span className="arrow">&rarr;</span></button>
+                  <button className="btn btn-secondary" onClick={() => go("contact")}>{h.hero.ctaSecondary}</button>
                 </div>
               )}
             </div>
@@ -881,12 +905,12 @@ export function Section({ def, variant, go, copy = {}, demo }: { def: (typeof SE
 
         {def.id === "thesis" && (
           <>
-          {copy.eyebrowOnThesis && !copy.noEyebrow ? <p className="eyebrow L-thesis-eyebrow">Organizational and high-performance consulting</p> : null}
+          {copy.eyebrowOnThesis && !copy.noEyebrow ? <p className="eyebrow L-thesis-eyebrow">{h.hero.eyebrow}</p> : null}
           {(() => {
             const inner = (
               <div className={`L-thesis-in${copy.thesisWithMeaning ? " L-thesis-duo" : ""}`}>
-                <p className="L-big">{rich(copy.thesis ?? "Every leadership team leaks performance. Few can see where. You have already paid for the talent. The question is whether the team\u2019s conditions let you get the full return.")}</p>
-                {copy.thesisWithMeaning ? <Dictionary /> : null}
+                <p className="L-big">{rich(thesisText)}</p>
+                {copy.thesisWithMeaning ? <Dictionary d={h.dictionary} /> : null}
                 {copy.noPartnerLine ? null : <span className="L-cap">In partnership with Sapien Labs</span>}
               </div>
             );
@@ -895,7 +919,7 @@ export function Section({ def, variant, go, copy = {}, demo }: { def: (typeof SE
           </>
         )}
 
-        {def.id === "meaning" && !copy.thesisWithMeaning && (copy.revealIntro ? <Reveal><Dictionary /></Reveal> : <Dictionary />)}
+        {def.id === "meaning" && !copy.thesisWithMeaning && (copy.revealIntro ? <Reveal><Dictionary d={h.dictionary} /></Reveal> : <Dictionary d={h.dictionary} />)}
 
         {def.id === "circles" && v === "nested" && (
           <>
@@ -905,7 +929,7 @@ export function Section({ def, variant, go, copy = {}, demo }: { def: (typeof SE
         )}
 
         {/* the morph carries its own head: it changes as the picture does */}
-        {def.id === "circles" && v === "morph" && <FocusMorph />}
+        {def.id === "circles" && v === "morph" && <FocusMorph words={h.focus} />}
 
         {def.id === "circles" && v !== "nested" && v !== "morph" && (
           <>
@@ -952,16 +976,16 @@ export function Section({ def, variant, go, copy = {}, demo }: { def: (typeof SE
           </>
         )}
 
-        {def.id === "voices" && v === "carousel" && <Carousel />}
+        {def.id === "voices" && v === "carousel" && <Carousel quotes={quotes} />}
 
         {def.id === "voices" && v !== "carousel" && (
           <>
-            <Head def={def} />
+            <Head def={headOf(h.voices)} />
             <div className="L-voices">
-              {[0, 1, 2].map((i) => (
+              {quotes.map((q, i) => (
                 <figure className="card L-quote" key={i}>
-                  <blockquote>&ldquo;Sample testimonial. Two or three sentences in the client&rsquo;s own words about what changed for the team.&rdquo;</blockquote>
-                  <figcaption className="L-cap">Name &middot; Role &middot; Organization</figcaption>
+                  <blockquote>&ldquo;{q.q}&rdquo;</blockquote>
+                  <figcaption className="L-cap">{q.who} &middot; {q.role}</figcaption>
                 </figure>
               ))}
             </div>
@@ -970,10 +994,10 @@ export function Section({ def, variant, go, copy = {}, demo }: { def: (typeof SE
 
         {def.id === "case" && (
           <>
-            <Head def={def} />
+            <Head def={headOf(h.case)} />
             <div className="L-case-wrap">
             {copy.caseWithResearch ? (
-              <ReportCard cls="L-case-research" onlyDownload />
+              <ReportCard cls="L-case-research" onlyDownload report={g.report} />
             ) : null}
             {copy.caseWithResearch ? (
               /* the case study in the report's shape: a portrait cover, the
@@ -982,25 +1006,21 @@ export function Section({ def, variant, go, copy = {}, demo }: { def: (typeof SE
               <blockquote className="L-research L-report L-case-report">
                 <a className="L-report-cover L-case-cover" href="#" onClick={stay} aria-label="SAMUH case study, PDF">
                   <Image src="/samuh-logo.png" alt="" width={960} height={LOGO_H} sizes="160px" />
-                  <span className="L-case-cover-tag">Case study &middot; Senior leadership team, Fortune 10 healthcare company</span>
+                  <span className="L-case-cover-tag">{h.case.tag}</span>
                 </a>
                 <div className="L-report-copy">
-                  <span className="card-tag">Case study &middot; Senior leadership team, Fortune 10 healthcare company</span>
-                  <p className="L-big">1 high-performance ritual. 90 days. Measurable change.</p>
+                  <span className="card-tag">{h.case.tag}</span>
+                  <p className="L-big">{h.case.line}</p>
                   <dl className="L-case-stats">
-                    {[
-                      ["+39%", "most improved practice"],
-                      ["12/13", "team practices improved"],
-                      ["Embedded", "a new way of working that has stuck"],
-                    ].map(([n, l]) => (
+                    {h.case.stats.map(({ n, label }) => (
                       <div className="L-stat" key={n}>
                         <dt className="L-stat-n">{n}</dt>
-                        <dd className="L-cap">{l}</dd>
+                        <dd className="L-cap">{label}</dd>
                       </div>
                     ))}
                   </dl>
                   <p className="L-report-links">
-                    <a href="#" className="inline-link" onClick={stay}>Download the case study <span className="arrow">&rarr;</span></a>
+                    <a href="#" className="inline-link" onClick={stay}>{h.case.cta} <span className="arrow">&rarr;</span></a>
                   </p>
                 </div>
               </blockquote>
@@ -1010,21 +1030,17 @@ export function Section({ def, variant, go, copy = {}, demo }: { def: (typeof SE
                 <Image src="/case-study.png" alt="Samuh case study: 1 high-performance practice. 90 days. Measurable change." width={2490} height={1404} sizes="(max-width: 900px) 100vw, 560px" />
               </span>
               <div>
-                <span className="card-tag">Case study · Senior leadership team, Fortune 10 healthcare company</span>
-                <p className="L-big L-case-line">1 high-performance ritual. 90 days. Measurable change.</p>
+                <span className="card-tag">{h.case.tag}</span>
+                <p className="L-big L-case-line">{h.case.line}</p>
                 <dl className="L-case-stats">
-                  {[
-                    ["+39%", "most improved practice"],
-                    ["12/13", "team practices improved"],
-                    ["Embedded", "a new way of working that has stuck"],
-                  ].map(([n, l]) => (
+                  {h.case.stats.map(({ n, label }) => (
                     <div className="L-stat" key={n}>
                       <dt className="L-stat-n">{n}</dt>
-                      <dd className="L-cap">{l}</dd>
+                      <dd className="L-cap">{label}</dd>
                     </div>
                   ))}
                 </dl>
-                <a href="#" className="inline-link" onClick={stay}>Read the case study</a>
+                <a href="#" className="inline-link" onClick={stay}>{h.case.cta}</a>
               </div>
             </div>
             )}
@@ -1034,18 +1050,16 @@ export function Section({ def, variant, go, copy = {}, demo }: { def: (typeof SE
 
         {def.id === "tool" && (
           <>
-            <Head def={{ ...def, kicker: copy.tool?.kicker ?? def.kicker, title: copy.tool?.title ?? def.title }} />
+            <Head def={{ ...def, kicker: toolKicker, title: toolTitle }} />
             {demo ? <TeaserDemo {...demo} /> : null}
             {/* TODO(content): draft pitch, for SAMUH to replace. It describes and does not claim */}
             <div className="teaser-pitch">
-              {copy.tool?.pitch === null ? null : (
-                <p className="L-mid">{copy.tool?.pitch ?? `That was a demonstration team of ${TEAM_SIZE}, three factors moved. Every team leaks performance somewhere different. A TeamQ assessment finds where yours does, and what to move first.`}</p>
-              )}
+              {toolPitch ? <p className="L-mid">{toolPitch}</p> : null}
               <div className="cta-row">
                 {copy.tool?.ctaHref ? (
-                  <a className="btn" href={copy.tool.ctaHref}>{copy.tool?.cta ?? "Explore TeamQ"} <span className="arrow">&rarr;</span></a>
+                  <a className="btn" href={copy.tool.ctaHref}>{toolCta} <span className="arrow">&rarr;</span></a>
                 ) : (
-                  <button className="btn" onClick={() => go("start")}>{copy.tool?.cta ?? "Explore TeamQ"} <span className="arrow">&rarr;</span></button>
+                  <button className="btn" onClick={() => go("start")}>{toolCta} <span className="arrow">&rarr;</span></button>
                 )}
               </div>
             </div>
@@ -1054,30 +1068,30 @@ export function Section({ def, variant, go, copy = {}, demo }: { def: (typeof SE
 
         {def.id === "cards" && v === "rotate" && (
           <>
-            <Head def={def} />
+            <Head def={headOf(h.cards)} />
             <Rotator />
           </>
         )}
 
         {def.id === "cards" && v === "gallery" && (
           <>
-            <Head def={def} />
-            <MetaphorGallery cards={copy.cards} />
+            <Head def={headOf(h.cards)} />
+            <MetaphorGallery cards={cardItems} />
           </>
         )}
 
         {def.id === "cards" && v === "one" && (
           <>
-            <Head def={def} />
-            <OneCard cards={copy.cards} go={go} />
+            <Head def={headOf(h.cards)} />
+            <OneCard cards={cardItems} go={go} words={h.cards} />
           </>
         )}
 
         {def.id === "cards" && v !== "rotate" && v !== "gallery" && v !== "one" && (
           <>
-            <Head def={def} />
+            <Head def={headOf(h.cards)} />
             <div className="L-cards">
-              {ARCHETYPES.map(([name, line, src]) => (
+              {(cardItems ?? ARCHETYPES).map(([name, line, src]) => (
                 <article className="card L-arche" key={name}>
                   <Art src={src} name={name} />
                   <h3>{name}</h3>
@@ -1103,9 +1117,9 @@ export function Section({ def, variant, go, copy = {}, demo }: { def: (typeof SE
 
         {def.id === "faq" && (
           <>
-            <Head def={def} />
+            <Head def={headOf(h.faq)} />
             <div className="L-faq">
-              {FAQ.map(([q, a], i) => (
+              {h.faq.items.map(({ q, a }, i) => (
                 <details className="L-faq-item" key={q} name="faq" open={i === 0 || undefined}>
                   <summary className="L-faq-q">
                     <span>{rich(q)}</span>
@@ -1121,17 +1135,17 @@ export function Section({ def, variant, go, copy = {}, demo }: { def: (typeof SE
         {def.id === "start" && (
           <div className="L-start">
             <div>
-              <h2 className="sec">What could stronger performance look like for your team?</h2>
-              {copy.startSub === null ? null : <p className="L-mid">{copy.startSub ?? "Free and ungated. The first insight lands before the first ask."}</p>}
+              <h2 className="sec">{h.start.title}</h2>
+              {startSub ? <p className="L-mid">{startSub}</p> : null}
             </div>
             <div className="L-start-actions">
               <div className="field">
-                <input type="text" placeholder="How many people are on your team?" />
-                <button className="btn">Start</button>
+                <input type="text" placeholder={h.start.placeholder} />
+                <button className="btn">{h.start.startLabel}</button>
               </div>
               <div className="cta-row">
-                <button className="btn" onClick={() => go("start")}>Explore TeamQ <span className="arrow">&rarr;</span></button>
-                <button className="btn btn-secondary" onClick={() => go("contact")}>Talk to us</button>
+                <button className="btn" onClick={() => go("start")}>{h.start.ctaPrimary} <span className="arrow">&rarr;</span></button>
+                <button className="btn btn-secondary" onClick={() => go("contact")}>{h.start.ctaSecondary}</button>
               </div>
             </div>
           </div>

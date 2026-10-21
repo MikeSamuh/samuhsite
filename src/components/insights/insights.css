@@ -253,3 +253,20 @@ ol.ins-list { list-style: decimal; }
   .ins-card-art img, .ins-video-still img, .ins-play, .ins-chip, .ins-transcript summary::after { transition: none; }
   .ins-card:hover .ins-card-art img, .ins-video-still:hover img { transform: none; }
 }
+
+/* a post written in the admin: HTML from the editor, the same type as the
+   markdown posts above */
+.ins-rich { display: grid; gap: 18px; }
+.ins-rich p { margin: 0; font-size: 17px; line-height: 1.7; color: var(--text); }
+.ins-rich h2 { font-family: var(--font-display); font-weight: var(--display-weight); font-size: 28px; line-height: 1.2; margin: 18px 0 0; color: var(--text); }
+.ins-rich h3 { font-family: var(--font-display); font-weight: var(--display-weight); font-size: 21px; line-height: 1.25; margin: 8px 0 0; color: var(--text); }
+.ins-rich ul, .ins-rich ol { margin: 0; padding-left: 22px; display: grid; gap: 8px; font-size: 16.5px; line-height: 1.6; color: var(--text); }
+.ins-rich ul { list-style: disc; }
+.ins-rich ol { list-style: decimal; }
+.ins-rich li p { font-size: inherit; line-height: inherit; }
+.ins-rich li::marker { color: var(--accent-2); }
+.ins-rich a { color: var(--accent-2); text-decoration: underline; text-decoration-thickness: var(--rule-thin); text-underline-offset: 3px; }
+.ins-rich strong { color: var(--text); }
+.ins-rich blockquote { margin: 0; padding: 4px 0 4px 20px; border-left: var(--rule-fat) solid var(--accent); color: var(--muted); font-style: italic; }
+.ins-rich img { max-width: 100%; height: auto; display: block; border-radius: var(--radius); border: var(--rule-thin) solid var(--border); }
+.ins-rich hr { border: 0; border-top: var(--rule-thin) solid var(--border); margin: 8px 0; }

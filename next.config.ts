@@ -1,6 +1,14 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  images: {
+    // covers for YouTube embeds placed in the admin's editor, and images
+    // uploaded there to Vercel Blob
+    remotePatterns: [
+      { protocol: "https", hostname: "i.ytimg.com" },
+      { protocol: "https", hostname: "*.public.blob.vercel-storage.com" },
+    ],
+  },
   async redirects() {
     // draft-1 became /draft/a on 28 September; any link that went out still lands
     return [

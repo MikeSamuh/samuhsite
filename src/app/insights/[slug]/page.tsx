@@ -3,22 +3,25 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { InsightCard, toCard } from "@/components/insights/InsightCard";
 import { Markdown } from "@/components/insights/Markdown";
+import { RichBody } from "@/components/insights/RichBody";
 import { YouTube } from "@/components/insights/YouTube";
 import { formatDate, getPost, neighbours, publishedPosts, relatedPosts, timeLabel, transcriptText } from "@/lib/insights";
+import { getPageContent } from "@/lib/content/content";
 import DraftShell from "../../draft/DraftShell";
 import { WORKING } from "../../draft/drafts";
 import "@/components/insights/insights.css";
 
-export const dynamic = "force-static";
-export const dynamicParams = false;
+// Built at deploy for every published post; a post published in the admin
+// after that renders on its first visit and is cached until the next save
+export const dynamicParams = true;
 
-export function generateStaticParams() {
-  return publishedPosts().filter((p) => p.type !== "research").map((p) => ({ slug: p.slug }));
+export async function generateStaticParams() {
+  return (await publishedPosts()).filter((p) => p.type !== "research").map((p) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const post = getPost(slug);
+  const post = await getPost(slug);
   if (!post) return {};
   return {
     title: `${post.title} · SAMUH`,
@@ -29,15 +32,16 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function InsightPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const post = getPost(slug);
+  const post = await getPost(slug);
   if (!post || post.type === "research") notFound();
   const kind = post.type === "video" ? "Video" : "Article";
   const transcript = transcriptText(post);
-  const related = relatedPosts(post).map(toCard);
-  const { prev, next } = neighbours(post);
+  const related = (await relatedPosts(post)).map(toCard);
+  const { prev, next } = await neighbours(post);
   const time = timeLabel(post);
+  const global = await getPageContent("global");
   return (
-    <DraftShell draft={WORKING}>
+    <DraftShell draft={WORKING} content={global}>
       <article>
         <section className="L-sec L-page-head ins-head ins-post-head">
           <div className="L-wrap">
@@ -67,7 +71,7 @@ export default async function InsightPage({ params }: { params: Promise<{ slug: 
         <section className="L-sec ins-body-sec">
           <div className="L-wrap L-wrap-narrow ins-body">
             {post.type === "video" && post.videoId ? <YouTube id={post.videoId} title={post.title} cover={post.cover} /> : null}
-            <Markdown source={post.body} skip={["Transcript"]} />
+            {post.html !== undefined ? <RichBody html={post.html} /> : <Markdown source={post.body} skip={["Transcript"]} />}
             {transcript ? (
               <details className="ins-transcript">
                 <summary>Transcript</summary>

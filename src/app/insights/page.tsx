@@ -2,37 +2,40 @@ import type { Metadata } from "next";
 import { InsightsFeed } from "@/components/insights/InsightsFeed";
 import { toCard } from "@/components/insights/InsightCard";
 import { publishedPosts } from "@/lib/insights";
+import { getContent } from "@/lib/content/content";
 import DraftShell from "../draft/DraftShell";
 import { ReportCard } from "../layout/sections";
 import { WORKING } from "../draft/drafts";
 import "@/components/insights/insights.css";
 
-export const metadata: Metadata = {
-  title: "Insights · SAMUH",
-  description: "Perspectives based on cutting-edge research, and guided by timeless wisdom. Video, articles and research from SAMUH, in partnership with Sapien Labs.",
-};
-
-export const dynamic = "force-static";
+export async function generateMetadata(): Promise<Metadata> {
+  const { insights } = await getContent();
+  return {
+    title: "Insights · SAMUH",
+    description: insights.meta.description,
+  };
+}
 
 // A production route. It borrows the working draft's shell until that draft
 // is promoted to the root, at which point the shell moves and this page does
-// not. Content comes from content/insights at build time.
-export default function InsightsPage() {
-  const posts = publishedPosts();
+// not. Posts come from content/insights and the admin's Blog tab; the page
+// is static and a save in the admin revalidates it.
+export default async function InsightsPage() {
+  const [posts, { insights, global }] = await Promise.all([publishedPosts(), getContent()]);
   const research = posts.filter((p) => p.type === "research");
   const feed = posts.filter((p) => p.type !== "research").map(toCard);
   return (
-    <DraftShell draft={WORKING}>
+    <DraftShell draft={WORKING} content={global}>
       {research.length ? ( // the MDX entry keeps the report in the feed data; the card itself is shared with the home page
         <section className="L-sec L-sec-h ins-research-sec ins-first" aria-labelledby="research-title">
           <div className="L-wrap">
             <div className="L-head">
               <div>
-                <p className="eyebrow L-eyebrow">Research</p>
-                <h2 className="sec" id="research-title">The research we build on.</h2>
+                <p className="eyebrow L-eyebrow">{insights.research.eyebrow}</p>
+                <h2 className="sec" id="research-title">{insights.research.title}</h2>
               </div>
             </div>
-            <ReportCard />
+            <ReportCard report={global.report} />
           </div>
         </section>
       ) : null}
@@ -41,8 +44,8 @@ export default function InsightsPage() {
         <div className="L-wrap">
           <div className="L-head">
             <div>
-              <p className="eyebrow L-eyebrow">The feed</p>
-              <h2 className="sec" id="feed-title">Video and articles.</h2>
+              <p className="eyebrow L-eyebrow">{insights.feed.eyebrow}</p>
+              <h2 className="sec" id="feed-title">{insights.feed.title}</h2>
             </div>
           </div>
           <InsightsFeed posts={feed} />
