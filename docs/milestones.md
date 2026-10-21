@@ -103,7 +103,7 @@ Decide during M3. Default if nobody decides: MDX for launch.
 
 ## M4. Promotion and polish
 
-- [ ] Working draft promoted from `/draft/working` to the root. `/draft`, A, B and C removed
+- [x] Working draft promoted from `/draft/working` to the root. `/draft`, A, B, C, `/design` and `/layout` removed, 21 Oct 2026
 - [ ] Intake flows re-tested on the root
 - [ ] GA4 with conversion events on form, booking and teaser submit
 - [ ] LinkedIn Insight Tag. Meta pixel if asked
@@ -111,7 +111,12 @@ Decide during M3. Default if nobody decides: MDX for launch.
 - [ ] Motion pass across every section: shared entrance and reveal system,
       reduced motion respected everywhere
 - [ ] Chrome, Safari, Firefox, Edge. Desktop and mobile
-- [ ] Lighthouse performance 90 or better on throttled mobile. LCP under 2.5s
+- [ ] Lighthouse performance 90 or better on throttled mobile. LCP under 2.5s.
+      21 Oct 2026, local production build, mobile: performance 89 to 91,
+      SEO 100, accessibility 100. LCP 3.5 to 3.8s simulated, 2.9s under real
+      throttling. The hero poster is the LCP; what remains before it is
+      Next's JS (165KB) and Inter's two files (97KB). Dropping Inter italic
+      or trimming the home's JS is the next lever, and a design call
 - [ ] WCAG 2.1 AA: keyboard, focus states, semantic structure, contrast
       across the dark palette
 - [ ] Logo SVGs optimised or redrawn
@@ -123,12 +128,15 @@ scope.
 
 ## M5. Launch
 
-- [ ] Redirects from every old URL
-- [ ] Metadata, Open Graph, structured data for articles and organization,
-      sitemap, robots
+- [x] Redirects from every old URL: the 21 posts, the WordPress pages and
+      archives, every draft and tool URL, 21 Oct 2026
+- [x] Metadata, Open Graph, structured data for articles and organization,
+      sitemap, robots, 21 Oct 2026. Also `/llms.txt` for answer engines
 - [ ] Resend domain verified so email sends from `samuh.work`
 - [ ] Domain cutover
-- [ ] Google Search Console and Google Business Profile
+- [ ] Google Search Console and Google Business Profile. The site reads
+      `GOOGLE_SITE_VERIFICATION` for the HTML-tag method; set it in Vercel,
+      then submit `https://samuh.work/sitemap.xml`
 - [ ] Admin walkthrough recorded for SAMUH (/hq-7h3k, `docs/admin.md`)
 - [ ] Admin env on Vercel: ADMIN_EMAILS, ADMIN_SESSION_SECRET, Upstash
       Redis, Blob token, GA4 property and service account

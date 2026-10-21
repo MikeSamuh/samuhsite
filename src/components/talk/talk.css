@@ -1,0 +1,17 @@
+/* Talk to us. No values: everything reads the custom properties from
+   tokens.ts and layout.ts. */
+
+.talk-sec { padding-top: 0; }
+.talk-step2 { display: grid; gap: 20px; outline: none; }
+.talk-summary { color: var(--accent-2); }
+.talk-embed {
+  display: block;
+  width: 100%;
+  height: 80vh;
+  min-height: 560px;
+  border: var(--rule-thin) solid var(--border);
+  border-radius: min(var(--radius), 14px);
+  background: var(--surface);
+}
+.talk-ph { min-height: 320px; }
+.talk-after { max-width: 60ch; }

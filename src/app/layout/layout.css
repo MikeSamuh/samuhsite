@@ -1546,24 +1546,24 @@
 }
 /* ---------- draft B (Wilfred's 28 September edits) ---------- */
 
-.D-stage:is([data-draft="b"], [data-draft="working"]) .L-dict { max-width: 72ch; }
-.D-stage:is([data-draft="b"], [data-draft="working"]) .L-dict-word { font-size: clamp(44px, 5.2cqw, 76px); }
-.D-stage:is([data-draft="b"], [data-draft="working"]) .L-dict-pron { font-size: 18px; }
-.D-stage:is([data-draft="b"], [data-draft="working"]) .L-dict-pos { font-size: 16px; }
-.D-stage:is([data-draft="b"], [data-draft="working"]) .L-dict-defs { font-size: clamp(18px, 1.7cqw, 22px); }
-.D-stage:is([data-draft="b"], [data-draft="working"]) .L-dict-hi { color: var(--accent-2); }
+.D-stage .L-dict { max-width: 72ch; }
+.D-stage .L-dict-word { font-size: clamp(44px, 5.2cqw, 76px); }
+.D-stage .L-dict-pron { font-size: 18px; }
+.D-stage .L-dict-pos { font-size: 16px; }
+.D-stage .L-dict-defs { font-size: clamp(18px, 1.7cqw, 22px); }
+.D-stage .L-dict-hi { color: var(--accent-2); }
 .L-thesis-eyebrow { margin: 0 0 14px; }
 .L-thesis-eyebrow::after { display: none; }
-.D-stage:is([data-draft="b"], [data-draft="working"]) .L-dict-say { width: 48px; height: 48px; }
-.D-stage:is([data-draft="b"], [data-draft="working"]) .L-dict-say svg { width: 27px; height: 27px; }
+.D-stage .L-dict-say { width: 48px; height: 48px; }
+.D-stage .L-dict-say svg { width: 27px; height: 27px; }
 /* 12 October: the dictionary is one row straight under the hero, the word,
    how to say it and its origin on the left, the sense on the right, under
    the rule the thesis used to carry. The leak line follows as its own
    section, under its own rule */
-.D-stage[data-draft="working"] .L-s-hero:has(+ .L-s-meaning[data-v="block"]) { padding-bottom: calc(28px * var(--space, 1)); }
+.D-stage .L-s-hero:has(+ .L-s-meaning[data-v="block"]) { padding-bottom: calc(28px * var(--space, 1)); }
 /* 13 October: both rules are hairlines */
-.D-stage[data-draft="working"] .L-s-thesis[data-v="under"] .L-thesis-in { border-top-width: var(--rule-thin); }
-.D-stage[data-draft="working"] .L-s-meaning[data-v="block"] .L-dict {
+.D-stage .L-s-thesis[data-v="under"] .L-thesis-in { border-top-width: var(--rule-thin); }
+.D-stage .L-s-meaning[data-v="block"] .L-dict {
   max-width: none;
   border: 0;
   border-top: var(--rule-thin) solid var(--accent-2);
@@ -1572,16 +1572,16 @@
   column-gap: clamp(32px, 5cqw, 80px);
   align-items: center;
 }
-.D-stage[data-draft="working"] .L-s-meaning[data-v="block"] .L-dict-pos { flex-basis: 100%; }
-.D-stage[data-draft="working"] .L-s-meaning[data-v="block"] .L-dict-defs { font-size: clamp(22px, 2.4cqw, 32px); line-height: 1.35; }
+.D-stage .L-s-meaning[data-v="block"] .L-dict-pos { flex-basis: 100%; }
+.D-stage .L-s-meaning[data-v="block"] .L-dict-defs { font-size: clamp(22px, 2.4cqw, 32px); line-height: 1.35; }
 @container page (max-width: 900px) {
-  .D-stage[data-draft="working"] .L-s-meaning[data-v="block"] .L-dict { grid-template-columns: 1fr; }
+  .D-stage .L-s-meaning[data-v="block"] .L-dict { grid-template-columns: 1fr; }
 }
 /* the thesis under the hero carries the leak line, so it reads as the argument, not a caption */
-.D-stage:is([data-draft="b"], [data-draft="working"]) .L-s-thesis .L-big { font-size: clamp(30px, 3.6cqw, 50px); max-width: 26ch; line-height: 1.15; }
+.D-stage .L-s-thesis .L-big { font-size: clamp(30px, 3.6cqw, 50px); max-width: 26ch; line-height: 1.15; }
 /* copy over the hero video, editorial alignment, a scrim so it reads */
-.D-stage:is([data-draft="b"], [data-draft="working"]) .L-s-hero[data-v="cinema"] .L-video { position: absolute; inset: 0; border: 0; border-radius: 0; z-index: 0; background: var(--base); }
-.D-stage:is([data-draft="b"], [data-draft="working"]) .L-s-hero[data-v="cinema"] .L-video::after {
+.D-stage .L-s-hero[data-v="cinema"] .L-video { position: absolute; inset: 0; border: 0; border-radius: 0; z-index: 0; background: var(--base); }
+.D-stage .L-s-hero[data-v="cinema"] .L-video::after {
   content: "";
   position: absolute;
   inset: 0;
@@ -1589,7 +1589,21 @@
               linear-gradient(180deg, transparent 50%, var(--base) 100%);
   pointer-events: none;
 }
-.D-stage:is([data-draft="b"], [data-draft="working"]) .L-s-hero[data-v="cinema"] .L-video-hint { top: auto; left: auto; right: 24px; bottom: 24px; transform: none; z-index: 1; }
-.D-stage:is([data-draft="b"], [data-draft="working"]) .L-s-hero[data-v="cinema"] .L-hero-grid { min-height: min(86vh, 820px); }
-.D-stage:is([data-draft="b"], [data-draft="working"]) .L-s-hero[data-v="cinema"] .L-hero-copy { padding-top: calc(140px * var(--space, 1)); }
-.D-stage:is([data-draft="b"], [data-draft="working"]) .L-s-hero[data-v="cinema"] h1.display { font-size: clamp(42px, 6.4cqw, 92px); }
+.D-stage .L-s-hero[data-v="cinema"] .L-video-hint { top: auto; left: auto; right: 24px; bottom: 24px; transform: none; z-index: 1; }
+.D-stage .L-s-hero[data-v="cinema"] .L-hero-grid { min-height: min(86vh, 820px); }
+.D-stage .L-s-hero[data-v="cinema"] .L-hero-copy { padding-top: calc(140px * var(--space, 1)); }
+.D-stage .L-s-hero[data-v="cinema"] h1.display { font-size: clamp(42px, 6.4cqw, 92px); }
+
+/* ---------- the shell: the frame is the viewport ---------- */
+/* from the drafts' stylesheet, kept when the working draft became the site */
+
+.D-stage { min-height: 100vh; }
+.D-page { min-height: 100vh; }
+.D-body { margin-top: 0; }
+
+/* the overlay menu is positioned to the page */
+.D-page .L-overlay { position: fixed; }
+
+/* the outline buttons and fields keep their line but take soft corners.
+   Void has no radius of its own, so this is set here. */
+.D-stage .L-page[data-btn="btn-outline"] :is(.btn, .field input, .L-form input, .L-form textarea, .L-form select) { border-radius: 10px; }

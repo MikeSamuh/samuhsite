@@ -283,6 +283,11 @@ export const DEFAULTS = {
   },
 
   insights: {
+    head: {
+      kicker: "Insights",
+      title: "Video, articles and research.",
+      lede: "Perspectives based on cutting-edge research, and guided by timeless wisdom. Start with the Human Expansion episodes if the argument is new to you.",
+    },
     research: {
       eyebrow: "Research",
       title: "The research we build on.",

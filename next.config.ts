@@ -10,16 +10,35 @@ const nextConfig: NextConfig = {
     ],
   },
   async redirects() {
-    // draft-1 became /draft/a on 28 September; any link that went out still lands
     return [
-      { source: "/draft-1", destination: "/draft/a", permanent: false },
-      { source: "/draft-1/:path*", destination: "/draft/a/:path*", permanent: false },
+      // The working draft became the site on 21 October 2026. Every draft
+      // and tool URL that went out in review lands on its page at the root
+      { source: "/draft/working", destination: "/", permanent: true },
+      { source: "/draft/working/about", destination: "/about", permanent: true },
+      { source: "/draft/working/process", destination: "/process", permanent: true },
+      { source: "/draft/working/solutions", destination: "/solutions", permanent: true },
+      { source: "/draft/working/insights", destination: "/insights", permanent: true },
+      { source: "/draft/working/contact", destination: "/contact", permanent: true },
+      { source: "/draft/working/get-started", destination: "/teamq", permanent: true },
+      { source: "/draft/:path*", destination: "/", permanent: true },
+      { source: "/draft-1/:path*", destination: "/", permanent: true },
+      { source: "/design", destination: "/", permanent: true },
+      { source: "/layout", destination: "/", permanent: true },
       // Get Started became Explore TeamQ on 5 October. The route is kept for
       // the intake assessment, a later sprint
       { source: "/get-started", destination: "/teamq", permanent: false },
+      // WordPress pages on samuh.work, from its page sitemap
+      { source: "/about-us", destination: "/about", permanent: true },
+      { source: "/offerings", destination: "/solutions", permanent: true },
+      { source: "/contact-us", destination: "/contact", permanent: true },
+      // WordPress archives: categories and authors fold into the feed
+      { source: "/category/:path*", destination: "/insights", permanent: true },
+      { source: "/author/:path*", destination: "/insights", permanent: true },
+      { source: "/feed", destination: "/insights", permanent: true },
+      { source: "/wp-content/:path*", destination: "/", permanent: true },
       // WordPress posts on samuh.work, mapped to the new Insights slugs on
       // 12 October. The 21 live posts all carry over. /insights/ itself keeps
-      // its path. Live once the Insights route exists
+      // its path
       { source: "/episode-1-introduction-to-human-expansion", destination: "/insights/introduction", permanent: true },
       { source: "/episode-10-smartphones-harm-kids-what-can-parents-do", destination: "/insights/smartphones-harm-kids", permanent: true },
       { source: "/episode-11-a-short-history-of-performance-management", destination: "/insights/a-short-history-of-performance-management", permanent: true },

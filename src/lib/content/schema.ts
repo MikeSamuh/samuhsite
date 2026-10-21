@@ -54,7 +54,7 @@ export const SCHEMA: PageSchema[] = [
     id: "home",
     name: "Home",
     note: "The argument, then the ask. Ten sections.",
-    path: "/draft/working",
+    path: "/",
     sections: [
       { key: "hero", label: "Hero", note: "Over the film", fields: [t("title", "Headline", MARKERS), t("ctaPrimary", "Primary button"), t("ctaSecondary", "Secondary button")] },
       { key: "thesis", label: "Thesis", note: "The leak line", fields: [ta("text", "The line", MARKERS)] },
@@ -72,7 +72,7 @@ export const SCHEMA: PageSchema[] = [
     id: "about",
     name: "About",
     note: "What we believe, Sapien Labs, the team.",
-    path: "/draft/working/about",
+    path: "/about",
     sections: [
       { key: "head", label: "Page head", fields: [t("kicker", "Eyebrow"), ta("title", "Title"), ta("lede", "Lede")] },
       { key: "believe", label: "What we believe", fields: [t("kicker", "Eyebrow"), t("title", "Title"), ta("big", "Big line"), ta("p1", "Paragraph one"), ta("p2", "Paragraph two")] },
@@ -85,7 +85,7 @@ export const SCHEMA: PageSchema[] = [
     id: "process",
     name: "Process",
     note: "The team process in four stages.",
-    path: "/draft/working/process",
+    path: "/process",
     sections: [
       { key: "head", label: "Page head", fields: [t("kicker", "Eyebrow"), t("title", "Title"), ta("lede", "Lede")] },
       { key: "stages", label: "Stages", fields: [list("items", "The stages", "stage", [t("verb", "Verb"), t("line", "One line"), ta("body", "Body")], "Four stages; Assess shows a placeholder icon until its figure is drawn"), t("ctaPrimary", "Primary button"), t("ctaSecondary", "Secondary button")] },
@@ -95,7 +95,7 @@ export const SCHEMA: PageSchema[] = [
     id: "solutions",
     name: "Solutions",
     note: "Three tiers side by side, and the ask.",
-    path: "/draft/working/solutions",
+    path: "/solutions",
     sections: [
       { key: "head", label: "Page head", fields: [t("kicker", "Eyebrow"), t("title", "Title"), ta("lede", "Lede")] },
       { key: "tiers", label: "The tiers", fields: [t("kicker", "Eyebrow"), t("title", "Title"), list("items", "Tiers", "tier", [t("tag", "Tag"), t("name", "Name"), ta("what", "What it is"), ta("who", "Who it is for"), ta("get", "What you get")], "Three tiers; the table has three columns"), t("rowWhat", "Row label: what"), t("rowWho", "Row label: who"), t("rowGet", "Row label: get"), list("rows", "Comparison rows", "row", [t("label", "Row"), t("a", "Self-guided"), t("b", "Supported"), t("c", "Guided")]), ta("note", "Note under the table")] },
@@ -132,6 +132,7 @@ export const SCHEMA: PageSchema[] = [
     note: "The index page. Posts are in the Blog tab.",
     path: "/insights",
     sections: [
+      { key: "head", label: "Page head", fields: [t("kicker", "Eyebrow"), t("title", "Title"), ta("lede", "Lede", "Leave empty for none")] },
       { key: "research", label: "Research", fields: [t("eyebrow", "Eyebrow"), t("title", "Title")] },
       { key: "feed", label: "The feed", fields: [t("eyebrow", "Eyebrow"), t("title", "Title")] },
       { key: "meta", label: "Search and sharing", fields: [ta("description", "Description", "What Google and link previews show")] },
@@ -141,7 +142,7 @@ export const SCHEMA: PageSchema[] = [
     id: "global",
     name: "Site-wide",
     note: "Nav, footer, contact details, the report, testimonials.",
-    path: "/draft/working",
+    path: "/",
     sections: [
       { key: "brand", label: "Navigation", fields: [ta("partnerLine", "Partner line", "Two lines; the break is kept"), t("navCta", "Nav button")] },
       { key: "footer", label: "Footer", fields: [t("line", "Line", MARKERS), ta("about", "About"), t("talkHeading", "Talk to us heading"), t("bookCall", "Book a call link"), t("cta", "Button"), t("reportLabel", "Report link"), t("youtubeLabel", "YouTube link"), url("youtubeUrl", "YouTube URL")] },

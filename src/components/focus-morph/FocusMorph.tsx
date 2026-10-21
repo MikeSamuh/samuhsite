@@ -407,7 +407,7 @@ export function FocusMorph({ words = DEFAULTS.home.focus }: { /** the heads and 
           })}
           {/* the star, where all four meet; the loop moves it with the pointer */}
           <g ref={starRef} className="L-fm-in L-fm-mark">
-            <image href="/samuh-star.png" x={FRAME.w / 2 - STAR / 2} y={FRAME.h / 2 - STAR / 2} width={STAR} height={STAR} />
+            <image href="/samuh-star-256.png" x={FRAME.w / 2 - STAR / 2} y={FRAME.h / 2 - STAR / 2} width={STAR} height={STAR} />
           </g>
         </svg>
 

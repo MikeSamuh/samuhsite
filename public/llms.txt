@@ -1,0 +1,36 @@
+# SAMUH
+
+> Organizational and high-performance consulting, in partnership with Sapien Labs. High performance without the cost to people.
+
+SAMUH (samuh.work) works with teams on the conditions they work in. The claim: most teams leak performance through their environment, not their effort. SAMUH finds where a team is leaking, and gives it the practices to close it.
+
+The word is Sanskrit: a group of people who come together for a purpose larger than themselves.
+
+## What SAMUH does
+
+- Works with teams, not only individuals or the whole organization. The team is where people experience their work life, and where capacity is won or lost.
+- Reads the team environment with TeamQ, SAMUH's instrument built on Sapien Labs team environment factors. TeamQ is done with a real team; the tool on samuh.work/teamq is a demonstration of how it thinks, not an assessment.
+- Three ways to engage: Self-guided (the team works through the material on its own), Supported (adds periodic calls with SAMUH), Guided (SAMUH delivers in person). The team process is the method in all three: see the team clearly, choose the practice together, ritualize it in the flow of work.
+- Audience: leadership teams in multi-team organizations, team leads, store managers, and founders of fast-growing companies.
+
+## Sapien Labs
+
+Sapien Labs is SAMUH's research partner and the source of the research the site leans on. Its Work Culture and Mental Wellbeing report is the spine of the argument: https://sapienlabs.org/work-culture-and-mental-wellbeing/
+
+## Pages
+
+- Home: https://samuh.work/
+- About, the team and the research: https://samuh.work/about
+- The team process: https://samuh.work/process
+- Solutions, three ways to engage: https://samuh.work/solutions
+- Explore TeamQ, the demonstration tool: https://samuh.work/teamq
+- Insights, video and articles including the Human Expansion episodes: https://samuh.work/insights
+- Contact: https://samuh.work/contact
+- Book a call: https://samuh.work/talk
+- Sitemap: https://samuh.work/sitemap.xml
+
+## Contact
+
+hello@samuh.work
+LinkedIn: https://www.linkedin.com/company/samuh/
+YouTube, Human Expansion: https://www.youtube.com/@HumanExpansion-ACorePurpose

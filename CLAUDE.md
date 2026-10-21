@@ -116,13 +116,17 @@ From the signed scope. These are contractual, not aspirational.
 
 ## Working style
 
-- **All edits go to the working draft, `/draft/working`.** It began on
-  5 October 2026 as an exact copy of Draft B. B at `/draft/b` is frozen as the
-  reference the client reacted to; A and C are retired. Never edit B's entry
-  in `src/app/draft/drafts.ts` or its folder. Section, page and style edits in
-  the shared files (`src/app/layout/*`) are fine, that is where the site
-  lives; a change that should apply only to the working draft hangs off
-  `data-draft="working"` or the `working` entry in `drafts.ts`
+- **The site is at the root.** The working draft was promoted on
+  21 October 2026 and the drafts, `/design` and `/layout` are gone (B lives
+  in git history before that date). Pages are in `src/app/(site)/`, the
+  sections and pages they compose in `src/app/layout/*`, and the one
+  composition (frame, nav, section order, copy flags) in `src/lib/site.ts`
+- **Every internal link is a real `<Link href>`** reading `ROUTES` in
+  `src/lib/site.ts`. No `href="#"` with a click handler: a crawler follows
+  links, not handlers
+- **Every page's metadata goes through `pageMeta()`** in `src/lib/seo.ts`,
+  so the canonical URL and the sharing cards never drift. Structured data
+  goes through `<JsonLd>`
 - Prefer editing an existing file to creating a new one
 - Branch, review on the Vercel preview URL, then merge
 - **Local only until told to push.** Commit on a branch as much as you like,

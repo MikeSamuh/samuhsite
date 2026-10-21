@@ -454,3 +454,34 @@ the Data API, with Vercel Analytics linked. Content and posts live in
 Upstash Redis, images in Vercel Blob, both set by env. Supersedes the 12
 October "Sanity after launch" default. Rule 5 stands for visitors; this is
 staff access. — Wilfred
+
+**2026-10-21 — The working draft is the site. Drafts, `/design` and `/layout` removed.**
+Home, About, Process and Solutions moved from `/draft/working` to the root,
+in a `(site)` route group whose layout renders the one shell. The working
+draft's entry in `drafts.ts` became `src/lib/site.ts`; A, B and C are in
+git history before this date, which is where "frozen for comparison" now
+means. Every old URL redirects. Done ahead of the SEO pass, because nothing
+in it counts on URLs under `/draft`. — Wilfred
+
+**2026-10-21 — Internal links are links.** Nav, footer and every CTA were
+`href="#"` with a router push, which a crawler reads as a site with no
+internal links. All of them are `<Link href>` reading `ROUTES` in
+`site.ts`. Privacy, Terms and Cookies land on Contact until counsel's pages
+exist, rather than nowhere. — Wilfred
+
+**2026-10-21 — Search and sharing in one place.** `pageMeta()` in
+`src/lib/seo.ts` gives every page its title, description, canonical URL,
+Open Graph and Twitter card; the default card is drawn at `/og.png` from
+the logo and the thesis line, posts use their cover. Structured data:
+Organization and WebSite on every page, FAQPage on the home, Article or
+VideoObject plus breadcrumbs on each post. `/sitemap.xml`, `/robots.txt`
+and `/llms.txt` are generated. The thirty-one configurator fonts dropped to
+the four the locked pairing uses, and the hero carries a poster frame so
+the LCP is a still, not the film. — Wilfred
+
+**2026-10-21 — `/talk` built to Flow 3 in sprint-intakes.md.** It was
+linked from the contact and teaser success blocks and did not exist.
+Qualify (name, email, organization, team size, what to change, `?tier=`),
+post to `/api/lead` as `flow: "talk"`, then the Google booking embed from
+`NEXT_PUBLIC_BOOKING_URL`, a placeholder until Jake's schedule link lands.
+— Wilfred

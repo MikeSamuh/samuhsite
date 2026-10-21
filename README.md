@@ -9,14 +9,8 @@ npm install
 npm run dev
 ```
 
-http://localhost:3000 - placeholder home
-http://localhost:3000/design - the direction configurator
-
-Seven independent dials: background (5), two accents (12 hues), type pairing
-(10), line weight (4), entrance (5), hover (5). Number keys 1 to 5 switch the
-background, q through p switch the type. The URL records the exact combination,
-for example `/design#synapse.pink-magenta.cyan-samuh.dm-serif.balanced.unblur.glow`,
-so a combination can be shared as a link.
+http://localhost:3000 - the site
+http://localhost:3000/admin - the content admin (see `.env.example`)
 
 ## Layout
 
@@ -25,12 +19,16 @@ CLAUDE.md               operating brief, read first
 docs/                   project context
 src/
   app/
-    layout.tsx          font loading
-    page.tsx            home
-    design/             the configurator, deleted after selection
-      Backdrop.tsx      the five background treatments
+    layout.tsx          fonts, site-wide metadata, analytics tags
+    (site)/             every public page, in the shared shell
+    layout/             the sections and pages the site is composed from
+    admin/              the content admin
+    robots.ts, sitemap.ts, og.png/   search and sharing
+  components/site/      the shell and the home and page composers
   lib/
     tokens.ts           the design system
+    site.ts             the one composition: frame, nav, routes, section order
+    seo.ts              metadata helper and structured data
 ```
 
 ## Before you write code

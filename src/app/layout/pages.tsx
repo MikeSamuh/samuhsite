@@ -3,7 +3,9 @@
 import { useEffect, useRef, useState } from "react";
 
 import Image from "next/image";
+import Link from "next/link";
 import type { PageId } from "@/lib/layout";
+import { ROUTES } from "@/lib/site";
 import { ContactAside } from "@/components/contact/ContactAside";
 import { ContactForm } from "@/components/contact/ContactForm";
 import { ProcessFigure, StageFigure } from "@/components/process-figure/ProcessFigure";
@@ -71,7 +73,7 @@ function Sec({ n, kicker, title, children, id, cls }: { n: string; kicker: strin
 
 /* ------------------------------------------------------------------ */
 
-function Solutions({ go, c = DEFAULTS.solutions, g = DEFAULTS.global }: { go: (p: PageId) => void; c?: SolutionsContent; g?: GlobalContent }) {
+function Solutions({ c = DEFAULTS.solutions, g = DEFAULTS.global }: { c?: SolutionsContent; g?: GlobalContent }) {
   const TIERS = c.tiers.items;
   const [tier, setTier] = useState(TIERS[1]?.name ?? TIERS[0]?.name ?? "");
   const [sent, setSent] = useState(false);
@@ -136,7 +138,7 @@ function Solutions({ go, c = DEFAULTS.solutions, g = DEFAULTS.global }: { go: (p
         ) : (
           <div className="L-talk-thanks">
             <p className="L-big">{fill(c.talk.thanks, { tier })}</p>
-            <a href="#" className="inline-link L-text-cta" onClick={(e) => { stay(e); go("process"); }}>{c.talk.wait} <span className="arrow">&rarr;</span></a>
+            <Link href={ROUTES.process} className="inline-link L-text-cta">{c.talk.wait} <span className="arrow">&rarr;</span></Link>
           </div>
         )}
       </Sec>
@@ -178,7 +180,7 @@ const STAGE_LINE = 96; // a stage takes over once its top is this far below that
  *  the next pose. The running head is decorative; every stage carries its
  *  own heading, visually hidden there. Everywhere else the running head is
  *  off and the stages stack, each with its head and its own figure or icon. */
-function Process({ go, figures, c = DEFAULTS.process }: { go: (p: PageId) => void; figures?: boolean; c?: ProcessContent }) {
+function Process({ figures, c = DEFAULTS.process }: { figures?: boolean; c?: ProcessContent }) {
   const ref = useRef<HTMLElement>(null);
   const [active, setActive] = useState(0);
   const STAGES: [string, string, string, string, PoseId | null][] = c.stages.items.slice(0, STAGE_ART.length).map((st, i) => [st.verb, st.line, st.body, STAGE_ART[i][0], STAGE_ART[i][1]]);
@@ -228,8 +230,8 @@ function Process({ go, figures, c = DEFAULTS.process }: { go: (p: PageId) => voi
                   <p className="L-mid">{body}</p>
                   {i === STAGES.length - 1 ? (
                     <div className="cta-row">
-                      <button className="btn" onClick={() => go("start")}>{c.stages.ctaPrimary} <span className="arrow">&rarr;</span></button>
-                      <button className="btn btn-secondary" onClick={() => go("solutions")}>{c.stages.ctaSecondary}</button>
+                      <Link className="btn" href={ROUTES.start}>{c.stages.ctaPrimary} <span className="arrow">&rarr;</span></Link>
+                      <Link className="btn btn-secondary" href={ROUTES.solutions}>{c.stages.ctaSecondary}</Link>
                     </div>
                   ) : null}
                 </div>
@@ -353,7 +355,7 @@ function Contact({ c = DEFAULTS.contact, g = DEFAULTS.global }: { c?: ContactCon
 
 /* ------------------------------------------------------------------ */
 
-function Start({ go }: { go: (p: PageId) => void }) {
+function Start() {
   return (
     <section className="L-sec L-intake">
       <div className="L-wrap L-wrap-narrow">
@@ -370,7 +372,7 @@ function Start({ go }: { go: (p: PageId) => void }) {
         </aside>
         <div className="cta-row">
           <button className="btn">Next <span className="arrow">&rarr;</span></button>
-          <button className="btn btn-secondary" onClick={() => go("contact")}>Talk to us instead</button>
+          <Link className="btn btn-secondary" href={ROUTES.contact}>Talk to us instead</Link>
         </div>
         <p className="L-cap">Our own intake tool. Not TeamQ, not validated, not diagnostic. Result on screen with a shareable link; email or booking offered after.</p>
       </div>
@@ -380,14 +382,14 @@ function Start({ go }: { go: (p: PageId) => void }) {
 
 /* ------------------------------------------------------------------ */
 
-export function Page({ id, go, figures, content }: { id: PageId; go: (p: PageId) => void; figures?: boolean; /** the admin's words; the defaults without them */ content?: PageCopy }) {
+export function Page({ id, figures, content }: { id: PageId; figures?: boolean; /** the admin's words; the defaults without them */ content?: PageCopy }) {
   switch (id) {
-    case "solutions": return <Solutions go={go} c={content?.solutions} g={content?.global} />;
-    case "process": return <Process go={go} figures={figures} c={content?.process} />;
+    case "solutions": return <Solutions c={content?.solutions} g={content?.global} />;
+    case "process": return <Process figures={figures} c={content?.process} />;
     case "insights": return <Insights />;
     case "about": return <About c={content?.about} />;
     case "contact": return <Contact c={content?.contact} g={content?.global} />;
-    case "start": return <Start go={go} />;
+    case "start": return <Start />;
     default: return null;
   }
 }

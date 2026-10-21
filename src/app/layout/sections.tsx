@@ -1,13 +1,16 @@
 "use client";
 
 import { useEffect, useId, useRef, useState, type TouchEvent } from "react";
+import { preload } from "react-dom";
 import { REPORT } from "@/lib/report";
 import Image from "next/image";
+import Link from "next/link";
 import { PAGES, SECTIONS, type PageId, type SectionId } from "@/lib/layout";
 import { TEAM_SIZE } from "@/components/teamq-teaser/model";
 import { TeaserDemo, type TeaserDemoProps } from "@/components/teamq-teaser/TeaserDemo";
 import "@/components/teamq-teaser/teaser.css";
-import Synapse from "../design/Synapse";
+import Synapse from "./Synapse";
+import { ROUTES } from "@/lib/site";
 import { FocusMorph } from "@/components/focus-morph/FocusMorph";
 import { DEFAULTS, type GlobalContent, type HomeContent } from "@/lib/content/defaults";
 import { lines, mark } from "@/lib/content/shared";
@@ -38,7 +41,6 @@ const LOGO_H = 285;
 
 export interface NavProps {
   page: PageId;
-  go: (p: PageId) => void;
   menu: boolean;
   explore: boolean;
   /** which pages appear as links, in order. Default: every nav page but home */
@@ -53,14 +55,15 @@ export interface NavProps {
   content?: GlobalContent;
 }
 
-export function Nav({ page, go, menu, links: order, brand = "wordmark", partner = false, content }: NavProps) {
+export function Nav({ page, menu, links: order, brand = "wordmark", partner = false, content }: NavProps) {
   const g = content ?? DEFAULTS.global;
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const links = order
     ? order.map((id) => PAGES.find((x) => x.id === id)!).filter(Boolean)
     : PAGES.filter((x) => x.nav && x.id !== "home");
-  const jump = (p: PageId) => { setOpen(false); go(p); };
+  // the overlay closes on its own link; the Link itself does the navigation
+  const close = () => setOpen(false);
   const barRef = useRef<HTMLElement>(null);
   // the page does not scroll under the open menu
   useEffect(() => {
@@ -106,27 +109,27 @@ export function Nav({ page, go, menu, links: order, brand = "wordmark", partner 
           </button>
         ) : null}
         {brand === "icons" ? (
-          <a href="#" className="nav-logo L-brand" onClick={(e) => { stay(e); jump("home"); }} aria-label="SAMUH home, in partnership with Sapien Labs">
+          <Link href={ROUTES.home} className="nav-logo L-brand" onClick={close} aria-label="SAMUH home, in partnership with Sapien Labs">
             <span className="L-brand-samuh">
-              <Image className="L-brand-mark" src="/samuh-icon.png" alt="" width={182} height={240} priority />
-              <Image className="L-brand-full" src="/samuh-logo.png" alt="SAMUH" width={960} height={LOGO_H} priority />
+              <Image className="L-brand-mark" src="/samuh-icon.png" alt="" width={182} height={240} sizes="64px" priority />
+              <Image className="L-brand-full" src="/samuh-logo.png" alt="SAMUH" width={960} height={LOGO_H} sizes="(max-width: 900px) 200px, 320px" priority />
             </span>
             <span className="L-brand-rule" aria-hidden />
             <span className="L-brand-partner">{lines(g.brand.partnerLine)}</span>
-          </a>
+          </Link>
         ) : (
-          <a href="#" className="nav-logo" onClick={(e) => { stay(e); jump("home"); }} aria-label="SAMUH home">
-            <Image src="/samuh-logo.png" alt="SAMUH" width={960} height={LOGO_H} priority />
-          </a>
+          <Link href={ROUTES.home} className="nav-logo" onClick={close} aria-label="SAMUH home">
+            <Image src="/samuh-logo.png" alt="SAMUH" width={960} height={LOGO_H} sizes="200px" priority />
+          </Link>
         )}
         {partner && brand !== "icons" ? <span className="nav-partner">in partnership with Sapien Labs</span> : null}
         <nav className="nav-links L-links" aria-label="Primary">
           {links.map((x) => (
-            <a key={x.id} href="#" onClick={(e) => { stay(e); jump(x.id); }} aria-current={x.id === page ? "page" : undefined}>{x.name}</a>
+            <Link key={x.id} href={ROUTES[x.id]} onClick={close} aria-current={x.id === page ? "page" : undefined}>{x.name}</Link>
           ))}
         </nav>
         <button className="btn btn-secondary btn-small L-menu" onClick={() => setOpen(true)} aria-expanded={open} aria-controls="L-overlay">Explore</button>
-        <button className="btn btn-small L-cta" onClick={() => jump("start")}>{g.brand.navCta} <span className="arrow">&rarr;</span></button>
+        <Link className="btn btn-small L-cta" href={ROUTES.start} onClick={close}>{g.brand.navCta} <span className="arrow">&rarr;</span></Link>
         {/* on small screens every nav collapses to this: the links and the
             Explore button hide, and the burger opens the full menu */}
         {!menu ? (
@@ -143,13 +146,13 @@ export function Nav({ page, go, menu, links: order, brand = "wordmark", partner 
             <span className="L-cap">Menu</span>
           </div>
           <nav className="L-overlay-links L-wrap" aria-label="Full menu">
-            <a href="#" onClick={(e) => { stay(e); jump("home"); }} aria-current={page === "home" ? "page" : undefined}>Home</a>
+            <Link href={ROUTES.home} onClick={close} aria-current={page === "home" ? "page" : undefined}>Home</Link>
             {links.map((x, i) => (
-              <a key={x.id} href="#" onClick={(e) => { stay(e); jump(x.id); }} aria-current={x.id === page ? "page" : undefined} style={{ "--i": i + 1 } as React.CSSProperties}>{x.name}</a>
+              <Link key={x.id} href={ROUTES[x.id]} onClick={close} aria-current={x.id === page ? "page" : undefined} style={{ "--i": i + 1 } as React.CSSProperties}>{x.name}</Link>
             ))}
           </nav>
           <div className="L-overlay-foot L-wrap">
-            <button className="btn" onClick={() => jump("start")}>{g.brand.navCta} <span className="arrow">&rarr;</span></button>
+            <Link className="btn" href={ROUTES.start} onClick={close}>{g.brand.navCta} <span className="arrow">&rarr;</span></Link>
             <span className="L-cap">{lines(g.brand.partnerLine)}</span>
           </div>
         </div>
@@ -596,7 +599,7 @@ const SAMPLE_RESPONSES = [
  * Nothing is stored yet, TODO(content): the lead route needs a
  * "reflection" flow, and the responses on the back are samples.
  */
-export function OneCard({ cards = ARCHETYPES, go, words = DEFAULTS.home.cards }: { cards?: [string, string, string][]; go: (p: PageId) => void; /** the question and the buttons */ words?: HomeContent["cards"] }) {
+export function OneCard({ cards = ARCHETYPES, words = DEFAULTS.home.cards }: { cards?: [string, string, string][]; /** the question and the buttons */ words?: HomeContent["cards"] }) {
   const [i, setI] = useState(0);
   const [text, setText] = useState("");
   const [shared, setShared] = useState<string[]>([]);
@@ -630,7 +633,7 @@ export function OneCard({ cards = ARCHETYPES, go, words = DEFAULTS.home.cards }:
         <form className="L-form L-one-form" onSubmit={share}>
           <textarea className="L-one-box" rows={4} placeholder="A line or two" aria-label="Your response" value={text} onChange={(e) => setText(e.target.value)} />
           {shared.length ? (
-            <p className="L-one-thanks">{words.thanks.split(/(\*[^*]+\*)/).map((part, k) => part.startsWith("*") && part.endsWith("*") ? <a href="#" className="inline-link" key={k} onClick={(e) => { stay(e); go("contact"); }}>{part.slice(1, -1)}</a> : part)}</p>
+            <p className="L-one-thanks">{words.thanks.split(/(\*[^*]+\*)/).map((part, k) => part.startsWith("*") && part.endsWith("*") ? <Link href={ROUTES.contact} className="inline-link" key={k}>{part.slice(1, -1)}</Link> : part)}</p>
           ) : null}
           <div className="cta-row">
             <button className="btn" type="submit" disabled={!text.trim()}>{words.share} <span className="arrow">&rarr;</span></button>
@@ -665,34 +668,33 @@ export function ReportCard({ cls, onlyDownload, report: r = DEFAULTS.global.repo
   );
 }
 
-export function Footer({ go, content }: { go: (p: PageId) => void; /** site-wide words from the admin; the defaults without it */ content?: GlobalContent }) {
+export function Footer({ content }: { /** site-wide words from the admin; the defaults without it */ content?: GlobalContent }) {
   const g = content ?? DEFAULTS.global;
-  const page = (id: PageId) => (e: React.MouseEvent) => { stay(e); go(id); };
   return (
     <footer className="L-foot">
       <div className="L-wrap L-foot-grid">
         <div className="L-foot-brand">
-          <a href="#" className="L-foot-logo" onClick={page("home")} aria-label="SAMUH home">
-            <Image src="/samuh-logo.png" alt="SAMUH" width={960} height={LOGO_H} />
-          </a>
+          <Link href={ROUTES.home} className="L-foot-logo" aria-label="SAMUH home">
+            <Image src="/samuh-logo.png" alt="SAMUH" width={960} height={LOGO_H} sizes="(max-width: 900px) 100vw, 360px" />
+          </Link>
           <p className="L-foot-line">{mark(g.footer.line, "L-hl")}</p>
           <p className="L-foot-about">{g.footer.about}</p>
           <a className="L-foot-partner" href={g.report.page} target="_blank" rel="noopener noreferrer" aria-label="In partnership with Sapien Labs">
             <span className="L-cap">In partnership with</span>
-            <Image src="/sapien-labs.png" alt="Sapien Labs" width={820} height={240} />
+            <Image src="/sapien-labs.png" alt="Sapien Labs" width={820} height={240} sizes="132px" />
           </a>
         </div>
         <nav className="L-foot-col" aria-label="Company">
           <span className="L-cap L-foot-h">Company</span>
-          <a className="L-foot-link" href="#" onClick={page("about")}>About</a>
-          <a className="L-foot-link" href="#" onClick={page("process")}>Process</a>
-          <a className="L-foot-link" href="#" onClick={page("solutions")}>Solutions</a>
-          <a className="L-foot-link" href="#" onClick={page("contact")}>Contact</a>
+          <Link className="L-foot-link" href={ROUTES.about}>About</Link>
+          <Link className="L-foot-link" href={ROUTES.process}>Process</Link>
+          <Link className="L-foot-link" href={ROUTES.solutions}>Solutions</Link>
+          <Link className="L-foot-link" href={ROUTES.contact}>Contact</Link>
         </nav>
         <nav className="L-foot-col" aria-label="Resources">
           <span className="L-cap L-foot-h">Resources</span>
-          <a className="L-foot-link" href="#" onClick={page("insights")}>Insights</a>
-          <a className="L-foot-link" href="#" onClick={page("start")}>TeamQ</a>
+          <Link className="L-foot-link" href={ROUTES.insights}>Insights</Link>
+          <Link className="L-foot-link" href={ROUTES.start}>TeamQ</Link>
           <a className="L-foot-link" href={g.report.page} target="_blank" rel="noopener noreferrer">{g.footer.reportLabel}</a>
           <a className="L-foot-link" href={g.footer.youtubeUrl} target="_blank" rel="noopener noreferrer">{g.footer.youtubeLabel}</a>
         </nav>
@@ -703,17 +705,19 @@ export function Footer({ go, content }: { go: (p: PageId) => void; /** site-wide
           ) : (
             <span className="L-foot-link L-foot-todo">TODO(content): email address</span>
           )}
-          <a className="L-foot-link" href="#" onClick={page("contact")}>{g.footer.bookCall}</a>
-          <button className="btn L-foot-cta" onClick={() => go("start")}>{g.footer.cta} <span className="arrow">&rarr;</span></button>
+          <Link className="L-foot-link" href="/talk">{g.footer.bookCall}</Link>
+          <Link className="btn L-foot-cta" href={ROUTES.start}>{g.footer.cta} <span className="arrow">&rarr;</span></Link>
         </div>
       </div>
       <div className="L-wrap L-foot-base">
         <span className="L-cap">&copy; {new Date().getFullYear()} SAMUH. All rights reserved.</span>
-        {/* TODO(content): the privacy, terms and cookie pages, from SAMUH's counsel */}
+        {/* TODO(content): the privacy, terms and cookie pages, from SAMUH's
+            counsel. Until they exist the links land on Contact, where the
+            question can be asked, rather than nowhere */}
         <nav className="L-foot-legal" aria-label="Legal">
-          <a className="L-cap" href="#" onClick={stay}>Privacy</a>
-          <a className="L-cap" href="#" onClick={stay}>Terms</a>
-          <a className="L-cap" href="#" onClick={stay}>Cookies</a>
+          <Link className="L-cap" href={ROUTES.contact}>Privacy</Link>
+          <Link className="L-cap" href={ROUTES.contact}>Terms</Link>
+          <Link className="L-cap" href={ROUTES.contact}>Cookies</Link>
           <a className="L-cap" href="#top" onClick={(e) => { stay(e); window.scrollTo({ top: 0, behavior: "smooth" }); }}>Back to top <span className="arrow">&uarr;</span></a>
         </nav>
       </div>
@@ -769,7 +773,7 @@ export function Carousel({ quotes = QUOTES }: { quotes?: typeof QUOTES }) {
   if (!cur) return null;
   return (
     <div className="L-car2" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
-      <div className="L-car2-logo" key={`m${i}`} aria-label="Client mark, temporary">
+      <div className="L-car2-logo" key={`m${i}`} role="img" aria-label="Client mark, temporary">
         <TempMark i={i} />
       </div>
       <figure className="L-car2-slide" key={i}>
@@ -798,12 +802,24 @@ export function Carousel({ quotes = QUOTES }: { quotes?: typeof QUOTES }) {
  * As a `background` it only loops: a moving picture behind the copy, with
  * nothing to click, until SAMUH's own film arrives.
  */
-export function HeroVideo({ src = "/hero-test.mp4", background = false }: { src?: string; background?: boolean }) {
+export function HeroVideo({ src = "/hero-test.mp4", background = false, poster = "/hero-poster.jpg" }: { src?: string; background?: boolean; /** the first frame as a still, painted before the film arrives */ poster?: string }) {
   const [full, setFull] = useState(false);
+  // As a background the poster is the page's largest paint, so it is fetched
+  // first and the film only after the page has loaded. Until then the still
+  // stands in, and the loop fades in over it once it can play.
+  const [loaded, setLoaded] = useState(false);
+  if (background) preload(poster, { as: "image", fetchPriority: "high" });
+  useEffect(() => {
+    if (!background) return;
+    const go = () => setLoaded(true);
+    if (document.readyState === "complete") { go(); return; }
+    window.addEventListener("load", go, { once: true });
+    return () => window.removeEventListener("load", go);
+  }, [background]);
   if (background) {
     return (
       <div className="ph ph-tall L-video is-bg" aria-hidden>
-        <video src={src} muted loop autoPlay playsInline preload="metadata" />
+        <video src={loaded ? src : undefined} poster={poster} muted loop autoPlay playsInline preload="none" />
       </div>
     );
   }
@@ -812,6 +828,7 @@ export function HeroVideo({ src = "/hero-test.mp4", background = false }: { src?
       <video
         key={full ? "full" : "loop"}
         src={src}
+        poster={poster}
         muted={!full}
         loop={!full}
         autoPlay
@@ -860,7 +877,7 @@ export interface CopyOverrides {
   tool?: { kicker?: string; title?: string; /** null: no pitch, the button alone */ pitch?: string | null; cta?: string; /** a link instead of the page button, for an anchor on the live page */ ctaHref?: string };
 }
 
-export function Section({ def, variant, go, copy = {}, demo, content }: { def: (typeof SECTIONS)[number]; variant: string; go: (p: PageId) => void; copy?: CopyOverrides; /** the tool's numbers, scored on the server; with them, section 9 shows the bars moving */ demo?: TeaserDemoProps; /** the admin's words. With them, they win over `copy`'s text; the flags in `copy` still apply */ content?: SiteCopy }) {
+export function Section({ def, variant, copy = {}, demo, content }: { def: (typeof SECTIONS)[number]; variant: string; copy?: CopyOverrides; /** the tool's numbers, scored on the server; with them, section 9 shows the bars moving */ demo?: TeaserDemoProps; /** the admin's words. With them, they win over `copy`'s text; the flags in `copy` still apply */ content?: SiteCopy }) {
   const v = variant.replace(`${def.id}-`, "");
   const h = content?.home ?? DEFAULTS.home;
   const g = content?.global ?? DEFAULTS.global;
@@ -894,8 +911,8 @@ export function Section({ def, variant, go, copy = {}, demo, content }: { def: (
               {heroLede ? <p className="lede">{heroLede}</p> : null}
               {copy.noHeroCtas ? null : (
                 <div className="cta-row">
-                  <button className="btn" onClick={() => go("start")}>{h.hero.ctaPrimary} <span className="arrow">&rarr;</span></button>
-                  <button className="btn btn-secondary" onClick={() => go("contact")}>{h.hero.ctaSecondary}</button>
+                  <Link className="btn" href={ROUTES.start}>{h.hero.ctaPrimary} <span className="arrow">&rarr;</span></Link>
+                  <Link className="btn btn-secondary" href={ROUTES.contact}>{h.hero.ctaSecondary}</Link>
                 </div>
               )}
             </div>
@@ -1004,7 +1021,7 @@ export function Section({ def, variant, go, copy = {}, demo, content }: { def: (
                  mark and the tag on black, beside the line and the numbers.
                  TODO(content): the case study PDF, when SAMUH supplies it */
               <blockquote className="L-research L-report L-case-report">
-                <a className="L-report-cover L-case-cover" href="#" onClick={stay} aria-label="SAMUH case study, PDF">
+                <a className="L-report-cover L-case-cover" href="#" onClick={stay} aria-label={`${h.case.tag}. SAMUH case study, PDF`}>
                   <Image src="/samuh-logo.png" alt="" width={960} height={LOGO_H} sizes="160px" />
                   <span className="L-case-cover-tag">{h.case.tag}</span>
                 </a>
@@ -1056,11 +1073,7 @@ export function Section({ def, variant, go, copy = {}, demo, content }: { def: (
             <div className="teaser-pitch">
               {toolPitch ? <p className="L-mid">{toolPitch}</p> : null}
               <div className="cta-row">
-                {copy.tool?.ctaHref ? (
-                  <a className="btn" href={copy.tool.ctaHref}>{toolCta} <span className="arrow">&rarr;</span></a>
-                ) : (
-                  <button className="btn" onClick={() => go("start")}>{toolCta} <span className="arrow">&rarr;</span></button>
-                )}
+                <Link className="btn" href={copy.tool?.ctaHref ?? ROUTES.start}>{toolCta} <span className="arrow">&rarr;</span></Link>
               </div>
             </div>
           </>
@@ -1083,7 +1096,7 @@ export function Section({ def, variant, go, copy = {}, demo, content }: { def: (
         {def.id === "cards" && v === "one" && (
           <>
             <Head def={headOf(h.cards)} />
-            <OneCard cards={cardItems} go={go} words={h.cards} />
+            <OneCard cards={cardItems} words={h.cards} />
           </>
         )}
 
@@ -1144,8 +1157,8 @@ export function Section({ def, variant, go, copy = {}, demo, content }: { def: (
                 <button className="btn">{h.start.startLabel}</button>
               </div>
               <div className="cta-row">
-                <button className="btn" onClick={() => go("start")}>{h.start.ctaPrimary} <span className="arrow">&rarr;</span></button>
-                <button className="btn btn-secondary" onClick={() => go("contact")}>{h.start.ctaSecondary}</button>
+                <Link className="btn" href={ROUTES.start}>{h.start.ctaPrimary} <span className="arrow">&rarr;</span></Link>
+                <Link className="btn btn-secondary" href={ROUTES.contact}>{h.start.ctaSecondary}</Link>
               </div>
             </div>
           </div>
