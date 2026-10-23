@@ -91,7 +91,9 @@ stored assessment history, it needs a conversation, not an implementation.
 The one exception is the team's own admin at `/hq-7h3k` (21 October 2026):
 magic-link sign in for the addresses on `ADMIN_EMAILS`, so SAMUH can edit
 copy and publish Insights. That is staff access, not visitor accounts, and
-nothing about a visitor is stored. See `docs/admin.md`.
+nothing about a visitor is stored. The one thing a visitor can leave is a
+line beside a metaphor card, kept anonymous: the card, the words and the
+time, nothing else (23 October 2026). See `docs/admin.md`.
 
 Note the one subtlety: assessment results do get a shareable URL. Encode the
 result in the URL or store the minimum needed for that one link. That is not

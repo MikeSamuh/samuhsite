@@ -454,3 +454,13 @@ the Data API, with Vercel Analytics linked. Content and posts live in
 Upstash Redis, images in Vercel Blob, both set by env. Supersedes the 12
 October "Sanity after launch" default. Rule 5 stands for visitors; this is
 staff access. — Wilfred
+
+**2026-10-23 — The metaphor cards are a deck you shuffle and draw from.**
+Arrive on a pile of card backs with the star on each; Shuffle; "Pick a
+card"; the card you pick lifts out of the pile and turns over, then "How
+does this relate to your team?" and the box come in beside it. What a
+visitor shares is now stored, anonymous (the card, the words, the time),
+and lands on a fifth admin tab, Responses, where the team shows it on the
+back of the card, deletes it, or writes one of its own. The Content tab's
+Metaphor cards group went with this: the words beside the deck are in the
+code. — Wilfred

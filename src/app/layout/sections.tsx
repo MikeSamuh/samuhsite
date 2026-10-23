@@ -579,65 +579,169 @@ export function MetaphorGallery({ cards = ARCHETYPES }: { cards?: [string, strin
   );
 }
 
-/** TODO(content): what others said. Samples until the answers are stored */
-const SAMPLE_RESPONSES = [
-  "Sample answer from another visitor, one or two lines.",
-  "A second sample answer, kept anonymous.",
-  "A third, so the list reads as a list.",
-];
+/** The words beside the deck. In the code since 23 October 2026: the
+ *  admin's Metaphor cards group went, and what visitors share lands on
+ *  the admin's Responses tab, where the team puts it on the card's back. */
+const DECK = {
+  deckTitle: "A deck of teams.",
+  deckLine: "Each card is a team you have probably sat in. Shuffle the deck, then draw one.",
+  shuffle: "Shuffle",
+  pickTitle: "Pick a card.",
+  pickLine: "Tap the deck and see which team you get.",
+  pick: "Pick a card",
+  question: "How does this relate to your team?",
+  thanks: "Shared, thank you. A person reads these. If this one hit home, *talk to us*.",
+  failed: "That did not send. Try again in a moment.",
+  share: "Share anonymously",
+  view: "View responses",
+  back: "Back to the card",
+  next: "View another card",
+  loading: "Fetching what others said.",
+  empty: "Nothing shared on this card yet. Yours could be the first.",
+};
+
+type DeckPhase = "deck" | "shuffling" | "pick" | "drawing" | "drawn";
+
+/** How long the shuffle and the reveal run, in beats of --dur. The CSS
+ *  (L-deck-shuffle, L-deck-lift and L-deck-reveal in layout.css) adds up
+ *  to the same, so a change there needs one here. */
+const SHUFFLE_BEATS = 5;
+const REVEAL_BEATS = 4;
 
 /**
- * One card, one question. The client's answer on 14 October to what the
- * cards are for: both, a Rorschach first, and a way to talk to us after.
- * A card, drawn at random on each visit; "How does this relate to your
- * team?" as the title, one box, "Share anonymously". "View responses"
- * flips the card and the list of what others said is on its back. "View
- * another card" moves on. No counter, no card title: the drawing speaks.
- * Nothing is stored yet, TODO(content): the lead route needs a
- * "reflection" flow, and the responses on the back are samples.
+ * The metaphor cards as a deck, the client's ask on 23 October: arrive on
+ * a pile of Samuh cards, shuffle it, be asked to pick one, and the card
+ * you pick rises out of the pile and turns over. Then "How does this
+ * relate to your team?" and the box come in beside it. "View responses"
+ * flips the card to what others said on its back, which is what the team
+ * has chosen to show in the admin; "View another card" puts it back and
+ * shuffles again. The card is drawn at random. Nothing about the visitor
+ * is stored: the line they share goes to /api/reflection with the card's
+ * name and nothing else.
  */
-export function OneCard({ cards = ARCHETYPES, go, words = DEFAULTS.home.cards }: { cards?: [string, string, string][]; go: (p: PageId) => void; /** the question and the buttons */ words?: HomeContent["cards"] }) {
+export function CardDeck({ cards = ARCHETYPES, go }: { cards?: [string, string, string][]; go: (p: PageId) => void }) {
+  const [phase, setPhase] = useState<DeckPhase>("deck");
   const [i, setI] = useState(0);
   const [text, setText] = useState("");
   const [shared, setShared] = useState<string[]>([]);
+  /** what the team shows on the back; null while it loads */
+  const [others, setOthers] = useState<string[] | null>(null);
   const [flipped, setFlipped] = useState(false);
-  // a random first card, after mount so the server and the client agree
-  useEffect(() => { setI(Math.floor(Math.random() * cards.length)); }, [cards.length]);
-  const next = () => { setI((x) => (x + 1) % cards.length); setText(""); setShared([]); setFlipped(false); };
-  const share = (e: React.FormEvent) => { e.preventDefault(); if (!text.trim()) return; setShared((v) => [text.trim(), ...v]); setText(""); };
-  // no cards in the admin: no section body, rather than a crash
+  const [failed, setFailed] = useState(false);
+  const root = useRef<HTMLDivElement>(null);
+  const timer = useRef(0);
+  useEffect(() => () => window.clearTimeout(timer.current), []);
+
+  /** move on after the CSS has run: beats of the page's --dur, none with reduced motion */
+  const after = (beats: number, then: () => void) => {
+    window.clearTimeout(timer.current);
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const dur = reduced ? 0 : parseFloat(getComputedStyle(root.current ?? document.documentElement).getPropertyValue("--dur")) || 0;
+    timer.current = window.setTimeout(then, dur * beats);
+  };
+
+  // no cards in the draft: no section body, rather than a crash
   if (!cards.length) return null;
   const [name, , src] = cards[i % cards.length];
-  const responses = [...shared, ...SAMPLE_RESPONSES];
+  const backs = Math.min(7, Math.max(cards.length, 5));
+  const drawn = phase === "drawing" || phase === "drawn";
+
+  const shuffle = () => {
+    setFlipped(false);
+    setText("");
+    setShared([]);
+    setOthers(null);
+    setFailed(false);
+    setI(Math.floor(Math.random() * cards.length));
+    setPhase("shuffling");
+    after(SHUFFLE_BEATS, () => setPhase("pick"));
+  };
+  const draw = () => {
+    setPhase("drawing");
+    fetch(`/api/reflection?card=${encodeURIComponent(name)}`)
+      .then((r) => (r.ok ? r.json() : { responses: [] }))
+      .then((d: { responses?: unknown }) => setOthers(Array.isArray(d.responses) ? d.responses.filter((x): x is string => typeof x === "string") : []))
+      .catch(() => setOthers([]));
+    after(REVEAL_BEATS, () => setPhase("drawn"));
+  };
+  const share = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const line = text.trim();
+    if (!line) return;
+    setShared((v) => [line, ...v]);
+    setText("");
+    setFailed(false);
+    try {
+      const res = await fetch("/api/reflection", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ card: name, text: line }) });
+      if (!res.ok) throw new Error(String(res.status));
+    } catch {
+      setFailed(true);
+    }
+  };
+  const responses = [...shared, ...(others ?? [])];
+
   return (
-    <div className="L-one">
-      {/* the card: the drawing on the front, the responses on the back */}
-      <div className="L-one-card" data-flipped={flipped || undefined} key={src}>
-        <div className="L-one-face L-one-front">
-          <Art src={src} name={name} />
+    <div className="L-one L-deck" data-phase={phase} ref={root}>
+      <div className="L-deck-stage">
+        {phase === "pick" ? <button type="button" className="L-deck-pick" onClick={draw} aria-label={DECK.pick} /> : null}
+        {/* the pile: card backs, the star on each */}
+        <div className="L-deck-stack" aria-hidden>
+          {Array.from({ length: backs }, (_, k) => (
+            <span className="L-deck-back" key={k} style={{ "--i": k, "--dir": k % 2 ? -1 : 1 } as React.CSSProperties}>
+              <Image src="/samuh-star.png" alt="" width={120} height={120} sizes="120px" />
+            </span>
+          ))}
         </div>
-        <div className="L-one-face L-one-back" aria-hidden={!flipped || undefined}>
-          <span className="card-tag">What others said</span>
-          <ul className="L-one-list">
-            {responses.map((a, k) => (
-              <li key={k}>{a}</li>
-            ))}
-          </ul>
-        </div>
+        {/* the card drawn: the drawing on the front, the responses on the back */}
+        {drawn ? (
+          <div className="L-one-card L-deck-card" data-flipped={flipped || undefined} key={src}>
+            <div className="L-one-face L-one-front">
+              <Art src={src} name={name} />
+            </div>
+            <div className="L-one-face L-one-back" aria-hidden={!flipped || undefined}>
+              <span className="card-tag">What others said</span>
+              {others === null && !shared.length ? (
+                <p className="L-one-empty">{DECK.loading}</p>
+              ) : responses.length ? (
+                <ul className="L-one-list">
+                  {responses.map((a, k) => (
+                    <li key={k}>{a}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="L-one-empty">{DECK.empty}</p>
+              )}
+            </div>
+          </div>
+        ) : null}
       </div>
       <div className="L-one-side">
-        <h3 className="L-one-title">{words.question}</h3>
-        <form className="L-form L-one-form" onSubmit={share}>
-          <textarea className="L-one-box" rows={4} placeholder="A line or two" aria-label="Your response" value={text} onChange={(e) => setText(e.target.value)} />
-          {shared.length ? (
-            <p className="L-one-thanks">{words.thanks.split(/(\*[^*]+\*)/).map((part, k) => part.startsWith("*") && part.endsWith("*") ? <a href="#" className="inline-link" key={k} onClick={(e) => { stay(e); go("contact"); }}>{part.slice(1, -1)}</a> : part)}</p>
-          ) : null}
-          <div className="cta-row">
-            <button className="btn" type="submit" disabled={!text.trim()}>{words.share} <span className="arrow">&rarr;</span></button>
-            <button className="btn btn-secondary" type="button" onClick={() => setFlipped((f) => !f)} aria-pressed={flipped}>{flipped ? words.back : words.view}</button>
-            <button className="btn btn-secondary" type="button" onClick={next}>{words.next}</button>
+        {phase === "drawn" ? (
+          <div className="L-deck-ask">
+            <h3 className="L-one-title">{DECK.question}</h3>
+            <form className="L-form L-one-form" onSubmit={share}>
+              <textarea className="L-one-box" rows={4} maxLength={600} placeholder="A line or two" aria-label="Your response" value={text} onChange={(e) => setText(e.target.value)} />
+              {shared.length ? (
+                <p className="L-one-thanks">{failed ? DECK.failed : DECK.thanks.split(/(\*[^*]+\*)/).map((part, k) => part.startsWith("*") && part.endsWith("*") ? <a href="#" className="inline-link" key={k} onClick={(e) => { stay(e); go("contact"); }}>{part.slice(1, -1)}</a> : part)}</p>
+              ) : null}
+              <div className="cta-row">
+                <button className="btn" type="submit" disabled={!text.trim()}>{DECK.share} <span className="arrow">&rarr;</span></button>
+                <button className="btn btn-secondary" type="button" onClick={() => setFlipped((f) => !f)} aria-pressed={flipped}>{flipped ? DECK.back : DECK.view}</button>
+                <button className="btn btn-secondary" type="button" onClick={shuffle}>{DECK.next}</button>
+              </div>
+            </form>
           </div>
-        </form>
+        ) : phase === "drawing" ? null : (
+          <div className="L-deck-prompt" key={phase === "pick" ? "pick" : "deck"} aria-live="polite">
+            <h3 className="L-one-title">{phase === "pick" ? DECK.pickTitle : DECK.deckTitle}</h3>
+            <p className="L-deck-line">{phase === "pick" ? DECK.pickLine : DECK.deckLine}</p>
+            {phase === "pick" ? (
+              <button className="btn" type="button" onClick={draw}>{DECK.pick} <span className="arrow">&rarr;</span></button>
+            ) : (
+              <button className="btn" type="button" onClick={shuffle} disabled={phase === "shuffling"} aria-busy={phase === "shuffling" || undefined}>{DECK.shuffle} <span className="arrow">&rarr;</span></button>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );
@@ -872,7 +976,7 @@ export function Section({ def, variant, go, copy = {}, demo, content }: { def: (
   const toolPitch = content ? h.tool.pitch : copy.tool?.pitch === null ? "" : copy.tool?.pitch ?? HARD.toolPitch(TEAM_SIZE);
   const toolCta = content ? h.tool.cta : copy.tool?.cta ?? "Explore TeamQ";
   const startSub = content ? h.start.sub : copy.startSub === null ? "" : copy.startSub ?? HARD.startSub;
-  const cardItems: [string, string, string][] | undefined = content ? h.cards.items.map((c) => [c.name, c.line, c.image]) : copy.cards;
+  const cardItems = copy.cards;
   const quotes = quotesOf(g);
   /** a section head with the admin's eyebrow and title */
   const headOf = (w: { kicker: string; title: string }) => ({ ...def, kicker: w.kicker, title: w.title });
@@ -1068,28 +1172,28 @@ export function Section({ def, variant, go, copy = {}, demo, content }: { def: (
 
         {def.id === "cards" && v === "rotate" && (
           <>
-            <Head def={headOf(h.cards)} />
+            <Head def={def} />
             <Rotator />
           </>
         )}
 
         {def.id === "cards" && v === "gallery" && (
           <>
-            <Head def={headOf(h.cards)} />
+            <Head def={def} />
             <MetaphorGallery cards={cardItems} />
           </>
         )}
 
         {def.id === "cards" && v === "one" && (
           <>
-            <Head def={headOf(h.cards)} />
-            <OneCard cards={cardItems} go={go} words={h.cards} />
+            <Head def={def} />
+            <CardDeck cards={cardItems} go={go} />
           </>
         )}
 
         {def.id === "cards" && v !== "rotate" && v !== "gallery" && v !== "one" && (
           <>
-            <Head def={headOf(h.cards)} />
+            <Head def={def} />
             <div className="L-cards">
               {(cardItems ?? ARCHETYPES).map(([name, line, src]) => (
                 <article className="card L-arche" key={name}>
