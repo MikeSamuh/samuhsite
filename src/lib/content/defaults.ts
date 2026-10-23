@@ -226,6 +226,23 @@ export const DEFAULTS = {
       ],
       note: "Organization-wide engagements layer on top of the team process, not beside it.",
     },
+    carte: {
+      kicker: "À la carte",
+      title: "Or take one piece at a time.",
+      lede: "Not every team is ready for a full sprint. Each part of the work stands on its own, so you can start where the need is and add the rest when it is earned.",
+      ask: "Ask about this",
+      items: [
+        { tag: "Builds belief", name: "Immersive keynote", what: "A session that reframes team performance through the science of capacity, with an experience of one foundational team practice.", who: "Leadership offsites, summits and all-hands, where belief has to come before anything else.", format: "60 to 90 minutes. In person or virtual." },
+        { tag: "Builds belief", name: "Executive lab", what: "A working session on the science of capacity to perform, and why the team is the central point of impact.", who: "Senior teams exploring the frontier before committing a team to a sprint.", format: "Half a day, in person." },
+        { tag: "Builds capability", name: "Leadership workshop", what: "Insights, assessment and an experience of the high-performance practices that strengthen the conditions for team performance.", who: "Groups of leaders who run teams and want the practices, not only the argument.", format: "One day, in person." },
+        { tag: "Measures", name: "Discovery and TeamQ baseline", what: "Confidential one-to-one interviews and a TeamQ baseline, read back to the team as evidence rather than opinion.", who: "A team that wants to see itself clearly before deciding what, if anything, to change.", format: "About one month." },
+        { tag: "Builds team performance", name: "Ritual co-creation day", what: "The team reviews its findings, agrees what better looks like, and designs the one practice it will own.", who: "Teams that already have a baseline and want to turn it into a practice.", format: "One day, facilitated, in person." },
+        { tag: "Builds team performance", name: "Ritual keeper coaching", what: "Two team members are coached to refine and embed the ritual inside the team's regular work.", who: "Teams running a practice that want it to hold past the first month.", format: "Every two weeks, virtual, for ninety days." },
+        { tag: "Measures", name: "Check-in and re-measure", what: "A day-45 check-in to adjust the practice, then a day-90 re-measure with TeamQ against the team's own baseline, and the close.", who: "Teams that ran the practice on their own and want the change measured.", format: "Two 90-minute virtual sessions." },
+        { tag: "Builds systemic capability", name: "Organization capacity map", what: "OrgQ shows where capacity is leaking across many teams and where the biggest gains may come from, then a repeatable system for rolling the team process out.", who: "CHROs, CEOs and transformation leaders working across a multi-team organization.", format: "Scoped per organization." },
+      ],
+      note: "Every piece runs on the same foundation: measurement first, practices the team owns, change inside the flow of work. The sprint in the tiers above is Discovery, the co-creation day, the coaching and the re-measure, assembled.",
+    },
     talk: {
       kicker: "Talk to us",
       title: "Tell us which one, and where to reach you",

@@ -94,12 +94,13 @@ export const SCHEMA: PageSchema[] = [
   {
     id: "solutions",
     name: "Solutions",
-    note: "Three tiers side by side, and the ask.",
+    note: "Three tiers side by side, the pieces on their own, and the ask.",
     path: "/draft/working/solutions",
     sections: [
       { key: "head", label: "Page head", fields: [t("kicker", "Eyebrow"), t("title", "Title"), ta("lede", "Lede")] },
       { key: "tiers", label: "The tiers", fields: [t("kicker", "Eyebrow"), t("title", "Title"), list("items", "Tiers", "tier", [t("tag", "Tag"), t("name", "Name"), ta("what", "What it is"), ta("who", "Who it is for"), ta("get", "What you get")], "Three tiers; the table has three columns"), t("rowWhat", "Row label: what"), t("rowWho", "Row label: who"), t("rowGet", "Row label: get"), list("rows", "Comparison rows", "row", [t("label", "Row"), t("a", "Self-guided"), t("b", "Supported"), t("c", "Guided")]), ta("note", "Note under the table")] },
-      { key: "talk", label: "Talk to us", fields: [t("kicker", "Eyebrow"), t("title", "Title"), t("button", "Button"), t("note", "Note under the form", "{tier} becomes the chosen tier"), t("thanks", "Thank you line", "{tier} becomes the chosen tier"), t("wait", "Link while they wait")] },
+      { key: "carte", label: "À la carte", note: "Each way to work with SAMUH on its own", fields: [t("kicker", "Eyebrow"), t("title", "Title"), ta("lede", "Lede"), t("ask", "Button on each piece", "Sends the piece's name to the form below"), list("items", "Pieces", "piece", [t("tag", "Tag", "What it builds, for example Builds belief"), t("name", "Name"), ta("what", "What it is"), ta("who", "Who it is for"), t("format", "Format", "Length and setting")]), ta("note", "Note under the pieces")] },
+      { key: "talk", label: "Talk to us", fields: [t("kicker", "Eyebrow"), t("title", "Title"), t("button", "Button"), t("note", "Note under the form", "{tier} becomes the chosen tier or piece"), t("thanks", "Thank you line", "{tier} becomes the chosen tier or piece"), t("wait", "Link while they wait")] },
       { key: "voices", label: "Testimonials", note: "The quotes themselves are under Site-wide", fields: [t("kicker", "Eyebrow"), t("title", "Title")] },
     ],
   },
