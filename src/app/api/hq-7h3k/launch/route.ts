@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { currentUser } from "@/lib/admin/auth";
-import { addLaunchItem, getLaunchState, removeLaunchItem, setLaunchItem, type Owner } from "@/lib/admin/launch";
+import { addLaunchItem, getLaunchState, removeLaunchItem, setLaunchItem } from "@/lib/admin/launch";
 
 export const runtime = "nodejs";
 
@@ -26,13 +26,13 @@ export async function PATCH(req: Request) {
   }
 }
 
-/** a new item of the team's own: { group, title, detail?, owner } */
+/** a new item of the team's own: { group, title, detail? } */
 export async function POST(req: Request) {
   const user = await currentUser();
   if (!user) return NextResponse.json({ error: "Sign in required" }, { status: 401 });
   try {
-    const body = (await req.json()) as { group?: string; title?: string; detail?: string; owner?: Owner };
-    const state = await addLaunchItem({ group: body.group ?? "", title: body.title ?? "", detail: body.detail, owner: body.owner ?? "SAMUH" }, user.email);
+    const body = (await req.json()) as { group?: string; title?: string; detail?: string };
+    const state = await addLaunchItem({ group: body.group ?? "", title: body.title ?? "", detail: body.detail }, user.email);
     return NextResponse.json(state);
   } catch (e) {
     const msg = e instanceof Error ? e.message : "Could not save";

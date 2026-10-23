@@ -3,10 +3,10 @@
 // itself is src/lib/admin/launch-list.ts. Server only.
 
 import { store } from "./store";
-import { LAUNCH, OWNERS, type ItemState, type LaunchState, type Owner } from "./launch-list";
+import { LAUNCH, type ItemState, type LaunchState } from "./launch-list";
 
-export { LAUNCH, OWNERS } from "./launch-list";
-export type { CustomItem, ItemState, LaunchGroup, LaunchItem, LaunchState, Owner } from "./launch-list";
+export { LAUNCH } from "./launch-list";
+export type { CustomItem, ItemState, LaunchGroup, LaunchItem, LaunchState } from "./launch-list";
 
 const KEY = "launch:checklist";
 
@@ -40,14 +40,13 @@ export async function setLaunchItem(id: string, patch: { done?: boolean; note?: 
   return s;
 }
 
-export async function addLaunchItem(input: { group: string; title: string; detail?: string; owner: Owner }, email: string): Promise<LaunchState> {
+export async function addLaunchItem(input: { group: string; title: string; detail?: string }, email: string): Promise<LaunchState> {
   const s = await getLaunchState();
   if (!LAUNCH.some((g) => g.id === input.group)) throw new Error("No such group");
   const title = input.title.trim();
   if (!title) throw new Error("A title is required");
-  if (!OWNERS.includes(input.owner)) throw new Error("No such owner");
   const id = `custom-${Date.now().toString(36)}`;
-  s.custom.push({ id, group: input.group, title, detail: input.detail?.trim() || undefined, owner: input.owner, by: email, at: new Date().toISOString() });
+  s.custom.push({ id, group: input.group, title, detail: input.detail?.trim() || undefined, by: email, at: new Date().toISOString() });
   await put(s);
   return s;
 }

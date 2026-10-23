@@ -276,7 +276,7 @@
 .adm-tag[data-on="true"] { background: var(--adm-text); color: var(--adm-surface); border-color: var(--adm-text); }
 
 /* launch checklist */
-.adm-launch-tiles { grid-template-columns: minmax(180px, 220px) minmax(0, 1fr); margin-bottom: 18px; }
+.adm-launch-tiles { grid-template-columns: minmax(180px, 260px); margin-bottom: 18px; }
 .adm-launch-of { font-size: 14px; font-weight: 500; color: var(--adm-muted); letter-spacing: 0; }
 .adm-launch-tiles .adm-bar-track { margin-top: 8px; }
 .adm-launch-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
