@@ -35,7 +35,6 @@
 .adm-nav-link:hover { background: var(--adm-surface-alt); }
 .adm-nav-link[aria-current="page"] { background: var(--adm-text); color: var(--adm-surface); }
 .adm-nav-name { font-weight: 600; font-size: 14px; }
-.adm-nav-note { font-size: 12px; opacity: 0.7; }
 .adm-side-foot { margin-top: auto; display: grid; gap: 10px; padding: 0 6px; font-size: 13px; }
 .adm-side-site { color: var(--adm-accent-2); text-decoration: none; font-weight: 500; }
 .adm-side-user { color: var(--adm-muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -46,7 +45,6 @@
   .adm-side { position: static; height: auto; border-right: 0; border-bottom: 1px solid var(--adm-border); gap: 14px; padding: 14px 16px; }
   .adm-nav { grid-auto-flow: column; grid-auto-columns: 1fr; gap: 6px; }
   .adm-nav-link { padding: 8px 10px; }
-  .adm-nav-note { display: none; }
   .adm-side-foot { display: flex; align-items: center; justify-content: space-between; margin: 0; flex-wrap: wrap; gap: 8px; }
   .adm-main { padding: 22px 16px 60px; }
 }
@@ -149,6 +147,7 @@
 .adm-table a { text-decoration: none; font-weight: 500; }
 .adm-table a:hover { text-decoration: underline; }
 .adm-muted { color: var(--adm-muted); }
+.adm-response { max-width: 44ch; line-height: 1.5; white-space: pre-line; }
 .adm-mono { font-family: var(--adm-mono), monospace; font-size: 12.5px; }
 .adm-code { font-family: var(--adm-mono), monospace; font-size: 12.5px; background: var(--adm-surface-alt); padding: 2px 6px; border-radius: 4px; }
 .adm-pre { font-family: var(--adm-mono), monospace; font-size: 12.5px; background: var(--adm-surface-alt); padding: 12px 14px; border-radius: 8px; overflow: auto; white-space: pre-wrap; margin: 0; }
@@ -161,7 +160,6 @@
 .adm-page-card { display: grid; gap: 6px; padding: 18px 20px; border: 1px solid var(--adm-border); background: var(--adm-surface); border-radius: var(--adm-radius); text-decoration: none; transition: border-color var(--adm-dur) var(--adm-ease), transform var(--adm-dur) var(--adm-ease); }
 .adm-page-card:hover { border-color: var(--adm-text); transform: translateY(-1px); }
 .adm-page-name { font-weight: 600; font-size: 16px; }
-.adm-page-note { font-size: 13px; color: var(--adm-muted); }
 .adm-page-meta { font-family: var(--adm-mono), monospace; font-size: 11px; color: var(--adm-muted); margin-top: 6px; }
 
 /* content editor */
@@ -199,9 +197,20 @@
 
 /* brand tab */
 .adm-swatches { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
-.adm-swatch { border-radius: var(--adm-radius); overflow: hidden; border: 1px solid var(--adm-border); background: var(--adm-surface); }
-.adm-swatch-chip { height: 76px; }
+.adm-swatch { border-radius: var(--adm-radius); overflow: hidden; border: 1px solid var(--adm-border); background: var(--adm-surface); display: block; width: 100%; padding: 0; text-align: left; font: inherit; color: inherit; cursor: pointer; }
+.adm-swatch:hover { border-color: var(--adm-text); }
+.adm-swatch-chip { display: block; height: 76px; }
 .adm-swatch-body { padding: 10px 12px; display: grid; gap: 2px; }
+.adm-copy { position: relative; }
+.adm-copy-tag { position: absolute; top: 8px; right: 8px; font-family: var(--adm-mono), monospace; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; padding: 2px 6px; border-radius: 4px; background: var(--adm-surface); color: var(--adm-muted); border: 1px solid var(--adm-border); opacity: 0; transition: opacity var(--adm-dur) var(--adm-ease); }
+.adm-copy:hover .adm-copy-tag, .adm-copy[data-copied] .adm-copy-tag { opacity: 1; }
+.adm-copy[data-copied] .adm-copy-tag { color: var(--adm-text); border-color: var(--adm-text); }
+.adm-btn.adm-copy .adm-copy-tag { display: none; }
+.adm-btn.adm-copy[data-copied] { color: var(--adm-text); border-color: var(--adm-text); }
+.adm-files { display: grid; gap: 8px; }
+.adm-file { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--adm-border); flex-wrap: wrap; }
+.adm-file:last-child { border-bottom: 0; }
+.adm-file-name { font-size: 14px; font-weight: 500; }
 .adm-swatch-name { font-weight: 600; font-size: 14px; }
 .adm-swatch-hex { font-family: var(--adm-mono), monospace; font-size: 12px; color: var(--adm-muted); }
 .adm-swatch-role { font-size: 12px; color: var(--adm-muted); }

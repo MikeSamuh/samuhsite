@@ -67,7 +67,7 @@ export function LoginForm() {
       <button type="submit" className="adm-btn adm-btn-primary" disabled={state === "sending"}>
         {state === "sending" ? "Sending…" : "Email me a link"}
       </button>
-      <p className="adm-note">Team members only. Ask Wilfred or Mike to add your address to the list.</p>
+      <p className="adm-note">Team members only.</p>
     </form>
   );
 }

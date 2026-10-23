@@ -90,20 +90,6 @@ export const DEFAULTS = {
       pitch: "",
       cta: "Get your team’s assessment",
     },
-    cards: {
-      kicker: "Which team are you?",
-      title: "Metaphor cards",
-      question: "How does this relate to your team?",
-      thanks: "Shared, thank you. A person reads these. If this one hit home, *talk to us*.",
-      share: "Share anonymously",
-      view: "View responses",
-      back: "Back to the card",
-      next: "View another card",
-      items: [
-        { name: "In a labyrinth with different maps", line: "Everyone is moving. Nobody is on the same page.", image: "/metaphor/maze.png" },
-        { name: "Bottom of the mountain", line: "The summit is agreed. The route is not.", image: "/metaphor/mountain.png" },
-      ],
-    },
     voices: {
       kicker: "In their words",
       title: "Testimonials",

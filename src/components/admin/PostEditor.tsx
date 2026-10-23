@@ -92,10 +92,10 @@ export function PostEditor({ mode, initial, meta }: { mode: Mode; initial: PostD
     <>
       <div className="adm-head">
         <div>
-          <span className="adm-kicker">Blog · {mode === "new" ? "New post" : "Edit"}</span>
+          <span className="adm-kicker">Blog</span>
           <h1 className="adm-title">{post.title || "Untitled"}</h1>
           <p className="adm-lede">
-            {mode === "file" ? "This post is a file in the repo. Saving here makes a copy the admin owns, and the site shows that copy from then on." : meta ? `Last saved ${when(meta.updatedAt)} by ${meta.updatedBy}.` : "Give it a title, write, then publish."}
+            {mode === "file" ? "Repo file. Saving makes an admin copy that replaces it." : meta ? `Saved ${when(meta.updatedAt)} by ${meta.updatedBy}` : "New post"}
           </p>
         </div>
         <div className="adm-actions">

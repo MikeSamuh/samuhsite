@@ -41,9 +41,9 @@ shows on the login page.
 Images go to Vercel Blob when `BLOB_READ_WRITE_TOKEN` is set, else to
 `public/uploads/` locally.
 
-Keys: `content:<page>`, `post:<slug>`, `auth:magic:<hash>`, `launch:checklist`.
+Keys: `content:<page>`, `post:<slug>`, `reflection:<id>`, `auth:magic:<hash>`, `launch:checklist`.
 
-## The five tabs
+## The six tabs
 
 **Content.** One document per page (`home`, `about`, `process`,
 `solutions`, `teamq`, `contact`, `insights`, `global`). The fields and
@@ -70,6 +70,18 @@ YouTube: paste a watch link on its own line, or press the YouTube button.
 The site swaps the embed for its own click-to-play player.
 
 Only `published` posts with a date show. `draft` and `review` never render.
+
+**Responses.** What visitors share beside a metaphor card on the home
+page. Each one is a document under `reflection:<id>` with the card's name,
+the words and the time, and nothing else: no email, no IP, no cookie, so
+CLAUDE.md rule 5 holds. A visitor's line arrives hidden; "Show on card"
+puts it on the back of that card for everyone, "Delete" removes it. The
+team can write one of its own, which goes straight onto the card. The
+card reads and writes through `/api/reflection`, which is public and
+anonymous; the admin's own routes are under `/api/hq-7h3k/reflections`.
+Since 23 October 2026 the words beside the card are in the code
+(`DECK` in `src/app/layout/sections.tsx`), not in the Content tab: the
+Metaphor cards group there went when this tab arrived.
 
 **Brand.** Read-only, rendered from `src/lib/tokens.ts` and the locked hash
 in `src/lib/layout.ts`, so it cannot drift from the site. The rules are the

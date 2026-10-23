@@ -6,11 +6,12 @@ import { usePathname } from "next/navigation";
 import { ADMIN_API, ADMIN_BASE } from "@/lib/admin/paths";
 
 const TABS = [
-  { href: `${ADMIN_BASE}/content`, name: "Content", note: "Every page's words" },
-  { href: `${ADMIN_BASE}/blog`, name: "Blog", note: "Insights posts" },
-  { href: `${ADMIN_BASE}/brand`, name: "Brand", note: "The style guide" },
-  { href: `${ADMIN_BASE}/analytics`, name: "Analytics", note: "GA4 and Vercel" },
-  { href: `${ADMIN_BASE}/launch`, name: "Launch", note: "Go-live checklist" },
+  { href: `${ADMIN_BASE}/content`, name: "Content" },
+  { href: `${ADMIN_BASE}/blog`, name: "Blog" },
+  { href: `${ADMIN_BASE}/responses`, name: "Responses" },
+  { href: `${ADMIN_BASE}/brand`, name: "Brand" },
+  { href: `${ADMIN_BASE}/analytics`, name: "Analytics" },
+  { href: `${ADMIN_BASE}/launch`, name: "Launch" },
 ];
 
 export function AdminNav({ email }: { email: string }) {
@@ -30,7 +31,6 @@ export function AdminNav({ email }: { email: string }) {
           return (
             <Link key={t.href} href={t.href} className="adm-nav-link" aria-current={on ? "page" : undefined}>
               <span className="adm-nav-name">{t.name}</span>
-              <span className="adm-nav-note">{t.note}</span>
             </Link>
           );
         })}

@@ -16,12 +16,11 @@ export default async function BlogIndex() {
     <>
       <div className="adm-head">
         <div>
-          <span className="adm-kicker">Blog</span>
-          <h1 className="adm-title">Insights</h1>
-          <p className="adm-lede">{rows.length} posts, {published} live at /insights. Open one to edit it, or write a new one. Drafts and posts in review never show on the site.</p>
+          <h1 className="adm-title">Blog</h1>
+          <p className="adm-lede">{rows.length} posts, {published} published</p>
         </div>
         <div className="adm-actions">
-          <a className="adm-btn" href="/insights" target="_blank" rel="noopener noreferrer">Open Insights ↗</a>
+          <a className="adm-btn" href="/insights" target="_blank" rel="noopener noreferrer">Insights ↗</a>
           <Link className="adm-btn adm-btn-primary" href={`${ADMIN_BASE}/blog/new`}>+ New post</Link>
         </div>
       </div>
