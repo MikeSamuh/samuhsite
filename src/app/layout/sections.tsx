@@ -587,10 +587,10 @@ export function MetaphorGallery({ cards = ARCHETYPES }: { cards?: [string, strin
  *  the admin's Responses tab, where the team puts it on the card's back. */
 const DECK = {
   deckTitle: "A deck of teams.",
-  deckLine: "Each card is a team you have probably sat in. Shuffle the deck, then draw one.",
+  deckLine: "Each card is a team you have probably sat in. Shuffle the deck, then take one.",
   shuffle: "Shuffle",
   pickTitle: "Pick a card.",
-  pickLine: "Tap the deck and see which team you get.",
+  pickLine: "Take the one on top and see which team you get.",
   pick: "Pick a card",
   question: "How does this relate to your team?",
   thanks: "Shared, thank you. A person reads these. If this one hit home, *talk to us*.",
@@ -613,7 +613,8 @@ const REVEAL_BEATS = 4;
 
 /**
  * The metaphor cards as a deck, the client's ask on 23 October: arrive on
- * a pile of Samuh cards, shuffle it, be asked to pick one, and the card
+ * a pile of Samuh cards, shuffle it from the button over the pile, be
+ * asked to pick one while it still moves, and the card
  * you pick rises out of the pile and turns over. Then "How does this
  * relate to your team?" and the box come in beside it. "View responses"
  * flips the card to what others said on its back, which is what the team
@@ -686,7 +687,13 @@ export function CardDeck({ cards = ARCHETYPES }: { cards?: [string, string, stri
   return (
     <div className="L-one L-deck" data-phase={phase} ref={root}>
       <div className="L-deck-stage">
-        {phase === "pick" ? <button type="button" className="L-deck-pick" onClick={draw} aria-label={DECK.pick} /> : null}
+        {/* the one button, over the pile: Shuffle, then Pick a card while the
+            pile is still moving. A pick mid-shuffle just draws */}
+        {!drawn ? (
+          <span className="L-deck-btn">
+            <button type="button" className="btn" onClick={phase === "deck" ? shuffle : draw}>{phase === "deck" ? DECK.shuffle : DECK.pick} <span className="arrow">&rarr;</span></button>
+          </span>
+        ) : null}
         {/* the pile: card backs, the star on each */}
         <div className="L-deck-stack" aria-hidden>
           {Array.from({ length: backs }, (_, k) => (
@@ -735,14 +742,9 @@ export function CardDeck({ cards = ARCHETYPES }: { cards?: [string, string, stri
             </form>
           </div>
         ) : phase === "drawing" ? null : (
-          <div className="L-deck-prompt" key={phase === "pick" ? "pick" : "deck"} aria-live="polite">
-            <h3 className="L-one-title">{phase === "pick" ? DECK.pickTitle : DECK.deckTitle}</h3>
-            <p className="L-deck-line">{phase === "pick" ? DECK.pickLine : DECK.deckLine}</p>
-            {phase === "pick" ? (
-              <button className="btn" type="button" onClick={draw}>{DECK.pick} <span className="arrow">&rarr;</span></button>
-            ) : (
-              <button className="btn" type="button" onClick={shuffle} disabled={phase === "shuffling"} aria-busy={phase === "shuffling" || undefined}>{DECK.shuffle} <span className="arrow">&rarr;</span></button>
-            )}
+          <div className="L-deck-prompt" key={phase === "deck" ? "deck" : "pick"} aria-live="polite">
+            <h3 className="L-one-title">{phase === "deck" ? DECK.deckTitle : DECK.pickTitle}</h3>
+            <p className="L-deck-line">{phase === "deck" ? DECK.deckLine : DECK.pickLine}</p>
           </div>
         )}
       </div>

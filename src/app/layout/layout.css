@@ -1486,11 +1486,13 @@
   70% { transform: translate(calc(var(--dir) * -8%), calc(var(--i) * -3px + 6px)) rotate(calc(var(--dir) * -4deg)); }
   100% { transform: translate(calc(var(--i) * 3px), calc(var(--i) * -3px)) rotate(calc(var(--i) * 1deg - 3deg)); }
 }
-/* pick: the pile is the button; the top card lifts under the pointer */
-.L-deck-pick { position: absolute; inset: 0; z-index: 2; padding: 0; border: 0; background: transparent; border-radius: min(var(--radius), 14px); cursor: pointer; }
-.L-deck-pick:focus-visible { outline: 2px solid var(--accent); outline-offset: 6px; }
-.L-deck-pick:hover + .L-deck-stack .L-deck-back:last-child,
-.L-deck-pick:focus-visible + .L-deck-stack .L-deck-back:last-child { transform: translate(calc(var(--i) * 3px), calc(var(--i) * -3px - 14px)) rotate(calc(var(--i) * 1deg - 3deg)); border-color: var(--accent); }
+/* the button sits over the pile, low, under the star; the top card
+   lifts while the pointer is on it (not mid-shuffle, the animation owns
+   the transform then) */
+.L-deck-btn { position: absolute; inset: 0; z-index: 3; display: grid; place-items: end center; padding-bottom: 12%; pointer-events: none; }
+.L-deck-btn .btn { pointer-events: auto; }
+.L-deck-btn:hover + .L-deck-stack .L-deck-back:last-child,
+.L-deck-btn:focus-within + .L-deck-stack .L-deck-back:last-child { transform: translate(calc(var(--i) * 3px), calc(var(--i) * -3px - 14px)) rotate(calc(var(--i) * 1deg - 3deg)); border-color: var(--accent); }
 /* draw: the top back lifts and turns edge-on, then the drawing turns in and settles */
 .L-deck[data-phase="drawing"] .L-deck-back:last-child { animation: L-deck-lift calc(var(--dur) * 2) var(--ease) forwards; }
 .L-deck[data-phase="drawn"] .L-deck-back:last-child { opacity: 0; }
@@ -1508,7 +1510,6 @@
 }
 .L-deck-prompt, .L-deck-ask { display: grid; gap: 14px; animation: L-drop calc(var(--dur) * 1.2) var(--ease) backwards; }
 .L-deck-line { margin: 0; font-size: 16px; line-height: 1.5; color: var(--muted); }
-.L-deck-prompt .btn { justify-self: start; }
 .L-one-empty { margin: 0; font-size: 15px; line-height: 1.5; color: var(--muted); }
 @media (prefers-reduced-motion: reduce) {
   .L-one-face, .L-one-card, .L-one-thanks, .L-deck-prompt, .L-deck-ask { transition: none; animation: none; }
