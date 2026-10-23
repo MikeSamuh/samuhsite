@@ -15,7 +15,7 @@ import { createHash, randomBytes } from "node:crypto";
 import { cookies } from "next/headers";
 import { Resend } from "resend";
 import { store } from "./store";
-import { SESSION_COOKIE, SESSION_DAYS, signSession, verifySession, type Session } from "./session";
+import { OPEN_USER, SESSION_COOKIE, SESSION_DAYS, adminOpen, signSession, verifySession, type Session } from "./session";
 
 const TOKEN_TTL = 15 * 60;
 const RESEND_ONBOARDING_FROM = "SAMUH admin <onboarding@resend.dev>";
@@ -99,6 +99,6 @@ export async function clearSessionCookie(): Promise<void> {
 export async function currentUser(): Promise<Session | null> {
   const jar = await cookies();
   const session = await verifySession(jar.get(SESSION_COOKIE)?.value);
-  if (!session || !isAllowed(session.email)) return null;
-  return session;
+  if (session && isAllowed(session.email)) return session;
+  return adminOpen() ? OPEN_USER : null;
 }

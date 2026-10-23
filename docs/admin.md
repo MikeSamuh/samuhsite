@@ -23,6 +23,14 @@ cookie, because `currentUser()` re-checks the list.
 Local dev with no `RESEND_API_KEY`: the link prints in the terminal and
 shows on the login page.
 
+**Open for now.** `ADMIN_OPEN` in `src/lib/admin/session.ts` is `true`
+since 23 October 2026, Wilfred's call: the sign-in email only reaches
+Mike until the Resend domain is verified, and nobody on our side has
+Vercel access to set an env switch, so the gate is off in code and the
+team can look around. Pages and the API act as `open-access@samuh.work`.
+While it is open, anyone with the URL can edit the site. Flipping it to
+`false` is on the Launch tab's list.
+
 | Piece | File |
 |---|---|
 | Session cookie, signed JWT, edge-safe | `src/lib/admin/session.ts` |

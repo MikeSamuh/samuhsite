@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { SESSION_COOKIE, verifySession } from "@/lib/admin/session";
+import { SESSION_COOKIE, adminOpen, verifySession } from "@/lib/admin/session";
 import { ADMIN_API, ADMIN_BASE } from "@/lib/admin/paths";
 
 // Every admin page and admin API route needs the session cookie, except
@@ -12,6 +12,7 @@ export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   if (!pathname.startsWith(ADMIN_BASE) && !pathname.startsWith(ADMIN_API)) return NextResponse.next();
   if (OPEN.some((p) => pathname === p || pathname.startsWith(`${p}/`))) return NextResponse.next();
+  if (adminOpen()) return NextResponse.next();
   const session = await verifySession(req.cookies.get(SESSION_COOKIE)?.value);
   if (session) return NextResponse.next();
   if (pathname.startsWith("/api/")) {

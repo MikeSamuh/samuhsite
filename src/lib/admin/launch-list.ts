@@ -121,6 +121,7 @@ export const LAUNCH: LaunchGroup[] = [
       { id: "redis", title: "Upstash Redis from the Marketplace, attached to the project", detail: "Without it content edits save to the build machine and vanish.", owner: "Wilfred" },
       { id: "blob", title: "Vercel Blob store created, BLOB_READ_WRITE_TOKEN set, images and headshots moved to it", owner: "Mike" },
       { id: "resend-domain", title: "Resend domain verified, RESEND_FROM on samuh.work", detail: "Mike's key is in onboarding mode and only delivers to mike@samuh.work. Sign-in links and lead emails to anyone else fail until the DNS record is in.", owner: "Mike" },
+      { id: "admin-gate", title: "Sign-in switched back on: ADMIN_OPEN set to false in src/lib/admin/session.ts", detail: "Open since 23 October 2026 so the team could look around while sign-in email only reached Mike. While it is open, anyone with the URL can edit the site.", owner: "Wilfred" },
       { id: "team-signin", title: "Each team member signs in to the admin once", owner: "SAMUH", where: { href: `${ADMIN_BASE}/login`, label: "Sign in" } },
       { id: "walkthrough", title: "Admin walkthrough recorded for SAMUH", detail: "Content, Blog, this list. Part of the handover in the scope.", owner: "Wilfred" },
     ],

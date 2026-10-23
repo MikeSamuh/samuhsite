@@ -95,6 +95,10 @@ nothing about a visitor is stored. The one thing a visitor can leave is a
 line beside a metaphor card, kept anonymous: the card, the words and the
 time, nothing else (23 October 2026). See `docs/admin.md`.
 
+The admin's sign-in is switched off in code while the site is in
+development (`ADMIN_OPEN`, 23 October 2026), because the sign-in email
+only reaches Mike. Switching it back on is on the launch checklist.
+
 Note the one subtlety: assessment results do get a shareable URL. Encode the
 result in the URL or store the minimum needed for that one link. That is not
 the same as building accounts, and it is not licence to start storing user

@@ -21,6 +21,21 @@ export interface Session {
   email: string;
 }
 
+/** The admin is open, no sign-in, while the site is in development:
+ *  Wilfred's call on 23 October 2026, so the team can look around while
+ *  the sign-in email only reaches Mike (Resend delivers to one address
+ *  until samuh.work is verified) and nobody has Vercel access to set an
+ *  env switch. A constant in code for that reason. Flip it to false
+ *  before launch: it is on the Launch tab's list. */
+export const ADMIN_OPEN = true;
+
+export function adminOpen(): boolean {
+  return ADMIN_OPEN;
+}
+
+/** Who an open admin acts as. */
+export const OPEN_USER: Session = { email: "open-access@samuh.work" };
+
 export async function signSession(email: string): Promise<string> {
   const secret = sessionSecret();
   if (!secret) throw new Error("ADMIN_SESSION_SECRET is not set");
