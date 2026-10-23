@@ -10,6 +10,7 @@ const TABS = [
   { href: `${ADMIN_BASE}/blog`, name: "Blog", note: "Insights posts" },
   { href: `${ADMIN_BASE}/brand`, name: "Brand", note: "The style guide" },
   { href: `${ADMIN_BASE}/analytics`, name: "Analytics", note: "GA4 and Vercel" },
+  { href: `${ADMIN_BASE}/launch`, name: "Launch", note: "Go-live checklist" },
 ];
 
 export function AdminNav({ email }: { email: string }) {

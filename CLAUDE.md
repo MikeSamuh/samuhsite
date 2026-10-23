@@ -41,7 +41,7 @@ credible, it is the wrong change.
 - GSAP with ScrollTrigger for scroll sequences, Framer Motion for component
   transitions. Neither is installed yet; wait for the direction decision
 - The admin at `/hq-7h3k` is the CMS: page copy, Insights posts, the style
-  guide and analytics. Content lives in Upstash Redis on Vercel, images in
+  guide, analytics and the go-live checklist. Content lives in Upstash Redis on Vercel, images in
   Vercel Blob. See `docs/admin.md`
 - Clarify (clarify.ai) is the CRM. All lead capture posts there through one
   server route. API key is server-side only, never `NEXT_PUBLIC_`

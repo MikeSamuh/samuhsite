@@ -144,6 +144,10 @@ scope.
 
 **Done when:** samuh.work serves the new site.
 
+The item-level list, with owners and ticks, is the Launch tab in the admin
+(`/hq-7h3k/launch`, `src/lib/admin/launch-list.ts`), 23 Oct 2026. This
+file keeps the milestones; that tab keeps the day-to-day.
+
 ---
 
 ## Client owes

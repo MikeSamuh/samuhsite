@@ -41,9 +41,9 @@ shows on the login page.
 Images go to Vercel Blob when `BLOB_READ_WRITE_TOKEN` is set, else to
 `public/uploads/` locally.
 
-Keys: `content:<page>`, `post:<slug>`, `auth:magic:<hash>`.
+Keys: `content:<page>`, `post:<slug>`, `auth:magic:<hash>`, `launch:checklist`.
 
-## The four tabs
+## The five tabs
 
 **Content.** One document per page (`home`, `about`, `process`,
 `solutions`, `teamq`, `contact`, `insights`, `global`). The fields and
@@ -80,6 +80,19 @@ ones in CLAUDE.md, `docs/brief.md` and `docs/assets.md`.
 root layout and switches on with `NEXT_PUBLIC_GA_ID`. Vercel Analytics is
 on the page too and reports once it is enabled on the project; it has no
 read API, so the tab links out.
+
+**Launch.** The go-live checklist: everything still between the site and
+samuh.work, grouped by area (content to confirm, intake flows, search and
+answer engines, performance, analytics and tags, admin and hosting, domain
+and launch day), each item with an owner and, where there is one, a link to
+the place it gets done. The list is `src/lib/admin/launch-list.ts`, code,
+so adding or rewording an item is a commit; items marked `done: true`
+there were finished in the repo and start ticked. Who ticked what, when,
+and a note per item live in the store under `launch:checklist`, so the
+team sees one board. Ticks post at once, no save button, because two
+people may be on it together. The team can add items of its own from the
+tab (owner, title, detail); those can also be removed there. Filter by
+owner with the chips, or hide what is done.
 
 ## Setting it up on Vercel
 
