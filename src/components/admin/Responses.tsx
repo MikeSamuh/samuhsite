@@ -9,14 +9,12 @@ function when(iso: string): string {
   return new Date(iso).toLocaleString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
 }
 
-/** The list of what visitors shared, a switch to put each one on the back
- *  of its card, and a box for the team to write one of its own. */
-export function Responses({ rows, cards }: { rows: Reflection[]; cards: string[] }) {
+/** The list of what visitors shared, and a switch to put each one on the
+ *  back of its card. */
+export function Responses({ rows }: { rows: Reflection[] }) {
   const router = useRouter();
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [card, setCard] = useState(cards[0] ?? "");
-  const [text, setText] = useState("");
 
   const call = async (id: string, input: RequestInit) => {
     setBusy(id);
@@ -32,22 +30,6 @@ export function Responses({ rows, cards }: { rows: Reflection[]; cards: string[]
     }
   };
 
-  const add = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!text.trim() || !card) return;
-    setBusy("new");
-    setError(null);
-    try {
-      const res = await fetch(`${ADMIN_API}/reflections`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ card, text }) });
-      if (!res.ok) throw new Error((await res.json().catch(() => null))?.error ?? "Could not save");
-      setText("");
-      router.refresh();
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Could not save");
-    } finally {
-      setBusy(null);
-    }
-  };
 
   return (
     <div className="adm-stack">
@@ -61,7 +43,7 @@ export function Responses({ rows, cards }: { rows: Reflection[]; cards: string[]
             <tbody>
               {rows.map((r) => (
                 <tr key={r.id}>
-                  <td className="adm-response">{r.text}{r.by === "team" ? <div className="adm-mono adm-muted">Written by the team</div> : null}</td>
+                  <td className="adm-response">{r.text}</td>
                   <td>{r.card}</td>
                   <td className="adm-muted">{when(r.createdAt)}</td>
                   <td>
@@ -83,27 +65,6 @@ export function Responses({ rows, cards }: { rows: Reflection[]; cards: string[]
         )}
       </div>
 
-      <form className="adm-card adm-form" onSubmit={add}>
-        <div>
-          <div className="adm-card-title">Write one</div>
-          <div className="adm-card-note">A response from the team goes straight onto the back of the card, marked as yours in this list and anonymous on the site.</div>
-        </div>
-        <div className="adm-row">
-          <label className="adm-field">
-            <span className="adm-label">Card</span>
-            <select value={card} onChange={(e) => setCard(e.target.value)}>
-              {cards.map((c) => <option key={c} value={c}>{c}</option>)}
-            </select>
-          </label>
-        </div>
-        <label className="adm-field">
-          <span className="adm-label">The response</span>
-          <textarea rows={3} maxLength={600} value={text} onChange={(e) => setText(e.target.value)} placeholder="A line or two" />
-        </label>
-        <div>
-          <button type="submit" className="adm-btn adm-btn-primary" disabled={busy === "new" || !text.trim() || !card}>Add to the card</button>
-        </div>
-      </form>
     </div>
   );
 }

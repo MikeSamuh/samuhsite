@@ -26,7 +26,7 @@ export default async function CardsPage() {
       <section className="adm-section" aria-labelledby="responses-title">
         <h2 className="adm-section-title" id="responses-title">What visitors shared</h2>
         <p className="adm-note" style={{ marginBottom: 12 }}>A line a visitor leaves beside a card lands here, hidden until you show it on the back of that card. Anonymous: the card, the words and the time.</p>
-        <Responses rows={responses} cards={cards.map((c) => c.name)} />
+        <Responses rows={responses} />
       </section>
     </>
   );

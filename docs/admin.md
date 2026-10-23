@@ -88,8 +88,8 @@ ask on 23 October 2026. Below the deck on the same tab: what visitors
 shared beside a card, each one a document under `reflection:<id>` with
 the card's name, the words and the time, nothing else, so CLAUDE.md rule
 5 holds. A visitor's line arrives hidden; "Show on card" puts it on the
-back of that card for everyone, "Delete" removes it; the team can write
-one of its own. The card reads and writes through `/api/reflection`,
+back of that card for everyone, "Delete" removes it. The card reads and
+writes through `/api/reflection`,
 public and anonymous; the admin's own routes are `/api/hq-7h3k/cards`
 and `/api/hq-7h3k/reflections`. The words beside the deck are in the
 code (`DECK` in `src/app/layout/sections.tsx`), not in the Content tab.
