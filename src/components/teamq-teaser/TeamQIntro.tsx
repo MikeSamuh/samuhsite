@@ -31,9 +31,11 @@ function Part({ kicker, title, children, cls }: { kicker: string; title: string;
   );
 }
 
-/** The top of /teamq: the heading, what TeamQ is in one section, then the
- *  tool explained one part at a time on a frozen copy of the real thing. */
-export function TeamQIntro({ baseline, c = DEFAULTS.teamq }: { baseline: TeaserResult; /** the page's words, from the admin */ c?: TeamQContent }) {
+/** The top of /teamq: the heading with the ask right under it, what TeamQ
+ *  is in one section, then the tool explained one part at a time on a
+ *  frozen copy of the real thing. The tool itself follows, for the visitor
+ *  with questions. */
+export function TeamQIntro({ baseline, c = DEFAULTS.teamq, ask }: { baseline: TeaserResult; /** the page's words, from the admin */ c?: TeamQContent; /** the form, rendered under the heading */ ask: React.ReactNode }) {
   const steps: TourStep[] = TOUR_LIT.map((lit, i) => ({ lit, kicker: c.tour.items[i]?.kicker ?? "", title: c.tour.items[i]?.title ?? "", text: c.tour.items[i]?.text ?? "" }));
   return (
     <>
@@ -41,10 +43,8 @@ export function TeamQIntro({ baseline, c = DEFAULTS.teamq }: { baseline: TeaserR
         <div className="L-wrap">
           <p className="eyebrow L-eyebrow">{c.head.eyebrow}</p>
           <h1 className="display L-page-title">{c.head.title}</h1>
-          <div className="cta-row">
-            <a className="btn" href="#ask">
-              {c.head.ctaPrimary} <span className="arrow">&rarr;</span>
-            </a>
+          {ask}
+          <div className="cta-row teaser-intro-more">
             <a className="btn btn-secondary" href="#tool">
               {c.head.ctaSecondary} <span className="arrow">&darr;</span>
             </a>

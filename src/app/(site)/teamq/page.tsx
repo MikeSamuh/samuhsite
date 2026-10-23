@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { BASELINE, OPTIMIZER_MOVES } from "@/components/teamq-teaser/model";
 import { TeamQIntro } from "@/components/teamq-teaser/TeamQIntro";
-import { TeamQTeaser } from "@/components/teamq-teaser/TeamQTeaser";
+import { TeamQAsk, TeamQTeaser } from "@/components/teamq-teaser/TeamQTeaser";
+import { TeaserValues } from "@/components/teamq-teaser/TeaserValues";
 import { getContent } from "@/lib/content/content";
 import { bestForProductiveDays, score } from "@/lib/teaser/score";
 import { pageMeta } from "@/lib/seo";
@@ -20,16 +21,17 @@ export default async function TeamQPage() {
   const answer = { values, levers, days: best.days, mhq: best.mhq };
   const { teamq } = await getContent();
   return (
-    <>
-      <TeamQIntro baseline={baseline} c={teamq} />
+    // the form comes first; the sliders below share their state with it
+    <TeaserValues>
+      <TeamQIntro baseline={baseline} c={teamq} ask={<TeamQAsk words={teamq.ask} />} />
       <section className="L-sec teaser-sec" id="tool" aria-labelledby="tool-title">
         <div className="L-wrap">
           <h2 className="sec teaser-title" id="tool-title">
             {teamq.tool.title}
           </h2>
-          <TeamQTeaser baseline={baseline} answer={answer} ask={teamq.ask} />
+          <TeamQTeaser baseline={baseline} answer={answer} />
         </div>
       </section>
-    </>
+    </TeaserValues>
   );
 }

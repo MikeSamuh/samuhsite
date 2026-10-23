@@ -22,6 +22,18 @@
   text-wrap: balance;
 }
 
+/* the ask sits right under the heading, so it keeps its rule but not the
+   stretch of air it had at the foot of the tool */
+.teaser-intro .teaser-ask {
+  margin-top: calc(32px * var(--space, 1));
+  padding-top: calc(40px * var(--space, 1));
+}
+
+/* the way down to the tool, after the form */
+.teaser-intro-more {
+  margin-top: calc(40px * var(--space, 1));
+}
+
 /* ---------- the guide ---------- */
 
 .guide-copy .L-mid:last-child {
@@ -556,9 +568,10 @@
 
 /* ---------- the ask ---------- */
 
-/* the ask stands clear of the tool: a stretch of air, then its own rule,
-   then a head that says where to start. The home's "Get your team's
-   assessment" lands here, #ask */
+/* the ask: a stretch of air, then its own rule, then a head that says where
+   to start. It opens /teamq, under the heading (see .teaser-intro .teaser-ask
+   for the tighter spacing there). The home's "Get your team's assessment"
+   lands here, #ask */
 .teaser-ask {
   scroll-margin-top: calc(var(--nav-h, 0px) + 24px);
   display: grid;

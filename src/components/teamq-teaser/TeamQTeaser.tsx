@@ -11,6 +11,7 @@ import { CONTACT_EMAIL } from "@/lib/contact-details";
 import { EMAIL_SHAPE, PERSONAL_DOMAINS } from "@/lib/lead";
 import { mhqBand } from "@/lib/tokens";
 import { Capacity } from "./Capacity";
+import { useTeaserValues, type Values } from "./TeaserValues";
 import {
   BASELINE,
   OPTIMIZER_MOVES,
@@ -30,8 +31,6 @@ export interface TeaserResult {
   /** productive days a month */
   days: number;
 }
-
-type Values = Record<string, number>;
 
 /** The optimizer's best setting for productive days in OPTIMIZER_MOVES moves. */
 export interface Answer extends TeaserResult {
@@ -75,8 +74,8 @@ const ASK_WORDS: AskWords = {
   thanksText: "A person at SAMUH will be in touch about your team.",
 };
 
-export function TeamQTeaser({ baseline, answer, ask = ASK_WORDS }: { baseline: TeaserResult; answer: Answer; /** the ask's words, from the admin */ ask?: AskWords }) {
-  const [values, setValues] = useState<Values>(BASELINE);
+export function TeamQTeaser({ baseline, answer }: { baseline: TeaserResult; answer: Answer }) {
+  const [values, setValues] = useTeaserValues();
   const [result, setResult] = useState<TeaserResult>(baseline);
   const [stale, setStale] = useState(false);
   const [failed, setFailed] = useState(false);
@@ -213,8 +212,6 @@ export function TeamQTeaser({ baseline, answer, ask = ASK_WORDS }: { baseline: T
           ) : null}
         </div>
       </div>
-
-      <Ask values={values} words={ask} />
     </div>
   );
 }
@@ -322,13 +319,16 @@ interface Intake {
 
 const EMPTY: Intake = { email: "", name: "", role: "", phone: "", organization: "", teamSize: "", change: "" };
 
-/** The optional ask, as a light intake. Always there, below the tool, and
- *  never between the visitor and the readout. Three steps: the email,
+/** The ask, as a light intake. It opens the page, under the heading, so a
+ *  visitor who came to book starts at once; the tool waits below for the
+ *  ones with questions. It posts the slider state, shared through
+ *  TeaserValues, so settings tried below travel with the lead. Three steps: the email,
  *  posted the moment it is given so the CRM has the person; then name,
  *  role and phone, the name offered from the address; then company, team
  *  size and what they hope to change, the company offered from the
  *  domain. Everything posts together at the end, with the slider state. */
-function Ask({ values, words }: { values: Values; words: AskWords }) {
+export function TeamQAsk({ words = ASK_WORDS }: { /** the ask's words, from the admin */ words?: AskWords }) {
+  const [values] = useTeaserValues();
   const { submit, send, state, attempt } = useLeadSubmit("teaser");
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [intake, setIntake] = useState<Intake>(EMPTY);
