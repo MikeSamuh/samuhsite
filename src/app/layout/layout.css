@@ -1466,8 +1466,15 @@
    turning over as the drawing. The beats here add up to SHUFFLE_BEATS
    and REVEAL_BEATS in sections.tsx, which wait the same before the next
    phase */
-.L-deck { --deck-radius: 18px; }
-.L-deck-stage { position: relative; aspect-ratio: 4 / 5; perspective: 1400px; }
+/* on desktop the pile sits in the middle of the section's content until
+   a card is drawn, then slides left as the card rises and the question
+   comes in beside it: a spare first column that goes from 1fr to 0fr,
+   which the grid animates. The column gap is on the side column instead,
+   so the pile lands flush left */
+.L-deck { --deck-radius: 18px; grid-template-columns: 1fr minmax(240px, 360px) 1fr; column-gap: 0; transition: grid-template-columns calc(var(--dur) * 3) var(--ease); }
+.L-deck[data-phase="drawing"], .L-deck[data-phase="drawn"] { grid-template-columns: 0fr minmax(240px, 360px) 1fr; }
+.L-deck-stage { position: relative; grid-column: 2; aspect-ratio: 4 / 5; perspective: 1400px; }
+.L-deck-ask { grid-column: 3; padding-left: clamp(28px, 4cqw, 56px); }
 .L-deck-stack { position: absolute; inset: 0; transform-style: preserve-3d; }
 .L-deck-back {
   position: absolute; inset: 0;
@@ -1521,11 +1528,15 @@
 @media (prefers-reduced-motion: reduce) {
   .L-one-face, .L-one-card, .L-one-thanks, .L-deck-prompt, .L-deck-ask { transition: none; animation: none; }
   .L-deck[data-phase] .L-deck-back, .L-deck[data-phase] .L-deck-card { animation: none; transition: none; }
+  .L-deck { transition: none; }
 }
 @container page (max-width: 900px) {
   .L-gallery { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
   .L-one { grid-template-columns: 1fr; }
   .L-one-card, .L-deck-stage { max-width: 320px; width: 100%; }
+  .L-deck[data-phase] { grid-template-columns: 1fr; }
+  .L-deck-stage, .L-deck-ask { grid-column: auto; }
+  .L-deck-ask { padding-left: 0; }
 }
 @media (max-width: 900px) {
   .L-zoom-in { grid-template-columns: 1fr; }
