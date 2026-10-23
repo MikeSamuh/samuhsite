@@ -1002,6 +1002,20 @@
 .L-tiers td { vertical-align: top; line-height: 1.5; transition: background var(--dur) var(--ease), color var(--dur) var(--ease); }
 .L-tiers td[data-on="true"] { background: color-mix(in srgb, var(--accent-2) 14%, transparent); color: var(--text); }
 .L-tiers tbody th { vertical-align: top; }
+/* à la carte: each piece on its own, a grid of four, hairlines not boxes.
+   The pressed piece lights the way a picked tier column does */
+.L-carte { list-style: none; margin: 0 0 18px; padding: 0; display: grid; grid-template-columns: repeat(4, 1fr); gap: 0 28px; }
+.L-piece { display: grid; grid-template-rows: auto auto 1fr auto auto; gap: 10px; padding: 20px 0 24px; border-top: var(--rule-thin) solid var(--border); transition: background var(--dur) var(--ease), box-shadow var(--dur) var(--ease); }
+.L-piece[data-on="true"] { background: color-mix(in srgb, var(--accent-2) 14%, transparent); box-shadow: 0 0 0 12px color-mix(in srgb, var(--accent-2) 14%, transparent); border-radius: 2px; }
+.L-piece-tag { color: var(--accent-3); }
+.L-piece-name { font-family: var(--font-display); font-weight: var(--display-weight); font-size: 21px; line-height: 1.2; margin: 0; }
+.L-piece-what { margin: 0; font-size: 15px; line-height: 1.55; color: var(--text); }
+.L-piece-meta { margin: 0; display: grid; gap: 8px; }
+.L-piece-meta div { display: grid; gap: 2px; }
+.L-piece-meta dd { margin: 0; font-size: 14px; line-height: 1.5; color: var(--muted); }
+.L-piece-ask { background: none; border: 0; padding: 0; cursor: pointer; font: inherit; font-size: 15px; color: var(--text); justify-self: start; }
+.L-piece-ask:hover { color: var(--accent); }
+.L-piece-ask[aria-pressed="true"] { color: var(--accent); }
 .L-talk { display: grid; gap: 16px; max-width: 640px; }
 .L-talk-tiers { display: flex; gap: 8px; flex-wrap: wrap; }
 .L-talk-field { max-width: none; }
@@ -1127,6 +1141,7 @@
 .L-insight p { margin: 0; }
 
 @container page (max-width: 900px) {
+  .L-carte { grid-template-columns: 1fr 1fr; }
   .L-tier, .L-steps, .L-feed, .L-team, .L-logos, .L-contact, .L-voices-grid { grid-template-columns: 1fr 1fr; }
   .L-stage { --stage-art: 240px; }
   .L-research-card, .L-partner { grid-template-columns: 1fr; }
@@ -1134,6 +1149,7 @@
   .L-report-cover { max-width: 220px; }
 }
 @container page (max-width: 560px) {
+  .L-carte { grid-template-columns: 1fr; }
   .L-tier, .L-steps, .L-feed, .L-team, .L-logos, .L-contact, .L-voices-grid { grid-template-columns: 1fr; }
   .L-stage, .L-stage:nth-child(even) { --stage-art: 144px; grid-template-columns: 1fr; gap: 16px; }
   .L-stage-art, .L-stage:nth-child(even) .L-stage-art { order: -1; justify-self: start; }

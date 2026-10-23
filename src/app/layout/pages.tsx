@@ -77,6 +77,14 @@ function Solutions({ c = DEFAULTS.solutions, g = DEFAULTS.global }: { c?: Soluti
   const TIERS = c.tiers.items;
   const [tier, setTier] = useState(TIERS[1]?.name ?? TIERS[0]?.name ?? "");
   const [sent, setSent] = useState(false);
+  // a piece from the à la carte list, picked with its button: it goes to the
+  // form the same way a tier does, and shows there beside the three tiers
+  const piece = TIERS.some((t) => t.name === tier) ? "" : tier;
+  const ask = (name: string) => {
+    setTier(name);
+    setSent(false);
+    document.getElementById("talk")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
   const three = (f: (t: (typeof TIERS)[number]) => string) => [0, 1, 2].map((i) => (TIERS[i] ? f(TIERS[i]) : "")) as [string, string, string];
   const rows: [string, string, string, string][] = [
     [c.tiers.rowWhat, ...three((t) => t.what)],
@@ -121,13 +129,34 @@ function Solutions({ c = DEFAULTS.solutions, g = DEFAULTS.global }: { c?: Soluti
         </table>
         <p className="L-cap">{c.tiers.note}</p>
       </Sec>
-      <Sec n="03" kicker={c.talk.kicker} title={c.talk.title}>
+      <Sec n="03" kicker={c.carte.kicker} title={c.carte.title} id="a-la-carte">
+        {c.carte.lede ? <p className="L-mid">{c.carte.lede}</p> : null}
+        <ul className="L-carte">
+          {c.carte.items.map((it) => (
+            <li className="L-piece" key={it.name} data-on={it.name === tier}>
+              <span className="L-cap L-piece-tag">{it.tag}</span>
+              <h3 className="L-piece-name">{it.name}</h3>
+              <p className="L-piece-what">{it.what}</p>
+              <dl className="L-piece-meta">
+                <div><dt className="L-cap">{c.tiers.rowWho}</dt><dd>{it.who}</dd></div>
+                <div><dt className="L-cap">Format</dt><dd>{it.format}</dd></div>
+              </dl>
+              <button type="button" className="inline-link L-text-cta L-piece-ask" onClick={() => ask(it.name)} aria-pressed={it.name === tier}>
+                {c.carte.ask} <span className="arrow">&rarr;</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+        {c.carte.note ? <p className="L-cap">{c.carte.note}</p> : null}
+      </Sec>
+      <Sec n="04" kicker={c.talk.kicker} title={c.talk.title} id="talk">
         {!sent ? (
           <form className="L-talk" onSubmit={(e) => { e.preventDefault(); setSent(true); }}>
-            <div className="L-talk-tiers" role="radiogroup" aria-label="Which tier">
+            <div className="L-talk-tiers" role="radiogroup" aria-label="Which tier or piece">
               {TIERS.map((t) => (
                 <button key={t.name} type="button" className="opt" aria-pressed={t.name === tier} onClick={() => setTier(t.name)}>{t.name}</button>
               ))}
+              {piece ? <button type="button" className="opt" aria-pressed>{piece}</button> : null}
             </div>
             <div className="field L-talk-field">
               <input type="email" required placeholder="you@company.com" aria-label="Your email" />
@@ -142,7 +171,7 @@ function Solutions({ c = DEFAULTS.solutions, g = DEFAULTS.global }: { c?: Soluti
           </div>
         )}
       </Sec>
-      <Sec n="04" kicker={c.voices.kicker} title={c.voices.title}>
+      <Sec n="05" kicker={c.voices.kicker} title={c.voices.title}>
         <div className="L-voices L-voices-grid">
           {g.testimonials.items.map((q, i) => (
             <figure className="card L-quote" key={i}>
