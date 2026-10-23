@@ -274,3 +274,11 @@
 .adm-tags { display: flex; gap: 6px; flex-wrap: wrap; }
 .adm-tag { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; padding: 5px 10px; border: 1px solid var(--adm-border); border-radius: 999px; cursor: pointer; background: var(--adm-surface); }
 .adm-tag[data-on="true"] { background: var(--adm-text); color: var(--adm-surface); border-color: var(--adm-text); }
+
+/* cards tab */
+.adm-cards { display: grid; gap: 14px; }
+.adm-card-item { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 20px; align-items: start; }
+.adm-card-art { aspect-ratio: 4 / 5; border-radius: 10px; overflow: hidden; background: var(--adm-surface-alt); border: 1px solid var(--adm-border); display: grid; place-items: center; }
+.adm-card-art img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.adm-card-art .adm-image-empty { width: 100%; height: 100%; border: 0; border-radius: 0; }
+@media (max-width: 700px) { .adm-card-item { grid-template-columns: 1fr; } .adm-card-art { max-width: 180px; } }

@@ -9,7 +9,8 @@ import type { TeaserDemoProps } from "@/components/teamq-teaser/TeaserDemo";
 /** The home, composed from SITE's section order and variants. `demo` is
  *  the tool's numbers, scored by the page on the server; with it, the tool
  *  section shows the bars moving. */
-export function SiteHome({ demo, content }: { demo?: TeaserDemoProps; /** the admin's words, read by the server page */ content?: SiteCopy }) {
+export function SiteHome({ demo, content, cards }: { demo?: TeaserDemoProps; /** the admin's words, read by the server page */ content?: SiteCopy; /** the deck from the admin's Cards tab; the ones in site.ts without it */ cards?: [string, string, string][] }) {
+  const copy = cards ? { ...SITE.copy, cards } : SITE.copy;
   const sections = SITE.order ? SITE.order.map((id) => SECTIONS.find((s) => s.id === id)!).filter(Boolean) : SECTIONS.filter((s) => !s.optIn);
   return (
     <>
@@ -17,7 +18,7 @@ export function SiteHome({ demo, content }: { demo?: TeaserDemoProps; /** the ad
         const v = SITE.layout.sections[s.id];
         if (v === `${s.id}-${OFF}`) return null;
         if (s.id === "meaning" && SITE.copy?.thesisWithMeaning) return null;
-        return <Section key={s.id} def={s} variant={v} copy={SITE.copy} demo={s.id === "tool" ? demo : undefined} content={content} />;
+        return <Section key={s.id} def={s} variant={v} copy={copy} demo={s.id === "tool" ? demo : undefined} content={content} />;
       })}
     </>
   );

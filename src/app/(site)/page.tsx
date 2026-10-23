@@ -1,6 +1,7 @@
 import { BASELINE, DEMO_CAP, OPTIMIZER_MOVES } from "@/components/teamq-teaser/model";
 import { bestForProductiveDays, score } from "@/lib/teaser/score";
 import { getContent } from "@/lib/content/content";
+import { getCards } from "@/lib/admin/cards";
 import { SiteHome } from "@/components/site/Site";
 import { JsonLd } from "@/components/site/JsonLd";
 import { faqLd, pageMeta, SITE_NAME, TAGLINE } from "@/lib/seo";
@@ -19,10 +20,11 @@ export default async function Home() {
   // The moves stop at DEMO_CAP, never the ceiling
   const demo = { baseline: score(BASELINE), answer: bestForProductiveDays(OPTIMIZER_MOVES, DEMO_CAP) };
   const { home, global } = await getContent();
+  const cards = (await getCards()).map((c) => [c.name, "", c.image] as [string, string, string]);
   return (
     <>
       <JsonLd data={faqLd(home.faq.items)} />
-      <SiteHome demo={demo} content={{ home, global }} />
+      <SiteHome demo={demo} content={{ home, global }} cards={cards} />
     </>
   );
 }
