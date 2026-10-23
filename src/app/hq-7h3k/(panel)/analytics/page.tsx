@@ -63,13 +63,13 @@ function Dashboard({ a }: { a: Analytics }) {
           <Bars rows={a.pages.map((r) => ({ label: r.path, n: r.views }))} max={a.pages[0]?.views ?? 0} />
         </div>
         <div className="adm-card">
-          <div className="adm-card-title">Where sessions came from</div>
-          <div className="adm-card-note">Sessions by source</div>
+          <div className="adm-card-title">Sources</div>
+          <div className="adm-card-note">Sessions</div>
           <Bars rows={a.sources.map((r) => ({ label: r.source, n: r.sessions }))} max={a.sources[0]?.sessions ?? 0} />
         </div>
         <div className="adm-card">
-          <div className="adm-card-title">Leads and conversions</div>
-          <div className="adm-card-note">lead_submit is a form sent, teaser_interact the first slider moved on TeamQ, booking_open the calendar shown</div>
+          <div className="adm-card-title">Events</div>
+          <div className="adm-card-note">lead_submit: form sent · teaser_interact: TeamQ slider moved · booking_open: calendar shown</div>
           <Bars rows={a.events.map((r) => ({ label: r.name, n: r.count }))} max={a.events[0]?.count ?? 0} />
         </div>
         <div className="adm-card">
@@ -78,7 +78,7 @@ function Dashboard({ a }: { a: Analytics }) {
           <Bars rows={[...a.devices.map((r) => ({ label: r.device, n: r.users })), ...a.countries.slice(0, 5).map((r) => ({ label: r.country, n: r.users }))]} max={Math.max(a.devices[0]?.users ?? 0, a.countries[0]?.users ?? 0)} />
         </div>
       </div>
-      <p className="adm-note" style={{ marginTop: 12 }}>Fetched {new Date(a.fetchedAt).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}. Refreshes every ten minutes. GA4 itself lags a day or so on some reports.</p>
+      <p className="adm-note" style={{ marginTop: 12 }}>Fetched {new Date(a.fetchedAt).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}, cached ten minutes.</p>
     </>
   );
 }
@@ -87,8 +87,7 @@ function Setup({ gaId }: { gaId?: string }) {
   return (
     <div className="adm-grid adm-grid-2">
       <div className="adm-card">
-        <div className="adm-card-title">1. Measure the site</div>
-        <div className="adm-card-note">Google Analytics 4 collects. The tag is already in the site and switches on with one variable.</div>
+        <div className="adm-card-title">1. Turn on the tag</div>
         <ol className="adm-steps">
           <li>In Google Analytics, create a GA4 property for samuh.work and a Web data stream. Copy its Measurement ID, which looks like <span className="adm-code">G-XXXXXXXXXX</span>.</li>
           <li>In Vercel, add <span className="adm-code">NEXT_PUBLIC_GA_ID</span> with that ID, for Production (and Preview if you want preview traffic counted). Redeploy.</li>
@@ -97,8 +96,7 @@ function Setup({ gaId }: { gaId?: string }) {
         <p className="adm-note" style={{ marginTop: 12 }}>{gaId ? <><span className="adm-badge adm-badge-ok">Tag on</span> NEXT_PUBLIC_GA_ID is set to {gaId}.</> : <><span className="adm-badge adm-badge-warn">Tag off</span> NEXT_PUBLIC_GA_ID is not set on this deployment.</>}</p>
       </div>
       <div className="adm-card">
-        <div className="adm-card-title">2. Show it here</div>
-        <div className="adm-card-note">This tab reads GA4 with a service account, so nobody needs a Google login to see the numbers.</div>
+        <div className="adm-card-title">2. Connect this tab</div>
         <ol className="adm-steps">
           <li>In Google Cloud, make a project (or reuse one), enable the <strong>Google Analytics Data API</strong>, and create a service account. Create a JSON key for it and download it.</li>
           <li>In GA4, Admin &rarr; Property access management, add the service account&rsquo;s email as a <strong>Viewer</strong>.</li>
@@ -129,9 +127,8 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
     <>
       <div className="adm-head">
         <div>
-          <span className="adm-kicker">Analytics</span>
-          <h1 className="adm-title">Who came, and what they did</h1>
-          <p className="adm-lede">{cfg ? "Google Analytics 4, read live for this site." : "Not connected yet. Two short steps, both in Vercel's environment variables."}</p>
+          <h1 className="adm-title">Analytics</h1>
+          <p className="adm-lede">{cfg ? `Google Analytics 4, last ${days} days` : "Not connected"}</p>
         </div>
         <div className="adm-actions">
           {cfg ? (
@@ -154,7 +151,7 @@ export default async function AnalyticsPage({ searchParams }: { searchParams: Pr
       <div className="adm-section">
         <h2 className="adm-section-title">Vercel Analytics</h2>
         <div className="adm-card">
-          <p className="adm-note">The site also carries Vercel&rsquo;s own analytics script, which only reports once Web Analytics is switched on for the project in the Vercel dashboard. It has no read API, so its numbers live there; the button above opens it. Set <span className="adm-code">VERCEL_ANALYTICS_URL</span> to the project&rsquo;s analytics page so the button lands on it.</p>
+          <p className="adm-note">No read API, so the numbers live in the Vercel dashboard. Set <span className="adm-code">VERCEL_ANALYTICS_URL</span> so the button above lands on the project&rsquo;s analytics page.</p>
         </div>
       </div>
     </>

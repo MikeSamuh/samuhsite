@@ -122,9 +122,9 @@ export function ContentEditor({ schema, initial, meta }: { schema: PageSchema; i
     <>
       <div className="adm-head">
         <div>
-          <span className="adm-kicker">Content · {schema.name}</span>
+          <span className="adm-kicker">Content</span>
           <h1 className="adm-title">{schema.name}</h1>
-          <p className="adm-lede">{schema.note}{meta ? ` Last saved ${when(meta.updatedAt)} by ${meta.updatedBy}.` : " Showing the defaults."}</p>
+          <p className="adm-lede">{meta ? `Saved ${when(meta.updatedAt)} by ${meta.updatedBy}` : "Defaults"}</p>
         </div>
         <div className="adm-actions">
           <a className="adm-btn" href={schema.path} target="_blank" rel="noopener noreferrer">Open the page ↗</a>
