@@ -28,8 +28,8 @@ since 23 October 2026, Wilfred's call: the sign-in email only reaches
 Mike until the Resend domain is verified, and nobody on our side has
 Vercel access to set an env switch, so the gate is off in code and the
 team can look around. Pages and the API act as `open-access@samuh.work`.
-While it is open, anyone with the URL can edit the site. Flipping it to
-`false` is on the Launch tab's list.
+While it is open, anyone with the URL can edit the site. Flip it to
+`false` before launch.
 
 | Piece | File |
 |---|---|
@@ -49,9 +49,9 @@ While it is open, anyone with the URL can edit the site. Flipping it to
 Images go to Vercel Blob when `BLOB_READ_WRITE_TOKEN` is set, else to
 `public/uploads/` locally.
 
-Keys: `content:<page>`, `post:<slug>`, `reflection:<id>`, `auth:magic:<hash>`, `launch:checklist`.
+Keys: `content:<page>`, `post:<slug>`, `reflection:<id>`, `auth:magic:<hash>`.
 
-## The six tabs
+## The five tabs
 
 **Content.** One document per page (`home`, `about`, `process`,
 `solutions`, `teamq`, `contact`, `insights`, `global`). The fields and
@@ -100,24 +100,6 @@ ones in CLAUDE.md, `docs/brief.md` and `docs/assets.md`.
 root layout and switches on with `NEXT_PUBLIC_GA_ID`. Vercel Analytics is
 on the page too and reports once it is enabled on the project; it has no
 read API, so the tab links out.
-
-**Launch.** The go-live checklist: the basics of getting the site onto
-samuh.work, grouped by area (content to confirm, intake flows, search,
-quality bar, analytics, admin and hosting, domain and launch day), each
-item with a link to the place it gets done where there is one. Nobody is
-assigned and nothing is assumed (Wilfred, 23 October 2026). The list is
-`src/lib/admin/launch-list.ts`, code, so adding or rewording an item is a
-commit; items marked `done: true` there were finished in the repo and
-start ticked. Who ticked what, when, and a note per item live in the
-store under `launch:checklist`, so the team sees one board. Ticks post at
-once, no save button. The team can add items of its own from the tab;
-those can also be removed there.
-
-Until Upstash Redis is attached to the Vercel project the server cannot
-save anything (the build's filesystem is read only, which is why a tick
-used to do nothing), so on Vercel the board keeps its ticks in the
-browser that made them and says so. Content, posts and responses have
-no such fallback: they need Redis.
 
 ## Setting it up on Vercel
 

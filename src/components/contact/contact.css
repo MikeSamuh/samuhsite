@@ -108,3 +108,6 @@
     border-top: var(--rule-thin) solid var(--border);
   }
 }
+
+/* the number as the client says it, beside the one you dial */
+.contact-vanity { display: block; margin-top: 4px; font-size: 14px; color: var(--muted); }

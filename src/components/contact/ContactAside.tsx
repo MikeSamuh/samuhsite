@@ -1,4 +1,4 @@
-import { CONTACT_EMAIL, CONTACT_PHONE } from "@/lib/contact-details";
+import { CONTACT_EMAIL, CONTACT_PHONE, CONTACT_PHONE_VANITY } from "@/lib/contact-details";
 import "./contact.css";
 
 function Owed({ what }: { what: string }) {
@@ -31,9 +31,12 @@ export function ContactAside({
         <dt>Phone</dt>
         <dd>
           {phone ? (
-            <a className="inline-link" href={`tel:${phone}`}>
-              {phone}
-            </a>
+            <>
+              <a className="inline-link" href={`tel:${phone.replace(/[^+\d]/g, "")}`}>
+                {phone}
+              </a>
+              {CONTACT_PHONE_VANITY && phone === CONTACT_PHONE ? <span className="contact-vanity">{CONTACT_PHONE_VANITY}</span> : null}
+            </>
           ) : (
             <Owed what="Google Voice number" />
           )}

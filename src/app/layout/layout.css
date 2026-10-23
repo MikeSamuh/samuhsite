@@ -1204,6 +1204,13 @@
   align-items: start;
 }
 .L-page[data-comp="comp-editorial"] .L-sec-h > .L-wrap > :not(.L-head) { grid-column: 2; }
+/* a section whose body wants the whole width (the tiers table, Wilfred,
+   21 October): the head sits above it instead of beside it */
+.L-page[data-comp="comp-editorial"] .L-sec-h.L-sec-full > .L-wrap { grid-template-columns: 1fr; row-gap: 28px; }
+.L-page[data-comp="comp-editorial"] .L-sec-h.L-sec-full > .L-wrap > :not(.L-head) { grid-column: 1; }
+.L-page[data-comp="comp-editorial"] .L-sec-h.L-sec-full .L-head { position: static; max-width: 520px; }
+.L-sec-full .L-tiers { font-size: 15px; }
+.L-sec-full .L-tiers tr > :first-child { width: 20%; }
 .L-page[data-comp="comp-editorial"] .L-sec-h .L-head {
   grid-column: 1;
   /* sticks for the length of its section, clear of the stuck nav */

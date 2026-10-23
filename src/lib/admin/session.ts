@@ -26,7 +26,7 @@ export interface Session {
  *  the sign-in email only reaches Mike (Resend delivers to one address
  *  until samuh.work is verified) and nobody has Vercel access to set an
  *  env switch. A constant in code for that reason. Flip it to false
- *  before launch: it is on the Launch tab's list. */
+ *  before launch. */
 export const ADMIN_OPEN = true;
 
 export function adminOpen(): boolean {

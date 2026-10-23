@@ -11,7 +11,6 @@ const TABS = [
   { href: `${ADMIN_BASE}/responses`, name: "Responses" },
   { href: `${ADMIN_BASE}/brand`, name: "Brand" },
   { href: `${ADMIN_BASE}/analytics`, name: "Analytics" },
-  { href: `${ADMIN_BASE}/launch`, name: "Launch" },
 ];
 
 export function AdminNav({ email }: { email: string }) {

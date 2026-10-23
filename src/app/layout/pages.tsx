@@ -95,7 +95,7 @@ function Solutions({ c = DEFAULTS.solutions, g = DEFAULTS.global }: { c?: Soluti
   return (
     <>
       <PageHead n="01" kicker={c.head.kicker} title={c.head.title} lede={c.head.lede} />
-      <Sec n="02" kicker={c.tiers.kicker} title={c.tiers.title}>
+      <Sec n="02" kicker={c.tiers.kicker} title={c.tiers.title} cls="L-sec-full">
         <div className="L-tiers-pick" aria-label="Which tier">
           {TIERS.map((t) => (
             <button key={t.name} type="button" className="L-tier-pick" onClick={() => setTier(t.name)} aria-pressed={t.name === tier}>

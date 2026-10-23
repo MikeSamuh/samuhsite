@@ -4,6 +4,7 @@
 
 import type { Metadata } from "next";
 import type { GlobalContent } from "@/lib/content/defaults";
+import { GOOGLE_BUSINESS_URL } from "@/lib/contact-details";
 import type { Post } from "@/lib/insights-shared";
 
 export const SITE_URL = "https://samuh.work";
@@ -65,7 +66,8 @@ export function organizationLd(g: GlobalContent) {
     description: g.footer.about,
     slogan: TAGLINE,
     ...(g.contact.email ? { email: g.contact.email } : {}),
-    sameAs: [LINKEDIN_URL, g.footer.youtubeUrl].filter(Boolean),
+    ...(g.contact.phone ? { telephone: g.contact.phone.replace(/[^+\d]/g, "") } : {}),
+    sameAs: [LINKEDIN_URL, g.footer.youtubeUrl, GOOGLE_BUSINESS_URL].filter(Boolean),
   };
 }
 
