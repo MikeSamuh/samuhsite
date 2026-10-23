@@ -970,7 +970,7 @@
 .L-table { width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 14px; }
 .L-table th, .L-table td { text-align: left; padding: 12px 14px; border-top: var(--rule-thin) solid var(--border); }
 .L-table thead th { font-family: var(--font-display); font-weight: var(--display-weight); font-size: 18px; border-top: 0; }
-.L-table tbody th { font-weight: 500; color: var(--muted); width: 32%; }
+.L-table tbody th { font-weight: 600; color: var(--text); width: 32%; }
 .L-table td { color: var(--muted); }
 .L-voices-grid { grid-template-columns: repeat(3, 1fr); }
 
