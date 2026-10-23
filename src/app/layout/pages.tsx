@@ -134,16 +134,20 @@ function Solutions({ c = DEFAULTS.solutions, g = DEFAULTS.global }: { c?: Soluti
         <ul className="L-carte">
           {c.carte.items.map((it) => (
             <li className="L-piece" key={it.name} data-on={it.name === tier}>
-              <span className="L-cap L-piece-tag">{it.tag}</span>
-              <h3 className="L-piece-name">{it.name}</h3>
-              <p className="L-piece-what">{it.what}</p>
-              <dl className="L-piece-meta">
-                <div><dt className="L-cap">{c.tiers.rowWho}</dt><dd>{it.who}</dd></div>
-                <div><dt className="L-cap">Format</dt><dd>{it.format}</dd></div>
-              </dl>
-              <button type="button" className="inline-link L-text-cta L-piece-ask" onClick={() => ask(it.name)} aria-pressed={it.name === tier}>
-                {c.carte.ask} <span className="arrow">&rarr;</span>
-              </button>
+              <div className="L-piece-head">
+                <span className="L-cap L-piece-tag">{it.tag}</span>
+                <h3 className="L-piece-name">{it.name}</h3>
+              </div>
+              <div className="L-piece-body">
+                <p className="L-piece-what">{it.what}</p>
+                <dl className="L-piece-meta">
+                  <div><dt className="L-cap">{c.tiers.rowWho}</dt><dd>{it.who}</dd></div>
+                  <div><dt className="L-cap">Format</dt><dd>{it.format}</dd></div>
+                </dl>
+                <button type="button" className="inline-link L-text-cta L-piece-ask" onClick={() => ask(it.name)} aria-pressed={it.name === tier}>
+                  {c.carte.ask} <span className="arrow">&rarr;</span>
+                </button>
+              </div>
             </li>
           ))}
         </ul>
