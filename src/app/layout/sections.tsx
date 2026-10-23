@@ -586,11 +586,7 @@ export function MetaphorGallery({ cards = ARCHETYPES }: { cards?: [string, strin
  *  admin's Metaphor cards group went, and what visitors share lands on
  *  the admin's Responses tab, where the team puts it on the card's back. */
 const DECK = {
-  deckTitle: "A deck of teams.",
-  deckLine: "Each card is a team you have probably sat in. Shuffle the deck, then take one.",
   shuffle: "Shuffle",
-  pickTitle: "Pick a card.",
-  pickLine: "Take the one on top and see which team you get.",
   pick: "Pick a card",
   question: "How does this relate to your team?",
   thanks: "Shared, thank you. A person reads these. If this one hit home, *talk to us*.",
@@ -613,9 +609,9 @@ const REVEAL_BEATS = 4;
 
 /**
  * The metaphor cards as a deck, the client's ask on 23 October: arrive on
- * a pile of Samuh cards, shuffle it from the button over the pile, be
- * asked to pick one while it still moves, and the card
- * you pick rises out of the pile and turns over. Then "How does this
+ * a pile of Samuh cards and nothing else, shuffle it (the pile is the
+ * button), be asked to pick one while it still moves, and the card you
+ * pick rises out of the pile and turns over. Only then do "How does this
  * relate to your team?" and the box come in beside it. "View responses"
  * flips the card to what others said on its back, which is what the team
  * has chosen to show in the admin; "View another card" puts it back and
@@ -687,12 +683,12 @@ export function CardDeck({ cards = ARCHETYPES }: { cards?: [string, string, stri
   return (
     <div className="L-one L-deck" data-phase={phase} ref={root}>
       <div className="L-deck-stage">
-        {/* the one button, over the pile: Shuffle, then Pick a card while the
-            pile is still moving. A pick mid-shuffle just draws */}
+        {/* the one button is the whole pile: Shuffle, then Pick a card while
+            it is still moving. A pick mid-shuffle just draws */}
         {!drawn ? (
-          <span className="L-deck-btn">
-            <button type="button" className="btn" onClick={phase === "deck" ? shuffle : draw}>{phase === "deck" ? DECK.shuffle : DECK.pick} <span className="arrow">&rarr;</span></button>
-          </span>
+          <button type="button" className="L-deck-btn" onClick={phase === "deck" ? shuffle : draw}>
+            <span className="btn">{phase === "deck" ? DECK.shuffle : DECK.pick} <span className="arrow">&rarr;</span></span>
+          </button>
         ) : null}
         {/* the pile: card backs, the star on each */}
         <div className="L-deck-stack" aria-hidden>
@@ -725,29 +721,22 @@ export function CardDeck({ cards = ARCHETYPES }: { cards?: [string, string, stri
           </div>
         ) : null}
       </div>
-      <div className="L-one-side">
-        {phase === "drawn" ? (
-          <div className="L-deck-ask">
-            <h3 className="L-one-title">{DECK.question}</h3>
-            <form className="L-form L-one-form" onSubmit={share}>
-              <textarea className="L-one-box" rows={4} maxLength={600} placeholder="A line or two" aria-label="Your response" value={text} onChange={(e) => setText(e.target.value)} />
-              {shared.length ? (
-                <p className="L-one-thanks">{failed ? DECK.failed : DECK.thanks.split(/(\*[^*]+\*)/).map((part, k) => part.startsWith("*") && part.endsWith("*") ? <Link href={ROUTES.contact} className="inline-link" key={k}>{part.slice(1, -1)}</Link> : part)}</p>
-              ) : null}
-              <div className="cta-row">
-                <button className="btn" type="submit" disabled={!text.trim()}>{DECK.share} <span className="arrow">&rarr;</span></button>
-                <button className="btn btn-secondary" type="button" onClick={() => setFlipped((f) => !f)} aria-pressed={flipped}>{flipped ? DECK.back : DECK.view}</button>
-                <button className="btn btn-secondary" type="button" onClick={shuffle}>{DECK.next}</button>
-              </div>
-            </form>
-          </div>
-        ) : phase === "drawing" ? null : (
-          <div className="L-deck-prompt" key={phase === "deck" ? "deck" : "pick"} aria-live="polite">
-            <h3 className="L-one-title">{phase === "deck" ? DECK.deckTitle : DECK.pickTitle}</h3>
-            <p className="L-deck-line">{phase === "deck" ? DECK.deckLine : DECK.pickLine}</p>
-          </div>
-        )}
-      </div>
+      {phase === "drawn" ? (
+        <div className="L-one-side L-deck-ask">
+          <h3 className="L-one-title">{DECK.question}</h3>
+          <form className="L-form L-one-form" onSubmit={share}>
+            <textarea className="L-one-box" rows={4} maxLength={600} placeholder="A line or two" aria-label="Your response" value={text} onChange={(e) => setText(e.target.value)} />
+            {shared.length ? (
+              <p className="L-one-thanks">{failed ? DECK.failed : DECK.thanks.split(/(\*[^*]+\*)/).map((part, k) => part.startsWith("*") && part.endsWith("*") ? <Link href={ROUTES.contact} className="inline-link" key={k}>{part.slice(1, -1)}</Link> : part)}</p>
+            ) : null}
+            <div className="cta-row">
+              <button className="btn" type="submit" disabled={!text.trim()}>{DECK.share} <span className="arrow">&rarr;</span></button>
+              <button className="btn btn-secondary" type="button" onClick={() => setFlipped((f) => !f)} aria-pressed={flipped}>{flipped ? DECK.back : DECK.view}</button>
+              <button className="btn btn-secondary" type="button" onClick={shuffle}>{DECK.next}</button>
+            </div>
+          </form>
+        </div>
+      ) : null}
     </div>
   );
 }

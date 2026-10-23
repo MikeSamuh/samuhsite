@@ -251,7 +251,7 @@ export const SECTIONS: SectionDef[] = [
     ],
   },
   {
-    id: "cards", kicker: "Which team are you?", n: 10, title: "Metaphor cards",
+    id: "cards", kicker: "Start a thought exercise", n: 10, title: "Metaphor cards",
     intent: "Illustrated team archetypes to self-identify with. Sits after the data so it reads as insight.",
     variants: [
       { id: "cards-grid", name: "Grid", note: "Four across." },

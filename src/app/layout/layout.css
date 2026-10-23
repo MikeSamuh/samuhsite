@@ -1466,18 +1466,18 @@
    turning over as the drawing. The beats here add up to SHUFFLE_BEATS
    and REVEAL_BEATS in sections.tsx, which wait the same before the next
    phase */
+.L-deck { --deck-radius: 18px; }
 .L-deck-stage { position: relative; aspect-ratio: 4 / 5; perspective: 1400px; }
 .L-deck-stack { position: absolute; inset: 0; transform-style: preserve-3d; }
 .L-deck-back {
   position: absolute; inset: 0;
   display: grid; place-items: center;
-  border-radius: min(var(--radius), 14px);
+  border-radius: var(--deck-radius);
   background: var(--surface);
-  border: var(--rule-thin) solid var(--border);
+  border: var(--rule-thin) solid var(--text);
   transform: translate(calc(var(--i) * 3px), calc(var(--i) * -3px)) rotate(calc(var(--i) * 1deg - 3deg));
   transition: transform var(--dur) var(--ease), border-color var(--dur) var(--ease), opacity var(--dur) var(--ease);
 }
-.L-deck-back::before { content: ""; position: absolute; inset: 12px; border: var(--rule-thin) solid var(--border); border-radius: calc(min(var(--radius), 14px) - 6px); }
 .L-deck-back img { width: 34%; height: auto; }
 .L-deck[data-phase="shuffling"] .L-deck-back { animation: L-deck-shuffle calc(var(--dur) * 3) var(--ease) calc(var(--i) * var(--dur) * 0.3) both; }
 @keyframes L-deck-shuffle {
@@ -1486,13 +1486,18 @@
   70% { transform: translate(calc(var(--dir) * -8%), calc(var(--i) * -3px + 6px)) rotate(calc(var(--dir) * -4deg)); }
   100% { transform: translate(calc(var(--i) * 3px), calc(var(--i) * -3px)) rotate(calc(var(--i) * 1deg - 3deg)); }
 }
-/* the button sits over the pile, low, under the star; the top card
-   lifts while the pointer is on it (not mid-shuffle, the animation owns
-   the transform then) */
-.L-deck-btn { position: absolute; inset: 0; z-index: 3; display: grid; place-items: end center; padding-bottom: 12%; pointer-events: none; }
-.L-deck-btn .btn { pointer-events: auto; }
+/* the whole pile is the button, with the pill low under the star. The
+   pointer anywhere on the pile lifts the top card and lights the pill
+   (not mid-shuffle, the animation owns the transform then) */
+.L-deck-btn { position: absolute; inset: 0; z-index: 3; display: grid; place-items: end center; padding: 0 0 12%; border: 0; background: transparent; color: inherit; font: inherit; cursor: pointer; border-radius: var(--deck-radius); }
+.L-deck-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 6px; }
+.L-deck-btn:hover .btn, .L-deck-btn:focus-visible .btn {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0 -2px color-mix(in srgb, var(--accent) 34%, transparent),
+              0 0 32px color-mix(in srgb, var(--accent) 26%, transparent);
+}
 .L-deck-btn:hover + .L-deck-stack .L-deck-back:last-child,
-.L-deck-btn:focus-within + .L-deck-stack .L-deck-back:last-child { transform: translate(calc(var(--i) * 3px), calc(var(--i) * -3px - 14px)) rotate(calc(var(--i) * 1deg - 3deg)); border-color: var(--accent); }
+.L-deck-btn:focus-visible + .L-deck-stack .L-deck-back:last-child { transform: translate(calc(var(--i) * 3px), calc(var(--i) * -3px - 14px)) rotate(calc(var(--i) * 1deg - 3deg)); border-color: var(--accent); }
 /* draw: the top back lifts and turns edge-on, then the drawing turns in and settles */
 .L-deck[data-phase="drawing"] .L-deck-back:last-child { animation: L-deck-lift calc(var(--dur) * 2) var(--ease) forwards; }
 .L-deck[data-phase="drawn"] .L-deck-back:last-child { opacity: 0; }
@@ -1502,6 +1507,8 @@
   100% { transform: translateY(-44px) rotateY(90deg); opacity: 0; }
 }
 .L-deck-card { position: absolute; inset: 0; z-index: 1; aspect-ratio: auto; animation: none; }
+.L-deck-card .L-one-face, .L-deck-card .L-art { border-radius: var(--deck-radius); }
+.L-deck-card .L-art, .L-deck-card .L-one-back { border: var(--rule-thin) solid var(--text); }
 .L-deck[data-phase="drawing"] .L-deck-card { animation: L-deck-reveal calc(var(--dur) * 2) var(--ease) calc(var(--dur) * 2) both; }
 @keyframes L-deck-reveal {
   0% { transform: translateY(-44px) rotateY(-90deg); }
