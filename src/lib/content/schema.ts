@@ -56,7 +56,7 @@ export const SCHEMA: PageSchema[] = [
     note: "The argument, then the ask. Ten sections.",
     path: "/draft/working",
     sections: [
-      { key: "hero", label: "Hero", note: "Over the film", fields: [t("eyebrow", "Eyebrow", "Not shown on the working draft, kept for the layout tool"), t("title", "Headline", MARKERS), ta("lede", "Lede", "Under the headline. Empty for none, which is how the working draft stands"), t("ctaPrimary", "Primary button"), t("ctaSecondary", "Secondary button")] },
+      { key: "hero", label: "Hero", note: "Over the film", fields: [t("title", "Headline", MARKERS), t("ctaPrimary", "Primary button"), t("ctaSecondary", "Secondary button")] },
       { key: "thesis", label: "Thesis", note: "The leak line", fields: [ta("text", "The line", MARKERS)] },
       { key: "dictionary", label: "What Samuh means", fields: [t("word", "Word"), t("pronunciation", "Pronunciation"), t("origin", "Part of speech and origin"), ta("definition", "Definition", "Asterisks around the part to colour")] },
       { key: "focus", label: "Where we focus", note: "The circles that become the Venn", fields: [t("eyebrow", "Eyebrow"), t("titleOthers", "Title, first state", MARKERS), t("titleWe", "Title, second state", MARKERS), t("titleAll", "Title, the Venn"), list("levels", "The three circles", "level", [t("name", "Name"), t("label", "Label"), ta("note", "Note")], "In this order: team, individual, organization. Keep three"), list("capacities", "The four capacities", "capacity", [t("name", "Name"), ta("note", "Note")], "Cognitive, Relational, Emotional, Physical. Keep four")] },
@@ -84,11 +84,11 @@ export const SCHEMA: PageSchema[] = [
   {
     id: "process",
     name: "Process",
-    note: "The team process in three stages.",
+    note: "The team process in four stages.",
     path: "/draft/working/process",
     sections: [
       { key: "head", label: "Page head", fields: [t("kicker", "Eyebrow"), t("title", "Title"), ta("lede", "Lede")] },
-      { key: "stages", label: "Stages", fields: [list("items", "The stages", "stage", [t("verb", "Verb"), t("line", "One line"), ta("body", "Body")], "Three stages; the figures are drawn for exactly three"), t("ctaPrimary", "Primary button"), t("ctaSecondary", "Secondary button")] },
+      { key: "stages", label: "Stages", fields: [list("items", "The stages", "stage", [t("verb", "Verb"), t("line", "One line"), ta("body", "Body")], "Four stages; Assess shows a placeholder icon until its figure is drawn"), t("ctaPrimary", "Primary button"), t("ctaSecondary", "Secondary button")] },
     ],
   },
   {

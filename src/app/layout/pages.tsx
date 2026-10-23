@@ -158,8 +158,11 @@ function Solutions({ go, c = DEFAULTS.solutions, g = DEFAULTS.global }: { go: (p
 
 // icon (Wilfred's, public/icons, the same files the poses are traced from)
 // and the traced pose the working draft morphs between (scripts/figures),
-// one per stage. The words come from the content layer, in the same order
-const STAGE_ART: [string, PoseId][] = [
+// one per stage. The words come from the content layer, in the same order.
+// Assess has no icon of its own yet: Awareness stands in, and with no traced
+// pose the figure path shows the icon instead
+const STAGE_ART: [string, PoseId | null][] = [
+  ["/icons/Awareness.png", null],
   ["/icons/Discover%202.png", "discover"],
   ["/icons/Align%202.png", "align"],
   ["/icons/Belonging%202.png", "cocreate"],
@@ -178,7 +181,7 @@ const STAGE_LINE = 96; // a stage takes over once its top is this far below that
 function Process({ go, figures, c = DEFAULTS.process }: { go: (p: PageId) => void; figures?: boolean; c?: ProcessContent }) {
   const ref = useRef<HTMLElement>(null);
   const [active, setActive] = useState(0);
-  const STAGES: [string, string, string, string, PoseId][] = c.stages.items.slice(0, STAGE_ART.length).map((st, i) => [st.verb, st.line, st.body, STAGE_ART[i][0], STAGE_ART[i][1]]);
+  const STAGES: [string, string, string, string, PoseId | null][] = c.stages.items.slice(0, STAGE_ART.length).map((st, i) => [st.verb, st.line, st.body, STAGE_ART[i][0], STAGE_ART[i][1]]);
 
   useEffect(() => {
     const root = ref.current;
@@ -202,7 +205,7 @@ function Process({ go, figures, c = DEFAULTS.process }: { go: (p: PageId) => voi
     return () => { ro.disconnect(); cancelAnimationFrame(raf); window.removeEventListener("scroll", kick); };
   }, [figures]);
 
-  const [verb, line, , , pose] = STAGES[Math.min(active, STAGES.length - 1)] ?? ["", "", "", "", "discover" as PoseId];
+  const [verb, line, , icon, pose] = STAGES[Math.min(active, STAGES.length - 1)] ?? ["", "", "", "", "discover" as PoseId];
   return (
     <>
       <PageHead n="01" kicker={c.head.kicker} title={c.head.title} lede={c.head.lede} />
@@ -214,7 +217,7 @@ function Process({ go, figures, c = DEFAULTS.process }: { go: (p: PageId) => voi
               <p className="eyebrow L-eyebrow" key={`line-${active}`}>{line}</p>
               <h2 className="sec" key={`verb-${active}`}>{verb}</h2>
             </div>
-            {figures ? <span className="L-stage-fig"><StageFigure pose={pose} /></span> : null}
+            {figures ? <span className="L-stage-fig">{pose ? <StageFigure pose={pose} /> : <Image src={icon} alt="" width={2048} height={2048} sizes="240px" />}</span> : null}
           </div>
           <ol className="L-stage-list">
             {STAGES.map(([verb, line, body, icon, pose], i) => (
@@ -231,8 +234,8 @@ function Process({ go, figures, c = DEFAULTS.process }: { go: (p: PageId) => voi
                   ) : null}
                 </div>
                 <span className="L-stage-art" aria-hidden>
-                  {figures ? (
-                    <ProcessFigure pose={pose} from={i ? STAGES[i - 1][4] : undefined} />
+                  {figures && pose ? (
+                    <ProcessFigure pose={pose} from={i ? STAGES[i - 1][4] ?? undefined : undefined} />
                   ) : (
                     <Image src={icon} alt="" width={2048} height={2048} sizes="320px" />
                   )}

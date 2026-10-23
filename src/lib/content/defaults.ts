@@ -191,7 +191,8 @@ export const DEFAULTS = {
     },
     stages: {
       items: [
-        { verb: "Discover", line: "The team turns the lens on itself.", body: "Through confidential conversations and a TeamQ baseline, the team gets a clear read on its own environment: what it is working toward, what already goes well, and what is quietly getting in the way." },
+        { verb: "Assess", line: "The team takes its own measure.", body: "Every team member completes TeamQ. From that data, Samuh establishes the team\u2019s performance baseline: where it stands today, so that every change that follows can be measured against it." },
+        { verb: "Discover", line: "The team turns the lens on itself.", body: "Through confidential conversations, read alongside the baseline, the team gets a clear read on its own environment: what it is working toward, what already goes well, and what is quietly getting in the way." },
         { verb: "Align", line: "The team agrees on what better looks like.", body: "With that picture in front of it, the team decides what better performance means here, and where one change would do the most for the work and for the people doing it." },
         { verb: "Co-create", line: "Together, we turn moments into practice.", body: "Decisions, feedback, disagreement, change: the moments that shape performance become specific, repeatable practices. The team designs them, tests them, and runs them inside the work it already does." },
       ],

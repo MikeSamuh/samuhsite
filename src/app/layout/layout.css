@@ -1016,14 +1016,14 @@
    hairline between. The running head (.L-stages-head) is off here and
    comes on in slot mode, below */
 .L-stage-list { list-style: none; margin: 0; padding: 0; }
-.L-stage { display: grid; grid-template-columns: minmax(0, 1fr) var(--stage-art, 280px); gap: 10px 40px; align-items: center; padding-bottom: calc(56px * var(--space, 1)); }
+.L-stage { display: grid; grid-template-columns: minmax(0, 1fr) var(--stage-art, 336px); gap: 10px 40px; align-items: center; padding-bottom: calc(56px * var(--space, 1)); }
 .L-stage + .L-stage { border-top: var(--rule-thin) solid var(--border); padding-top: calc(56px * var(--space, 1)); }
 .L-stage:last-child { padding-bottom: 0; }
 .L-stage-line { grid-column: 1 / -1; order: -3; margin: 0; color: var(--accent); }
 .L-stage-verb { grid-column: 1 / -1; order: -2; margin: 0 0 6px; }
 .L-stage-copy { display: grid; gap: 8px; }
 .L-stage-copy .L-mid { font-size: 17px; max-width: 48ch; transition: color calc(var(--dur) * 2) var(--ease); }
-.L-stage-art { width: var(--stage-art, 280px); aspect-ratio: 1; display: grid; place-items: center; justify-self: end; }
+.L-stage-art { width: var(--stage-art, 336px); aspect-ratio: 1; display: grid; place-items: center; justify-self: end; }
 .L-stage-art :is(img, .process-figure) { width: 100%; height: 100%; object-fit: contain; opacity: 0.35; transform: scale(1); transition: opacity calc(var(--dur) * 2) var(--ease), transform calc(var(--dur) * 2.5) var(--ease); }
 .L-stage:hover .L-stage-art :is(img, .process-figure) { opacity: 1; transform: scale(1.1); }
 .L-stage:nth-child(even) { grid-template-columns: var(--stage-art, 280px) minmax(0, 1fr); }
@@ -1043,8 +1043,8 @@
    active body comes up to full text colour */
 @keyframes L-stage-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 .L-stages-head .L-eyebrow, .L-stages-head h2.sec { animation: L-stage-in calc(var(--dur) * 2) var(--ease) both; }
-.L-stage-fig { display: block; order: 5; width: 100%; max-width: var(--stage-fig, 200px); aspect-ratio: 1; margin-top: 14px; }
-.L-stage-fig .process-figure { width: 100%; height: 100%; opacity: 0.9; }
+.L-stage-fig { display: block; order: 5; width: 100%; max-width: var(--stage-fig, 240px); aspect-ratio: 1; margin-top: 14px; }
+.L-stage-fig :is(img, .process-figure) { width: 100%; height: 100%; object-fit: contain; opacity: 0.9; }
 @container page (min-width: 901px) {
   .L-page[data-comp="comp-editorial"] .L-sec.L-stages[data-slot] > .L-wrap { grid-template-columns: minmax(180px, 240px) 1fr; }
   .L-page[data-comp="comp-editorial"] .L-sec.L-stages[data-slot] > .L-wrap > :not(.L-head) { grid-column: 2; }
@@ -1128,14 +1128,14 @@
 
 @container page (max-width: 900px) {
   .L-tier, .L-steps, .L-feed, .L-team, .L-logos, .L-contact, .L-voices-grid { grid-template-columns: 1fr 1fr; }
-  .L-stage { --stage-art: 200px; }
+  .L-stage { --stage-art: 240px; }
   .L-research-card, .L-partner { grid-template-columns: 1fr; }
   .L-report { grid-template-columns: 1fr; }
   .L-report-cover { max-width: 220px; }
 }
 @container page (max-width: 560px) {
   .L-tier, .L-steps, .L-feed, .L-team, .L-logos, .L-contact, .L-voices-grid { grid-template-columns: 1fr; }
-  .L-stage, .L-stage:nth-child(even) { --stage-art: 120px; grid-template-columns: 1fr; gap: 16px; }
+  .L-stage, .L-stage:nth-child(even) { --stage-art: 144px; grid-template-columns: 1fr; gap: 16px; }
   .L-stage-art, .L-stage:nth-child(even) .L-stage-art { order: -1; justify-self: start; }
   .L-scale { grid-template-columns: repeat(7, 1fr); gap: 4px; }
   .L-scale-opt { padding: 12px 0; font-size: 15px; }
