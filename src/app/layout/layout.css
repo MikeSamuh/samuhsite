@@ -1071,15 +1071,12 @@
   .L-page[data-comp="comp-editorial"] .L-stages[data-slot] :is(.L-stage-art, .L-stage-line) { display: none; }
   .L-page[data-comp="comp-editorial"] .L-stages[data-slot] .L-stage-verb { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
   .L-page[data-comp="comp-editorial"] .L-stages[data-slot] .L-stage[data-on] .L-mid { color: var(--text); }
-  /* the last stage runs longer so the running head holds while its copy is
-     read, and its buttons come up only after the copy has settled */
-  .L-page[data-comp="comp-editorial"] .L-stages[data-slot] .L-stage:last-child { min-height: 78vh; }
-  .L-page[data-comp="comp-editorial"] .L-stages[data-slot] .L-stage .cta-row { margin-top: 18px; opacity: 0; transform: translateY(8px); transition: opacity calc(var(--dur) * 3) var(--ease), transform calc(var(--dur) * 3) var(--ease); }
-  .L-page[data-comp="comp-editorial"] .L-stages[data-slot] .L-stage[data-on] .cta-row { opacity: 1; transform: none; transition-delay: calc(var(--dur) * 6); }
+  /* the copy sticks at the same offset as the running head, so the words
+     stay level with the stage's title and figure for the whole of its
+     scroll, instead of sliding away above them (Wilfred, 23 October) */
+  .L-page[data-comp="comp-editorial"] .L-stages[data-slot] .L-stage-copy { position: sticky; top: calc(var(--nav-h, 0px) + 28px); }
 }
-@media (prefers-reduced-motion: reduce) {
-  .L-page[data-comp="comp-editorial"] .L-stages[data-slot] .L-stage .cta-row { opacity: 1; transform: none; transition: none; }
-}
+.L-stages-cta { margin-top: calc(24px * var(--space, 1)); }
 
 /* insights */
 .L-research-card { display: grid; grid-template-columns: 200px 1fr; gap: 28px; align-items: center; padding: 28px; }

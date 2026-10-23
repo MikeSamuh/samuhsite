@@ -261,12 +261,6 @@ function Process({ figures, c = DEFAULTS.process }: { figures?: boolean; c?: Pro
                 <h2 className="sec L-stage-verb">{verb}</h2>
                 <div className="L-stage-copy">
                   <p className="L-mid">{body}</p>
-                  {i === STAGES.length - 1 ? (
-                    <div className="cta-row">
-                      <Link className="btn" href={ROUTES.start}>{c.stages.ctaPrimary} <span className="arrow">&rarr;</span></Link>
-                      <Link className="btn btn-secondary" href={ROUTES.solutions}>{c.stages.ctaSecondary}</Link>
-                    </div>
-                  ) : null}
                 </div>
                 <span className="L-stage-art" aria-hidden>
                   {figures && pose ? (
@@ -278,6 +272,11 @@ function Process({ figures, c = DEFAULTS.process }: { figures?: boolean; c?: Pro
               </li>
             ))}
           </ol>
+          {/* after the last stage, not inside it (Wilfred, 23 October) */}
+          <div className="cta-row L-stages-cta">
+            <Link className="btn" href={ROUTES.start}>{c.stages.ctaPrimary} <span className="arrow">&rarr;</span></Link>
+            <Link className="btn btn-secondary" href={ROUTES.solutions}>{c.stages.ctaSecondary}</Link>
+          </div>
         </div>
       </section>
     </>
