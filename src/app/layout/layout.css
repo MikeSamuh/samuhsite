@@ -1462,10 +1462,10 @@
 .L-one-form .btn:disabled { opacity: 0.5; cursor: default; }
 .L-one-thanks { margin: 0; font-size: 16px; line-height: 1.5; color: var(--muted); animation: L-drop calc(var(--dur) * 1.2) var(--ease) backwards; }
 /* the deck. The backs stacked with the star on each, a shuffle on the
-   button, and the card you pick lifting out of the pile edge-on and
-   turning over as the drawing. The beats here add up to SHUFFLE_BEATS
-   and REVEAL_BEATS in sections.tsx, which wait the same before the next
-   phase */
+   button that runs until the click, and the card you pick lifting out of
+   the pile edge-on and turning over as the drawing. The lift and reveal
+   beats add up to REVEAL_BEATS in sections.tsx, which waits the same
+   before the next phase */
 /* on desktop the pile sits in the middle of the section's content until
    a card is drawn, then slides left as the card rises and the question
    comes in beside it: a spare first column that goes from 1fr to 0fr,
@@ -1486,7 +1486,7 @@
   transition: transform var(--dur) var(--ease), border-color var(--dur) var(--ease), opacity var(--dur) var(--ease);
 }
 .L-deck-back img { width: 34%; height: auto; }
-.L-deck[data-phase="shuffling"] .L-deck-back { animation: L-deck-shuffle calc(var(--dur) * 3) var(--ease) calc(var(--i) * var(--dur) * 0.3) both; }
+.L-deck[data-phase="shuffling"] .L-deck-back { animation: L-deck-shuffle calc(var(--dur) * 3) var(--ease) calc(var(--i) * var(--dur) * 0.3) infinite both; }
 @keyframes L-deck-shuffle {
   0% { transform: translate(calc(var(--i) * 3px), calc(var(--i) * -3px)) rotate(calc(var(--i) * 1deg - 3deg)); }
   35% { transform: translate(calc(var(--dir) * 14%), calc(var(--i) * -3px - 18px)) rotate(calc(var(--dir) * 5deg)); }

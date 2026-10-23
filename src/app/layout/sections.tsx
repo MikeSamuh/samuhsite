@@ -599,19 +599,19 @@ const DECK = {
   empty: "Nothing shared on this card yet. Yours could be the first.",
 };
 
-type DeckPhase = "deck" | "shuffling" | "pick" | "drawing" | "drawn";
+type DeckPhase = "deck" | "shuffling" | "drawing" | "drawn";
 
-/** How long the shuffle and the reveal run, in beats of --dur. The CSS
- *  (L-deck-shuffle, L-deck-lift and L-deck-reveal in layout.css) adds up
- *  to the same, so a change there needs one here. */
-const SHUFFLE_BEATS = 5;
+/** How long the reveal runs, in beats of --dur. The CSS (L-deck-lift and
+ *  L-deck-reveal in layout.css) adds up to the same, so a change there
+ *  needs one here. The shuffle has no length: it runs until the click. */
 const REVEAL_BEATS = 4;
 
 /**
  * The metaphor cards as a deck, the client's ask on 23 October: arrive on
  * a pile of Samuh cards and nothing else, shuffle it (the pile is the
- * button), be asked to pick one while it still moves, and the card you
- * pick rises out of the pile and turns over. Only then do "How does this
+ * button), be asked to pick one while it keeps moving, which it does
+ * until the click, and the card you pick rises out of the pile and turns
+ * over. Only then do "How does this
  * relate to your team?" and the box come in beside it. "View responses"
  * flips the card to what others said on its back, which is what the team
  * has chosen to show in the admin; "View another card" puts it back and
@@ -654,7 +654,6 @@ export function CardDeck({ cards = ARCHETYPES }: { cards?: [string, string, stri
     setFailed(false);
     setI(Math.floor(Math.random() * cards.length));
     setPhase("shuffling");
-    after(SHUFFLE_BEATS, () => setPhase("pick"));
   };
   const draw = () => {
     setPhase("drawing");
@@ -684,7 +683,7 @@ export function CardDeck({ cards = ARCHETYPES }: { cards?: [string, string, stri
     <div className="L-one L-deck" data-phase={phase} ref={root}>
       <div className="L-deck-stage">
         {/* the one button is the whole pile: Shuffle, then Pick a card while
-            it is still moving. A pick mid-shuffle just draws */}
+            it keeps moving; the click is what stops it */}
         {!drawn ? (
           <button type="button" className="L-deck-btn" onClick={phase === "deck" ? shuffle : draw}>
             <span className="btn">{phase === "deck" ? DECK.shuffle : DECK.pick} <span className="arrow">&rarr;</span></span>
