@@ -924,7 +924,7 @@
   /* the bar shows the Samuh mark at every scroll position: the full
      wordmark does not fit beside the call to action and the burger */
   .L-nav .L-brand { gap: 12px; }
-  .L-nav .L-brand-samuh { width: calc(37.5px * 181 / 240); }
+  .L-nav .L-brand-samuh { width: 37.5px; }
   .L-nav .L-brand-samuh .L-brand-full { opacity: 0; }
   .L-nav .L-brand-samuh .L-brand-mark { opacity: 1; transform: none; }
   .L-nav .L-brand-partner { font-size: 9px; }
@@ -1593,9 +1593,9 @@
 /* the cell is as wide as the logo it is showing, and the width eases, so
    the rule and the partner line glide left to sit an even 16px from the
    Samuh mark once the page has scrolled. Widths are 37.5px tall by the PNG
-   aspect ratios: samuh-logo 960x285, samuh-icon 181x240 */
+   aspect ratios: samuh-logo 960x285, samuh-star-inverted 1:1 */
 .L-brand-samuh { width: calc(37.5px * 960 / 285); transition: width var(--dur) var(--ease); }
-.L-nav-icons[data-scrolled="true"] .L-brand-samuh { width: calc(37.5px * 181 / 240); }
+.L-nav-icons[data-scrolled="true"] .L-brand-samuh { width: 37.5px; }
 /* "Partnered with Sapien Labs" sits beside the logo at every scroll position */
 .L-brand-partner {
   font-family: var(--font-caption);

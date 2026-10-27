@@ -111,7 +111,7 @@ export function Nav({ page, menu, links: order, brand = "wordmark", partner = fa
         {brand === "icons" ? (
           <Link href={ROUTES.home} className="nav-logo L-brand" onClick={close} aria-label="SAMUH home, in partnership with Sapien Labs">
             <span className="L-brand-samuh">
-              <Image className="L-brand-mark" src="/samuh-icon.png" alt="" width={182} height={240} sizes="64px" priority />
+              <Image className="L-brand-mark" src="/samuh-star-inverted-256.png" alt="" width={256} height={256} sizes="40px" priority />
               <Image className="L-brand-full" src="/samuh-logo.png" alt="SAMUH" width={960} height={LOGO_H} sizes="(max-width: 900px) 200px, 320px" priority />
             </span>
             <span className="L-brand-rule" aria-hidden />
