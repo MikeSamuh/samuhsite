@@ -364,7 +364,8 @@
 /* the definition: a plain line under the word, no number and no indent
    (the client, 2 Nov 2026) */
 .L-dict-def { margin: 0; padding: 0; font-size: clamp(17px, 1.7cqw, 21px); line-height: 1.5; color: var(--text); }
-.L-dict-hi { font-style: normal; color: var(--accent); }
+/* no colour on the definition: the client wants the block in one voice (2 Nov 2026) */
+.L-dict-hi { font-style: normal; color: inherit; }
 .L-sec[data-v="line"] .L-dict { margin-left: auto; margin-right: auto; text-align: center; }
 .L-sec[data-v="line"] .L-dict-head { justify-content: center; }
 .L-sec[data-v="aside"] .L-dict { max-width: 44ch; padding: 0 0 0 18px; border-top: 0; border-bottom: 0; border-left: var(--rule-fat) solid var(--accent-2); }
