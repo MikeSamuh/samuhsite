@@ -515,3 +515,23 @@ Account order agreed for the platform: LeadQ runs first and the email that
 unlocks the result creates the account by magic link; TeamQ signs in first.
 The site keeps hard rule 5: no accounts here, the platform owns them.
 — Wilfred
+
+**2026-11-02 — The home after the client's copy review (Notion, "Website
+text").** Their words, taken as written: the partner line is "In partnership
+with Sapien Labs"; the headline is "Great team environments sustain high
+performance." with "Samuh uses scientifically validated measures to reveal
+your team's hidden performance tax and helps build practices that reduce
+it." under it; the circles section is "The overlooked performance driver",
+"Where organizations focus" (enterprise, then individual) becoming "Where
+performance happens" (team), with their three lines, and the third move,
+the four capacities, is gone; the TeamQ head is "Find your team's hidden
+performance tax". "Enterprise" is their word for that one line, an
+exception to rule 6. Look and feel: no cyan markup anywhere (one colour),
+the definition of Samuh is a plain line with no number or indent, and the
+"leak" line leaves the top screen: it is now the thesis band below the
+circles, reworded around the performance tax and thriving. The TeamQ
+section is the whole of /teamq in place of the demo and its button, so the
+tool is usable on the page; /teamq stays as its own page. Santosh's email
+is the first testimonial, title and organization pending. Not done: the
+pronunciation re-record (an audio file from the client) and the
+"connecting line instead of labels" idea for the circles. — Wilfred

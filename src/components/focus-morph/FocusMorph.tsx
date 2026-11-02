@@ -14,12 +14,12 @@ import { mark } from "@/lib/content/shared";
 // circle is. Scrolling on, the team circle grows in between them, lit
 // because the team is the subject, the individual rises to the top of it,
 // the head becomes "Where we focus" and the key keeps the team alone.
-// Scrolling further, the three circles glide apart and grow into a four-set
-// Venn, a fourth rising from the centre: Cognitive, Relational, Emotional,
-// Physical, the four kinds of capacity to perform, each its own colour,
-// SAMUH's star where all four meet, under "SAMUH works at the centre".
-// Scrolling back reverses it. No animation library: the scroll position is
-// the clock, and the geometry is interpolated.
+// That is where it stops. The third move, the four-set Venn of capacities
+// (Cognitive, Relational, Emotional, Physical) with the star at the centre,
+// was cut by the client on 2 November 2026: MORPH sits past the end of the
+// track, and the Venn's geometry stays only so the shapes still
+// interpolate. Scrolling back reverses it. No animation library: the scroll
+// position is the clock, and the geometry is interpolated.
 //
 // Motion, as the Circles diagram has it: each circle floats on its own slow
 // cycle, and all are drawn toward the pointer and tethered, so none moves
@@ -75,8 +75,9 @@ const HEAD = { from: 0.05, to: 0.4 };
 const GROW = { from: 0.2, to: 0.95 };
 /** the track, as a share of the pinned scroll: the team arrives, the Venn
  *  comes last, a pause between each so it reads */
-const ARRIVE = { from: 0.08, to: 0.28 };
-const MORPH = { from: 0.55, to: 1 };
+const ARRIVE = { from: 0.2, to: 0.7 };
+/** past the end of the track: the Venn never comes (2 Nov 2026) */
+const MORPH = { from: 2, to: 3 };
 
 /** how each circle moves, the Circles diagram's numbers. share: how much
  *  of the tether it takes. lag: follow time in --dur units. float: idle
@@ -106,16 +107,6 @@ const FOCUS_GEOMETRY: { key: Exclude<Key, "phys">; y: number }[] = [
   { key: "org", y: 362 },
 ];
 
-/** TODO(content): what each circle becomes, with its one line. The
- *  definitions are the ones the Aspirational section carried. Each label
- *  sits in the part of its circle that no other circle covers. */
-const CAPACITY_GEOMETRY: Record<Key, { x: number; y: number }> = {
-  org: { x: 180, y: 100 },
-  team: { x: 460, y: 100 },
-  ind: { x: 180, y: 348 },
-  phys: { x: 460, y: 348 },
-};
-
 const clamp = (v: number) => Math.max(0, Math.min(1, v));
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 /** smoothstep: eases both ends so the circles settle rather than stop */
@@ -138,10 +129,8 @@ const same = (a: Key[], b: Key[]) => a.length === b.length && a.every((k, i) => 
 
 export function FocusMorph({ words = DEFAULTS.home.focus }: { /** the heads and the key, from the admin */ words?: HomeContent["focus"] }) {
   // the words sit on the geometry: levels in the order team, individual,
-  // organization; capacities in the order Cognitive, Relational, Emotional,
-  // Physical, which is the circle order org, team, ind, phys
+  // organization
   const FOCUS = FOCUS_GEOMETRY.map((f, i) => ({ ...f, name: words.levels[i]?.name ?? "", label: words.levels[i]?.label ?? "", note: words.levels[i]?.note ?? "" }));
-  const CAPACITY = Object.fromEntries(KEYS.map((k, i) => [k, { ...CAPACITY_GEOMETRY[k], name: words.capacities[i]?.name ?? "", note: words.capacities[i]?.note ?? "" }])) as Record<Key, { name: string; note: string; x: number; y: number }>;
   const root = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
   const gRefs = useRef<Partial<Record<Key, SVGGElement | null>>>({});
@@ -347,7 +336,6 @@ export function FocusMorph({ words = DEFAULTS.home.focus }: { /** the heads and 
             <div className="L-fm-titles">
               <h2 className="sec L-fm-title L-fm-h0" aria-hidden={arrived || undefined}>{mark(words.titleOthers, "L-hl")}</h2>
               <h2 className="sec L-fm-title L-fm-h1" aria-hidden={!arrived || venn || undefined}>{mark(words.titleWe, "L-hl")}</h2>
-              <h2 className="sec L-fm-title L-fm-in" aria-hidden={!venn || undefined}>{mark(words.titleAll, "L-hl")}</h2>
             </div>
           </div>
         </div>
@@ -360,14 +348,6 @@ export function FocusMorph({ words = DEFAULTS.home.focus }: { /** the heads and 
               </div>
             ))}
           </dl>
-          <dl className="L-fm-legend L-fm-legend-4 L-fm-in" aria-hidden={!venn || undefined}>
-            {KEYS.map((k) => (
-              <div className={`L-fm-item L-fm-item-${k}`} key={k} data-on={on(k)} onPointerEnter={keyHover(k)} onPointerLeave={onLeave}>
-                <dt>{CAPACITY[k].name}</dt>
-                <dd>{CAPACITY[k].note}</dd>
-              </div>
-            ))}
-          </dl>
         </div>
       </div>
 
@@ -377,11 +357,7 @@ export function FocusMorph({ words = DEFAULTS.home.focus }: { /** the heads and 
           className="L-c-svg"
           viewBox={`0 0 ${FRAME.w} ${FRAME.h}`}
           role="img"
-          aria-label={venn
-            ? "Four overlapping circles: Cognitive, Relational, Emotional and Physical capacity, with the SAMUH star where all four meet"
-            : arrived
-              ? "Three nested circles: organization, team, individual"
-              : "Two nested circles: organization and individual"}
+          aria-label={arrived ? "Three nested circles: organization, team, individual" : "Two nested circles: organization and individual"}
           onPointerMove={onMove}
           onPointerLeave={onLeave}
           onClick={(ev) => { const ks = hit(toFrame(ev)); setHotIfChanged(same(ks, m.current.hot) ? [] : ks); }}
@@ -399,16 +375,9 @@ export function FocusMorph({ words = DEFAULTS.home.focus }: { /** the heads and 
                 <circle cx={s.cx} cy={s.cy} r={s.r} className="L-fm-fill" />
                 {/* the team grows in on the first stretch of the scroll, its word with it */}
                 {k === "team" ? <g className="L-fm-arrive">{ring}{word}</g> : <>{ring}{word}</>}
-                {/* the Venn: the same stroke, each circle its own colour */}
-                <circle cx={s.cx} cy={s.cy} r={s.r} className={`L-fm-venn L-fm-venn-${k} L-fm-in`} />
-                <text x={CAPACITY[k].x} y={CAPACITY[k].y} className={`L-c-t L-fm-cap L-fm-cap-${k} L-fm-in`}>{CAPACITY[k].name}</text>
               </g>
             );
           })}
-          {/* the star, where all four meet; the loop moves it with the pointer */}
-          <g ref={starRef} className="L-fm-in L-fm-mark">
-            <image href="/samuh-star-256.png" x={FRAME.w / 2 - STAR / 2} y={FRAME.h / 2 - STAR / 2} width={STAR} height={STAR} />
-          </g>
         </svg>
 
       </div>

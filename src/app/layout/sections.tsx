@@ -447,9 +447,8 @@ export function Dictionary({ d = DEFAULTS.home.dictionary }: { d?: HomeContent["
         <span className="L-dict-pron">{d.pronunciation}</span>
         <span className="L-dict-pos">{d.origin}</span>
       </div>
-      <ol className="L-dict-defs">
-        <li>{mark(d.definition, "L-dict-hi")}</li>
-      </ol>
+      {/* a plain line, no number and no indent (the client, 2 Nov 2026) */}
+      <p className="L-dict-def">{mark(d.definition, "L-dict-hi")}</p>
     </div>
   );
 }

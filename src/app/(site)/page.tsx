@@ -1,4 +1,4 @@
-import { BASELINE, DEMO_CAP, OPTIMIZER_MOVES } from "@/components/teamq-teaser/model";
+import { BASELINE, OPTIMIZER_MOVES } from "@/components/teamq-teaser/model";
 import { bestForProductiveDays, score } from "@/lib/teaser/score";
 import { getContent } from "@/lib/content/content";
 import { getCards } from "@/lib/admin/cards";
@@ -10,21 +10,23 @@ export const metadata = pageMeta({
   title: `${SITE_NAME} · ${TAGLINE}`,
   absolute: true,
   description:
-    "Organizational and high-performance consulting, in partnership with Sapien Labs. Most teams leak performance through their environment, not their effort. SAMUH finds where yours is leaking, and gives you the practices to close it.",
+    "Great team environments sustain high performance. In partnership with Sapien Labs, SAMUH uses scientifically validated measures to reveal your team’s hidden performance tax and helps build practices that reduce it.",
   path: "/",
 });
 
 export default async function Home() {
-  // the tool section shows the tool moving. Scored here, on the server, the
-  // same way /teamq does it, so the home page carries no typed-in numbers.
-  // The moves stop at DEMO_CAP, never the ceiling
-  const demo = { baseline: score(BASELINE), answer: bestForProductiveDays(OPTIMIZER_MOVES, DEMO_CAP) };
-  const { home, global } = await getContent();
+  // the TeamQ section is the whole /teamq experience, the tool live on the
+  // page (2 Nov 2026). Scored here, on the server, the same way /teamq does
+  // it, so the home page carries no typed-in numbers
+  const baseline = score(BASELINE);
+  const { values, levers, score: best } = bestForProductiveDays(OPTIMIZER_MOVES);
+  const answer = { values, levers, days: best.days, mhq: best.mhq };
+  const { home, global, teamq } = await getContent();
   const cards = (await getCards()).map((c) => [c.name, "", c.image] as [string, string, string]);
   return (
     <>
       <JsonLd data={faqLd(home.faq.items)} />
-      <SiteHome demo={demo} content={{ home, global }} cards={cards} />
+      <SiteHome teamq={{ baseline, answer, c: teamq, tool: home.tool }} content={{ home, global }} cards={cards} />
     </>
   );
 }

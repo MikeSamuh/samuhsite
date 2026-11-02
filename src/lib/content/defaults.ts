@@ -15,7 +15,7 @@ import { REPORT } from "@/lib/report";
 export const DEFAULTS = {
   global: {
     brand: {
-      partnerLine: "Partnered with\nSapien Labs",
+      partnerLine: "In partnership with\nSapien Labs",
       navCta: "Get started",
     },
     footer: {
@@ -43,7 +43,9 @@ export const DEFAULTS = {
     },
     testimonials: {
       items: [
-        { quote: "Sample testimonial. Two or three sentences in the client’s own words about what changed for the team, and what it felt like to work this way.", who: "Name", role: "Role, Organization", photo: "" },
+        // Santosh's email, read out in the client's copy review of 2 Nov 2026
+        // and agreed there as a testimonial. Title and organization to come
+        { quote: "There is some real progress reflected in the findings and honestly it exceeded my expectations. The real value will be in making the behaviors part of how we lead and operate every day. Thank you for your partnership.", who: "Santosh", role: "TODO(content): title, organization", photo: "" },
         { quote: "A second sample. Long enough to show how a real quote wraps at this size, short enough to read in one breath.", who: "Name", role: "Role, Organization", photo: "" },
         { quote: "A third sample, so the arrows and the dots have somewhere to go.", who: "Name", role: "Role, Organization", photo: "" },
       ],
@@ -53,13 +55,16 @@ export const DEFAULTS = {
   home: {
     hero: {
       eyebrow: "Organizational and high-performance consulting",
-      title: "High performance *without* the cost to people.",
-      lede: "",
+      // the client's words, copy review of 2 Nov 2026 (docs/decisions.md)
+      title: "Great team environments sustain high performance.",
+      lede: "Samuh uses scientifically validated measures to reveal your team’s hidden performance tax and helps build practices that reduce it.",
       ctaPrimary: "Get started",
       ctaSecondary: "Talk to us",
     },
     thesis: {
-      text: "Most teams ~leak performance through their environment, not their effort~. Samuh finds where yours is leaking, and gives you the practices to close it.",
+      // below the circles since 2 Nov, as the bridge into TeamQ. One colour
+      // on the page: no ~cyan~ here
+      text: "When the team environment is right, people thrive and results follow. Most teams pay a hidden performance tax instead, through their environment, not their effort. TeamQ shows where yours is.",
     },
     dictionary: {
       word: "Samuh",
@@ -67,26 +72,22 @@ export const DEFAULTS = {
       origin: "noun · Sanskrit समूह, samūha",
       definition: "A group of people who come together *for a purpose larger than themselves.*",
     },
+    // the client's words, copy review of 2 Nov 2026. "Enterprise" is theirs
+    // for that one line (CLAUDE.md rule 6 otherwise). The four capacities
+    // went with the Venn
     focus: {
-      eyebrow: "What makes us different",
-      titleOthers: "Where *others* focus",
-      titleWe: "Where *we* focus",
-      titleAll: "We consider all aspects",
+      eyebrow: "The overlooked performance driver",
+      titleOthers: "Where *organizations* focus",
+      titleWe: "Where *performance* happens",
       levels: [
-        { name: "Team", label: "Where people experience their work life", note: "Where Samuh works. Goals, feedback, rituals: where capacity is won or lost." },
-        { name: "Individual", label: "Where organizations invest", note: "Hiring, coaching, training: one person at a time." },
-        { name: "Organization", label: "Where organizations look", note: "Strategy, structure, culture: the whole at once." },
-      ],
-      capacities: [
-        { name: "Cognitive", note: "Judgment and focus that hold under load." },
-        { name: "Relational", note: "Trust, feedback and how decisions get made." },
-        { name: "Emotional", note: "Energy, and the will to keep going." },
-        { name: "Physical", note: "The stamina the other three depend on." },
+        { name: "Team", label: "People reside in organizations but they perform in teams", note: "That’s where goals are set, people collaborate, and results are delivered." },
+        { name: "Individual", label: "Managing and rewarding performance", note: "One person at a time." },
+        { name: "Enterprise", label: "Driving change through enterprise-wide transformations", note: "Often many at a time." },
       ],
     },
     tool: {
       kicker: "TeamQ",
-      title: "Find out where your team is leaking",
+      title: "Find your team’s hidden performance tax",
       pitch: "",
       cta: "Get your team’s assessment",
     },

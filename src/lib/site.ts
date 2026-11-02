@@ -24,16 +24,18 @@ export interface Site {
 const BASE = parseLayoutHash(PRESETS[0].hash.replace(".hero-video.", ".hero-cinema.").replace(".meaning-aside.", ".meaning-block."));
 
 export const SITE: Site = {
-  // 12 October: the shorter home. Hero, the dictionary in one row, the leak
-  // line as its own section, where others focus becoming where we focus and
-  // then the four capacities, the tool, the metaphors, testimonials, the
-  // research claim with the case study, and the close
-  layout: { ...BASE, sections: { ...BASE.sections, circles: "circles-morph", cards: "cards-one" } },
+  // 2 November: the client's copy review. Hero, the dictionary as its own
+  // block, where organizations focus becoming where performance happens
+  // (the four capacities cut), the performance tax line as a band, then
+  // TeamQ as the whole /teamq experience in place of the demo, the
+  // metaphors, testimonials, the research claim with the case study, and
+  // the close. docs/decisions.md, 2 Nov 2026
+  layout: { ...BASE, sections: { ...BASE.sections, circles: "circles-morph", thesis: "thesis-band", cards: "cards-one" } },
   nav: { links: ["about", "process", "solutions", "insights"], brand: "icons" },
-  order: ["hero", "meaning", "thesis", "circles", "tool", "cards", "voices", "case", "faq", "start"],
+  order: ["hero", "meaning", "circles", "thesis", "tool", "cards", "voices", "case", "faq", "start"],
   copy: {
     heroLede: null,
-    thesis: "Most teams ~leak performance through their environment, not their effort~. Samuh finds where yours is leaking, and gives you the practices to close it.",
+    thesis: "When the team environment is right, people thrive and results follow. Most teams pay a hidden performance tax instead, through their environment, not their effort. TeamQ shows where yours is.",
     noPartnerLine: true,
     noEyebrow: true,
     noHeroCtas: true,
@@ -48,11 +50,10 @@ export const SITE: Site = {
     // TODO(content): the tool asks for the assessment, draft words
     tool: {
       kicker: "TeamQ",
-      title: "Find out where your team is leaking",
+      title: "Find your team’s hidden performance tax",
       pitch: null,
       cta: "Get your team’s assessment",
-      // straight to the ask on the live page, not the top of the tool
-      ctaHref: "/teamq#ask",
+      ctaHref: "/start",
     },
     // the client's network background, until the real film arrives. Not
     // in git (video never is): public/hero-bg.mp4 on the machine that

@@ -361,12 +361,12 @@
 .L-dict-pos { font-size: 14px; color: var(--muted); font-style: italic; }
 .L-dict-pos i { font-style: italic; }
 .L-dict-pos [lang="sa"] { font-style: normal; }
-.L-dict-defs { list-style: decimal; margin: 0; padding: 0 0 0 1.6em; font-size: clamp(17px, 1.7cqw, 21px); line-height: 1.5; color: var(--text); }
+/* the definition: a plain line under the word, no number and no indent
+   (the client, 2 Nov 2026) */
+.L-dict-def { margin: 0; padding: 0; font-size: clamp(17px, 1.7cqw, 21px); line-height: 1.5; color: var(--text); }
 .L-dict-hi { font-style: normal; color: var(--accent); }
-.L-dict-defs li::marker { font-family: var(--font-caption); color: var(--accent-2); font-size: 0.85em; }
 .L-sec[data-v="line"] .L-dict { margin-left: auto; margin-right: auto; text-align: center; }
 .L-sec[data-v="line"] .L-dict-head { justify-content: center; }
-.L-sec[data-v="line"] .L-dict-defs { list-style-position: inside; padding: 0; }
 .L-sec[data-v="aside"] .L-dict { max-width: 44ch; padding: 0 0 0 18px; border-top: 0; border-bottom: 0; border-left: var(--rule-fat) solid var(--accent-2); }
 .L-sec[data-v="aside"] .L-dict-word { font-size: 26px; }
 .L-sec[data-v="aside"] .L-dict-defs { font-size: 15px; color: var(--muted); }
@@ -460,9 +460,9 @@
    so something is always on screen; the words, the heads and the key
    leave early and arrive late, so no two sets overlap. Three heads share
    one cell and take turns, two keys share another */
-/* long enough that each state holds under the hand: where we focus has
-   close to a screen's worth of scroll to itself */
-.L-s-circles[data-v="morph"] { min-height: 380vh; }
+/* long enough that each state holds under the hand. Two states since
+   2 Nov 2026 (the Venn was cut), so the track is shorter */
+.L-s-circles[data-v="morph"] { min-height: 230vh; }
 /* the head arrives first as the section climbs into view (--h), the key
    and the circles close behind it (--g) */
 .L-s-circles[data-v="morph"] .L-fm-head { opacity: var(--h, var(--g, 0)); transform: translateY(calc((1 - var(--h, var(--g, 0))) * 20px)); }
