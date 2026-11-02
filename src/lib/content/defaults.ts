@@ -118,7 +118,7 @@ export const DEFAULTS = {
         { q: "What is the Sapien Labs partnership?", a: "Sapien Labs is our research partner and the source of the research this site leans on. Their Work Culture Report is the spine of the argument, and the team environment factors we assess come from their work." },
         { q: "Is this about performance or about wellbeing?", a: "Both, at once. People thriving and results thriving reinforce each other rather than trading off. That is the whole point, and the reason we measure the environment instead of pushing on effort." },
         { q: "How do you work with a team?", a: "Measurement first. LeadQ is a free read for the leader, TeamQ measures the whole team, and OrgQ maps capacity across an organization. Then the 90-day cycle, run three ways: DIY, where the team works through it on its own; Supported, which adds calls with us; Guided, where we deliver in person." },
-        { q: "What does it cost?", a: "LeadQ is free. TeamQ is $99 per team. OrgQ and the 90-day cycles are priced on the Solutions page, and we will put a number on anything larger." },
+        { q: "What does it cost?", a: "LeadQ is free. TeamQ is $100 per team. OrgQ and the 90-day cycles are priced on the Solutions page, and we will put a number on anything larger." },
         { q: "How do we start?", a: "Get started and pick a door: LeadQ for a first read on your own, TeamQ for the whole team, or a conversation about your organization." },
       ],
     },
@@ -204,14 +204,14 @@ export const DEFAULTS = {
       rowGet: "What you get",
       items: [
         { tag: "You", name: "LeadQ", price: "Free", what: "A first read on your team’s environment, from your own answers. About five minutes.", who: "A leader who wants to see the shape of the problem before involving the team.", get: "A high-level view of where your team environment helps or hinders performance, and what TeamQ would add.", button: "Take LeadQ", door: "leadq" },
-        { tag: "Your team", name: "TeamQ", price: "$99 per team", what: "Every team member answers, about five minutes each. Thirteen team environment factors and thirteen team practices.", who: "A leadership team, or any team, that wants evidence rather than opinion.", get: "Your team placed within Sapien Labs’ benchmark, productive days gained or lost each month, and the levers ranked by expected gain. Repeated at day 90 to measure what moved.", button: "Get TeamQ", door: "teamq" },
+        { tag: "Your team", name: "TeamQ", price: "$100 per team", what: "Every team member answers, about five minutes each. Thirteen team environment factors and thirteen team practices.", who: "A leadership team, or any team, that wants evidence rather than opinion.", get: "Your team placed within Sapien Labs’ benchmark, productive days gained or lost each month, and the levers ranked by expected gain. Repeated at day 90 to measure what moved.", button: "Get TeamQ", door: "teamq" },
         { tag: "Your organization", name: "OrgQ", price: "Packages from $10 per person", what: "Every team in scope, one capacity map.", who: "CHROs, CEOs and transformation leaders working across many teams.", get: "Where capacity leaks across the organization and where the biggest gains are. Scoped with us.", button: "Talk to us", door: "orgq" },
       ],
       note: "TeamQ was developed with Sapien Labs and builds on their MHQ, a validated measure of human capacity drawn from more than 3 million people in 130+ countries.",
     },
     tiers: {
-      kicker: "Then what",
-      title: "Three ways to run the 90-day cycle.",
+      kicker: "The main work",
+      title: "Then the 90-day cycle, with us beside the team.",
       items: [
         { tag: "Tier 01", name: "DIY", what: "Self-guided on the platform. The team works through the cycle on its own.", who: "Teams with a strong leader who want the method without the meetings, and organizations rolling it out across many teams.", get: "The team process, two TeamQ measures a year, and the material to run one ritual for ninety days." },
         { tag: "Tier 02", name: "Supported", what: "DIY plus periodic support calls from the Samuh team.", who: "Teams that want a second pair of eyes at the moments that matter: choosing the practice, and the check-in at day 45.", get: "Everything in DIY, with scheduled calls to read the data together and keep the ritual on track." },
@@ -271,7 +271,7 @@ export const DEFAULTS = {
     },
     doors: {
       leadq: { name: "Start with LeadQ", line: "Five minutes, free. A first read on your team’s environment, for you alone.", note: "Free", button: "Take LeadQ" },
-      teamq: { name: "Ready for TeamQ", line: "Your whole team answers. Benchmarked against Sapien Labs’ data, with the levers ranked by expected gain.", note: "$99 per team", button: "Get TeamQ" },
+      teamq: { name: "Ready for TeamQ", line: "Your whole team answers. Benchmarked against Sapien Labs’ data, with the levers ranked by expected gain.", note: "$100 per team", button: "Get TeamQ" },
       orgq: { name: "OrgQ for my organization", line: "Many teams, one capacity map. Scoped with us.", note: "Packages from $10 per person", button: "Talk to us" },
       login: { name: "Already took LeadQ?", line: "Your result and your team are waiting.", note: "", button: "Log in" },
     },
