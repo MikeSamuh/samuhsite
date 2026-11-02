@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { FieldDef, ListDef, PageSchema } from "@/lib/content/schema";
 import { ImageField } from "./ImageField";
@@ -15,7 +15,8 @@ function when(iso: string): string {
 }
 
 function Field({ def, value, onChange }: { def: FieldDef; value: string; onChange: (v: string) => void }) {
-  const id = `f-${def.key}-${Math.random().toString(36).slice(2, 7)}`;
+  // stable across server and client, so the label's htmlFor hydrates clean
+  const id = `f-${def.key}-${useId()}`;
   return (
     <div className="adm-field">
       <label className="adm-label" htmlFor={id}>{def.label}</label>
