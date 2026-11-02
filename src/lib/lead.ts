@@ -1,11 +1,14 @@
 // The one lead shape. Every capture flow produces it, /api/lead validates it,
 // deliver() sends it. Spec: docs/sprint-intakes.md, "Lead shape".
 
-export type LeadFlow = "contact" | "teaser" | "talk";
+/** contact, the teaser's ask, talk (book a call), start (the /start doors
+ *  until the platform opens) and solutions (the email ask at the foot of
+ *  /solutions) */
+export type LeadFlow = "contact" | "teaser" | "talk" | "start" | "solutions";
 
 export interface Lead {
   flow: LeadFlow;
-  /** required for contact and talk, optional for teaser. Revisit at Clarify */
+  /** required for contact, talk and start; optional for teaser and solutions */
   name?: string;
   email: string;
   phone?: string;
@@ -23,8 +26,12 @@ export interface Lead {
   teamSize?: "1-10" | "11-50" | "51-200" | "200+";
   /** flow 3, what they hope to change */
   change?: string;
-  /** flow 3, from ?tier= */
-  tier?: "self-guided" | "supported" | "guided";
+  /** flow 3, from ?tier=. orgq when the OrgQ door sent them to book a call */
+  tier?: "self-guided" | "supported" | "guided" | "orgq";
+  /** flow 4, which door on /start: LeadQ or TeamQ (OrgQ goes to /talk) */
+  intent?: "leadq" | "teamq";
+  /** flow 5, the tier or à la carte piece picked on /solutions */
+  pick?: string;
   /** flow 2, the slider state keyed by factor id */
   answers?: Record<string, number>;
   /** utm_source */

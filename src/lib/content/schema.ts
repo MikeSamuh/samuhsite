@@ -93,11 +93,12 @@ export const SCHEMA: PageSchema[] = [
   {
     id: "solutions",
     name: "Solutions",
-    note: "Three tiers side by side, the pieces on their own, and the ask.",
+    note: "The three measures, the three ways to run a cycle, the pieces on their own, and the ask.",
     path: "/solutions",
     sections: [
       { key: "head", label: "Page head", fields: [t("kicker", "Eyebrow"), t("title", "Title"), ta("lede", "Lede")] },
-      { key: "tiers", label: "The tiers", fields: [t("kicker", "Eyebrow"), t("title", "Title"), list("items", "Tiers", "tier", [t("tag", "Tag"), t("name", "Name"), ta("what", "What it is"), ta("who", "Who it is for"), ta("get", "What you get")], "Three tiers; the table has three columns"), t("rowWhat", "Row label: what"), t("rowWho", "Row label: who"), t("rowGet", "Row label: get"), list("rows", "Comparison rows", "row", [t("label", "Row"), t("a", "Self-guided"), t("b", "Supported"), t("c", "Guided")]), ta("note", "Note under the table")] },
+      { key: "assess", label: "The three measures", note: "LeadQ, TeamQ, OrgQ. The middle card is the main one", fields: [t("kicker", "Eyebrow"), t("title", "Title"), ta("lede", "Lede", "Leave empty for none"), t("rowWho", "Label: who"), t("rowGet", "Label: get"), list("items", "Measures", "measure", [t("tag", "Tag", "You, Your team, Your organization"), t("name", "Name"), t("price", "Price"), ta("what", "What it is"), ta("who", "Who it is for"), ta("get", "What you get"), t("button", "Button"), t("door", "Door", "leadq, teamq or orgq: where the button goes")], "Three cards. Keep three"), ta("note", "Note under the cards")] },
+      { key: "tiers", label: "The 90-day cycle", fields: [t("kicker", "Eyebrow"), t("title", "Title"), list("items", "Tiers", "tier", [t("tag", "Tag"), t("name", "Name"), ta("what", "What it is"), ta("who", "Who it is for"), ta("get", "What you get")], "Three tiers; the table has three columns"), t("rowWhat", "Row label: what"), t("rowWho", "Row label: who"), t("rowGet", "Row label: get"), list("rows", "Comparison rows", "row", [t("label", "Row"), t("a", "DIY"), t("b", "Supported"), t("c", "Guided")]), ta("note", "Note under the table")] },
       { key: "carte", label: "À la carte", note: "Each way to work with SAMUH on its own", fields: [t("kicker", "Eyebrow"), t("title", "Title"), ta("lede", "Lede"), t("ask", "Button on each piece", "Sends the piece's name to the form below"), list("items", "Pieces", "piece", [t("tag", "Tag", "What it builds, for example Builds belief"), t("name", "Name"), ta("what", "What it is"), ta("who", "Who it is for"), t("format", "Format", "Length and setting")]), ta("note", "Note under the pieces")] },
       { key: "talk", label: "Talk to us", fields: [t("kicker", "Eyebrow"), t("title", "Title"), t("button", "Button"), t("note", "Note under the form", "{tier} becomes the chosen tier or piece"), t("thanks", "Thank you line", "{tier} becomes the chosen tier or piece"), t("wait", "Link while they wait")] },
       { key: "voices", label: "Testimonials", note: "The quotes themselves are under Site-wide", fields: [t("kicker", "Eyebrow"), t("title", "Title")] },
@@ -124,6 +125,16 @@ export const SCHEMA: PageSchema[] = [
     sections: [
       { key: "head", label: "Page head", fields: [t("kicker", "Eyebrow"), t("title", "Title")] },
       { key: "aside", label: "Direct details", note: "Email and phone are under Site-wide", fields: [t("title", "Title")] },
+    ],
+  },
+  {
+    id: "start",
+    name: "Get started",
+    note: "The fork behind every Get started button: LeadQ, TeamQ, OrgQ, or log in.",
+    path: "/start",
+    sections: [
+      { key: "head", label: "Page head", fields: [t("kicker", "Eyebrow"), t("title", "Title"), ta("lede", "Lede")] },
+      { key: "form", label: "The form", note: "Shown under a door until the platform opens. {door} becomes the door's name", fields: [t("title", "Title"), t("note", "Note"), t("button", "Button"), t("thanksTitle", "Thank you title"), t("thanksText", "Thank you text")] },
     ],
   },
   {

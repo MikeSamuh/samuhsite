@@ -957,6 +957,18 @@
 .L-nav .nav-links a, .L-foot-links a { cursor: pointer; }
 .L-nav .nav-links a[aria-current="page"] { color: var(--text); background-size: 100% var(--rule-thin); }
 
+/* solutions: the three measures */
+.L-assess { list-style: none; margin: 0 0 18px; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; align-items: stretch; }
+.L-assess-card { display: grid; gap: 14px; align-content: start; cursor: default; }
+.L-assess-card[data-main="true"] { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.L-assess-name { font-family: var(--font-display); font-weight: var(--display-weight); font-size: clamp(24px, 2.6cqw, 32px); line-height: 1.1; margin: 0; }
+.L-assess-price { font-size: 15px; color: var(--muted); }
+.L-assess-what { margin: 0; font-size: 16px; line-height: 1.6; color: var(--text); }
+.L-assess-meta { margin: 0; display: grid; gap: 10px; }
+.L-assess-meta div { display: grid; gap: 4px; }
+.L-assess-meta dd { margin: 0; font-size: 15px; line-height: 1.55; color: var(--muted); }
+.L-assess-card .btn { justify-self: start; margin-top: auto; }
+
 /* solutions */
 .L-tier { display: grid; grid-template-columns: repeat(3, 1fr) auto; gap: 28px; align-items: start; }
 .L-tier .L-mid { margin-top: 10px; }
@@ -1137,21 +1149,10 @@
 .L-book .ph { min-height: 260px; }
 .L-details { display: grid; grid-template-columns: auto 1fr; gap: 8px 18px; font-size: 14px; align-items: baseline; }
 
-/* get started: the intake */
-.L-intake { padding-top: calc(60px * var(--space, 1)); }
-.L-intake .L-wrap-narrow { display: grid; gap: 22px; }
-.L-intake-bar { height: var(--rule-fat); background: var(--border); border-radius: 99px; overflow: hidden; }
-.L-intake-bar span { display: block; height: 100%; background: var(--accent); }
-.L-intake-q { font-size: clamp(28px, 3.6cqw, 46px); max-width: 24ch; margin: 0; }
-.L-scale { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; }
-.L-scale-opt { font-family: var(--font-display); font-size: 18px; padding: 16px 0; text-align: center; }
-.L-scale-ends { display: flex; justify-content: space-between; }
-.L-insight { display: grid; gap: 8px; }
-.L-insight p { margin: 0; }
-
 @container page (max-width: 900px) {
   .L-piece { grid-template-columns: 1fr; gap: 12px; }
   .L-tier, .L-steps, .L-feed, .L-team, .L-logos, .L-contact, .L-voices-grid { grid-template-columns: 1fr 1fr; }
+  .L-assess { grid-template-columns: 1fr; }
   .L-stage { --stage-art: 240px; }
   .L-research-card, .L-partner { grid-template-columns: 1fr; }
   .L-report { grid-template-columns: 1fr; }
@@ -1162,8 +1163,6 @@
   .L-tier, .L-steps, .L-feed, .L-team, .L-logos, .L-contact, .L-voices-grid { grid-template-columns: 1fr; }
   .L-stage, .L-stage:nth-child(even) { --stage-art: 144px; grid-template-columns: 1fr; gap: 16px; }
   .L-stage-art, .L-stage:nth-child(even) .L-stage-art { order: -1; justify-self: start; }
-  .L-scale { grid-template-columns: repeat(7, 1fr); gap: 4px; }
-  .L-scale-opt { padding: 12px 0; font-size: 15px; }
   .L-table { font-size: 12px; }
   .L-tiers { font-size: 14px; }
   .L-tiers-pick { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }

@@ -10,8 +10,12 @@ import { ContactAside } from "@/components/contact/ContactAside";
 import { ContactForm } from "@/components/contact/ContactForm";
 import { ProcessFigure, StageFigure } from "@/components/process-figure/ProcessFigure";
 import type { PoseId } from "@/components/process-figure/figures";
+import { Honeypot } from "@/components/lead/Honeypot";
+import { Turnstile } from "@/components/lead/Turnstile";
+import { useLeadSubmit } from "@/components/lead/useLeadSubmit";
 import { DEFAULTS, type AboutContent, type ContactContent, type GlobalContent, type ProcessContent, type SolutionsContent } from "@/lib/content/defaults";
 import { fill } from "@/lib/content/shared";
+import { EMAIL_SHAPE } from "@/lib/lead";
 
 /** The words the admin's Content tab edits, passed down from the server.
  *  Without them a page shows the defaults, which are the same words. */
@@ -76,15 +80,29 @@ function Sec({ n, kicker, title, children, id, cls }: { n: string; kicker: strin
 function Solutions({ c = DEFAULTS.solutions, g = DEFAULTS.global }: { c?: SolutionsContent; g?: GlobalContent }) {
   const TIERS = c.tiers.items;
   const [tier, setTier] = useState(TIERS[1]?.name ?? TIERS[0]?.name ?? "");
-  const [sent, setSent] = useState(false);
+  // the ask at the foot: an email and the pick, posted as flow "solutions"
+  const { submit, state, attempt } = useLeadSubmit("solutions");
+  const [token, setToken] = useState<string>();
+  const [emailError, setEmailError] = useState<string>();
   // a piece from the à la carte list, picked with its button: it goes to the
   // form the same way a tier does, and shows there beside the three tiers
   const piece = TIERS.some((t) => t.name === tier) ? "" : tier;
   const ask = (name: string) => {
     setTier(name);
-    setSent(false);
     document.getElementById("talk")?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
+  const onTalk = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const email = String(data.get("email") ?? "").trim();
+    const found = !email ? "Enter your email address." : !EMAIL_SHAPE.test(email) ? "Enter an email address like name@company.com." : undefined;
+    setEmailError(found);
+    if (found) return;
+    void submit({ email, pick: tier, company_website: String(data.get("company_website") ?? "") || undefined, turnstileToken: token });
+  };
+  // a measure's button: LeadQ and TeamQ open that door on /start, OrgQ is a
+  // conversation on /talk
+  const doorHref = (door: string) => (door === "orgq" ? "/talk?tier=orgq" : `${ROUTES.start}?door=${door}`);
   const three = (f: (t: (typeof TIERS)[number]) => string) => [0, 1, 2].map((i) => (TIERS[i] ? f(TIERS[i]) : "")) as [string, string, string];
   const rows: [string, string, string, string][] = [
     [c.tiers.rowWhat, ...three((t) => t.what)],
@@ -95,7 +113,26 @@ function Solutions({ c = DEFAULTS.solutions, g = DEFAULTS.global }: { c?: Soluti
   return (
     <>
       <PageHead n="01" kicker={c.head.kicker} title={c.head.title} lede={c.head.lede} />
-      <Sec n="02" kicker={c.tiers.kicker} title={c.tiers.title} cls="L-sec-full">
+      <Sec n="02" kicker={c.assess.kicker} title={c.assess.title} cls="L-sec-full" id="assess">
+        {c.assess.lede ? <p className="L-mid">{c.assess.lede}</p> : null}
+        <ul className="L-assess">
+          {c.assess.items.map((it, i) => (
+            <li className="card L-assess-card" key={it.name} data-main={i === 1}>
+              <span className="card-tag">{it.tag}</span>
+              <h3 className="L-assess-name">{it.name}</h3>
+              <span className="L-assess-price">{it.price}</span>
+              <p className="L-assess-what">{it.what}</p>
+              <dl className="L-assess-meta">
+                <div><dt className="L-cap">{c.assess.rowWho}</dt><dd>{it.who}</dd></div>
+                <div><dt className="L-cap">{c.assess.rowGet}</dt><dd>{it.get}</dd></div>
+              </dl>
+              <Link className={`btn${i === 1 ? "" : " btn-secondary"}`} href={doorHref(it.door)}>{it.button} <span className="arrow">&rarr;</span></Link>
+            </li>
+          ))}
+        </ul>
+        {c.assess.note ? <p className="L-cap">{c.assess.note}</p> : null}
+      </Sec>
+      <Sec n="03" kicker={c.tiers.kicker} title={c.tiers.title} cls="L-sec-full">
         <div className="L-tiers-pick" aria-label="Which tier">
           {TIERS.map((t) => (
             <button key={t.name} type="button" className="L-tier-pick" onClick={() => setTier(t.name)} aria-pressed={t.name === tier}>
@@ -129,7 +166,7 @@ function Solutions({ c = DEFAULTS.solutions, g = DEFAULTS.global }: { c?: Soluti
         </table>
         <p className="L-cap">{c.tiers.note}</p>
       </Sec>
-      <Sec n="03" kicker={c.carte.kicker} title={c.carte.title} id="a-la-carte">
+      <Sec n="04" kicker={c.carte.kicker} title={c.carte.title} id="a-la-carte">
         {c.carte.lede ? <p className="L-mid">{c.carte.lede}</p> : null}
         <ul className="L-carte">
           {c.carte.items.map((it) => (
@@ -153,9 +190,9 @@ function Solutions({ c = DEFAULTS.solutions, g = DEFAULTS.global }: { c?: Soluti
         </ul>
         {c.carte.note ? <p className="L-cap">{c.carte.note}</p> : null}
       </Sec>
-      <Sec n="04" kicker={c.talk.kicker} title={c.talk.title} id="talk">
-        {!sent ? (
-          <form className="L-talk" onSubmit={(e) => { e.preventDefault(); setSent(true); }}>
+      <Sec n="05" kicker={c.talk.kicker} title={c.talk.title} id="talk">
+        {state !== "done" ? (
+          <form className="L-talk" onSubmit={onTalk} noValidate>
             <div className="L-talk-tiers" role="radiogroup" aria-label="Which tier or piece">
               {TIERS.map((t) => (
                 <button key={t.name} type="button" className="opt" aria-pressed={t.name === tier} onClick={() => setTier(t.name)}>{t.name}</button>
@@ -163,9 +200,13 @@ function Solutions({ c = DEFAULTS.solutions, g = DEFAULTS.global }: { c?: Soluti
               {piece ? <button type="button" className="opt" aria-pressed>{piece}</button> : null}
             </div>
             <div className="field L-talk-field">
-              <input type="email" required placeholder="you@company.com" aria-label="Your email" />
-              <button className="btn" type="submit">{c.talk.button} <span className="arrow">&rarr;</span></button>
+              <input type="email" name="email" required placeholder="you@company.com" aria-label="Your email" aria-invalid={emailError ? true : undefined} />
+              <button className="btn" type="submit" disabled={state === "pending"}>{state === "pending" ? "Sending" : c.talk.button} <span className="arrow">&rarr;</span></button>
             </div>
+            {emailError ? <p className="lead-error" role="alert">{emailError}</p> : null}
+            {state === "error" ? <p className="lead-error" role="alert">That did not go through. Please try again.</p> : null}
+            <Honeypot />
+            <Turnstile onToken={setToken} resetKey={attempt} />
             <span className="L-cap">{fill(c.talk.note, { tier })}</span>
           </form>
         ) : (
@@ -175,7 +216,7 @@ function Solutions({ c = DEFAULTS.solutions, g = DEFAULTS.global }: { c?: Soluti
           </div>
         )}
       </Sec>
-      <Sec n="05" kicker={c.voices.kicker} title={c.voices.title}>
+      <Sec n="06" kicker={c.voices.kicker} title={c.voices.title}>
         <div className="L-voices L-voices-grid">
           {g.testimonials.items.map((q, i) => (
             <figure className="card L-quote" key={i}>
@@ -387,33 +428,6 @@ function Contact({ c = DEFAULTS.contact, g = DEFAULTS.global }: { c?: ContactCon
 
 /* ------------------------------------------------------------------ */
 
-function Start() {
-  return (
-    <section className="L-sec L-intake">
-      <div className="L-wrap L-wrap-narrow">
-        <div className="L-intake-bar" aria-hidden><span style={{ width: "12%" }} /></div>
-        <span className="L-cap">Question 1 · free and ungated · no email to start</span>
-        <h1 className="display L-intake-q">How often does your team get the information it needs, when it needs it?</h1>
-        <div className="L-scale">
-          {[1, 2, 3, 4, 5, 6, 7].map((n) => <button className="opt L-scale-opt" key={n}>{n}</button>)}
-        </div>
-        <div className="L-scale-ends"><span className="L-cap">Rarely true</span><span className="L-cap">Almost always true</span></div>
-        <aside className="card L-insight">
-          <span className="card-tag">While you answer</span>
-          <p>TeamQ reads thirteen factors of the team environment and thirteen practices. This one is about information flows: whether people hear things from the team, or from the corridor.</p>
-        </aside>
-        <div className="cta-row">
-          <button className="btn">Next <span className="arrow">&rarr;</span></button>
-          <Link className="btn btn-secondary" href={ROUTES.contact}>Talk to us instead</Link>
-        </div>
-        <p className="L-cap">Our own intake tool. Not TeamQ, not validated, not diagnostic. Result on screen with a shareable link; email or booking offered after.</p>
-      </div>
-    </section>
-  );
-}
-
-/* ------------------------------------------------------------------ */
-
 export function Page({ id, figures, content }: { id: PageId; figures?: boolean; /** the admin's words; the defaults without them */ content?: PageCopy }) {
   switch (id) {
     case "solutions": return <Solutions c={content?.solutions} g={content?.global} />;
@@ -421,7 +435,6 @@ export function Page({ id, figures, content }: { id: PageId; figures?: boolean; 
     case "insights": return <Insights />;
     case "about": return <About c={content?.about} />;
     case "contact": return <Contact c={content?.contact} g={content?.global} />;
-    case "start": return <Start />;
     default: return null;
   }
 }

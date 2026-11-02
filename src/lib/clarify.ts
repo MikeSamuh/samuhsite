@@ -93,6 +93,8 @@ function noteLines(lead: Lead): string[] {
   if (lead.reason) lines.push(`Reason: ${lead.reason}`);
   if (lead.teamSize) lines.push(`Team size: ${lead.teamSize}`);
   if (lead.tier) lines.push(`Tier: ${lead.tier}`);
+  if (lead.intent) lines.push(`Door: ${lead.intent}`);
+  if (lead.pick) lines.push(`Picked: ${lead.pick}`);
   if (lead.change) lines.push(`Hoping to change: ${lead.change}`);
   if (lead.message) lines.push(`Message: ${lead.message}`);
   if (lead.answers) {

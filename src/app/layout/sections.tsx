@@ -788,7 +788,7 @@ export function Footer({ content }: { /** site-wide words from the admin; the de
         <nav className="L-foot-col" aria-label="Resources">
           <span className="L-cap L-foot-h">Resources</span>
           <Link className="L-foot-link" href={ROUTES.insights}>Insights</Link>
-          <Link className="L-foot-link" href={ROUTES.start}>TeamQ</Link>
+          <Link className="L-foot-link" href="/teamq">TeamQ</Link>
           <a className="L-foot-link" href={g.report.page} target="_blank" rel="noopener noreferrer">{g.footer.reportLabel}</a>
           <a className="L-foot-link" href={g.footer.youtubeUrl} target="_blank" rel="noopener noreferrer">{g.footer.youtubeLabel}</a>
         </nav>

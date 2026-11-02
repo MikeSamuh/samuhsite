@@ -17,7 +17,7 @@ const optional = (schema: z.ZodString) =>
 
 const schema = z
   .object({
-    flow: z.enum(["contact", "teaser", "talk"]),
+    flow: z.enum(["contact", "teaser", "talk", "start", "solutions"]),
     name: optional(short),
     email: z.email().max(200),
     phone: optional(short),
@@ -28,7 +28,9 @@ const schema = z
     reason: z.enum(["general", "solutions", "partnership", "other"]).optional(),
     teamSize: z.enum(["1-10", "11-50", "51-200", "200+"]).optional(),
     change: optional(long),
-    tier: z.enum(["self-guided", "supported", "guided"]).optional(),
+    tier: z.enum(["self-guided", "supported", "guided", "orgq"]).optional(),
+    intent: z.enum(["leadq", "teamq"]).optional(),
+    pick: optional(short),
     answers: z.record(z.string().max(60), z.number().finite()).optional(),
     source: optional(short),
     medium: optional(short),
@@ -37,7 +39,8 @@ const schema = z
     turnstileToken: z.string().max(4096).optional(),
   })
   .superRefine((data, ctx) => {
-    if (data.flow !== "teaser" && !data.name) {
+    // the teaser and the Solutions ask take an email alone
+    if (data.flow !== "teaser" && data.flow !== "solutions" && !data.name) {
       ctx.addIssue({ code: "custom", path: ["name"], message: "Name is required" });
     }
   });

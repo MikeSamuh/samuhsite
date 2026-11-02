@@ -138,14 +138,16 @@ curate, or leave. Redirects built either way.
 
 ## Lead capture
 
-Three flows, agreed 1 Oct. Every one posts to Clarify through the same server
-route.
+Three flows agreed 1 Oct, two added 2 Nov. Every one posts to Clarify
+through the same server route.
 
 | Flow | Where | What it does |
 |---|---|---|
 | 1. Contact | `/contact` | General inquiry form. Email, and phone as a direct option |
 | 2. TeamQ teaser | `/teamq` | An intro on what TeamQ does and how SAMUH uses it, then the visitor explores the toggles freely. Nothing gated. An optional ask moves the intrigued into a contact flow |
-| 3. Talk to us | `/solutions` and `/` | Books time on Jake's calendar directly, with one or two qualifying questions first |
+| 3. Talk to us | `/talk`, linked from `/solutions` and `/` | Books time on Jake's calendar directly, with one or two qualifying questions first. `?tier=orgq` when the OrgQ door sent them |
+| 4. Get started | `/start`, behind every Get started button | The fork: LeadQ, TeamQ, OrgQ, or log in. LeadQ and TeamQ go to the platform once `NEXT_PUBLIC_PLATFORM_URL` is set, and to a short form (name, email, organization, the door as `intent`) until then. OrgQ goes to flow 3 |
+| 5. Solutions ask | `/solutions` | An email and the tier or piece picked on the page, as `pick` |
 
 Secondary capture points from the original scope still apply where they fit:
 email offered after Insights content rather than before, and contact details
@@ -168,10 +170,11 @@ Listed in the scope document as the platform build, priced separately:
 - Content gating, free against paid
 - Assessment history and benchmarking
 
-The site is built to extend into these. The intake assessment becomes the front
-door to TeamQ, the content model holds gated content, and the lead records
-become the first accounts. Building in a way that forecloses that is a mistake
-even though none of it ships now.
+The site is built to extend into these. Since 2 Nov 2026 the shape is known:
+they live on a separate platform at `platform.samuh.org` (the client's
+`samuh-platform` repo for accounts and the journey, `samuh-dashboard` for
+scoring), and `/start` is the hand-off. The site stays marketing and lead
+capture; the platform owns the account. See `docs/decisions.md`, 2 Nov.
 
 ## Scope risk
 

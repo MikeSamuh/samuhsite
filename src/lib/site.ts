@@ -72,10 +72,22 @@ export const ROUTES: Record<PageId, string> = {
   insights: "/insights",
   about: "/about",
   contact: "/contact",
-  // "Explore TeamQ". The intake assessment that used to sit behind Get
-  // Started is a later sprint
-  start: "/teamq",
+  // "Get started": the fork. LeadQ, TeamQ, OrgQ, or log in (2 Nov 2026).
+  // The TeamQ teaser stays at /teamq, linked from the TeamQ card and the
+  // footer
+  start: "/start",
 };
+
+/** The platform, platform.samuh.org, where LeadQ and TeamQ run and the
+ *  account lives. Unset until it exists: the doors on /start fall back to a
+ *  form, and the login door is hidden. docs/decisions.md, 2 Nov 2026. */
+export const PLATFORM_URL = process.env.NEXT_PUBLIC_PLATFORM_URL?.replace(/\/$/, "") || null;
+
+/** Where a door on /start sends the person once the platform is up. */
+export function platformLink(intent: "leadq" | "teamq" | "login"): string | null {
+  if (!PLATFORM_URL) return null;
+  return intent === "login" ? `${PLATFORM_URL}/login` : `${PLATFORM_URL}/start?intent=${intent}`;
+}
 
 /** The page a path belongs to, for the nav's current marker. A page owns
  *  its sub-paths: /insights/<slug> is still Insights. */

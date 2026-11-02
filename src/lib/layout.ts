@@ -121,7 +121,8 @@ export const VIEWS: (Opt<ViewId> & { px: number })[] = [
 
 // The sitemap from docs/scope.md. Home is the twelve sections below; the
 // rest are composed in pages.tsx from confirmed material and visible TODOs.
-// "start" is the intake assessment, reached from Get Started, not the nav.
+// "start" is the fork behind Get started (LeadQ, TeamQ, OrgQ, log in), not
+// in the nav. Its page is src/app/(site)/start, not pages.tsx.
 
 export type PageId = "home" | "solutions" | "process" | "insights" | "about" | "contact" | "start";
 
@@ -139,7 +140,7 @@ export const PAGES: PageDef[] = [
   { id: "insights", name: "Insights", nav: true, note: "Foundations, articles, video and research in one filterable feed. Research gets its own weight." },
   { id: "about", name: "About", nav: true, note: "About SAMUH, the team, Sapien Labs in the body. Partners TBA." },
   { id: "contact", name: "Contact", nav: true, note: "Form plus calendar booking, contact details." },
-  { id: "start", name: "Get Started", nav: false, note: "The intake assessment. Free, ungated, value before the first ask. Not TeamQ." },
+  { id: "start", name: "Get started", nav: false, note: "The fork: LeadQ, TeamQ, OrgQ, or log in. The assessments run on the platform, not here." },
 ];
 
 /* ------------------------------------------------------------------ */

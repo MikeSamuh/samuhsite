@@ -494,3 +494,24 @@ and lands on a fifth admin tab, Responses, where the team shows it on the
 back of the card, deletes it, or writes one of its own. The Content tab's
 Metaphor cards group went with this: the words beside the deck are in the
 code. — Wilfred
+
+**2026-11-02 — Three measures, one door, and the platform is a separate
+build.** Mike and Jake's whiteboard: LeadQ (free, the leader alone, the
+hook), TeamQ ($99 per team), OrgQ ($10 per person, packages), and under them
+the 90-day cycle as DIY, Supported and Guided, Advisory, and keynotes and
+workshops. The site sells the ladder; a platform at `platform.samuh.org`
+(their `samuh-platform` repo, Supabase) will run the surveys and hold the
+account, with the `samuh-dashboard` repo as the scoring engine. Neither
+exists for customers yet. On the site: `/solutions` opens with three Assess
+cards, then the cycle tiers (renamed DIY, Supported, Guided), then à la
+carte; every "Explore TeamQ" button is "Get started" and lands on `/start`,
+a fork of LeadQ, TeamQ, OrgQ, and a login that appears once
+`NEXT_PUBLIC_PLATFORM_URL` is set. Until then LeadQ and TeamQ open a short
+form posted as `flow: "start"` with the door as `intent`; the Solutions
+email ask now really posts, as `flow: "solutions"` with the `pick`. Prices
+are the whiteboard figures on Wilfred's call, swapped when confirmed in
+writing; Guided's price is a visible TODO because the board reads "$200".
+Account order agreed for the platform: LeadQ runs first and the email that
+unlocks the result creates the account by magic link; TeamQ signs in first.
+The site keeps hard rule 5: no accounts here, the platform owns them.
+— Wilfred

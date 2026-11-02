@@ -19,7 +19,7 @@ const SIZES: { value: NonNullable<Lead["teamSize"]>; label: string }[] = [
   { value: "51-200", label: "51 to 200" },
   { value: "200+", label: "More than 200" },
 ];
-const TIERS: NonNullable<Lead["tier"]>[] = ["self-guided", "supported", "guided"];
+const TIERS: NonNullable<Lead["tier"]>[] = ["self-guided", "supported", "guided", "orgq"];
 /** step 1 done, so a refresh lands on step 2 */
 const DONE_KEY = "samuh-talk";
 

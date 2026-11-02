@@ -16,7 +16,7 @@ export const DEFAULTS = {
   global: {
     brand: {
       partnerLine: "Partnered with\nSapien Labs",
-      navCta: "Explore TeamQ",
+      navCta: "Get started",
     },
     footer: {
       line: "High performance *without* the cost to people.",
@@ -55,7 +55,7 @@ export const DEFAULTS = {
       eyebrow: "Organizational and high-performance consulting",
       title: "High performance *without* the cost to people.",
       lede: "",
-      ctaPrimary: "Explore TeamQ",
+      ctaPrimary: "Get started",
       ctaSecondary: "Talk to us",
     },
     thesis: {
@@ -117,9 +117,9 @@ export const DEFAULTS = {
         { q: "Is the tool on this page TeamQ?", a: "No. It shows how TeamQ thinks, with a demonstration team and a few factors moving. A TeamQ assessment is done with your own team, and the result is yours." },
         { q: "What is the Sapien Labs partnership?", a: "Sapien Labs is our research partner and the source of the research this site leans on. Their Work Culture Report is the spine of the argument, and the team environment factors we assess come from their work." },
         { q: "Is this about performance or about wellbeing?", a: "Both, at once. People thriving and results thriving reinforce each other rather than trading off. That is the whole point, and the reason we measure the environment instead of pushing on effort." },
-        { q: "How do you work with a team?", a: "Three ways. Self-guided, where the team works through the material on its own. Supported, which adds periodic calls with us. Guided, where we deliver in person. The team process is the method in all three, and organization-wide work layers on top of it." },
-        { q: "What does it cost?", a: "It depends on the way you work with us and the number of teams. Talk to us and we will put a number on it." },
-        { q: "How do we start?", a: "With a TeamQ assessment of your team, which shows where it leaks and what to move first. Explore TeamQ, or write to us and we will take it from there." },
+        { q: "How do you work with a team?", a: "Measurement first. LeadQ is a free read for the leader, TeamQ measures the whole team, and OrgQ maps capacity across an organization. Then the 90-day cycle, run three ways: DIY, where the team works through it on its own; Supported, which adds calls with us; Guided, where we deliver in person." },
+        { q: "What does it cost?", a: "LeadQ is free. TeamQ is $99 per team. OrgQ and the 90-day cycles are priced on the Solutions page, and we will put a number on anything larger." },
+        { q: "How do we start?", a: "Get started and pick a door: LeadQ for a first read on your own, TeamQ for the whole team, or a conversation about your organization." },
       ],
     },
     start: {
@@ -127,7 +127,7 @@ export const DEFAULTS = {
       sub: "",
       placeholder: "How many people are on your team?",
       startLabel: "Start",
-      ctaPrimary: "Explore TeamQ",
+      ctaPrimary: "Get started",
       ctaSecondary: "Talk to us",
     },
   },
@@ -182,35 +182,54 @@ export const DEFAULTS = {
         { verb: "Align", line: "The team agrees on what better looks like.", body: "With that picture in front of it, the team decides what better performance means here, and where one change would do the most for the work and for the people doing it." },
         { verb: "Co-create", line: "Together, we turn moments into practice.", body: "Decisions, feedback, disagreement, change: the moments that shape performance become specific, repeatable practices. The team designs them, tests them, and runs them inside the work it already does." },
       ],
-      ctaPrimary: "Explore TeamQ",
+      ctaPrimary: "Get started",
       ctaSecondary: "Ways to engage",
     },
   },
 
+  // Prices are the whiteboard figures from Mike and Jake's session, photographed
+  // 2 November 2026, on Wilfred's call. Swap them the moment a figure is
+  // confirmed in writing. docs/decisions.md, 2 Nov 2026
   solutions: {
     head: {
-      kicker: "Three ways to engage",
-      title: "Same process, three levels of support.",
-      lede: "One methodology, the team process, delivered with as much or as little of us in the room as the team needs. Organization-wide work layers on top of it.",
+      kicker: "Start by measuring",
+      title: "Assess yourself, your team, or your organization.",
+      lede: "Measurement first, then the practices the team owns. Three measures built with Sapien Labs, and the ways to act on what they show.",
+    },
+    assess: {
+      kicker: "Three measures",
+      title: "Pick the one that fits where you are.",
+      lede: "",
+      rowWho: "Who it is for",
+      rowGet: "What you get",
+      items: [
+        { tag: "You", name: "LeadQ", price: "Free", what: "A first read on your team’s environment, from your own answers. About five minutes.", who: "A leader who wants to see the shape of the problem before involving the team.", get: "A high-level view of where your team environment helps or hinders performance, and what TeamQ would add.", button: "Take LeadQ", door: "leadq" },
+        { tag: "Your team", name: "TeamQ", price: "$99 per team", what: "Every team member answers, about five minutes each. Thirteen team environment factors and thirteen team practices.", who: "A leadership team, or any team, that wants evidence rather than opinion.", get: "Your team placed within Sapien Labs’ benchmark, productive days gained or lost each month, and the levers ranked by expected gain. Repeated at day 90 to measure what moved.", button: "Get TeamQ", door: "teamq" },
+        { tag: "Your organization", name: "OrgQ", price: "Packages from $10 per person", what: "Every team in scope, one capacity map.", who: "CHROs, CEOs and transformation leaders working across many teams.", get: "Where capacity leaks across the organization and where the biggest gains are. Scoped with us.", button: "Talk to us", door: "orgq" },
+      ],
+      note: "TeamQ was developed with Sapien Labs and builds on their MHQ, a validated measure of human capacity drawn from more than 3 million people in 130+ countries.",
     },
     tiers: {
-      kicker: "Side by side",
-      title: "The three tiers",
+      kicker: "Then what",
+      title: "Three ways to run the 90-day cycle.",
       items: [
-        { tag: "Tier 01", name: "Self-guided", what: "Fully automated. The team works through the material on its own.", who: "Teams with a strong leader who want the method without the meetings, and organizations rolling it out across many teams.", get: "The team process, the baseline and the re-measure, and the material to run one ritual for ninety days." },
-        { tag: "Tier 02", name: "Supported", what: "Self-guided plus periodic support calls from the Samuh team.", who: "Teams that want a second pair of eyes at the moments that matter: choosing the practice, and the check-in at day 45.", get: "Everything in Self-guided, with scheduled calls to read the data together and keep the ritual on track." },
+        { tag: "Tier 01", name: "DIY", what: "Self-guided on the platform. The team works through the cycle on its own.", who: "Teams with a strong leader who want the method without the meetings, and organizations rolling it out across many teams.", get: "The team process, two TeamQ measures a year, and the material to run one ritual for ninety days." },
+        { tag: "Tier 02", name: "Supported", what: "DIY plus periodic support calls from the Samuh team.", who: "Teams that want a second pair of eyes at the moments that matter: choosing the practice, and the check-in at day 45.", get: "Everything in DIY, with scheduled calls to read the data together and keep the ritual on track." },
         { tag: "Tier 03", name: "Guided", what: "In person. The Samuh team delivers the work hands on.", who: "Leadership teams and mission-critical teams where the stakes justify having us in the room.", get: "Confidential interviews, a facilitated day one, coaching for two ritual keepers every two weeks, and the close." },
       ],
       rowWhat: "What it is",
       rowWho: "Who it is for",
       rowGet: "What you get",
       rows: [
+        // TODO(content): the whiteboard reads "$200/cycle" for Guided, which
+        // cannot be right beside $20K for Supported. Confirm with Mike or Jake
+        { label: "Price", a: "$1K per year, two TeamQ included", b: "$20K per cycle", c: "TODO(content): confirm, the whiteboard reads $200 per cycle" },
         { label: "Support calls", a: "Not included", b: "Scheduled", c: "Ongoing" },
         { label: "In-person delivery", a: "Not included", b: "Not included", c: "Included" },
         { label: "TeamQ baseline and re-measure", a: "Included", b: "Included", c: "Included" },
         { label: "Ritual keeper coaching", a: "Self-directed", b: "At check-ins", c: "Every two weeks" },
       ],
-      note: "Organization-wide engagements layer on top of the team process, not beside it.",
+      note: "A cycle is ninety days: one practice, co-created, iterated inside the team’s regular work, and measured again at the end. An organization journey runs the same cycle across a team of teams. Talk to us about that one.",
     },
     carte: {
       kicker: "À la carte",
@@ -218,14 +237,13 @@ export const DEFAULTS = {
       lede: "Each part of the work stands on its own. Start where the need is.",
       ask: "Ask about this",
       items: [
-        { tag: "Builds belief", name: "Immersive keynote", what: "Team performance, reframed through the science of capacity, with one practice tried live.", who: "Offsites, summits, all-hands.", format: "60 to 90 minutes. In person or virtual." },
+        { tag: "Builds direction", name: "Advisory", what: "Strategic planning with the leadership team: where the value hot spots are, and the levers for accelerating performance.", who: "CEOs and leadership teams planning the year.", format: "By the day. $10K to $15K per day." },
+        { tag: "Builds belief", name: "Immersive keynote", what: "Team performance, reframed through the science of capacity, with one practice tried live.", who: "Offsites, summits, all-hands.", format: "60 to 90 minutes. In person or virtual. Keynotes and workshops from $20K to $50K." },
         { tag: "Builds belief", name: "Executive lab", what: "The science of capacity to perform, and why the team is where it changes.", who: "Senior teams exploring the frontier.", format: "Half a day, in person." },
-        { tag: "Builds capability", name: "Leadership workshop", what: "The practices that strengthen the conditions for team performance, experienced not described.", who: "Leaders who run teams.", format: "One day, in person." },
-        { tag: "Measures", name: "Discovery and TeamQ baseline", what: "Confidential interviews and a TeamQ baseline, read back as evidence rather than opinion.", who: "A team that wants to see itself clearly first.", format: "About one month." },
-        { tag: "Builds team performance", name: "Ritual co-creation day", what: "The team reads its findings and designs the one practice it will own.", who: "Teams with a baseline in hand.", format: "One day, facilitated, in person." },
+        { tag: "Builds capability", name: "Leadership workshop", what: "The practices that strengthen the conditions for team performance, experienced not described.", who: "Leaders who run teams.", format: "One day, in person. Keynotes and workshops from $20K to $50K." },
+        { tag: "Builds team performance", name: "Ritual co-creation day", what: "The team reads its findings and designs the one practice it will own.", who: "Teams with a TeamQ result in hand.", format: "One day, facilitated, in person." },
         { tag: "Builds team performance", name: "Ritual keeper coaching", what: "Two team members coached to embed the ritual in the team's regular work.", who: "Teams running a practice that must hold.", format: "Every two weeks, virtual, for ninety days." },
         { tag: "Measures", name: "Check-in and re-measure", what: "A day-45 adjustment, then TeamQ again at day 90 against the team's own baseline.", who: "Teams that ran the practice themselves.", format: "Two 90-minute virtual sessions." },
-        { tag: "Builds systemic capability", name: "Organization capacity map", what: "OrgQ shows where capacity leaks across many teams, and where the biggest gains are.", who: "CHROs, CEOs, transformation leaders.", format: "Scoped per organization." },
       ],
       note: "Same foundation every time: measurement first, practices the team owns, change inside the flow of work.",
     },
@@ -240,6 +258,29 @@ export const DEFAULTS = {
     voices: {
       kicker: "Trust before proof",
       title: "What teams say",
+    },
+  },
+
+  // /start, the fork behind every Get started button. {door} in the form's
+  // words becomes the door's name
+  start: {
+    head: {
+      kicker: "Get started",
+      title: "Assess yourself, your team, or your organization.",
+      lede: "Measurement first. Pick the door that fits where you are, and we take it from there.",
+    },
+    doors: {
+      leadq: { name: "Start with LeadQ", line: "Five minutes, free. A first read on your team’s environment, for you alone.", note: "Free", button: "Take LeadQ" },
+      teamq: { name: "Ready for TeamQ", line: "Your whole team answers. Benchmarked against Sapien Labs’ data, with the levers ranked by expected gain.", note: "$99 per team", button: "Get TeamQ" },
+      orgq: { name: "OrgQ for my organization", line: "Many teams, one capacity map. Scoped with us.", note: "Packages from $10 per person", button: "Talk to us" },
+      login: { name: "Already took LeadQ?", line: "Your result and your team are waiting.", note: "", button: "Log in" },
+    },
+    form: {
+      title: "Leave your details and a person at SAMUH sets you up.",
+      note: "The platform is on its way. Until it opens, we run {door} with you by hand.",
+      button: "Send",
+      thanksTitle: "Thank you.",
+      thanksText: "A person at SAMUH will be in touch about {door}.",
     },
   },
 
@@ -312,6 +353,7 @@ export type HomeContent = SiteContent["home"];
 export type AboutContent = SiteContent["about"];
 export type ProcessContent = SiteContent["process"];
 export type SolutionsContent = SiteContent["solutions"];
+export type StartContent = SiteContent["start"];
 export type ContactContent = SiteContent["contact"];
 export type TeamQContent = SiteContent["teamq"];
 export type InsightsContent = SiteContent["insights"];

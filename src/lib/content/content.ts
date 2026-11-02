@@ -6,6 +6,7 @@
 // edits it. Reads are cached under the "content" tag and a save revalidates
 // it, so the site stays static between edits.
 
+import { createHash } from "node:crypto";
 import { unstable_cache, revalidatePath, revalidateTag } from "next/cache";
 import { store } from "@/lib/admin/store";
 import { DEFAULTS, type PageKey, type SiteContent } from "./defaults";
@@ -32,6 +33,11 @@ function mergePage<P extends PageKey>(page: P, saved: Record<string, unknown> | 
   return out as unknown as SiteContent[P];
 }
 
+/** The cache key carries a hash of DEFAULTS, so a page or field added in
+ *  code (2 Nov 2026: `start`, `solutions.assess`) is never served from a
+ *  copy cached before it existed. A save still revalidates by tag. */
+const DEFAULTS_VERSION = createHash("sha1").update(JSON.stringify(DEFAULTS)).digest("hex").slice(0, 12);
+
 const readAll = unstable_cache(
   async (): Promise<SiteContent> => {
     const out = { ...DEFAULTS } as Record<PageKey, unknown>;
@@ -41,7 +47,7 @@ const readAll = unstable_cache(
     }
     return out as SiteContent;
   },
-  ["site-content"],
+  ["site-content", DEFAULTS_VERSION],
   { tags: [CONTENT_TAG] },
 );
 

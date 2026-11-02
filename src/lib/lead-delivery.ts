@@ -30,6 +30,8 @@ const LABELS: Record<keyof Lead, string> = {
   reason: "Reason",
   teamSize: "Team size",
   tier: "Tier",
+  intent: "Door",
+  pick: "Picked",
   message: "Message",
   change: "Hoping to change",
   answers: "Answers",
