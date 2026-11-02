@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Image from "@tiptap/extension-image";
 import Placeholder from "@tiptap/extension-placeholder";
 import Youtube from "@tiptap/extension-youtube";
-import { ADMIN_API } from "@/lib/admin/paths";
+import { IMAGE_ACCEPT, uploadImage } from "./ImageField";
 
 /**
  * The post editor. Tiptap with the usual blocks, images, and YouTube: paste
@@ -17,7 +17,7 @@ import { ADMIN_API } from "@/lib/admin/paths";
  */
 export function RichText({ value, onChange }: { value: string; onChange: (html: string) => void }) {
   const [yt, setYt] = useState<string | null>(null);
-  const [img, setImg] = useState(false);
+  const file = useRef<HTMLInputElement>(null);
   const editor = useEditor({
     immediatelyRender: false,
     extensions: [
@@ -50,14 +50,15 @@ export function RichText({ value, onChange }: { value: string; onChange: (html: 
     if (!url || url === "https://") editor.chain().focus().extendMarkRange("link").unsetLink().run();
     else editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
   };
-  const upload = async (file: File) => {
-    const form = new FormData();
-    form.append("file", file);
-    form.append("folder", "insights");
-    const res = await fetch(`${ADMIN_API}/upload`, { method: "POST", body: form });
-    const data = await res.json();
-    if (!res.ok) { alert(data.error ?? "Upload failed"); return; }
-    editor.chain().focus().setImage({ src: data.url, alt: file.name.replace(/\.[a-z0-9]+$/i, "") }).run();
+  const upload = async (f: File) => {
+    try {
+      const url = await uploadImage(f, "insights");
+      editor.chain().focus().setImage({ src: url, alt: f.name.replace(/\.[a-z0-9]+$/i, "") }).run();
+    } catch (e) {
+      alert(e instanceof Error ? e.message : "Upload failed");
+    } finally {
+      if (file.current) file.current.value = "";
+    }
   };
 
   return (
@@ -77,7 +78,8 @@ export function RichText({ value, onChange }: { value: string; onChange: (html: 
         <button type="button" className="adm-tool" onClick={() => editor.chain().focus().setHorizontalRule().run()}>Rule</button>
         <span className="adm-tool-sep" />
         <button type="button" className="adm-tool adm-tool-yt" onClick={() => setYt((v) => (v === null ? "" : null))} aria-expanded={yt !== null}>▶ YouTube</button>
-        <button type="button" className="adm-tool" onClick={() => setImg((v) => !v)} aria-expanded={img}>Image</button>
+        <button type="button" className="adm-tool" onClick={() => file.current?.click()}>Image</button>
+        <input ref={file} type="file" accept={IMAGE_ACCEPT} hidden onChange={(e) => { const f = e.target.files?.[0]; if (f) upload(f); }} />
         <span className="adm-tool-sep" />
         <button type="button" className="adm-tool" onClick={() => editor.chain().focus().undo().run()} disabled={!editor.can().undo()}>Undo</button>
         <button type="button" className="adm-tool" onClick={() => editor.chain().focus().redo().run()} disabled={!editor.can().redo()}>Redo</button>
@@ -88,12 +90,6 @@ export function RichText({ value, onChange }: { value: string; onChange: (html: 
           <button type="submit" className="adm-btn adm-btn-small adm-btn-primary">Embed</button>
           <button type="button" className="adm-btn adm-btn-small adm-btn-ghost" onClick={() => setYt(null)}>Cancel</button>
         </form>
-      ) : null}
-      {img ? (
-        <div className="adm-yt-form">
-          <input type="file" accept="image/*" onChange={(e) => { const f = e.target.files?.[0]; if (f) upload(f); setImg(false); }} />
-          <button type="button" className="adm-btn adm-btn-small adm-btn-ghost" onClick={() => setImg(false)}>Cancel</button>
-        </div>
       ) : null}
       <EditorContent editor={editor} />
     </div>

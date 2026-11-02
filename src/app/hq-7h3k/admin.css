@@ -124,6 +124,7 @@
 .adm-image-tools { display: grid; gap: 8px; min-width: 0; }
 .adm-image-tools input[type="file"] { font-size: 13px; max-width: 100%; min-width: 0; }
 .adm-image-tools .adm-actions { min-width: 0; }
+.adm-image[data-over] .adm-image-thumb, .adm-image[data-over] .adm-image-empty { border-color: var(--adm-accent-2); box-shadow: 0 0 0 3px color-mix(in srgb, var(--adm-accent-2) 20%, transparent); }
 
 /* sticky save bar */
 .adm-savebar {
