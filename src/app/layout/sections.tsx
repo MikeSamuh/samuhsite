@@ -819,10 +819,10 @@ export function Footer({ content }: { /** site-wide words from the admin; the de
   );
 }
 
-export const QUOTES = DEFAULTS.global.testimonials.items.map((i) => ({ q: i.quote, who: i.who, role: i.role }));
+export const QUOTES = DEFAULTS.global.testimonials.items.map((i) => ({ q: i.quote, who: i.who, role: i.role, photo: i.photo ?? "" }));
 
 /** the admin's testimonials in the carousel's shape */
-export const quotesOf = (g: GlobalContent) => g.testimonials.items.map((i) => ({ q: i.quote, who: i.who, role: i.role }));
+export const quotesOf = (g: GlobalContent) => g.testimonials.items.map((i) => ({ q: i.quote, who: i.who, role: i.role, photo: i.photo ?? "" }));
 
 /** Temporary marks standing in for client logos, one shape per testimonial. */
 function TempMark({ i }: { i: number }) {
@@ -867,9 +867,15 @@ export function Carousel({ quotes = QUOTES }: { quotes?: typeof QUOTES }) {
   if (!cur) return null;
   return (
     <div className="L-car2" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
-      <div className="L-car2-logo" key={`m${i}`} role="img" aria-label="Client mark, temporary">
-        <TempMark i={i} />
-      </div>
+      {cur.photo ? (
+        <div className="L-car2-logo" key={`m${i}`}>
+          <Image className="L-car2-photo" src={cur.photo} alt={cur.who} width={112} height={112} />
+        </div>
+      ) : (
+        <div className="L-car2-logo" key={`m${i}`} role="img" aria-label="Client mark, temporary">
+          <TempMark i={i} />
+        </div>
+      )}
       <figure className="L-car2-slide" key={i}>
         <blockquote>&ldquo;{cur.q}&rdquo;</blockquote>
         <figcaption>

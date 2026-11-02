@@ -26,7 +26,12 @@ function Field({ def, value, onChange }: { def: FieldDef; value: string; onChang
       ) : (
         <input id={id} type={def.type === "url" ? "url" : "text"} value={value} onChange={(e) => onChange(e.target.value)} className={def.type === "url" ? "adm-input-mono" : undefined} />
       )}
-      {def.help ? <span className="adm-help">{def.help}</span> : null}
+      {def.help || def.max ? (
+        <span className="adm-help">
+          {def.help}
+          {def.max ? <span className="adm-count" data-over={value.length > def.max || undefined}>{value.length} / {def.max}</span> : null}
+        </span>
+      ) : null}
     </div>
   );
 }

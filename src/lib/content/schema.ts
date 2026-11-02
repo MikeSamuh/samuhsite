@@ -11,6 +11,8 @@ export interface FieldDef {
   label: string;
   type: FieldType;
   help?: string;
+  /** a soft limit: the editor counts against it, it never blocks a save */
+  max?: number;
 }
 
 export interface ListDef {
@@ -44,7 +46,7 @@ export interface PageSchema {
 const MARKERS = "Wrap words in *asterisks* for the pink, ~tildes~ for the cyan.";
 
 const t = (key: string, label: string, help?: string): FieldDef => ({ key, label, type: "text", help });
-const ta = (key: string, label: string, help?: string): FieldDef => ({ key, label, type: "textarea", help });
+const ta = (key: string, label: string, help?: string, max?: number): FieldDef => ({ key, label, type: "textarea", help, max });
 const img = (key: string, label: string, help?: string): FieldDef => ({ key, label, type: "image", help });
 const url = (key: string, label: string, help?: string): FieldDef => ({ key, label, type: "url", help });
 const list = (key: string, label: string, itemName: string, fields: FieldDef[], help?: string): ListDef => ({ key, label, type: "list", itemName, fields, help });
@@ -159,7 +161,12 @@ export const SCHEMA: PageSchema[] = [
       { key: "footer", label: "Footer", fields: [t("line", "Line", MARKERS), ta("about", "About"), t("talkHeading", "Talk to us heading"), t("bookCall", "Book a call link"), t("cta", "Button"), t("reportLabel", "Report link"), t("youtubeLabel", "YouTube link"), url("youtubeUrl", "YouTube URL")] },
       { key: "contact", label: "Contact details", fields: [t("email", "Email"), t("phone", "Phone", "As dialled, for example +15551234567. Empty shows a TODO")] },
       { key: "report", label: "Sapien Labs report", fields: [t("tag", "Tag"), ta("line", "The claim"), t("kicker", "Kicker"), t("download", "Download link"), t("onSite", "Site link"), url("page", "Report page URL"), url("pdf", "PDF URL")] },
-      { key: "testimonials", label: "Testimonials", note: "Shown on Home and Solutions", fields: [list("items", "Quotes", "quote", [ta("quote", "Quote"), t("who", "Name"), t("role", "Role, organization")], "Only quotes cleared for publication")] },
+      { key: "testimonials", label: "Testimonials", note: "Shown on Home and Solutions, one at a time", fields: [list("items", "Quotes", "quote", [
+        ta("quote", "Quote", "Two or three sentences in their own words. 120 to 220 characters reads best at this size; longer and the section grows", 220),
+        t("who", "Name"),
+        t("role", "Role, organization"),
+        img("photo", "Photo or logo", "Square, 400 × 400 px or larger, jpg, png or webp, under 1 MB. Shown at 112 px beside the quote. Empty shows the placeholder mark"),
+      ], "Only quotes cleared for publication. Three to five is right for the carousel")] },
     ],
   },
 ];

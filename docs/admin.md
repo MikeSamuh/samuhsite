@@ -61,6 +61,13 @@ A save stores only that page and revalidates the whole tree, so the site
 stays static between edits. Reset deletes the document and the defaults
 show again.
 
+Testimonials are under Site-wide. Each quote has a name, a role, and a
+photo or logo: square, 400 × 400 px or larger, jpg, png or webp, under
+1 MB (the upload route refuses anything over 8 MB or not an image). It
+shows at 112 px beside the quote; empty shows the placeholder mark. The
+quote reads best at 120 to 220 characters, and the editor counts against
+220 without blocking a longer one.
+
 Adding a field: add it to `defaults.ts` and to `schema.ts` (a check at load
 throws if they drift), then read it in the component. The site reads the
 merged content through `getContent()` in a server page and passes it down;

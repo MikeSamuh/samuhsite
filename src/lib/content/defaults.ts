@@ -43,9 +43,9 @@ export const DEFAULTS = {
     },
     testimonials: {
       items: [
-        { quote: "Sample testimonial. Two or three sentences in the client’s own words about what changed for the team, and what it felt like to work this way.", who: "Name", role: "Role, Organization" },
-        { quote: "A second sample. Long enough to show how a real quote wraps at this size, short enough to read in one breath.", who: "Name", role: "Role, Organization" },
-        { quote: "A third sample, so the arrows and the dots have somewhere to go.", who: "Name", role: "Role, Organization" },
+        { quote: "Sample testimonial. Two or three sentences in the client’s own words about what changed for the team, and what it felt like to work this way.", who: "Name", role: "Role, Organization", photo: "" },
+        { quote: "A second sample. Long enough to show how a real quote wraps at this size, short enough to read in one breath.", who: "Name", role: "Role, Organization", photo: "" },
+        { quote: "A third sample, so the arrows and the dots have somewhere to go.", who: "Name", role: "Role, Organization", photo: "" },
       ],
     },
   },

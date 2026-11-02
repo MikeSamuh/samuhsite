@@ -92,7 +92,9 @@
 .adm-form { display: grid; gap: 16px; }
 .adm-field { display: grid; gap: 6px; min-width: 0; }
 .adm-label { font-size: 13px; font-weight: 600; }
-.adm-help { font-size: 12.5px; color: var(--adm-muted); }
+.adm-help { font-size: 12.5px; color: var(--adm-muted); display: flex; justify-content: space-between; gap: 12px; }
+.adm-count { font-family: var(--adm-mono), monospace; font-size: 11.5px; white-space: nowrap; }
+.adm-count[data-over] { color: var(--adm-danger); }
 .adm-row { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
 .adm input[type="text"], .adm input[type="email"], .adm input[type="url"], .adm input[type="date"], .adm input[type="number"],
 .adm textarea, .adm select {
