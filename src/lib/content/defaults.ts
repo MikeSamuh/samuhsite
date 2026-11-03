@@ -221,6 +221,7 @@ export const DEFAULTS = {
       rowWhat: "What it is",
       rowWho: "Who it is for",
       rowGet: "What you get",
+      ask: "Talk to us about this",
       rows: [
         // TODO(content): the whiteboard reads "$200/cycle" for Guided, which
         // cannot be right beside $20K for Supported. Confirm with Mike or Jake

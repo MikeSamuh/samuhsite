@@ -79,30 +79,33 @@ function Sec({ n, kicker, title, children, id, cls }: { n: string; kicker: strin
 
 function Solutions({ c = DEFAULTS.solutions, g = DEFAULTS.global }: { c?: SolutionsContent; g?: GlobalContent }) {
   const TIERS = c.tiers.items;
-  const [tier, setTier] = useState(TIERS[1]?.name ?? TIERS[0]?.name ?? "");
+  // nothing picked until the reader picks: a tier's button, or the form's
+  const [tier, setTier] = useState("");
   // the ask at the foot: an email and the pick, posted as flow "solutions"
   const { submit, state, attempt } = useLeadSubmit("solutions");
   const [token, setToken] = useState<string>();
   const [emailError, setEmailError] = useState<string>();
+  const [pickError, setPickError] = useState<string>();
+  const pickOf = (name: string) => { setTier(name); setPickError(undefined); };
+  // a tier's button: it goes to the form and sits pressed there
+  const ask = (name: string) => {
+    pickOf(name);
+    document.getElementById("talk")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
   const onTalk = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const email = String(data.get("email") ?? "").trim();
     const found = !email ? "Enter your email address." : !EMAIL_SHAPE.test(email) ? "Enter an email address like name@company.com." : undefined;
+    const unpicked = tier ? undefined : "Pick DIY, Supported or Guided first.";
     setEmailError(found);
-    if (found) return;
+    setPickError(unpicked);
+    if (found || unpicked) return;
     void submit({ email, pick: tier, company_website: String(data.get("company_website") ?? "") || undefined, turnstileToken: token });
   };
   // a measure's button: LeadQ and TeamQ open that door on /start, OrgQ is a
   // conversation on /talk
   const doorHref = (door: string) => (door === "orgq" ? "/talk?tier=orgq" : `${ROUTES.start}?door=${door}`);
-  const three = (f: (t: (typeof TIERS)[number]) => string) => [0, 1, 2].map((i) => (TIERS[i] ? f(TIERS[i]) : "")) as [string, string, string];
-  const rows: [string, string, string, string][] = [
-    [c.tiers.rowWhat, ...three((t) => t.what)],
-    [c.tiers.rowWho, ...three((t) => t.who)],
-    [c.tiers.rowGet, ...three((t) => t.get)],
-    ...c.tiers.rows.map((r) => [r.label, r.a, r.b, r.c] as [string, string, string, string]),
-  ];
   return (
     <>
       <PageHead n="01" kicker={c.head.kicker} title={c.head.title} lede={c.head.lede} />
@@ -123,59 +126,46 @@ function Solutions({ c = DEFAULTS.solutions, g = DEFAULTS.global }: { c?: Soluti
             </li>
           ))}
         </ul>
-        {c.assess.note ? <p className="L-cap">{c.assess.note}</p> : null}
+        {c.assess.note ? <p className="L-mid">{c.assess.note}</p> : null}
       </Sec>
       <Sec n="03" kicker={c.tiers.kicker} title={c.tiers.title} cls="L-sec-full">
-        <div className="L-tiers-pick" aria-label="Which tier">
-          {TIERS.map((t) => (
-            <button key={t.name} type="button" className="L-tier-pick" onClick={() => setTier(t.name)} aria-pressed={t.name === tier}>
-              <span className="L-cap">{t.tag}</span>
-              <span>{t.name}</span>
-            </button>
+        <ul className="L-assess L-tiers">
+          {TIERS.map((t, i) => (
+            <li className="card L-assess-card" key={t.name}>
+              <span className="card-tag">{t.tag}</span>
+              <h3 className="L-assess-name">{t.name}</h3>
+              <p className="L-assess-what">{t.what}</p>
+              <dl className="L-assess-meta">
+                <div><dt className="L-cap">{c.tiers.rowWho}</dt><dd>{t.who}</dd></div>
+                <div><dt className="L-cap">{c.tiers.rowGet}</dt><dd>{t.get}</dd></div>
+                {c.tiers.rows.map((r) => (
+                  <div key={r.label}><dt className="L-cap">{r.label}</dt><dd>{[r.a, r.b, r.c][i]}</dd></div>
+                ))}
+              </dl>
+              <button type="button" className="btn btn-secondary" onClick={() => ask(t.name)} aria-pressed={t.name === tier}>{c.tiers.ask} <span className="arrow">&rarr;</span></button>
+            </li>
           ))}
-        </div>
-        <table className="L-table L-tiers" data-tier={tier}>
-          <thead>
-            <tr>
-              <th />
-              {TIERS.map((t) => (
-                <th key={t.name} data-on={t.name === tier}>
-                  <button className="L-tier-pick" onClick={() => setTier(t.name)} aria-pressed={t.name === tier}>
-                    <span className="L-cap">{t.tag}</span>
-                    <span>{t.name}</span>
-                  </button>
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map(([row, ...cells]) => (
-              <tr key={row}>
-                <th>{row}</th>
-                {cells.map((cell, i) => <td key={i} data-on={TIERS[i]?.name === tier}>{cell}</td>)}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        <p className="L-cap">{c.tiers.note}</p>
+        </ul>
+        <p className="L-mid">{c.tiers.note}</p>
       </Sec>
       <Sec n="04" kicker={c.talk.kicker} title={c.talk.title} id="talk">
         {state !== "done" ? (
           <form className="L-talk" onSubmit={onTalk} noValidate>
             <div className="L-talk-tiers" role="radiogroup" aria-label="Which tier">
               {TIERS.map((t) => (
-                <button key={t.name} type="button" className="opt" aria-pressed={t.name === tier} onClick={() => setTier(t.name)}>{t.name}</button>
+                <button key={t.name} type="button" className="opt" aria-pressed={t.name === tier} onClick={() => pickOf(t.name)}>{t.name}</button>
               ))}
             </div>
             <div className="field L-talk-field">
               <input type="email" name="email" required placeholder="you@company.com" aria-label="Your email" aria-invalid={emailError ? true : undefined} />
               <button className="btn" type="submit" disabled={state === "pending"}>{state === "pending" ? "Sending" : c.talk.button} <span className="arrow">&rarr;</span></button>
             </div>
+            {pickError ? <p className="lead-error" role="alert">{pickError}</p> : null}
             {emailError ? <p className="lead-error" role="alert">{emailError}</p> : null}
             {state === "error" ? <p className="lead-error" role="alert">That did not go through. Please try again.</p> : null}
             <Honeypot />
             <Turnstile onToken={setToken} resetKey={attempt} />
-            <span className="L-cap">{fill(c.talk.note, { tier })}</span>
+            <span className="L-cap">{fill(c.talk.note, { tier: tier || "the tier you pick" })}</span>
           </form>
         ) : (
           <div className="L-talk-thanks">

@@ -999,41 +999,8 @@
 .L-text-cta { font-size: 15px; display: inline-flex; align-items: center; gap: 8px; }
 .L-text-cta .arrow { transition: transform var(--dur) var(--ease); }
 .L-text-cta:hover .arrow { transform: translateX(4px); }
-.L-table { width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 14px; }
-.L-table th, .L-table td { text-align: left; padding: 12px 14px; border-top: var(--rule-thin) solid var(--border); }
-.L-table thead th { font-family: var(--font-display); font-weight: var(--display-weight); font-size: 18px; border-top: 0; }
-.L-table tbody th { font-weight: 600; color: var(--text); width: 32%; }
-.L-table td { color: var(--muted); }
 .L-voices-grid { grid-template-columns: repeat(3, 1fr); }
 
-/* the tiers table: pick a column, it lights; the form below carries the pick */
-.L-tiers thead th { vertical-align: bottom; padding: 0 14px 12px; }
-/* on phones the three columns do not fit: the pick moves above the table
-   as a row of three, the head goes, and only the picked tier's column
-   shows beside the row labels */
-.L-tiers-pick { display: none; }
-.L-tier-pick {
-  display: grid;
-  gap: 4px;
-  justify-items: start;
-  padding: 10px 12px;
-  background: transparent;
-  border: var(--rule-thin) solid var(--border);
-  border-radius: min(var(--radius), 10px);
-  color: var(--text);
-  font-family: var(--font-display);
-  font-weight: var(--display-weight);
-  font-size: 18px;
-  cursor: pointer;
-  transition: all var(--dur) var(--ease);
-  width: 100%;
-  text-align: left;
-}
-.L-tier-pick:hover { border-color: var(--accent-2); }
-.L-tier-pick[aria-pressed="true"] { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
-.L-tiers td { vertical-align: top; line-height: 1.5; transition: background var(--dur) var(--ease), color var(--dur) var(--ease); }
-.L-tiers td[data-on="true"] { background: color-mix(in srgb, var(--accent-2) 14%, transparent); color: var(--text); }
-.L-tiers tbody th { vertical-align: top; }
 .L-talk { display: grid; gap: 16px; max-width: 640px; }
 .L-talk-tiers { display: flex; gap: 8px; flex-wrap: wrap; }
 .L-talk-field { max-width: none; }
@@ -1165,13 +1132,6 @@
   .L-tier, .L-steps, .L-feed, .L-team, .L-logos, .L-contact, .L-voices-grid { grid-template-columns: 1fr; }
   .L-stage, .L-stage:nth-child(even) { --stage-art: 144px; grid-template-columns: 1fr; gap: 16px; }
   .L-stage-art, .L-stage:nth-child(even) .L-stage-art { order: -1; justify-self: start; }
-  .L-table { font-size: 12px; }
-  .L-tiers { font-size: 14px; }
-  .L-tiers-pick { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 14px; }
-  .L-tiers-pick .L-tier-pick { font-size: 15px; padding: 8px 10px; gap: 2px; }
-  .L-tiers thead { display: none; }
-  .L-tiers td:not([data-on="true"]) { display: none; }
-  .L-tiers tbody th { width: 38%; }
   /* the morph on a short screen: the key's type a step down and the
      picture capped by the view's height, so the pinned stage fits */
   .L-fm-item dt { font-size: 17px; }
@@ -1207,8 +1167,6 @@
 .L-page[data-comp="comp-editorial"] .L-sec-h.L-sec-full > .L-wrap { grid-template-columns: 1fr; row-gap: 28px; }
 .L-page[data-comp="comp-editorial"] .L-sec-h.L-sec-full > .L-wrap > :not(.L-head) { grid-column: 1; }
 .L-page[data-comp="comp-editorial"] .L-sec-h.L-sec-full .L-head { position: static; max-width: 520px; }
-.L-sec-full .L-tiers { font-size: 15px; }
-.L-sec-full .L-tiers tr > :first-child { width: 20%; }
 .L-page[data-comp="comp-editorial"] .L-sec-h .L-head {
   grid-column: 1;
   /* sticks for the length of its section, clear of the stuck nav */
@@ -1330,7 +1288,6 @@
 .L-page[data-comp="comp-keynote"] .L-c-line { display: none; }
 .L-page[data-comp="comp-keynote"] .L-c-left { order: -1; }
 .L-page[data-comp="comp-keynote"] .L-tier { grid-template-columns: 1fr; max-width: 52ch; margin: 0 auto; gap: 18px; }
-.L-page[data-comp="comp-keynote"] .L-table { max-width: 720px; margin-left: auto; margin-right: auto; }
 .L-page[data-comp="comp-keynote"] .L-foot-grid { grid-template-columns: 1fr; justify-items: center; text-align: center; }
 .L-page[data-comp="comp-keynote"] .L-foot-brand, .L-page[data-comp="comp-keynote"] .L-foot-col { justify-items: center; }
 .L-page[data-comp="comp-keynote"] .L-foot-base { justify-content: center; }
@@ -1762,3 +1719,9 @@
 .L-page .L-assess-card .L-assess-meta div { display: grid; gap: 6px; }
 .L-page .L-assess-card .L-assess-meta dd { margin: 0; font-size: 15px; line-height: 1.55; color: var(--muted); }
 .L-page .L-assess-card .btn { align-self: flex-start; margin-top: auto; }
+/* the quiet text comes up to full strength with the column under the pointer */
+.L-page .L-assess-card :is(.L-assess-price, .L-assess-meta dd) { transition: color var(--dur) var(--ease); }
+.L-page .L-assess-card.card:hover :is(.L-assess-price, .L-assess-meta dd) { color: var(--text); }
+/* the 90-day tiers, the same three columns under the measures. The button
+   is pressed once its tier is the form's pick */
+.L-page .L-assess-card .btn[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
