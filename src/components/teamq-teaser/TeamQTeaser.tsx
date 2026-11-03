@@ -74,7 +74,7 @@ const ASK_WORDS: AskWords = {
   thanksText: "A person at SAMUH will be in touch about your team.",
 };
 
-export function TeamQTeaser({ baseline, answer }: { baseline: TeaserResult; answer: Answer }) {
+export function TeamQTeaser({ baseline, answer, compact = false }: { baseline: TeaserResult; answer: Answer; /** the home (2 Nov 2026): the readout and the three levers the model would move first, no optimizer button, no reset */ compact?: boolean }) {
   const [values, setValues] = useTeaserValues();
   const [result, setResult] = useState<TeaserResult>(baseline);
   const [stale, setStale] = useState(false);
@@ -141,6 +141,9 @@ export function TeamQTeaser({ baseline, answer }: { baseline: TeaserResult; answ
 
   const environment = FACTORS.filter((factor) => factor.group === "environment");
   const lifestyle = FACTORS.filter((factor) => factor.group === "lifestyle");
+  // the home: only the levers the optimizer ranks, in the model's order
+  const leverIds = answer.levers.map((lever) => lever.id);
+  const levers = leverIds.map((id) => FACTORS.find((factor) => factor.id === id)).filter((factor): factor is Factor => Boolean(factor));
 
   return (
     <div className="teaser">
@@ -174,6 +177,16 @@ export function TeamQTeaser({ baseline, answer }: { baseline: TeaserResult; answ
           </p>
         </div>
 
+        {compact ? (
+          <div className="teaser-inputs">
+            <fieldset className="teaser-group">
+              <legend>Three factors the model would move first</legend>
+              {levers.map((factor) => (
+                <Slider key={factor.id} factor={factor} value={values[factor.id]} onChange={move} />
+              ))}
+            </fieldset>
+          </div>
+        ) : (
         <div className="teaser-inputs">
           <fieldset className="teaser-group">
             <legend>{GROUP_LABELS.environment}</legend>
@@ -211,6 +224,7 @@ export function TeamQTeaser({ baseline, answer }: { baseline: TeaserResult; answ
             </p>
           ) : null}
         </div>
+        )}
       </div>
     </div>
   );

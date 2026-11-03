@@ -484,22 +484,19 @@
 .L-s-circles[data-v="morph"] .L-fm-arrive-ind { opacity: clamp(0, (var(--i, 0) - 0.05) / 0.35, 1); }
 /* the key swaps as it arrives: the individual and the organization shut
    and fade, the team opens and fades up in their place */
-/* in three beats so nothing overlaps (2 Nov 2026): the old words fade
-   (0 to 0.3 of --q), the old entries fold and the new one opens (0.3 to
-   0.6), the new words fade in (0.6 to 0.9) */
-.L-s-circles[data-v="morph"] .L-fm-legend-3 .L-fm-item { overflow: hidden; }
-.L-s-circles[data-v="morph"] .L-fm-legend-3 .L-fm-item-team { opacity: clamp(0, (var(--q, 0) - 0.65) / 0.25, 1); max-height: calc(clamp(0, (var(--q, 0) - 0.3) / 0.3, 1) * 200px); margin-bottom: calc(-16px * (1 - clamp(0, (var(--q, 0) - 0.3) / 0.3, 1))); }
-.L-s-circles[data-v="morph"] .L-fm-legend-3 .L-fm-item-org { opacity: clamp(0, 1 - var(--q, 0) / 0.3, 1); max-height: calc((1 - clamp(0, (var(--q, 0) - 0.3) / 0.3, 1)) * 200px); margin-bottom: calc(-16px * clamp(0, (var(--q, 0) - 0.3) / 0.3, 1)); }
-/* the individual's entry opens with its circle (--i) and folds with the enterprise's when the team comes (--q) */
-.L-s-circles[data-v="morph"] .L-fm-legend-3 .L-fm-item-ind {
-  opacity: min(clamp(0, (var(--i, 0) - 0.4) / 0.4, 1), clamp(0, 1 - var(--q, 0) / 0.3, 1));
-  max-height: calc(min(clamp(0, var(--i, 0) / 0.6, 1), 1 - clamp(0, (var(--q, 0) - 0.3) / 0.3, 1)) * 200px);
-  margin-bottom: calc(-16px * (1 - min(clamp(0, var(--i, 0) / 0.6, 1), 1 - clamp(0, (var(--q, 0) - 0.3) / 0.3, 1))));
-}
+/* the key stacks, top to bottom, as the circles arrive (Wilfred, 2 Nov
+   2026): the enterprise with the picture (--g), the individual beneath it
+   (--i), the team beneath that (--q). Every entry keeps its place from the
+   start and only fades and settles into it, so the column never changes
+   height and nothing jumps */
+.L-s-circles[data-v="morph"] .L-fm-legend-3 .L-fm-item-org { --in: clamp(0, (var(--g, 0) - 0.55) / 0.35, 1); }
+.L-s-circles[data-v="morph"] .L-fm-legend-3 .L-fm-item-ind { --in: clamp(0, (var(--i, 0) - 0.4) / 0.4, 1); }
+.L-s-circles[data-v="morph"] .L-fm-legend-3 .L-fm-item-team { --in: clamp(0, (var(--q, 0) - 0.5) / 0.4, 1); }
+.L-s-circles[data-v="morph"] .L-fm-legend-3 .L-fm-item { opacity: var(--in, 1); transform: translateY(calc((1 - var(--in, 1)) * 10px)); }
 /* the titles take turns under one fixed eyebrow and rule, on the same
    beats as the key: where organizations focus is gone before where
    performance happens arrives */
-.L-s-circles[data-v="morph"] .L-fm-title.L-fm-h0 { opacity: clamp(0, 1 - var(--q, 0) / 0.3, 1); }
+.L-s-circles[data-v="morph"] .L-fm-title.L-fm-h0 { opacity: clamp(0, 1 - var(--q, 0) / 0.35, 1); }
 .L-s-circles[data-v="morph"] .L-fm-title.L-fm-h1 { opacity: min(clamp(0, (var(--q, 0) - 0.65) / 0.25, 1), clamp(0, 1 - (var(--p, 0) - 0.3) / 0.2, 1)); }
 .L-s-circles[data-v="morph"] :is(.L-fm-title, .L-fm-legend).L-fm-in { opacity: clamp(0, (var(--p, 0) - 0.5) / 0.2, 1); }
 /* whatever has faded out takes no pointer. The two keys share a cell, and

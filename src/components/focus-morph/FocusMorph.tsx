@@ -106,9 +106,11 @@ const STAR_LAG = 1.2;
  *  and the two callouts the Circles diagram shows on hover, here always
  *  shown. */
 const FOCUS_GEOMETRY: { key: Exclude<Key, "phys">; y: number }[] = [
-  { key: "team", y: 246 },
-  { key: "ind", y: 126 },
+  // the key reads top to bottom in the order the circles arrive: the
+  // enterprise, the individual, the team (Wilfred, 2 Nov 2026)
   { key: "org", y: 362 },
+  { key: "ind", y: 126 },
+  { key: "team", y: 246 },
 ];
 
 const clamp = (v: number) => Math.max(0, Math.min(1, v));
@@ -139,8 +141,8 @@ const shapesAt = (e: number, q: number, g: number, i: number): Record<Key, Shape
 const same = (a: Key[], b: Key[]) => a.length === b.length && a.every((k, i) => k === b[i]);
 
 export function FocusMorph({ words = DEFAULTS.home.focus }: { /** the heads and the key, from the admin */ words?: HomeContent["focus"] }) {
-  // the words sit on the geometry: levels in the order team, individual,
-  // organization
+  // the words sit on the geometry: levels in the order enterprise,
+  // individual, team
   const FOCUS = FOCUS_GEOMETRY.map((f, i) => ({ ...f, name: words.levels[i]?.name ?? "", label: words.levels[i]?.label ?? "", note: words.levels[i]?.note ?? "" }));
   const root = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
@@ -360,7 +362,7 @@ export function FocusMorph({ words = DEFAULTS.home.focus }: { /** the heads and 
         <div className="L-fm-key">
           <dl className="L-fm-legend L-fm-legend-3 L-fm-out" aria-hidden={venn || undefined}>
             {FOCUS.map(({ key: k, name, label, note }) => (
-              <div className={`L-fm-item L-fm-item-${k}`} key={k} data-on={on(k)} data-off={(k === "team" ? !arrived : k === "ind" ? !joined || arrived : arrived) || undefined} onPointerEnter={keyHover(k)} onPointerLeave={onLeave}>
+              <div className={`L-fm-item L-fm-item-${k}`} key={k} data-on={on(k)} data-off={(k === "team" ? !arrived : k === "ind" ? !joined : false) || undefined} onPointerEnter={keyHover(k)} onPointerLeave={onLeave}>
                 <dt>{name}</dt>
                 <dd><strong>{label}.</strong> {note}</dd>
               </div>

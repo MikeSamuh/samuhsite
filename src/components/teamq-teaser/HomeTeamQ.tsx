@@ -4,7 +4,7 @@ import Link from "next/link";
 import { TeamQTeaser, type Answer, type TeaserResult } from "./TeamQTeaser";
 import { TeaserValues } from "./TeaserValues";
 import { DEFAULTS, type HomeContent } from "@/lib/content/defaults";
-import { LEADQ_HREF, TEAMQ_PATH } from "@/lib/site";
+import { LEADQ_HREF } from "@/lib/site";
 import "./teaser.css";
 
 export interface HomeTeamQProps {
@@ -15,8 +15,8 @@ export interface HomeTeamQProps {
 }
 
 /** The tool itself, right under the circles, usable on the page (Mike,
- *  2 Nov 2026). No explainer around it: the head, the dials, one button
- *  to LeadQ and a quiet link to /teamq for the visitor with questions. */
+ *  2 Nov 2026). No explainer around it: the head, the readout, the three
+ *  levers the model ranks, and one button to LeadQ. */
 export function HomeTeamQ({ baseline, answer, tool = DEFAULTS.home.tool }: HomeTeamQProps) {
   return (
     <TeaserValues>
@@ -26,12 +26,11 @@ export function HomeTeamQ({ baseline, answer, tool = DEFAULTS.home.tool }: HomeT
           <h2 className="sec teaser-title" id="home-tool-title">
             {tool.title}
           </h2>
-          <TeamQTeaser baseline={baseline} answer={answer} />
+          <TeamQTeaser baseline={baseline} answer={answer} compact />
           <div className="teaser-pitch">
             {tool.pitch ? <p className="L-mid">{tool.pitch}</p> : null}
             <div className="cta-row">
               <Link className="btn" href={LEADQ_HREF}>{tool.cta} <span className="arrow">&rarr;</span></Link>
-              <Link className="inline-link L-text-cta" href={TEAMQ_PATH}>How TeamQ reads a team <span className="arrow">&rarr;</span></Link>
             </div>
           </div>
         </div>

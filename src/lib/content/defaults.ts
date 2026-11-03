@@ -79,10 +79,11 @@ export const DEFAULTS = {
       eyebrow: "The overlooked performance driver",
       titleOthers: "Where *organizations* focus",
       titleWe: "Where *performance* happens",
+      // top to bottom, in the order the circles arrive
       levels: [
-        { name: "Team", label: "People reside in organizations but they perform in teams", note: "That’s where goals are set, people collaborate, and results are delivered." },
-        { name: "Individual", label: "Managing and rewarding performance", note: "One person at a time." },
         { name: "Enterprise", label: "Driving change through enterprise-wide transformations", note: "Often many at a time." },
+        { name: "Individual", label: "Managing and rewarding performance", note: "One person at a time." },
+        { name: "Team", label: "People reside in organizations but they perform in teams", note: "That’s where goals are set, people collaborate, and results are delivered." },
       ],
     },
     tool: {
