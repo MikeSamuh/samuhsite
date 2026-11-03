@@ -75,7 +75,11 @@ const HEAD = { from: 0.05, to: 0.4 };
 const GROW = { from: 0.2, to: 0.95 };
 /** the track, as a share of the pinned scroll: the team arrives, the Venn
  *  comes last, a pause between each so it reads */
-const ARRIVE = { from: 0.2, to: 0.7 };
+/** three beats on the pinned scroll (Wilfred, 2 Nov 2026): the enterprise
+ *  alone, then the individual appears at its centre, then the team arrives
+ *  between them */
+const INDIVIDUAL = { from: 0.08, to: 0.32 };
+const ARRIVE = { from: 0.5, to: 0.85 };
 /** past the end of the track: the Venn never comes (2 Nov 2026) */
 const MORPH = { from: 2, to: 3 };
 
@@ -115,11 +119,12 @@ const ease = (t: number) => t * t * (3 - 2 * t);
 const over = (p: number, span: { from: number; to: number }) => ease(clamp((p - span.from) / (span.to - span.from)));
 
 /** the circles at this point of the travel: g is the growth from the dot,
- *  q the team's arrival (the individual rises with it), e the Venn */
-const shapesAt = (e: number, q: number, g: number): Record<Key, Shape> =>
+ *  i the individual's arrival, q the team's arrival (the individual rises
+ *  with it), e the Venn */
+const shapesAt = (e: number, q: number, g: number, i: number): Record<Key, Shape> =>
   Object.fromEntries(
     KEYS.map((k) => {
-      const r0 = k === "team" ? START.team.r * q : START[k].r * g;
+      const r0 = k === "team" ? START.team.r * q : k === "ind" ? START.ind.r * g * i : START[k].r * g;
       const cy0 = k === "ind" ? lerp(IND_ALONE.cy, START.ind.cy, q) : START[k].cy;
       return [k, { cx: lerp(START[k].cx, END[k].cx, e), cy: lerp(cy0, END[k].cy, e), r: lerp(r0, END[k].r, e) }];
     }),
@@ -147,6 +152,7 @@ export function FocusMorph({ words = DEFAULTS.home.focus }: { /** the heads and 
     star: { x: 0, y: 0 } as Pt,
     e: 0,
     q: 0,
+    i: 0,
     g: 0,
     hot: [] as Key[],
   });
@@ -176,10 +182,12 @@ export function FocusMorph({ words = DEFAULTS.home.focus }: { /** the heads and 
       // the climb: 0 with the section's top at the foot of the view, 1 pinned
       const enter = clamp((window.innerHeight - rect.top) / Math.max(1, window.innerHeight - navH));
       m.current.g = over(enter, GROW);
+      m.current.i = over(next, INDIVIDUAL);
       m.current.q = over(next, ARRIVE);
       m.current.e = over(next, MORPH);
       stage.style.setProperty("--h", over(enter, HEAD).toFixed(4));
       stage.style.setProperty("--g", m.current.g.toFixed(4));
+      stage.style.setProperty("--i", m.current.i.toFixed(4));
       stage.style.setProperty("--q", m.current.q.toFixed(4));
       stage.style.setProperty("--p", m.current.e.toFixed(4));
       setP(next);
@@ -195,16 +203,19 @@ export function FocusMorph({ words = DEFAULTS.home.focus }: { /** the heads and 
       cancelAnimationFrame(raf);
       stage.style.removeProperty("--h");
       stage.style.removeProperty("--g");
+      stage.style.removeProperty("--i");
       stage.style.removeProperty("--q");
       stage.style.removeProperty("--p");
     };
   }, []);
 
+  const i = over(p, INDIVIDUAL);
   const q = over(p, ARRIVE);
   const e = over(p, MORPH);
+  const joined = i > 0.5;
   const arrived = q > 0.5;
   const venn = e > 0.5;
-  const shapes = shapesAt(e, q, g);
+  const shapes = shapesAt(e, q, g, i);
 
   /** which circles the pointer is in, against the live positions. Nested:
    *  the innermost only, so the individual wins over the team, the team
@@ -213,7 +224,7 @@ export function FocusMorph({ words = DEFAULTS.home.focus }: { /** the heads and 
   const hit = (pt: Pt | null): Key[] => {
     if (!pt) return [];
     const s = m.current;
-    const live = shapesAt(s.e, s.q, s.g);
+    const live = shapesAt(s.e, s.q, s.g, s.i);
     const x = pt.x + FRAME.w / 2;
     const y = pt.y + FRAME.h / 2;
     const inside = (k: Key, pad = 0) => {
@@ -223,6 +234,7 @@ export function FocusMorph({ words = DEFAULTS.home.focus }: { /** the heads and 
     if (s.e <= 0.5) {
       for (const k of ["ind", "team", "org"] as const) {
         if (k === "team" && s.q < 0.5) continue;
+        if (k === "ind" && s.i < 0.5) continue;
         if (inside(k, 4)) return [k];
       }
       return [];
@@ -292,7 +304,7 @@ export function FocusMorph({ words = DEFAULTS.home.focus }: { /** the heads and 
         if (s.e > 0.5) {
           // held inside every circle, where they are drawn right now. A few
           // passes, since pulling toward one circle can push out of another
-          const live = shapesAt(s.e, s.q, s.g);
+          const live = shapesAt(s.e, s.q, s.g, s.i);
           for (let pass = 0; pass < 3; pass += 1) {
             for (const k of KEYS) {
               const c = live[k];
@@ -342,7 +354,7 @@ export function FocusMorph({ words = DEFAULTS.home.focus }: { /** the heads and 
         <div className="L-fm-key">
           <dl className="L-fm-legend L-fm-legend-3 L-fm-out" aria-hidden={venn || undefined}>
             {FOCUS.map(({ key: k, name, label, note }) => (
-              <div className={`L-fm-item L-fm-item-${k}`} key={k} data-on={on(k)} data-off={((k === "team") !== arrived) || undefined} onPointerEnter={keyHover(k)} onPointerLeave={onLeave}>
+              <div className={`L-fm-item L-fm-item-${k}`} key={k} data-on={on(k)} data-off={(k === "team" ? !arrived : k === "ind" ? !joined || arrived : arrived) || undefined} onPointerEnter={keyHover(k)} onPointerLeave={onLeave}>
                 <dt>{name}</dt>
                 <dd><strong>{label}.</strong> {note}</dd>
               </div>
@@ -357,7 +369,7 @@ export function FocusMorph({ words = DEFAULTS.home.focus }: { /** the heads and 
           className="L-c-svg"
           viewBox={`0 0 ${FRAME.w} ${FRAME.h}`}
           role="img"
-          aria-label={arrived ? "Three nested circles: organization, team, individual" : "Two nested circles: organization and individual"}
+          aria-label={arrived ? "Three nested circles: enterprise, team, individual" : joined ? "Two nested circles: enterprise and individual" : "One circle: the enterprise"}
           onPointerMove={onMove}
           onPointerLeave={onLeave}
           onClick={(ev) => { const ks = hit(toFrame(ev)); setHotIfChanged(same(ks, m.current.hot) ? [] : ks); }}
@@ -373,8 +385,8 @@ export function FocusMorph({ words = DEFAULTS.home.focus }: { /** the heads and 
               <g key={k} className={`L-fm-g L-fm-g-${k}`} ref={(el) => { gRefs.current[k] = el; }} data-on={on(k)}>
                 {/* the hover fill: light, the circle's colour, blending where two circles are both hot */}
                 <circle cx={s.cx} cy={s.cy} r={s.r} className="L-fm-fill" />
-                {/* the team grows in on the first stretch of the scroll, its word with it */}
-                {k === "team" ? <g className="L-fm-arrive">{ring}{word}</g> : <>{ring}{word}</>}
+                {/* the individual grows in on the first beat, the team on the second, each word with its ring */}
+                {k === "team" ? <g className="L-fm-arrive">{ring}{word}</g> : k === "ind" ? <g className="L-fm-arrive-ind">{ring}{word}</g> : <>{ring}{word}</>}
               </g>
             );
           })}

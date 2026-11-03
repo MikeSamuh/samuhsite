@@ -463,7 +463,7 @@
    one cell and take turns, two keys share another */
 /* long enough that each state holds under the hand. Two states since
    2 Nov 2026 (the Venn was cut), so the track is shorter */
-.L-s-circles[data-v="morph"] { min-height: 230vh; }
+.L-s-circles[data-v="morph"] { min-height: 320vh; }
 /* the head arrives first as the section climbs into view (--h), the key
    and the circles close behind it (--g) */
 .L-s-circles[data-v="morph"] .L-fm-head { opacity: var(--h, var(--g, 0)); transform: translateY(calc((1 - var(--h, var(--g, 0))) * 20px)); }
@@ -479,6 +479,8 @@
 .L-s-circles[data-v="morph"] :is(.L-c-t, .L-fm-mark).L-fm-in { opacity: clamp(0, (var(--p, 0) - 0.6) / 0.4, 1); }
 /* the team arrives: its ring and its word grow in with --q, its key entry after */
 .L-s-circles[data-v="morph"] .L-fm-arrive { opacity: clamp(0, (var(--q, 0) - 0.15) / 0.5, 1); }
+/* the individual arrives on the first beat (--i), its ring and word together */
+.L-s-circles[data-v="morph"] .L-fm-arrive-ind { opacity: clamp(0, (var(--i, 0) - 0.15) / 0.5, 1); }
 /* the key swaps as it arrives: the individual and the organization shut
    and fade, the team opens and fades up in their place */
 /* in three beats so nothing overlaps (2 Nov 2026): the old words fade
@@ -486,7 +488,13 @@
    0.6), the new words fade in (0.6 to 0.9) */
 .L-s-circles[data-v="morph"] .L-fm-legend-3 .L-fm-item { overflow: hidden; }
 .L-s-circles[data-v="morph"] .L-fm-legend-3 .L-fm-item-team { opacity: clamp(0, (var(--q, 0) - 0.65) / 0.25, 1); max-height: calc(clamp(0, (var(--q, 0) - 0.3) / 0.3, 1) * 200px); margin-bottom: calc(-16px * (1 - clamp(0, (var(--q, 0) - 0.3) / 0.3, 1))); }
-.L-s-circles[data-v="morph"] .L-fm-legend-3 :is(.L-fm-item-ind, .L-fm-item-org) { opacity: clamp(0, 1 - var(--q, 0) / 0.3, 1); max-height: calc((1 - clamp(0, (var(--q, 0) - 0.3) / 0.3, 1)) * 200px); margin-bottom: calc(-16px * clamp(0, (var(--q, 0) - 0.3) / 0.3, 1)); }
+.L-s-circles[data-v="morph"] .L-fm-legend-3 .L-fm-item-org { opacity: clamp(0, 1 - var(--q, 0) / 0.3, 1); max-height: calc((1 - clamp(0, (var(--q, 0) - 0.3) / 0.3, 1)) * 200px); margin-bottom: calc(-16px * clamp(0, (var(--q, 0) - 0.3) / 0.3, 1)); }
+/* the individual's entry opens with its circle (--i) and folds with the enterprise's when the team comes (--q) */
+.L-s-circles[data-v="morph"] .L-fm-legend-3 .L-fm-item-ind {
+  opacity: min(clamp(0, (var(--i, 0) - 0.4) / 0.4, 1), clamp(0, 1 - var(--q, 0) / 0.3, 1));
+  max-height: calc(min(clamp(0, var(--i, 0) / 0.6, 1), 1 - clamp(0, (var(--q, 0) - 0.3) / 0.3, 1)) * 200px);
+  margin-bottom: calc(-16px * (1 - min(clamp(0, var(--i, 0) / 0.6, 1), 1 - clamp(0, (var(--q, 0) - 0.3) / 0.3, 1))));
+}
 /* the titles take turns under one fixed eyebrow and rule, on the same
    beats as the key: where organizations focus is gone before where
    performance happens arrives */
