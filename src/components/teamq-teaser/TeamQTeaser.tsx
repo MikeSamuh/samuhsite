@@ -201,8 +201,16 @@ export function TeamQTeaser({ baseline, answer, staged = false }: { baseline: Te
 
   return (
     <div className="teaser" data-stage={staged ? stage : undefined}>
+      {/* the home's empty stage: the whole tool shaded under one centred button */}
+      {blank ? (
+        <div className="teaser-cover">
+          <button className="btn btn-alt" type="button" onClick={() => tween(BASELINE, "example")} disabled={moving}>
+            Generate an example <span className="arrow">&rarr;</span>
+          </button>
+        </div>
+      ) : null}
       {/* one fold: the readout on the left, the eleven sliders on the right */}
-      <div className="teaser-fold">
+      <div className="teaser-fold" aria-hidden={blank || undefined}>
         <div className="teaser-left">
           {/* the second move, above the readout once the example is in (Wilfred, 3 Nov 2026) */}
           {staged && stage === "example" ? (
@@ -247,14 +255,6 @@ export function TeamQTeaser({ baseline, answer, staged = false }: { baseline: Te
 
         {staged ? (
           <div className="teaser-inputs">
-            {/* the dials greyed out under one floating button until the example is generated */}
-            {blank ? (
-              <div className="teaser-cover">
-                <button className="btn btn-alt" type="button" onClick={() => tween(BASELINE, "example")} disabled={moving}>
-                  Generate an example <span className="arrow">&rarr;</span>
-                </button>
-              </div>
-            ) : null}
             <fieldset className="teaser-group" disabled={blank}>
               <legend>{GROUP_LABELS.environment}</legend>
               {environment.map((factor) => (

@@ -921,10 +921,11 @@
 
 /* the home's empty stage (Wilfred, 3 Nov 2026): the dials sit greyed
    out under one button, Generate an example, floating over them */
-.teaser-inputs { position: relative; }
-.teaser[data-stage="empty"] .teaser-group { opacity: 0.3; filter: grayscale(1); pointer-events: none; transition: opacity calc(var(--dur) * 2) var(--ease), filter calc(var(--dur) * 2) var(--ease); }
-.teaser-cover { position: absolute; inset: 0; display: grid; place-items: center; z-index: 1; }
-.teaser-cover .btn { box-shadow: 0 0 0 10px color-mix(in srgb, var(--base) 70%, transparent); }
+.teaser { position: relative; }
+.teaser[data-stage="empty"] .teaser-fold { opacity: 0.3; filter: grayscale(1); pointer-events: none; transition: opacity calc(var(--dur) * 2) var(--ease), filter calc(var(--dur) * 2) var(--ease); }
+.teaser[data-stage="empty"] .teaser-left { position: static; }
+.teaser-cover { position: absolute; inset: 0; display: grid; place-items: center; z-index: 3; }
+.teaser-cover .btn { box-shadow: 0 0 0 12px color-mix(in srgb, var(--base) 70%, transparent); }
 /* the second move sits above the readout once the example is in */
 .teaser-next { display: grid; justify-items: start; }
 /* the call-out between the tool and the cards */
