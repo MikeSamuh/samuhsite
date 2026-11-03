@@ -428,6 +428,22 @@ export function Reveal({ children, className = "" }: { children: React.ReactNode
 }
 
 export function Dictionary({ d = DEFAULTS.home.dictionary }: { d?: HomeContent["dictionary"] }) {
+  // the entry opens in three beats once a third of it is in view: the
+  // word, then the sound and how to say it, then what it means. The beats
+  // are in the CSS (.L-dict[data-in]); this only says when
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (!("IntersectionObserver" in window)) { el.dataset.in = "true"; return; }
+    const io = new IntersectionObserver((entries) => {
+      if (!entries.some((e) => e.isIntersecting)) return;
+      el.dataset.in = "true";
+      io.disconnect();
+    }, { threshold: 0.35 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
   const say = () => {
     const a = new Audio("/samuh.m4a");
     a.play().catch(() => {
@@ -437,7 +453,7 @@ export function Dictionary({ d = DEFAULTS.home.dictionary }: { d?: HomeContent["
     });
   };
   return (
-    <div className="L-dict">
+    <div className="L-dict" ref={ref}>
       <div className="L-dict-head">
         <span className="L-dict-word">{d.word}</span>
         <button className="L-dict-say" onClick={say} aria-label="Hear how Samuh is pronounced" title="Hear it">
