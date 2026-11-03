@@ -491,8 +491,11 @@
    height and nothing jumps */
 .L-s-circles[data-v="morph"] .L-fm-legend-3 .L-fm-item-org { --in: clamp(0, (var(--g, 0) - 0.55) / 0.35, 1); }
 .L-s-circles[data-v="morph"] .L-fm-legend-3 .L-fm-item-ind { --in: clamp(0, (var(--i, 0) - 0.4) / 0.4, 1); }
-.L-s-circles[data-v="morph"] .L-fm-legend-3 .L-fm-item-team { --in: clamp(0, (var(--q, 0) - 0.5) / 0.4, 1); }
 .L-s-circles[data-v="morph"] .L-fm-legend-3 .L-fm-item { opacity: var(--in, 1); transform: translateY(calc((1 - var(--in, 1)) * 10px)); }
+/* the third beat: the two keys share one cell and cross over on --q, the
+   enterprise and the individual gone before the team's line is in */
+.L-s-circles[data-v="morph"] .L-fm-legend-others { opacity: clamp(0, 1 - var(--q, 0) / 0.35, 1); }
+.L-s-circles[data-v="morph"] .L-fm-legend-team { opacity: clamp(0, (var(--q, 0) - 0.55) / 0.35, 1); transform: translateY(calc((1 - clamp(0, (var(--q, 0) - 0.55) / 0.35, 1)) * 10px)); }
 /* the titles take turns under one fixed eyebrow and rule, on the same
    beats as the key: where organizations focus is gone before where
    performance happens arrives */
@@ -588,7 +591,7 @@
   .L-page[data-comp="comp-editorial"] .L-s-circles[data-v="morph"] > .L-wrap > .L-fm { grid-column: 1; grid-row: 1; }
   .L-page[data-comp="comp-editorial"] .L-s-circles[data-v="morph"] > .L-wrap > .L-fm-side { grid-column: 1; grid-row: 2; gap: 20px; padding-top: 0; align-self: auto; }
   .L-fm-legend { grid-template-columns: 1fr 1fr; gap: 16px 18px; }
-  .L-fm-legend-3 .L-fm-item-team { grid-column: 1 / -1; }
+  .L-fm-legend-team .L-fm-item-team { grid-column: 1 / -1; }
   .L-page[data-comp="comp-editorial"] .L-s-circles[data-v="morph"] .L-circ { gap: 18px; }
 }
 

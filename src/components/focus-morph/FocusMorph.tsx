@@ -359,15 +359,21 @@ export function FocusMorph({ words = DEFAULTS.home.focus }: { /** the heads and 
             </div>
           </div>
         </div>
+        {/* two keys in one cell: the enterprise and the individual stack
+            as they arrive, then give way to the team alone on the third
+            beat (Wilfred, 2 Nov 2026). Neither changes height, so the
+            column never moves */}
         <div className="L-fm-key">
-          <dl className="L-fm-legend L-fm-legend-3 L-fm-out" aria-hidden={venn || undefined}>
-            {FOCUS.map(({ key: k, name, label, note }) => (
-              <div className={`L-fm-item L-fm-item-${k}`} key={k} data-on={on(k)} data-off={(k === "team" ? !arrived : k === "ind" ? !joined : false) || undefined} onPointerEnter={keyHover(k)} onPointerLeave={onLeave}>
-                <dt>{name}</dt>
-                <dd><strong>{label}.</strong> {note}</dd>
-              </div>
-            ))}
-          </dl>
+          {(["others", "team"] as const).map((which) => (
+            <dl className={`L-fm-legend L-fm-legend-3 L-fm-legend-${which} L-fm-out`} key={which} aria-hidden={(which === "team" ? !arrived : arrived) || undefined}>
+              {FOCUS.filter(({ key: k }) => (which === "team") === (k === "team")).map(({ key: k, name, label, note }) => (
+                <div className={`L-fm-item L-fm-item-${k}`} key={k} data-on={on(k)} data-off={(k === "team" ? !arrived : k === "ind" ? !joined || arrived : arrived) || undefined} onPointerEnter={keyHover(k)} onPointerLeave={onLeave}>
+                  <dt>{name}</dt>
+                  <dd><strong>{label}.</strong> {note}</dd>
+                </div>
+              ))}
+            </dl>
+          ))}
         </div>
       </div>
 
