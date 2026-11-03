@@ -56,7 +56,7 @@ export const SITE: Site = {
       title: "Find your team’s hidden performance tax",
       pitch: null,
       cta: "Take LeadQ, free",
-      ctaHref: "/start?door=leadq",
+      ctaHref: "/#assess",
     },
     // the client's network background, until the real film arrives. Not
     // in git (video never is): public/hero-bg.mp4 on the machine that
@@ -76,10 +76,9 @@ export const ROUTES: Record<PageId, string> = {
   insights: "/insights",
   about: "/about",
   contact: "/contact",
-  // "Get started": the fork. LeadQ, TeamQ, OrgQ, or log in (2 Nov 2026).
-  // The TeamQ teaser stays at /teamq, linked from the TeamQ card and the
-  // footer
-  start: "/start",
+  // the way in: the email box on the home, under the tool (3 Nov 2026).
+  // /start the page is gone; Get started buttons on other pages land here
+  start: "/#assess",
 };
 
 /** The TeamQ explainer, not a nav page: linked from the tool on the home,
@@ -97,9 +96,9 @@ export function platformLink(intent: "leadq" | "teamq" | "login"): string | null
   return intent === "login" ? `${PLATFORM_URL}/login` : `${PLATFORM_URL}/start?intent=${intent}`;
 }
 
-/** The free LeadQ, the one way in (Mike's call of 2 Nov 2026). /start is
- *  the email box: the address, a magic link, the platform. The platform's
- *  own LeadQ entry once it exists. The home's call-out and close use it;
+/** The free LeadQ, the one way in (Mike's call of 2 Nov 2026). The email
+ *  box on the home: the address, a magic link, the platform. The
+ *  platform's own LeadQ entry once it exists. The home's close uses it;
  *  the nav and footer say Let's talk and go to /contact (3 Nov). */
 export const LEADQ_HREF: string = platformLink("leadq") ?? ROUTES.start;
 

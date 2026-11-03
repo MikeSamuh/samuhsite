@@ -10,6 +10,7 @@ import { track } from "@/lib/analytics";
 import { CONTACT_EMAIL } from "@/lib/contact-details";
 import { EMAIL_SHAPE, PERSONAL_DOMAINS } from "@/lib/lead";
 import { mhqBand } from "@/lib/tokens";
+import { ROUTES } from "@/lib/site";
 import { Capacity } from "./Capacity";
 import { useTeaserValues, type Values } from "./TeaserValues";
 import {
@@ -446,7 +447,7 @@ export function TeamQAsk({ words = ASK_WORDS }: { /** the ask's words, from the 
       <div className="teaser-ask teaser-done" id="ask" ref={success} tabIndex={-1} role="status">
         <h2 className="teaser-ask-title">{words.thanksTitle}</h2>
         <p>{words.thanksText}</p>
-        <Link className="btn btn-secondary" href="/talk">
+        <Link className="btn btn-secondary" href={ROUTES.contact}>
           Or book a time <span className="arrow">&rarr;</span>
         </Link>
       </div>

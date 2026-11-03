@@ -132,12 +132,11 @@ export const SCHEMA: PageSchema[] = [
   },
   {
     id: "start",
-    name: "Start here",
-    note: "The email box behind Start here: the address, a magic link, the platform.",
-    path: "/start",
+    name: "The email box",
+    note: "The way in: on the home under the tool, on Contact, and under the Solutions cards.",
+    path: "/#assess",
     sections: [
-      { key: "head", label: "Page head", fields: [t("kicker", "Eyebrow"), t("title", "Title"), ta("lede", "Lede")] },
-      { key: "form", label: "The box", note: "Also on /contact. {email} becomes the address given", fields: [t("label", "Field label"), t("placeholder", "Placeholder"), t("button", "Button"), t("thanksTitle", "Thank you title"), ta("thanksText", "Thank you text"), t("talk", "Prefer to talk line"), t("talkLink", "Its link text")] },
+      { key: "form", label: "The box", note: "{email} becomes the address given", fields: [t("label", "Field label"), t("placeholder", "Placeholder"), t("button", "Button"), t("thanksTitle", "Thank you title"), ta("thanksText", "Thank you text"), t("talk", "Prefer to talk line"), t("talkLink", "Its link text")] },
     ],
   },
   {

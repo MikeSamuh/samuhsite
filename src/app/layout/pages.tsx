@@ -8,7 +8,7 @@ import type { PageId } from "@/lib/layout";
 import { ROUTES } from "@/lib/site";
 import { ContactAside } from "@/components/contact/ContactAside";
 import { StartEmail } from "@/components/start/StartEmail";
-import { Booking } from "@/components/talk/TalkForm";
+import { Booking } from "@/components/contact/Booking";
 import { ProcessFigure, StageFigure } from "@/components/process-figure/ProcessFigure";
 import type { PoseId } from "@/components/process-figure/figures";
 import { Honeypot } from "@/components/lead/Honeypot";
@@ -80,10 +80,16 @@ function Sec({ n, kicker, title, children, id, cls }: { n: string; kicker: strin
 
 /* ------------------------------------------------------------------ */
 
-function Solutions({ c = DEFAULTS.solutions, g = DEFAULTS.global }: { c?: SolutionsContent; g?: GlobalContent }) {
+function Solutions({ c = DEFAULTS.solutions, g = DEFAULTS.global, s = DEFAULTS.start }: { c?: SolutionsContent; g?: GlobalContent; /** the email box's words */ s?: StartContent }) {
   const TIERS = c.tiers.items;
   // nothing picked until the reader picks: a tier's button, or the form's
   const [tier, setTier] = useState("");
+  // the email box under the three measures: LeadQ or TeamQ, opened by the card's button (3 Nov 2026)
+  const [box, setBox] = useState<"leadq" | "teamq" | null>(null);
+  const boxRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (box) boxRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }, [box]);
   // the ask at the foot: an email and the pick, posted as flow "solutions"
   const { submit, state, attempt } = useLeadSubmit("solutions");
   const [token, setToken] = useState<string>();
@@ -111,9 +117,6 @@ function Solutions({ c = DEFAULTS.solutions, g = DEFAULTS.global }: { c?: Soluti
     if (noName || found || unpicked) return;
     void submit({ name, phone: phone || undefined, email, pick: tier, company_website: String(data.get("company_website") ?? "") || undefined, turnstileToken: token });
   };
-  // a measure's button: LeadQ and TeamQ open that door on /start, OrgQ is a
-  // conversation on /talk
-  const doorHref = (door: string) => (door === "orgq" ? "/talk?tier=orgq" : `${ROUTES.start}?door=${door}`);
   return (
     <>
       <PageHead n="01" kicker={c.head.kicker} title={c.head.title} lede={c.head.lede} />
@@ -130,10 +133,20 @@ function Solutions({ c = DEFAULTS.solutions, g = DEFAULTS.global }: { c?: Soluti
                 <div><dt className="L-cap">{c.assess.rowWho}</dt><dd>{it.who}</dd></div>
                 <div><dt className="L-cap">{c.assess.rowGet}</dt><dd>{it.get}</dd></div>
               </dl>
-              <Link className={`btn${i === 1 ? "" : " btn-secondary"}`} href={doorHref(it.door)}>{it.button} <span className="arrow">&rarr;</span></Link>
+              {it.door === "orgq" ? (
+                <Link className="btn btn-secondary" href={ROUTES.contact}>{it.button}</Link>
+              ) : (
+                <button type="button" className={`btn${i === 1 ? "" : " btn-secondary"}`} onClick={() => setBox(it.door === "teamq" ? "teamq" : "leadq")} aria-pressed={box === it.door} aria-controls="assess-box">{it.button}</button>
+              )}
             </li>
           ))}
         </ul>
+        {box ? (
+          <div className="L-assess-box" id="assess-box" ref={boxRef}>
+            <p className="eyebrow L-eyebrow">{box === "teamq" ? "TeamQ" : "LeadQ"}</p>
+            <StartEmail c={s.form} intent={box} talk={false} key={box} />
+          </div>
+        ) : null}
         {c.assess.note ? <p className="L-mid">{c.assess.note}</p> : null}
       </Sec>
       <Sec n="03" kicker={c.tiers.kicker} title={c.tiers.title} cls="L-sec-full">
@@ -414,7 +427,7 @@ function Contact({ c = DEFAULTS.contact, g = DEFAULTS.global, s = DEFAULTS.start
 
 export function Page({ id, figures, content }: { id: PageId; figures?: boolean; /** the admin's words; the defaults without them */ content?: PageCopy }) {
   switch (id) {
-    case "solutions": return <Solutions c={content?.solutions} g={content?.global} />;
+    case "solutions": return <Solutions c={content?.solutions} g={content?.global} s={content?.start} />;
     case "process": return <Process figures={figures} c={content?.process} />;
     case "insights": return <Insights />;
     case "about": return <About c={content?.about} />;

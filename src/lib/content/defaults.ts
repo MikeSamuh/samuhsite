@@ -252,14 +252,10 @@ export const DEFAULTS = {
 
   // /start, the fork behind every Get started button. {door} in the form's
   // words becomes the door's name
-  // /start: one email box (Wilfred, 3 Nov 2026). The address, a magic link,
+  // the email box (Wilfred, 3 Nov 2026): on the home under the tool, on
+  // /contact, and under the Solutions cards. The address, a magic link,
   // the platform. {email} in the thank-you becomes the address given
   start: {
-    head: {
-      kicker: "Start here",
-      title: "Take your free assessment.",
-      lede: "Enter your work email and we send you a link. One click signs you in and starts LeadQ: about five minutes, for you alone, a first read on your team’s environment.",
-    },
     form: {
       label: "Work email",
       placeholder: "you@company.com",

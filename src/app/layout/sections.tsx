@@ -813,7 +813,7 @@ export function Footer({ content }: { /** site-wide words from the admin; the de
           ) : (
             <span className="L-foot-link L-foot-todo">TODO(content): email address</span>
           )}
-          <Link className="L-foot-link" href="/talk">{g.footer.bookCall}</Link>
+          <Link className="L-foot-link" href={ROUTES.contact}>{g.footer.bookCall}</Link>
           <Link className="btn L-foot-cta" href={ROUTES.contact}>{g.footer.cta} <span className="arrow">&rarr;</span></Link>
         </div>
       </div>

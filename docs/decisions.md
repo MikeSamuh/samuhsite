@@ -570,3 +570,11 @@ from the notify email. The nav and footer button is "Let's talk" and opens
 is set), with the direct details under both. The general inquiry form came
 off `/contact`; `ContactForm` stays in the tree, unused. The two-door
 `/start` of 2 Nov is gone with its component. — Wilfred
+
+**2026-11-03 — No `/start`, no `/talk`.** The email box lives where the
+person already is: on the home under the tool, as the call-out's own box
+(`/#assess`); under the three measures on Solutions, opened in place by the
+LeadQ and TeamQ buttons with the intent set; and on `/contact` beside the
+calendar. OrgQ's button and every "Talk to us" go to `/contact`. Both
+retired paths redirect. The booking embed moved from the talk component
+into `src/components/contact/Booking.tsx`. — Wilfred

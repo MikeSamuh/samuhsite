@@ -10,6 +10,6 @@ export const metadata = pageMeta({
 });
 
 export default async function SolutionsPage() {
-  const { solutions, global } = await getContent();
-  return <SitePage id="solutions" content={{ solutions, global }} />;
+  const { solutions, global, start } = await getContent();
+  return <SitePage id="solutions" content={{ solutions, global, start }} />;
 }

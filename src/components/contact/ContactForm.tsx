@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { ROUTES } from "@/lib/site";
 import { useEffect, useRef, useState } from "react";
 import { Field } from "@/components/lead/Field";
 import { Honeypot } from "@/components/lead/Honeypot";
@@ -47,7 +48,7 @@ export function ContactForm() {
       <div className="contact-done" ref={success} tabIndex={-1} role="status">
         <h2 className="contact-done-title">Message sent.</h2>
         <p>Thank you. A person at SAMUH will read it and reply.</p>
-        <Link className="btn btn-secondary" href="/talk">
+        <Link className="btn btn-secondary" href={ROUTES.contact}>
           Or book a time <span className="arrow">&rarr;</span>
         </Link>
       </div>

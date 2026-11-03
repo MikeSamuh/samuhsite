@@ -27,6 +27,10 @@ const nextConfig: NextConfig = {
       // Get Started became Explore TeamQ on 5 October. The route is kept for
       // the intake assessment, a later sprint
       { source: "/get-started", destination: "/teamq", permanent: false },
+      // 3 November: /start became the email box on the home, /talk folded
+      // into /contact
+      { source: "/start", destination: "/#assess", permanent: false },
+      { source: "/talk", destination: "/contact", permanent: false },
       // WordPress pages on samuh.work, from its page sitemap
       { source: "/about-us", destination: "/about", permanent: true },
       { source: "/offerings", destination: "/solutions", permanent: true },

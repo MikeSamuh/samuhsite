@@ -1753,3 +1753,6 @@
 /* the 90-day tiers, the same three columns under the measures. The button
    is pressed once its tier is the form's pick */
 .L-page .L-assess-card .btn[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
+
+/* the email box under the three measures on Solutions (3 Nov 2026) */
+.L-assess-box { display: grid; gap: 10px; margin: 8px 0 24px; padding: 24px 0 0; border-top: var(--rule-thin) solid var(--border); scroll-margin-top: calc(var(--nav-h, 0px) + 24px); }

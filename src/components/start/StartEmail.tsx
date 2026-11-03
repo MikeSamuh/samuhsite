@@ -21,19 +21,19 @@ type Intent = "leadq" | "teamq";
  *  the address posts as flow "start" and SAMUH sends the link by hand.
  *  `?door=teamq` from the TeamQ card on Solutions tags the lead. The
  *  search params need the boundary so the page stays static. */
-export function StartEmail({ c, talk = true }: { c: StartContent["form"]; /** the "prefer to talk" line under the box; off on /contact, where talking is beside it */ talk?: boolean }) {
+export function StartEmail({ c, talk = true, intent }: { c: StartContent["form"]; /** the "prefer to talk" line under the box; off where talking is beside it */ talk?: boolean; /** which assessment the box is for; the Solutions cards set it, the home means LeadQ */ intent?: Intent }) {
   return (
-    <Suspense fallback={<EmailBox c={c} intent="leadq" talk={talk} />}>
-      <WithParams c={c} talk={talk} />
+    <Suspense fallback={<EmailBox c={c} intent={intent ?? "leadq"} talk={talk} />}>
+      <WithParams c={c} talk={talk} intent={intent} />
     </Suspense>
   );
 }
 
-function WithParams({ c, talk }: { c: StartContent["form"]; talk: boolean }) {
+function WithParams({ c, talk, intent }: { c: StartContent["form"]; talk: boolean; intent?: Intent }) {
   const params = useSearchParams();
-  const intent: Intent = params.get("door") === "teamq" ? "teamq" : "leadq";
+  const which: Intent = intent ?? (params.get("door") === "teamq" ? "teamq" : "leadq");
   const utm = Array.from(params.entries()).filter(([key]) => key.startsWith("utm_"));
-  return <EmailBox c={c} intent={intent} talk={talk} utm={utm} />;
+  return <EmailBox c={c} intent={which} talk={talk} utm={utm} />;
 }
 
 function EmailBox({ c, intent, talk, utm = [] }: { c: StartContent["form"]; intent: Intent; talk: boolean; utm?: [string, string][] }) {
