@@ -478,9 +478,10 @@
 .L-s-circles[data-v="morph"] .L-fm-legend-3 { opacity: clamp(0, 1 - (var(--p, 0) - 0.3) / 0.2, 1); }
 .L-s-circles[data-v="morph"] :is(.L-c-t, .L-fm-mark).L-fm-in { opacity: clamp(0, (var(--p, 0) - 0.6) / 0.4, 1); }
 /* the team arrives: its ring and its word grow in with --q, its key entry after */
-.L-s-circles[data-v="morph"] .L-fm-arrive { opacity: clamp(0, (var(--q, 0) - 0.15) / 0.5, 1); }
-/* the individual arrives on the first beat (--i), its ring and word together */
-.L-s-circles[data-v="morph"] .L-fm-arrive-ind { opacity: clamp(0, (var(--i, 0) - 0.15) / 0.5, 1); }
+.L-s-circles[data-v="morph"] .L-fm-arrive { opacity: clamp(0, (var(--q, 0) - 0.04) / 0.36, 1); }
+/* the individual comes up from below the frame on the first beat (--i),
+   fading in as it crosses the enterprise's rim, its word with it */
+.L-s-circles[data-v="morph"] .L-fm-arrive-ind { opacity: clamp(0, (var(--i, 0) - 0.05) / 0.35, 1); }
 /* the key swaps as it arrives: the individual and the organization shut
    and fade, the team opens and fades up in their place */
 /* in three beats so nothing overlaps (2 Nov 2026): the old words fade

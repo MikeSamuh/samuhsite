@@ -124,8 +124,14 @@ const over = (p: number, span: { from: number; to: number }) => ease(clamp((p - 
 const shapesAt = (e: number, q: number, g: number, i: number): Record<Key, Shape> =>
   Object.fromEntries(
     KEYS.map((k) => {
-      const r0 = k === "team" ? START.team.r * q : k === "ind" ? START.ind.r * g * i : START[k].r * g;
-      const cy0 = k === "ind" ? lerp(IND_ALONE.cy, START.ind.cy, q) : START[k].cy;
+      // the individual glides up from below the frame, crosses the
+      // enterprise's rim and settles at its centre (i); when the team comes
+      // it rises to the top (q). The team breathes out from the individual:
+      // its ring starts on the individual's own and grows up and out
+      const indR = START.ind.r * g;
+      const indCy = lerp(lerp(FRAME.h + indR + 24, IND_ALONE.cy, i), START.ind.cy, q);
+      const r0 = k === "team" ? lerp(START.ind.r, START.team.r, q) * g : k === "ind" ? indR : START[k].r * g;
+      const cy0 = k === "ind" ? indCy : k === "team" ? lerp(IND_ALONE.cy, START.team.cy, q) : START[k].cy;
       return [k, { cx: lerp(START[k].cx, END[k].cx, e), cy: lerp(cy0, END[k].cy, e), r: lerp(r0, END[k].r, e) }];
     }),
   ) as Record<Key, Shape>;
