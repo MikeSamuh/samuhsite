@@ -1601,19 +1601,27 @@
   background: color-mix(in srgb, var(--base) 82%, transparent);
   backdrop-filter: blur(14px) saturate(140%);
   border-bottom: var(--rule-thin) solid var(--border);
+  /* the logo swap has its own, slower clock than the rest of the page: the
+     bar shrinks and the cell narrows over the whole span, the leaving logo
+     fades out in the first part and the arriving one fades in after it, so
+     the two never sit on top of each other mid-swap */
+  --brand-dur: 560ms;
+  --brand-fade: 240ms;
+  --brand-wait: 200ms;
+  --brand-ease: cubic-bezier(0.22, 1, 0.36, 1);
 }
-.L-nav-icons .L-nav { border-bottom: 0; transition: padding var(--dur) var(--ease); }
+.L-nav-icons .L-nav { border-bottom: 0; transition: padding var(--brand-dur) var(--brand-ease); }
 .L-nav-icons[data-scrolled="true"] .L-nav { padding-top: 12px; padding-bottom: 12px; }
 .L-brand { display: inline-flex; align-items: center; gap: 16px; }
 .L-brand-samuh { position: relative; display: inline-grid; align-items: center; justify-items: start; }
 .L-brand-samuh > * { grid-area: 1 / 1; }
 /* the logo is 37.5px tall, set by .L-nav .nav-logo img above */
-.L-brand img { width: auto; max-width: none; filter: brightness(0) invert(1); transition: opacity var(--dur) var(--ease), transform var(--dur) var(--ease); }
+.L-brand img { width: auto; max-width: none; filter: brightness(0) invert(1); transition: opacity var(--brand-fade) var(--brand-ease), transform var(--brand-dur) var(--brand-ease); }
 /* the cell is as wide as the logo it is showing, and the width eases, so
    the rule and the partner line glide left to sit an even 16px from the
    Samuh mark once the page has scrolled. Widths are 37.5px tall by the PNG
    aspect ratios: samuh-logo 960x285, samuh-star-inverted 1:1 */
-.L-brand-samuh { width: calc(37.5px * 960 / 285); transition: width var(--dur) var(--ease); }
+.L-brand-samuh { width: calc(37.5px * 960 / 285); transition: width var(--brand-dur) var(--brand-ease); }
 .L-nav-icons[data-scrolled="true"] .L-brand-samuh { width: 37.5px; }
 /* "Partnered with Sapien Labs" sits beside the logo at every scroll position */
 .L-brand-partner {
@@ -1626,11 +1634,14 @@
   color: var(--muted);
 }
 .L-brand-rule { width: var(--rule-thin); height: 37.5px; flex: none; background: var(--border); }
-/* at rest the full logo shows; once scrolled, only the mark, which stays
-   put and fades up in place */
-.L-brand-mark { opacity: 0; transform: translateY(-4px); pointer-events: none; }
-.L-nav-icons[data-scrolled="true"] .L-brand-full { opacity: 0; transform: translateY(4px); }
-.L-nav-icons[data-scrolled="true"] .L-brand-mark { opacity: 1; transform: none; }
+/* at rest the full logo shows; once scrolled, only the mark, which settles
+   in place from slightly small. Each rule's delay is for the logo arriving
+   in that state: the one leaving goes at once, the one arriving waits for
+   it, in both directions */
+.L-brand-full { transition-delay: var(--brand-wait); }
+.L-brand-mark { opacity: 0; transform: scale(0.82); pointer-events: none; transition-delay: 0ms; }
+.L-nav-icons[data-scrolled="true"] .L-brand-full { opacity: 0; transform: scale(0.96); transition-delay: 0ms; }
+.L-nav-icons[data-scrolled="true"] .L-brand-mark { opacity: 1; transform: none; transition-delay: var(--brand-wait); }
 
 /* ---------- circles: motion and hover notes ---------- */
 
