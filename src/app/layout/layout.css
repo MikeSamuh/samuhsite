@@ -535,7 +535,11 @@
    screen. The heads share one cell, every state in it; the key stacks
    under them, both states in one cell */
 .L-page[data-comp="comp-editorial"] .L-s-circles[data-v="morph"] > .L-wrap { grid-template-columns: minmax(220px, 320px) 1fr; align-items: center; }
-.L-page[data-comp="comp-editorial"] .L-s-circles[data-v="morph"] > .L-wrap > .L-fm-side { grid-column: 1; grid-row: 1; }
+/* the side column hangs from a fixed line, not the middle: centred, it
+   re-centred every time the key changed height and the head jumped
+   between states (Wilfred, 2 Nov 2026). The head stays put; the key grows
+   and folds beneath it */
+.L-page[data-comp="comp-editorial"] .L-s-circles[data-v="morph"] > .L-wrap > .L-fm-side { grid-column: 1; grid-row: 1; align-self: start; align-content: start; padding-top: clamp(24px, 12vh, 140px); }
 .L-fm-side { display: grid; gap: 28px; align-content: center; }
 /* the head must not stick here: the editorial rule further down makes
    every section head sticky under the nav, and in the pinned stage that
@@ -576,7 +580,7 @@
 @container page (max-width: 900px) {
   .L-page[data-comp="comp-editorial"] .L-s-circles[data-v="morph"] > .L-wrap { grid-template-columns: 1fr; row-gap: 24px; padding-top: 16px; padding-bottom: 16px; }
   .L-page[data-comp="comp-editorial"] .L-s-circles[data-v="morph"] > .L-wrap > .L-fm { grid-column: 1; grid-row: 1; }
-  .L-page[data-comp="comp-editorial"] .L-s-circles[data-v="morph"] > .L-wrap > .L-fm-side { grid-column: 1; grid-row: 2; gap: 20px; }
+  .L-page[data-comp="comp-editorial"] .L-s-circles[data-v="morph"] > .L-wrap > .L-fm-side { grid-column: 1; grid-row: 2; gap: 20px; padding-top: 0; align-self: auto; }
   .L-fm-legend { grid-template-columns: 1fr 1fr; gap: 16px 18px; }
   .L-fm-legend-3 .L-fm-item-team { grid-column: 1 / -1; }
   .L-page[data-comp="comp-editorial"] .L-s-circles[data-v="morph"] .L-circ { gap: 18px; }
