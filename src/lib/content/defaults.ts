@@ -232,22 +232,6 @@ export const DEFAULTS = {
       ],
       note: "A cycle is ninety days: one practice, co-created, iterated inside the team’s regular work, and measured again at the end. An organization journey runs the same cycle across a team of teams. Talk to us about that one.",
     },
-    carte: {
-      kicker: "À la carte",
-      title: "Or take one piece at a time.",
-      lede: "Each part of the work stands on its own. Start where the need is.",
-      ask: "Ask about this",
-      items: [
-        { tag: "Builds direction", name: "Advisory", what: "Strategic planning with the leadership team: where the value hot spots are, and the levers for accelerating performance.", who: "CEOs and leadership teams planning the year.", format: "By the day. $10K to $15K per day." },
-        { tag: "Builds belief", name: "Immersive keynote", what: "Team performance, reframed through the science of capacity, with one practice tried live.", who: "Offsites, summits, all-hands.", format: "60 to 90 minutes. In person or virtual. Keynotes and workshops from $20K to $50K." },
-        { tag: "Builds belief", name: "Executive lab", what: "The science of capacity to perform, and why the team is where it changes.", who: "Senior teams exploring the frontier.", format: "Half a day, in person." },
-        { tag: "Builds capability", name: "Leadership workshop", what: "The practices that strengthen the conditions for team performance, experienced not described.", who: "Leaders who run teams.", format: "One day, in person. Keynotes and workshops from $20K to $50K." },
-        { tag: "Builds team performance", name: "Ritual co-creation day", what: "The team reads its findings and designs the one practice it will own.", who: "Teams with a TeamQ result in hand.", format: "One day, facilitated, in person." },
-        { tag: "Builds team performance", name: "Ritual keeper coaching", what: "Two team members coached to embed the ritual in the team's regular work.", who: "Teams running a practice that must hold.", format: "Every two weeks, virtual, for ninety days." },
-        { tag: "Measures", name: "Check-in and re-measure", what: "A day-45 adjustment, then TeamQ again at day 90 against the team's own baseline.", who: "Teams that ran the practice themselves.", format: "Two 90-minute virtual sessions." },
-      ],
-      note: "Same foundation every time: measurement first, practices the team owns, change inside the flow of work.",
-    },
     talk: {
       kicker: "Talk to us",
       title: "Tell us which one, and where to reach you",

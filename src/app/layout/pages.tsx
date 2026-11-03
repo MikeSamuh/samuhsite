@@ -84,13 +84,6 @@ function Solutions({ c = DEFAULTS.solutions, g = DEFAULTS.global }: { c?: Soluti
   const { submit, state, attempt } = useLeadSubmit("solutions");
   const [token, setToken] = useState<string>();
   const [emailError, setEmailError] = useState<string>();
-  // a piece from the à la carte list, picked with its button: it goes to the
-  // form the same way a tier does, and shows there beside the three tiers
-  const piece = TIERS.some((t) => t.name === tier) ? "" : tier;
-  const ask = (name: string) => {
-    setTier(name);
-    document.getElementById("talk")?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
   const onTalk = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -117,7 +110,7 @@ function Solutions({ c = DEFAULTS.solutions, g = DEFAULTS.global }: { c?: Soluti
         {c.assess.lede ? <p className="L-mid">{c.assess.lede}</p> : null}
         <ul className="L-assess">
           {c.assess.items.map((it, i) => (
-            <li className="card L-assess-card" key={it.name} data-main={i === 1}>
+            <li className="card L-assess-card" key={it.name}>
               <span className="card-tag">{it.tag}</span>
               <h3 className="L-assess-name">{it.name}</h3>
               <span className="L-assess-price">{it.price}</span>
@@ -166,38 +159,13 @@ function Solutions({ c = DEFAULTS.solutions, g = DEFAULTS.global }: { c?: Soluti
         </table>
         <p className="L-cap">{c.tiers.note}</p>
       </Sec>
-      <Sec n="04" kicker={c.carte.kicker} title={c.carte.title} id="a-la-carte">
-        {c.carte.lede ? <p className="L-mid">{c.carte.lede}</p> : null}
-        <ul className="L-carte">
-          {c.carte.items.map((it) => (
-            <li className="L-piece" key={it.name} data-on={it.name === tier}>
-              <div className="L-piece-head">
-                <span className="L-cap L-piece-tag">{it.tag}</span>
-                <h3 className="L-piece-name">{it.name}</h3>
-              </div>
-              <div className="L-piece-body">
-                <p className="L-piece-what">{it.what}</p>
-                <dl className="L-piece-meta">
-                  <div><dt className="L-cap">{c.tiers.rowWho}</dt><dd>{it.who}</dd></div>
-                  <div><dt className="L-cap">Format</dt><dd>{it.format}</dd></div>
-                </dl>
-                <button type="button" className="inline-link L-text-cta L-piece-ask" onClick={() => ask(it.name)} aria-pressed={it.name === tier}>
-                  {c.carte.ask} <span className="arrow">&rarr;</span>
-                </button>
-              </div>
-            </li>
-          ))}
-        </ul>
-        {c.carte.note ? <p className="L-cap">{c.carte.note}</p> : null}
-      </Sec>
-      <Sec n="05" kicker={c.talk.kicker} title={c.talk.title} id="talk">
+      <Sec n="04" kicker={c.talk.kicker} title={c.talk.title} id="talk">
         {state !== "done" ? (
           <form className="L-talk" onSubmit={onTalk} noValidate>
-            <div className="L-talk-tiers" role="radiogroup" aria-label="Which tier or piece">
+            <div className="L-talk-tiers" role="radiogroup" aria-label="Which tier">
               {TIERS.map((t) => (
                 <button key={t.name} type="button" className="opt" aria-pressed={t.name === tier} onClick={() => setTier(t.name)}>{t.name}</button>
               ))}
-              {piece ? <button type="button" className="opt" aria-pressed>{piece}</button> : null}
             </div>
             <div className="field L-talk-field">
               <input type="email" name="email" required placeholder="you@company.com" aria-label="Your email" aria-invalid={emailError ? true : undefined} />
@@ -216,7 +184,7 @@ function Solutions({ c = DEFAULTS.solutions, g = DEFAULTS.global }: { c?: Soluti
           </div>
         )}
       </Sec>
-      <Sec n="06" kicker={c.voices.kicker} title={c.voices.title}>
+      <Sec n="05" kicker={c.voices.kicker} title={c.voices.title}>
         <div className="L-voices L-voices-grid">
           {g.testimonials.items.map((q, i) => (
             <figure className="card L-quote" key={i}>

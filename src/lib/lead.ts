@@ -30,7 +30,7 @@ export interface Lead {
   tier?: "self-guided" | "supported" | "guided" | "orgq";
   /** flow 4, which door on /start: LeadQ or TeamQ (OrgQ goes to /talk) */
   intent?: "leadq" | "teamq";
-  /** flow 5, the tier or à la carte piece picked on /solutions */
+  /** flow 5, the tier picked on /solutions */
   pick?: string;
   /** flow 2, the slider state keyed by factor id */
   answers?: Record<string, number>;
