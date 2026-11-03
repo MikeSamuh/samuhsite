@@ -85,6 +85,7 @@ function Solutions({ c = DEFAULTS.solutions, g = DEFAULTS.global }: { c?: Soluti
   const { submit, state, attempt } = useLeadSubmit("solutions");
   const [token, setToken] = useState<string>();
   const [emailError, setEmailError] = useState<string>();
+  const [nameError, setNameError] = useState<string>();
   const [pickError, setPickError] = useState<string>();
   const pickOf = (name: string) => { setTier(name); setPickError(undefined); };
   // a tier's button: it goes to the form and sits pressed there
@@ -95,13 +96,17 @@ function Solutions({ c = DEFAULTS.solutions, g = DEFAULTS.global }: { c?: Soluti
   const onTalk = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+    const name = String(data.get("name") ?? "").trim();
+    const phone = String(data.get("phone") ?? "").trim();
     const email = String(data.get("email") ?? "").trim();
+    const noName = name ? undefined : "Enter your name.";
     const found = !email ? "Enter your email address." : !EMAIL_SHAPE.test(email) ? "Enter an email address like name@company.com." : undefined;
-    const unpicked = tier ? undefined : "Pick DIY, Supported or Guided first.";
+    const unpicked = tier ? undefined : "Pick DIY, Supported, Guided or Other first.";
+    setNameError(noName);
     setEmailError(found);
     setPickError(unpicked);
-    if (found || unpicked) return;
-    void submit({ email, pick: tier, company_website: String(data.get("company_website") ?? "") || undefined, turnstileToken: token });
+    if (noName || found || unpicked) return;
+    void submit({ name, phone: phone || undefined, email, pick: tier, company_website: String(data.get("company_website") ?? "") || undefined, turnstileToken: token });
   };
   // a measure's button: LeadQ and TeamQ open that door on /start, OrgQ is a
   // conversation on /talk
@@ -155,17 +160,24 @@ function Solutions({ c = DEFAULTS.solutions, g = DEFAULTS.global }: { c?: Soluti
               {TIERS.map((t) => (
                 <button key={t.name} type="button" className="opt" aria-pressed={t.name === tier} onClick={() => pickOf(t.name)}>{t.name}</button>
               ))}
+              {/* none of the three, or not sure yet: the reply asks */}
+              <button type="button" className="opt" aria-pressed={tier === c.talk.other} onClick={() => pickOf(c.talk.other)}>{c.talk.other}</button>
+            </div>
+            <div className="L-talk-who">
+              <div className="field"><input type="text" name="name" required autoComplete="name" placeholder="Your name" aria-label="Your name" aria-invalid={nameError ? true : undefined} /></div>
+              <div className="field"><input type="tel" name="phone" autoComplete="tel" placeholder="Phone (optional)" aria-label="Your phone number, optional" /></div>
             </div>
             <div className="field L-talk-field">
-              <input type="email" name="email" required placeholder="you@company.com" aria-label="Your email" aria-invalid={emailError ? true : undefined} />
+              <input type="email" name="email" required autoComplete="email" placeholder="you@company.com" aria-label="Your email" aria-invalid={emailError ? true : undefined} />
               <button className="btn" type="submit" disabled={state === "pending"}>{state === "pending" ? "Sending" : c.talk.button} <span className="arrow">&rarr;</span></button>
             </div>
             {pickError ? <p className="lead-error" role="alert">{pickError}</p> : null}
+            {nameError ? <p className="lead-error" role="alert">{nameError}</p> : null}
             {emailError ? <p className="lead-error" role="alert">{emailError}</p> : null}
             {state === "error" ? <p className="lead-error" role="alert">That did not go through. Please try again.</p> : null}
             <Honeypot />
             <Turnstile onToken={setToken} resetKey={attempt} />
-            <span className="L-cap">{fill(c.talk.note, { tier: tier || "the tier you pick" })}</span>
+            <span className="L-cap">{fill(c.talk.note, { tier: tier || "what you pick" })}</span>
           </form>
         ) : (
           <div className="L-talk-thanks">

@@ -939,6 +939,7 @@
   .L-sec[data-v="split"] .L-equation,
   .L-sec[data-v="split"] .L-start,
   .L-sec[data-v="band"] .L-start { grid-template-columns: 1fr; }
+  .L-talk-who { grid-template-columns: 1fr; }
   .L-sec[data-v="band"] .L-start-actions { justify-self: start; }
   .L-sec[data-v="grid"] .L-cards { grid-template-columns: 1fr 1fr; }
   .L-sec[data-v="stack"] .L-circle { grid-template-columns: 1fr; gap: 6px; }
@@ -1027,6 +1028,9 @@
 .L-talk { display: grid; gap: 16px; max-width: 640px; }
 .L-talk-tiers { display: flex; gap: 8px; flex-wrap: wrap; }
 .L-talk-field { max-width: none; }
+/* name and phone side by side above the email, stacked on phones */
+.L-talk-who { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.L-talk-who .field { max-width: none; }
 .L-talk-thanks { display: grid; gap: 14px; }
 
 /* process */

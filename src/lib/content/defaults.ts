@@ -239,6 +239,7 @@ export const DEFAULTS = {
       kicker: "Talk to us",
       title: "Tell us which one, and where to reach you",
       button: "Talk to us",
+      other: "Other",
       note: "A person replies. Tagged {tier}, so we come prepared.",
       thanks: "Thank you. We’ll be in touch about {tier}.",
       wait: "Read about the team process while you wait",
