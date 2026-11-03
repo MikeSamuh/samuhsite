@@ -1726,3 +1726,6 @@ a.inline-link:hover { color: var(--accent-2); background-size: 100% var(--rule-f
 }
 .rail .stepnav-item { font-size: 12px; padding: 5px 9px; font-family: var(--f-inter); }
 .rail .stepnav-n { font-family: var(--f-plex-mono); }
+
+/* no arrows on buttons (Wilfred, 3 Nov 2026): the word is the call */
+.btn .arrow { display: none; }

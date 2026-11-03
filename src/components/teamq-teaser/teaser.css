@@ -925,7 +925,27 @@
 .teaser[data-stage="empty"] .teaser-fold { opacity: 0.3; filter: grayscale(1); pointer-events: none; transition: opacity calc(var(--dur) * 2) var(--ease), filter calc(var(--dur) * 2) var(--ease); }
 .teaser[data-stage="empty"] .teaser-left { position: static; }
 .teaser-cover { position: absolute; inset: 0; display: grid; place-items: center; z-index: 3; }
-.teaser-cover .btn { box-shadow: 0 0 0 12px color-mix(in srgb, var(--base) 70%, transparent); }
+/* the one lit thing: a translucent fill so nothing reads through it, a
+   little larger, and a slow pulse of its own colour (Wilfred, 3 Nov 2026) */
+.L-page .teaser-cover .btn {
+  background: color-mix(in srgb, var(--accent-2) 26%, var(--base));
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-color: var(--accent-2);
+  color: var(--text);
+  font-size: 17px;
+  padding: 16px 30px;
+  box-shadow: 0 0 0 14px color-mix(in srgb, var(--base) 72%, transparent), 0 0 0 0 color-mix(in srgb, var(--accent-2) 55%, transparent);
+  animation: teaser-pulse 2.6s var(--ease) infinite;
+}
+.L-page .teaser-cover .btn:hover { background: color-mix(in srgb, var(--accent-2) 40%, var(--base)); }
+@keyframes teaser-pulse {
+  0%, 100% { box-shadow: 0 0 0 14px color-mix(in srgb, var(--base) 72%, transparent), 0 0 0 0 color-mix(in srgb, var(--accent-2) 55%, transparent); }
+  55% { box-shadow: 0 0 0 14px color-mix(in srgb, var(--base) 72%, transparent), 0 0 0 22px color-mix(in srgb, var(--accent-2) 0%, transparent); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .L-page .teaser-cover .btn { animation: none; }
+}
 /* the second move sits above the readout once the example is in */
 .teaser-next { display: grid; justify-items: start; }
 /* the call-out between the tool and the cards */
