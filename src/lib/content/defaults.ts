@@ -210,7 +210,7 @@ export const DEFAULTS = {
         { tag: "Your team", name: "TeamQ", price: "$99 per team", what: "Every team member answers, about five minutes each. Thirteen team environment factors and thirteen team practices.", who: "A leadership team, or any team, that wants evidence rather than opinion.", get: "Your team placed within Sapien Labs’ benchmark, productive days gained or lost each month, and the levers ranked by expected gain. Repeated at day 90 to measure what moved.", button: "Get TeamQ", door: "teamq" },
         { tag: "Your organization", name: "OrgQ", price: "Packages from $10 per person", what: "Every team in scope, one capacity map.", who: "CHROs, CEOs and transformation leaders working across many teams.", get: "Where capacity leaks across the organization and where the biggest gains are. Scoped with us.", button: "Talk to us", door: "orgq" },
       ],
-      note: "TeamQ was developed with Sapien Labs and builds on their MHQ, a validated measure of human capacity drawn from more than 3 million people in 130+ countries.",
+      note: "All three are built on the same technology, developed with Sapien Labs on their MHQ, a validated measure of human capacity drawn from more than 3 million people in 130+ countries.",
     },
     tiers: {
       kicker: "The main work",
