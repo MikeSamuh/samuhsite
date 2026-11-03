@@ -854,6 +854,12 @@
     radial-gradient(ellipse 70% 60% at 65% 40%, color-mix(in srgb, var(--accent-4) 22%, var(--surface-alt)) 0%, var(--surface) 55%, var(--base) 100%);
 }
 .L-sec[data-v="band"] .L-start-actions .field { display: none; }
+/* on the desktop the band is one line: the question left, the button on
+   the right, on the question's centre line (Wilfred, 3 Nov 2026) */
+.L-sec[data-v="band"] .L-start { grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 28px 48px; }
+.L-sec[data-v="band"] .L-start .sec { margin-bottom: 0; }
+.L-sec[data-v="band"] .L-start .L-mid { margin-top: 14px; }
+.L-sec[data-v="band"] .L-start-actions { justify-self: end; }
 .L-sec[data-v="form"] .L-start-actions .cta-row { display: none; }
 .L-sec[data-v="form"] .field { max-width: 520px; }
 .L-sec[data-v="split"] .L-start { grid-template-columns: 1.2fr 1fr; align-items: center; }
@@ -931,7 +937,9 @@
   .L-sec[data-v="split"] .L-tool,
   .L-sec[data-v="bleed"] .L-tool,
   .L-sec[data-v="split"] .L-equation,
-  .L-sec[data-v="split"] .L-start { grid-template-columns: 1fr; }
+  .L-sec[data-v="split"] .L-start,
+  .L-sec[data-v="band"] .L-start { grid-template-columns: 1fr; }
+  .L-sec[data-v="band"] .L-start-actions { justify-self: start; }
   .L-sec[data-v="grid"] .L-cards { grid-template-columns: 1fr 1fr; }
   .L-sec[data-v="stack"] .L-circle { grid-template-columns: 1fr; gap: 6px; }
   .L-circ { grid-template-columns: 1fr; gap: 18px; }

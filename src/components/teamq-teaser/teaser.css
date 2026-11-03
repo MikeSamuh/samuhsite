@@ -929,5 +929,12 @@
 /* the second move sits above the readout once the example is in */
 .teaser-next { display: grid; justify-items: start; }
 /* the call-out between the tool and the cards */
-.teaser-callout-in { display: grid; gap: 20px; justify-items: start; }
+/* one line on the desktop: the question left, the button on the right on
+   its centre line; stacked on narrow screens (Wilfred, 3 Nov 2026) */
+.teaser-callout-in { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 20px 48px; justify-items: start; }
+.teaser-callout-in .btn { justify-self: end; }
 .teaser-callout .sec { margin: 0; }
+@container page (max-width: 900px) {
+  .teaser-callout-in { grid-template-columns: 1fr; }
+  .teaser-callout-in .btn { justify-self: start; }
+}
