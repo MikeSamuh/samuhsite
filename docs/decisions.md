@@ -547,3 +547,13 @@ Wilfred after the call, and LeadQ is gated: email and magic link first,
 then the questions, so the instrument is never public. Owed: a third scroll
 in the circles for the performance tax, and the domain migration runbook
 for the week of 9 November. — Wilfred
+
+**2026-11-02 — Start here, two choices.** The nav and footer button is
+"Start here" and opens `/start`, which now offers two things: take the
+assessment (LeadQ, free; the TeamQ words when the TeamQ card on Solutions
+sent them) or talk to us. OrgQ and everything else is a conversation. The
+home's close keeps its two buttons, LeadQ and Talk to us. The synapse
+field came off the close, which keeps the band's gradient. The circles'
+head no longer sticks under the nav (an editorial rule was outranking the
+section's own), and the text swap runs in three beats so nothing
+overlaps. — Wilfred

@@ -9,7 +9,6 @@ import { PAGES, SECTIONS, type PageId, type SectionId } from "@/lib/layout";
 import { TEAM_SIZE } from "@/components/teamq-teaser/model";
 import { TeaserDemo, type TeaserDemoProps } from "@/components/teamq-teaser/TeaserDemo";
 import "@/components/teamq-teaser/teaser.css";
-import Synapse from "./Synapse";
 import { LEADQ_HREF, ROUTES, TEAMQ_PATH } from "@/lib/site";
 import { FocusMorph } from "@/components/focus-morph/FocusMorph";
 import { DEFAULTS, type GlobalContent, type HomeContent } from "@/lib/content/defaults";
@@ -129,7 +128,7 @@ export function Nav({ page, menu, links: order, brand = "wordmark", partner = fa
           ))}
         </nav>
         <button className="btn btn-secondary btn-small L-menu" onClick={() => setOpen(true)} aria-expanded={open} aria-controls="L-overlay">Explore</button>
-        <Link className="btn btn-small L-cta" href={LEADQ_HREF} onClick={close}>{g.brand.navCta} <span className="arrow">&rarr;</span></Link>
+        <Link className="btn btn-small L-cta" href={ROUTES.start} onClick={close}>{g.brand.navCta} <span className="arrow">&rarr;</span></Link>
         {/* on small screens every nav collapses to this: the links and the
             Explore button hide, and the burger opens the full menu */}
         {!menu ? (
@@ -152,7 +151,7 @@ export function Nav({ page, menu, links: order, brand = "wordmark", partner = fa
             ))}
           </nav>
           <div className="L-overlay-foot L-wrap">
-            <Link className="btn" href={LEADQ_HREF} onClick={close}>{g.brand.navCta} <span className="arrow">&rarr;</span></Link>
+            <Link className="btn" href={ROUTES.start} onClick={close}>{g.brand.navCta} <span className="arrow">&rarr;</span></Link>
             <span className="L-cap">{lines(g.brand.partnerLine)}</span>
           </div>
         </div>
@@ -799,7 +798,7 @@ export function Footer({ content }: { /** site-wide words from the admin; the de
             <span className="L-foot-link L-foot-todo">TODO(content): email address</span>
           )}
           <Link className="L-foot-link" href="/talk">{g.footer.bookCall}</Link>
-          <Link className="btn L-foot-cta" href={LEADQ_HREF}>{g.footer.cta} <span className="arrow">&rarr;</span></Link>
+          <Link className="btn L-foot-cta" href={ROUTES.start}>{g.footer.cta} <span className="arrow">&rarr;</span></Link>
         </div>
       </div>
       <div className="L-wrap L-foot-base">
@@ -999,8 +998,7 @@ export function Section({ def, variant, copy = {}, demo, content }: { def: (type
   useScrollReveal(reveal ? secRef : noRef);
   return (
     <section className={`L-sec L-s-${def.id}${headed ? " L-sec-h" : ""}`} data-v={v} data-n={String(def.n).padStart(2, "0")} id={def.id} ref={secRef} data-reveal={reveal || undefined}>
-      {/* the close carries the synapse field, parallaxed against the band */}
-      {def.id === "start" && <Synapse scope="section" />}
+      {/* the close is the band's gradient alone; the synapse field came off it on 2 Nov 2026 */}
       <div className="L-wrap">
         {def.id === "hero" && (
           <div className="L-hero-grid">

@@ -11,16 +11,17 @@ import { CONTACT_EMAIL } from "@/lib/contact-details";
 import type { StartContent } from "@/lib/content/defaults";
 import { fill } from "@/lib/content/shared";
 import { EMAIL_SHAPE } from "@/lib/lead";
-import { ROUTES, platformLink } from "@/lib/site";
+import { platformLink } from "@/lib/site";
 import "./start.css";
 
-/** the two doors that run on the platform; OrgQ is a conversation */
+/** which assessment the form is for: LeadQ unless a Solutions card said TeamQ */
 type Door = "leadq" | "teamq";
-const DOORS: Door[] = ["leadq", "teamq"];
 
-/** Flow 4, the fork. Three doors and, once the platform exists, a login.
- *  `?door=leadq` from a Solutions card opens that door's form straight
- *  away. useSearchParams needs the boundary so the page stays static. */
+/** Start here: two choices. Take the assessment, or talk to us. The
+ *  assessment is LeadQ, free; `?door=teamq` from the TeamQ card on
+ *  Solutions keeps that intent on the form. The login shows once the
+ *  platform exists. useSearchParams needs the boundary so the page
+ *  stays static. */
 export function StartDoors({ c }: { c: StartContent }) {
   return (
     <Suspense fallback={<Doors c={c} />}>
@@ -32,19 +33,19 @@ export function StartDoors({ c }: { c: StartContent }) {
 function DoorsWithParams({ c }: { c: StartContent }) {
   const params = useSearchParams();
   const wanted = params.get("door");
-  const initial = DOORS.find((d) => d === wanted) ?? null;
+  const door: Door = wanted === "teamq" ? "teamq" : "leadq";
   // UTM tags ride along to the platform, so attribution survives the hop
   const utm = Array.from(params.entries()).filter(([key]) => key.startsWith("utm_"));
-  return <Doors c={c} initial={initial} utm={utm} />;
+  return <Doors c={c} door={door} open={wanted === "leadq" || wanted === "teamq"} utm={utm} />;
 }
 
-function Doors({ c, initial = null, utm = [] }: { c: StartContent; initial?: Door | null; utm?: [string, string][] }) {
-  const [open, setOpen] = useState<Door | null>(initial);
+function Doors({ c, door = "leadq", open: openAtFirst = false, utm = [] }: { c: StartContent; door?: Door; open?: boolean; utm?: [string, string][] }) {
+  const [open, setOpen] = useState(openAtFirst);
   const formWrap = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setOpen(initial);
-  }, [initial]);
+    setOpen(openAtFirst);
+  }, [openAtFirst]);
   useEffect(() => {
     if (open) formWrap.current?.scrollIntoView({ behavior: "smooth", block: "start" });
   }, [open]);
@@ -56,40 +57,33 @@ function Doors({ c, initial = null, utm = [] }: { c: StartContent; initial?: Doo
     utm.forEach(([key, value]) => url.searchParams.set(key, value));
     return url.toString();
   };
+  const assess = c.doors[door];
+  const href = out(door);
   const login = out("login");
-
-  const door = (key: Door) => {
-    const d = c.doors[key];
-    const href = out(key);
-    return (
-      <li className="start-door" key={key}>
-        <h2 className="start-door-name">{d.name}</h2>
-        <p className="start-door-line">{d.line}</p>
-        {d.note ? <span className="L-cap">{d.note}</span> : null}
-        {href ? (
-          <a className="btn start-door-cta" href={href}>
-            {d.button} <span className="arrow">&rarr;</span>
-          </a>
-        ) : (
-          <button type="button" className="btn start-door-cta" onClick={() => setOpen(key)} aria-pressed={open === key} aria-controls="start-form">
-            {d.button} <span className="arrow">&rarr;</span>
-          </button>
-        )}
-      </li>
-    );
-  };
 
   return (
     <>
       <ol className="start-doors">
-        {door("leadq")}
-        {door("teamq")}
         <li className="start-door">
-          <h2 className="start-door-name">{c.doors.orgq.name}</h2>
-          <p className="start-door-line">{c.doors.orgq.line}</p>
-          {c.doors.orgq.note ? <span className="L-cap">{c.doors.orgq.note}</span> : null}
-          <Link className="btn btn-secondary start-door-cta" href="/talk?tier=orgq">
-            {c.doors.orgq.button} <span className="arrow">&rarr;</span>
+          <h2 className="start-door-name">{assess.name}</h2>
+          <p className="start-door-line">{assess.line}</p>
+          {assess.note ? <span className="L-cap">{assess.note}</span> : null}
+          {href ? (
+            <a className="btn start-door-cta" href={href}>
+              {assess.button} <span className="arrow">&rarr;</span>
+            </a>
+          ) : (
+            <button type="button" className="btn start-door-cta" onClick={() => setOpen(true)} aria-pressed={open} aria-controls="start-form">
+              {assess.button} <span className="arrow">&rarr;</span>
+            </button>
+          )}
+        </li>
+        <li className="start-door">
+          <h2 className="start-door-name">{c.doors.talk.name}</h2>
+          <p className="start-door-line">{c.doors.talk.line}</p>
+          {c.doors.talk.note ? <span className="L-cap">{c.doors.talk.note}</span> : null}
+          <Link className="btn btn-secondary start-door-cta" href="/talk">
+            {c.doors.talk.button} <span className="arrow">&rarr;</span>
           </Link>
         </li>
         {login ? (
@@ -104,7 +98,7 @@ function Doors({ c, initial = null, utm = [] }: { c: StartContent; initial?: Doo
       </ol>
       {open ? (
         <div className="start-form-wrap" id="start-form" ref={formWrap} tabIndex={-1}>
-          <StartForm c={c} door={open} key={open} />
+          <StartForm c={c} door={door} key={door} />
         </div>
       ) : null}
     </>
@@ -114,15 +108,15 @@ function Doors({ c, initial = null, utm = [] }: { c: StartContent; initial?: Doo
 type Errors = Partial<Record<"name" | "email" | "organization", string>>;
 
 /** Until the platform opens: name, email, organization, posted as flow
- *  "start" with the door as the intent. Jake and Mike get the email and
- *  Clarify gets the person; SAMUH runs the assessment by hand. */
+ *  "start" with the assessment as the intent. Jake and Mike get the email
+ *  and Clarify gets the person; SAMUH runs the assessment by hand. */
 function StartForm({ c, door }: { c: StartContent; door: Door }) {
   const { submit, state, attempt } = useLeadSubmit("start");
   const [errors, setErrors] = useState<Errors>({});
   const [token, setToken] = useState<string>();
   const form = useRef<HTMLFormElement>(null);
   const done = useRef<HTMLDivElement>(null);
-  const label = c.doors[door].name;
+  const label = door === "teamq" ? "TeamQ" : "LeadQ";
 
   useEffect(() => {
     if (state === "done") done.current?.focus();
@@ -186,12 +180,9 @@ function StartForm({ c, door }: { c: StartContent; door: Door }) {
           .
         </p>
       ) : null}
-      <div className="cta-row">
-        <button className="btn" type="submit" disabled={pending}>
-          {pending ? "Sending" : c.form.button} <span className="arrow">&rarr;</span>
-        </button>
-        <Link className="inline-link L-text-cta" href={ROUTES.solutions}>Compare the three first <span className="arrow">&rarr;</span></Link>
-      </div>
+      <button className="btn" type="submit" disabled={pending}>
+        {pending ? "Sending" : c.form.button} <span className="arrow">&rarr;</span>
+      </button>
     </form>
   );
 }

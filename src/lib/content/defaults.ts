@@ -16,14 +16,14 @@ export const DEFAULTS = {
   global: {
     brand: {
       partnerLine: "In partnership with\nSapien Labs",
-      navCta: "Take LeadQ",
+      navCta: "Start here",
     },
     footer: {
       line: "High performance *without* the cost to people.",
       about: "Organizational and high-performance consulting. We work with teams on the conditions they work in.",
       talkHeading: "Talk to us",
       bookCall: "Book a call",
-      cta: "Take LeadQ",
+      cta: "Start here",
       reportLabel: "Work Culture Report",
       youtubeLabel: "Human Expansion on YouTube",
       youtubeUrl: "https://www.youtube.com/@HumanExpansion-ACorePurpose",
@@ -264,17 +264,19 @@ export const DEFAULTS = {
 
   // /start, the fork behind every Get started button. {door} in the form's
   // words becomes the door's name
+  // Start here: two choices (Wilfred, 2 Nov 2026). The assessment is LeadQ;
+  // the TeamQ words show when the TeamQ card on Solutions sent them
   start: {
     head: {
-      kicker: "Get started",
-      title: "Assess yourself, your team, or your organization.",
-      lede: "Measurement first. Pick the door that fits where you are, and we take it from there.",
+      kicker: "Start here",
+      title: "Take the assessment, or talk to us.",
+      lede: "Two ways in. A free read on your own team in about five minutes, or a conversation with a person at SAMUH.",
     },
     doors: {
-      leadq: { name: "Start with LeadQ", line: "Five minutes, free. A first read on your team’s environment, for you alone.", note: "Free", button: "Take LeadQ" },
-      teamq: { name: "Ready for TeamQ", line: "Your whole team answers. Benchmarked against Sapien Labs’ data, with the levers ranked by expected gain.", note: "$99 per team", button: "Get TeamQ" },
-      orgq: { name: "OrgQ for my organization", line: "Many teams, one capacity map. Scoped with us.", note: "Packages from $10 per person", button: "Talk to us" },
-      login: { name: "Already took LeadQ?", line: "Your result and your team are waiting.", note: "", button: "Log in" },
+      leadq: { name: "Take the assessment", line: "LeadQ is free and takes about five minutes. A first read on your team’s environment, for you alone. Your whole team comes next, with TeamQ.", note: "Free", button: "Take LeadQ" },
+      teamq: { name: "Get TeamQ for your team", line: "Your whole team answers, about five minutes each. Benchmarked against Sapien Labs’ data, with the levers ranked by expected gain.", note: "$99 per team", button: "Get TeamQ" },
+      talk: { name: "Talk to us", line: "Questions about your team, your organization, or how any of this works. A person at SAMUH takes the call.", note: "", button: "Book a call" },
+      login: { name: "Already have an account?", line: "Your result and your team are waiting.", note: "", button: "Log in" },
     },
     form: {
       title: "Leave your details and a person at SAMUH sets you up.",

@@ -481,14 +481,17 @@
 .L-s-circles[data-v="morph"] .L-fm-arrive { opacity: clamp(0, (var(--q, 0) - 0.15) / 0.5, 1); }
 /* the key swaps as it arrives: the individual and the organization shut
    and fade, the team opens and fades up in their place */
+/* in three beats so nothing overlaps (2 Nov 2026): the old words fade
+   (0 to 0.3 of --q), the old entries fold and the new one opens (0.3 to
+   0.6), the new words fade in (0.6 to 0.9) */
 .L-s-circles[data-v="morph"] .L-fm-legend-3 .L-fm-item { overflow: hidden; }
-.L-s-circles[data-v="morph"] .L-fm-legend-3 .L-fm-item-team { opacity: clamp(0, (var(--q, 0) - 0.45) / 0.35, 1); max-height: calc(var(--q, 0) * 200px); margin-bottom: calc(-16px * (1 - var(--q, 0))); }
-.L-s-circles[data-v="morph"] .L-fm-legend-3 :is(.L-fm-item-ind, .L-fm-item-org) { opacity: clamp(0, 1 - var(--q, 0) / 0.4, 1); max-height: calc((1 - var(--q, 0)) * 200px); margin-bottom: calc(-16px * var(--q, 0)); }
-/* the titles take turns under one fixed eyebrow and rule: where others
-   focus leaves as the team arrives, where we focus holds until the Venn,
-   SAMUH at the centre comes with it */
-.L-s-circles[data-v="morph"] .L-fm-title.L-fm-h0 { opacity: clamp(0, 1 - (var(--q, 0) - 0.3) / 0.25, 1); }
-.L-s-circles[data-v="morph"] .L-fm-title.L-fm-h1 { opacity: min(clamp(0, (var(--q, 0) - 0.55) / 0.25, 1), clamp(0, 1 - (var(--p, 0) - 0.3) / 0.2, 1)); }
+.L-s-circles[data-v="morph"] .L-fm-legend-3 .L-fm-item-team { opacity: clamp(0, (var(--q, 0) - 0.65) / 0.25, 1); max-height: calc(clamp(0, (var(--q, 0) - 0.3) / 0.3, 1) * 200px); margin-bottom: calc(-16px * (1 - clamp(0, (var(--q, 0) - 0.3) / 0.3, 1))); }
+.L-s-circles[data-v="morph"] .L-fm-legend-3 :is(.L-fm-item-ind, .L-fm-item-org) { opacity: clamp(0, 1 - var(--q, 0) / 0.3, 1); max-height: calc((1 - clamp(0, (var(--q, 0) - 0.3) / 0.3, 1)) * 200px); margin-bottom: calc(-16px * clamp(0, (var(--q, 0) - 0.3) / 0.3, 1)); }
+/* the titles take turns under one fixed eyebrow and rule, on the same
+   beats as the key: where organizations focus is gone before where
+   performance happens arrives */
+.L-s-circles[data-v="morph"] .L-fm-title.L-fm-h0 { opacity: clamp(0, 1 - var(--q, 0) / 0.3, 1); }
+.L-s-circles[data-v="morph"] .L-fm-title.L-fm-h1 { opacity: min(clamp(0, (var(--q, 0) - 0.65) / 0.25, 1), clamp(0, 1 - (var(--p, 0) - 0.3) / 0.2, 1)); }
 .L-s-circles[data-v="morph"] :is(.L-fm-title, .L-fm-legend).L-fm-in { opacity: clamp(0, (var(--p, 0) - 0.5) / 0.2, 1); }
 /* whatever has faded out takes no pointer. The two keys share a cell, and
    the hidden one was catching hovers meant for the one on show, lighting
@@ -534,7 +537,11 @@
 .L-page[data-comp="comp-editorial"] .L-s-circles[data-v="morph"] > .L-wrap { grid-template-columns: minmax(220px, 320px) 1fr; align-items: center; }
 .L-page[data-comp="comp-editorial"] .L-s-circles[data-v="morph"] > .L-wrap > .L-fm-side { grid-column: 1; grid-row: 1; }
 .L-fm-side { display: grid; gap: 28px; align-content: center; }
-.L-page[data-comp="comp-editorial"] .L-sec-h .L-fm-head { position: static; }
+/* the head must not stick here: the editorial rule further down makes
+   every section head sticky under the nav, and in the pinned stage that
+   pulled the head up over the key while the key re-centred (2 Nov 2026).
+   The section's own class lifts this above that rule */
+.L-page[data-comp="comp-editorial"] .L-s-circles.L-sec-h .L-fm-head { position: static; top: auto; }
 /* the titles share one cell under the rule, which stays put while they swap */
 .L-fm-titles { display: grid; width: 100%; }
 .L-fm-title { grid-area: 1 / 1; }
@@ -811,6 +818,13 @@
 .L-start { display: grid; gap: 28px; }
 .L-start-actions { display: grid; gap: 18px; }
 .L-sec[data-v="band"] { background: var(--surface); }
+/* the close: the band's glow alone, the same wash the hero carries, now
+   that the synapse field is off it (Wilfred, 2 Nov 2026) */
+.L-s-start[data-v="band"] {
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--base) 35%, transparent) 0%, color-mix(in srgb, var(--base) 70%, transparent) 60%, var(--base) 100%),
+    radial-gradient(ellipse 70% 60% at 65% 40%, color-mix(in srgb, var(--accent-4) 22%, var(--surface-alt)) 0%, var(--surface) 55%, var(--base) 100%);
+}
 .L-sec[data-v="band"] .L-start-actions .field { display: none; }
 .L-sec[data-v="form"] .L-start-actions .cta-row { display: none; }
 .L-sec[data-v="form"] .field { max-width: 520px; }
