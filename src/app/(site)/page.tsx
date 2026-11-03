@@ -21,12 +21,12 @@ export default async function Home() {
   const baseline = score(BASELINE);
   const { values, levers, score: best } = bestForProductiveDays(OPTIMIZER_MOVES);
   const answer = { values, levers, days: best.days, mhq: best.mhq };
-  const { home, global, teamq } = await getContent();
+  const { home, global } = await getContent();
   const cards = (await getCards()).map((c) => [c.name, "", c.image] as [string, string, string]);
   return (
     <>
       <JsonLd data={faqLd(home.faq.items)} />
-      <SiteHome teamq={{ baseline, answer, c: teamq, tool: home.tool }} content={{ home, global }} cards={cards} />
+      <SiteHome teamq={{ baseline, answer, tool: home.tool }} content={{ home, global }} cards={cards} />
     </>
   );
 }

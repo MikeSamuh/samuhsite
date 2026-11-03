@@ -30,9 +30,12 @@ export const SITE: Site = {
   // TeamQ as the whole /teamq experience in place of the demo, the
   // metaphors, testimonials, the research claim with the case study, and
   // the close. docs/decisions.md, 2 Nov 2026
+  // Then Mike's call the same day: the funnel narrows to the free LeadQ,
+  // the tool sits straight under the circles with nothing explained
+  // around it, and the thesis band goes
   layout: { ...BASE, sections: { ...BASE.sections, circles: "circles-morph", thesis: "thesis-band", cards: "cards-one" } },
   nav: { links: ["about", "process", "solutions", "insights"], brand: "icons" },
-  order: ["hero", "meaning", "circles", "thesis", "tool", "cards", "voices", "case", "faq", "start"],
+  order: ["hero", "meaning", "circles", "tool", "cards", "voices", "case", "faq", "start"],
   copy: {
     heroLede: null,
     thesis: "When the team environment is right, people thrive and results follow. Most teams pay a hidden performance tax instead, through their environment, not their effort. TeamQ shows where yours is.",
@@ -52,8 +55,8 @@ export const SITE: Site = {
       kicker: "TeamQ",
       title: "Find your team’s hidden performance tax",
       pitch: null,
-      cta: "Get your team’s assessment",
-      ctaHref: "/start",
+      cta: "Take LeadQ, free",
+      ctaHref: "/start?door=leadq",
     },
     // the client's network background, until the real film arrives. Not
     // in git (video never is): public/hero-bg.mp4 on the machine that
@@ -79,6 +82,10 @@ export const ROUTES: Record<PageId, string> = {
   start: "/start",
 };
 
+/** The TeamQ explainer, not a nav page: linked from the tool on the home,
+ *  the TeamQ card on Solutions and the footer. */
+export const TEAMQ_PATH = "/teamq";
+
 /** The platform, platform.samuh.org, where LeadQ and TeamQ run and the
  *  account lives. Unset until it exists: the doors on /start fall back to a
  *  form, and the login door is hidden. docs/decisions.md, 2 Nov 2026. */
@@ -89,6 +96,12 @@ export function platformLink(intent: "leadq" | "teamq" | "login"): string | null
   if (!PLATFORM_URL) return null;
   return intent === "login" ? `${PLATFORM_URL}/login` : `${PLATFORM_URL}/start?intent=${intent}`;
 }
+
+/** The one primary call to action since Mike's call of 2 Nov 2026: the
+ *  free LeadQ. On the platform once it exists, the LeadQ door on /start
+ *  until then. The nav, the footer, the close and the tool all use it;
+ *  /start stays as the fork behind the Solutions cards. */
+export const LEADQ_HREF: string = platformLink("leadq") ?? `${ROUTES.start}?door=leadq`;
 
 /** The page a path belongs to, for the nav's current marker. A page owns
  *  its sub-paths: /insights/<slug> is still Insights. */

@@ -497,7 +497,7 @@ code. — Wilfred
 
 **2026-11-02 — Three measures, one door, and the platform is a separate
 build.** Mike and Jake's whiteboard: LeadQ (free, the leader alone, the
-hook), TeamQ ($100 per team, the product; the services are the high-ticket work), OrgQ ($10 per person, packages), and under them
+hook), TeamQ ($99 per team, the product; the services are the high-ticket work), OrgQ ($10 per person, packages), and under them
 the 90-day cycle as DIY, Supported and Guided, Advisory, and keynotes and
 workshops. The site sells the ladder; a platform at `platform.samuh.org`
 (their `samuh-platform` repo, Supabase) will run the surveys and hold the
@@ -535,3 +535,15 @@ tool is usable on the page; /teamq stays as its own page. Santosh's email
 is the first testimonial, title and organization pending. Not done: the
 pronunciation re-record (an audio file from the client) and the
 "connecting line instead of labels" idea for the circles. — Wilfred
+
+**2026-11-02 — Mike's call: one call to action, the free LeadQ.** The
+funnel narrows: the nav button, the footer, the close and the button under
+the tool all say Take LeadQ and go to the LeadQ door (`LEADQ_HREF`, the
+platform once it exists). `/start` stays as the fork behind the Solutions
+cards. The home loses the TeamQ explainer: the tool sits straight under the
+circles with its head and one button, and a quiet link to `/teamq` for the
+visitor with questions. The thesis band goes. TeamQ is $99, settled by
+Wilfred after the call, and LeadQ is gated: email and magic link first,
+then the questions, so the instrument is never public. Owed: a third scroll
+in the circles for the performance tax, and the domain migration runbook
+for the week of 9 November. — Wilfred
