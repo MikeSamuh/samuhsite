@@ -11,8 +11,8 @@ const Ctx = createContext<State | null>(null);
 /** The slider state, shared by the ask at the top of /teamq and the tool
  *  below it, so a lead posts the settings the visitor tried wherever the
  *  form sits on the page. */
-export function TeaserValues({ children }: { children: React.ReactNode }) {
-  const state = useState<Values>(BASELINE);
+export function TeaserValues({ children, initial = BASELINE }: { children: React.ReactNode; /** where the sliders start; the home starts them empty (2 Nov 2026) */ initial?: Values }) {
+  const state = useState<Values>(initial);
   return <Ctx.Provider value={state}>{children}</Ctx.Provider>;
 }
 

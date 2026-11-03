@@ -911,3 +911,10 @@
     transition: none;
   }
 }
+
+/* the home (2 Nov 2026): the sample team's line sits under the section
+   title, and the readout says so until an example is generated */
+.teaser-sec .teaser-title:has(+ .teaser-lede) { margin-bottom: 14px; }
+.teaser-lede { margin: 0 0 40px; max-width: 60ch; }
+.teaser-blank { margin: 0; font-size: 15px; line-height: 1.55; color: var(--muted); max-width: 32ch; }
+.teaser-readout[data-blank] .teaser-days { color: var(--muted); }

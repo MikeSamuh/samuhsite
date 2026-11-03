@@ -74,21 +74,77 @@ const ASK_WORDS: AskWords = {
   thanksText: "A person at SAMUH will be in touch about your team.",
 };
 
-export function TeamQTeaser({ baseline, answer, compact = false }: { baseline: TeaserResult; answer: Answer; /** the home (2 Nov 2026): the readout and the three levers the model would move first, no optimizer button, no reset */ compact?: boolean }) {
+/** every slider at its floor: the home's starting state */
+export const EMPTY_VALUES: Values = Object.fromEntries(FACTORS.map((factor) => [factor.id, factor.min]));
+
+/** how long a staged move takes, from empty to the example and from the example to the optimum */
+const TWEEN_MS = 1100;
+
+/** The home's three stages (Wilfred, 2 Nov 2026): the sliders start
+ *  empty, a click animates the sample team in, a second click animates
+ *  the optimizer's answer. */
+type Stage = "empty" | "example" | "optimized";
+
+export function TeamQTeaser({ baseline, answer, staged = false }: { baseline: TeaserResult; answer: Answer; /** the home: all the factors, starting empty, with the two staged moves instead of the optimizer button and reset */ staged?: boolean }) {
   const [values, setValues] = useTeaserValues();
   const [result, setResult] = useState<TeaserResult>(baseline);
   const [stale, setStale] = useState(false);
   const [failed, setFailed] = useState(false);
   const [touched, setTouched] = useState(false);
   const [shown, setShown] = useState(false);
+  const [stage, setStage] = useState<Stage>(staged ? "empty" : "example");
+  const [moving, setMoving] = useState(false);
   const answerRef = useRef<HTMLParagraphElement>(null);
+  const tweenRef = useRef(0);
 
   useEffect(() => {
     if (shown) answerRef.current?.focus();
   }, [shown]);
 
+  useEffect(() => () => cancelAnimationFrame(tweenRef.current), []);
+
+  /** glide every slider from where it is to the target, snapped to its step */
+  const tween = (target: Values, then: Stage) => {
+    cancelAnimationFrame(tweenRef.current);
+    const from = { ...values };
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) {
+      setValues(target);
+      setStage(then);
+      return;
+    }
+    setMoving(true);
+    const started = performance.now();
+    const frame = (now: number) => {
+      const t = Math.min(1, (now - started) / TWEEN_MS);
+      const eased = t * t * (3 - 2 * t);
+      setValues(
+        Object.fromEntries(
+          FACTORS.map((factor) => {
+            const value = from[factor.id] + (target[factor.id] - from[factor.id]) * eased;
+            return [factor.id, Math.round(value / factor.step) * factor.step];
+          }),
+        ),
+      );
+      if (t < 1) tweenRef.current = requestAnimationFrame(frame);
+      else {
+        setValues(target);
+        setStage(then);
+        setMoving(false);
+      }
+    };
+    tweenRef.current = requestAnimationFrame(frame);
+  };
+
   useEffect(() => {
     if (!MODEL_VERIFIED) return;
+    // the home's empty start: nothing to score yet
+    if (staged && stage === "empty") {
+      setResult(baseline);
+      setStale(false);
+      setFailed(false);
+      return;
+    }
     if (atBaseline(values)) {
       setResult(baseline);
       setStale(false);
@@ -122,7 +178,7 @@ export function TeamQTeaser({ baseline, answer, compact = false }: { baseline: T
       window.clearTimeout(timer);
       request.abort();
     };
-  }, [values, baseline]);
+  }, [values, baseline, staged, stage]);
 
   const move = (factor: Factor, value: number) => {
     setValues((current) => ({ ...current, [factor.id]: value }));
@@ -141,23 +197,25 @@ export function TeamQTeaser({ baseline, answer, compact = false }: { baseline: T
 
   const environment = FACTORS.filter((factor) => factor.group === "environment");
   const lifestyle = FACTORS.filter((factor) => factor.group === "lifestyle");
-  // the home: only the levers the optimizer ranks, in the model's order
-  const leverIds = answer.levers.map((lever) => lever.id);
-  const levers = leverIds.map((id) => FACTORS.find((factor) => factor.id === id)).filter((factor): factor is Factor => Boolean(factor));
+  const blank = staged && stage === "empty";
 
   return (
-    <div className="teaser">
+    <div className="teaser" data-stage={staged ? stage : undefined}>
       {/* one fold: the readout on the left, the eleven sliders on the right */}
       <div className="teaser-fold">
         <div className="teaser-left">
           {MODEL_VERIFIED ? (
-            <div className="teaser-readout" data-stale={stale} aria-live="polite" aria-atomic="true">
+            <div className="teaser-readout" data-stale={stale} data-blank={blank || undefined} aria-live="polite" aria-atomic="true">
               <div className="teaser-headline">
                 <span className="teaser-label">Productive days per month</span>
-                <span className="teaser-days">{one(result.days)}</span>
-                <span className="teaser-delta">{change(result.days, baseline.days, " days")}</span>
+                <span className="teaser-days">{blank ? "—" : one(result.days)}</span>
+                <span className="teaser-delta">{blank ? "of 22 working days" : change(result.days, baseline.days, " days")}</span>
               </div>
-              <Capacity value={result.mhq} delta={change(result.mhq, baseline.mhq)} />
+              {blank ? (
+                <p className="teaser-blank">Generate an example to see a team&rsquo;s numbers, then move the factors yourself.</p>
+              ) : (
+                <Capacity value={result.mhq} delta={change(result.mhq, baseline.mhq)} />
+              )}
               {failed ? (
                 <p className="teaser-failed" role="alert">
                   That change could not be scored. These are the last figures we have.
@@ -167,24 +225,40 @@ export function TeamQTeaser({ baseline, answer, compact = false }: { baseline: T
           ) : (
             <Gauge values={values} />
           )}
-          <p className="teaser-team">
-            A team of {TEAM_SIZE}, as they are today.
-            <span className="teaser-team-base">
-              {" "}
-              {one(baseline.days)} productive days a month. Capacity to perform {one(baseline.mhq)},{" "}
-              {mhqBand(baseline.mhq).name}.
-            </span>
-          </p>
+          {staged ? null : (
+            <p className="teaser-team">
+              A team of {TEAM_SIZE}, as they are today.
+              <span className="teaser-team-base">
+                {" "}
+                {one(baseline.days)} productive days a month. Capacity to perform {one(baseline.mhq)},{" "}
+                {mhqBand(baseline.mhq).name}.
+              </span>
+            </p>
+          )}
         </div>
 
-        {compact ? (
+        {staged ? (
           <div className="teaser-inputs">
             <fieldset className="teaser-group">
-              <legend>Three factors the model would move first</legend>
-              {levers.map((factor) => (
+              <legend>{GROUP_LABELS.environment}</legend>
+              {environment.map((factor) => (
                 <Slider key={factor.id} factor={factor} value={values[factor.id]} onChange={move} />
               ))}
             </fieldset>
+            <fieldset className="teaser-group">
+              <legend>{GROUP_LABELS.lifestyle}</legend>
+              {lifestyle.map((factor) => (
+                <Slider key={factor.id} factor={factor} value={values[factor.id]} onChange={move} />
+              ))}
+            </fieldset>
+            <div className="teaser-actions">
+              <button className="btn btn-alt" type="button" onClick={() => tween(BASELINE, "example")} disabled={moving || stage !== "empty"}>
+                Generate an example <span className="arrow">&rarr;</span>
+              </button>
+              <button className="btn btn-secondary" type="button" onClick={() => tween(answer.values, "optimized")} disabled={moving || stage !== "example"}>
+                Show optimized results <span className="arrow">&rarr;</span>
+              </button>
+            </div>
           </div>
         ) : (
         <div className="teaser-inputs">
