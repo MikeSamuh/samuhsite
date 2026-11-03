@@ -1,17 +1,17 @@
-import { StartDoors } from "@/components/start/StartDoors";
+import { StartEmail } from "@/components/start/StartEmail";
 import { getContent } from "@/lib/content/content";
 import { pageMeta } from "@/lib/seo";
 
 export const metadata = pageMeta({
-  title: "Get started",
-  description: "Assess yourself with LeadQ, your team with TeamQ, or your organization with OrgQ. Pick the door that fits where you are.",
+  title: "Take your free assessment",
+  description: "Enter your work email and we send you a link. One click signs you in and starts LeadQ, a free five-minute read on your team's environment.",
   path: "/start",
 });
 
-// Flow 4: the fork. One CTA everywhere lands here; the person picks a door.
-// LeadQ and TeamQ go to the platform once it exists (NEXT_PUBLIC_PLATFORM_URL),
-// and to a short form until then. OrgQ is a conversation. Spec:
-// docs/decisions.md, 2 Nov 2026.
+// Flow 4: the email box. One address in, a magic link out, the platform
+// from there (Wilfred, 3 Nov 2026). Until the platform exists the address
+// posts to /api/lead as flow "start" and SAMUH sends the link by hand.
+// Spec: docs/decisions.md, 3 Nov 2026.
 export default async function StartPage() {
   const { start } = await getContent();
   return (
@@ -30,7 +30,7 @@ export default async function StartPage() {
       </section>
       <section className="L-sec start-sec" data-n="02">
         <div className="L-wrap">
-          <StartDoors c={start} />
+          <StartEmail c={start.form} />
         </div>
       </section>
     </>

@@ -16,14 +16,14 @@ export const DEFAULTS = {
   global: {
     brand: {
       partnerLine: "In partnership with\nSapien Labs",
-      navCta: "Start here",
+      navCta: "Let’s talk",
     },
     footer: {
       line: "High performance *without* the cost to people.",
       about: "Organizational and high-performance consulting. We work with teams on the conditions they work in.",
       talkHeading: "Talk to us",
       bookCall: "Book a call",
-      cta: "Start here",
+      cta: "Let’s talk",
       reportLabel: "Work Culture Report",
       youtubeLabel: "Human Expansion on YouTube",
       youtubeUrl: "https://www.youtube.com/@HumanExpansion-ACorePurpose",
@@ -252,33 +252,38 @@ export const DEFAULTS = {
 
   // /start, the fork behind every Get started button. {door} in the form's
   // words becomes the door's name
-  // Start here: two choices (Wilfred, 2 Nov 2026). The assessment is LeadQ;
-  // the TeamQ words show when the TeamQ card on Solutions sent them
+  // /start: one email box (Wilfred, 3 Nov 2026). The address, a magic link,
+  // the platform. {email} in the thank-you becomes the address given
   start: {
     head: {
       kicker: "Start here",
-      title: "Take the assessment, or talk to us.",
-      lede: "Two ways in. A free read on your own team in about five minutes, or a conversation with a person at SAMUH.",
-    },
-    doors: {
-      leadq: { name: "Take the assessment", line: "LeadQ is free and takes about five minutes. A first read on your team’s environment, for you alone. Your whole team comes next, with TeamQ.", note: "Free", button: "Take LeadQ" },
-      teamq: { name: "Get TeamQ for your team", line: "Your whole team answers, about five minutes each. Benchmarked against Sapien Labs’ data, with the levers ranked by expected gain.", note: "$99 per team", button: "Get TeamQ" },
-      talk: { name: "Talk to us", line: "Questions about your team, your organization, or how any of this works. A person at SAMUH takes the call.", note: "", button: "Book a call" },
-      login: { name: "Already have an account?", line: "Your result and your team are waiting.", note: "", button: "Log in" },
+      title: "Take your free assessment.",
+      lede: "Enter your work email and we send you a link. One click signs you in and starts LeadQ: about five minutes, for you alone, a first read on your team’s environment.",
     },
     form: {
-      title: "Leave your details and a person at SAMUH sets you up.",
-      note: "The platform is on its way. Until it opens, we run {door} with you by hand.",
-      button: "Send",
-      thanksTitle: "Thank you.",
-      thanksText: "A person at SAMUH will be in touch about {door}.",
+      label: "Work email",
+      placeholder: "you@company.com",
+      button: "Send my link",
+      thanksTitle: "Check your inbox.",
+      thanksText: "Your link to LeadQ is on its way to {email}. One click signs you in.",
+      talk: "Prefer to talk first?",
+      talkLink: "Let’s talk",
     },
   },
 
+  // /contact: the assessment box beside Jake's calendar (Wilfred, 3 Nov 2026)
   contact: {
     head: {
-      kicker: "Contact",
-      title: "Let’s talk, human to human.",
+      kicker: "Let’s talk",
+      title: "Take the free assessment, or book a time with Jake.",
+    },
+    assess: {
+      title: "Take your free assessment",
+      line: "LeadQ, about five minutes, for you alone. Enter your work email and we send the link.",
+    },
+    book: {
+      title: "Book a time with Jake",
+      line: "An intro call with Jake DeBerry, who leads growth at SAMUH. Bring your team in mind; he will say honestly whether this is the right thing for it.",
     },
     aside: {
       title: "Or reach us directly",

@@ -121,21 +121,23 @@ export const SCHEMA: PageSchema[] = [
   {
     id: "contact",
     name: "Contact",
-    note: "The form and the direct details.",
+    note: "The assessment box beside Jake's calendar, and the direct details.",
     path: "/contact",
     sections: [
       { key: "head", label: "Page head", fields: [t("kicker", "Eyebrow"), t("title", "Title")] },
+      { key: "assess", label: "The assessment box", note: "The box's own words are under Start here", fields: [t("title", "Title"), ta("line", "Line")] },
+      { key: "book", label: "Book a time", note: "The calendar comes from NEXT_PUBLIC_BOOKING_URL", fields: [t("title", "Title"), ta("line", "Line")] },
       { key: "aside", label: "Direct details", note: "Email and phone are under Site-wide", fields: [t("title", "Title")] },
     ],
   },
   {
     id: "start",
-    name: "Get started",
-    note: "The fork behind every Get started button: LeadQ, TeamQ, OrgQ, or log in.",
+    name: "Start here",
+    note: "The email box behind Start here: the address, a magic link, the platform.",
     path: "/start",
     sections: [
       { key: "head", label: "Page head", fields: [t("kicker", "Eyebrow"), t("title", "Title"), ta("lede", "Lede")] },
-      { key: "form", label: "The form", note: "Shown under a door until the platform opens. {door} becomes the door's name", fields: [t("title", "Title"), t("note", "Note"), t("button", "Button"), t("thanksTitle", "Thank you title"), t("thanksText", "Thank you text")] },
+      { key: "form", label: "The box", note: "Also on /contact. {email} becomes the address given", fields: [t("label", "Field label"), t("placeholder", "Placeholder"), t("button", "Button"), t("thanksTitle", "Thank you title"), ta("thanksText", "Thank you text"), t("talk", "Prefer to talk line"), t("talkLink", "Its link text")] },
     ],
   },
   {

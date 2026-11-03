@@ -557,3 +557,16 @@ field came off the close, which keeps the band's gradient. The circles'
 head no longer sticks under the nav (an editorial rule was outranking the
 section's own), and the text swap runs in three beats so nothing
 overlaps. — Wilfred
+
+**2026-11-03 — The intake is one email box.** `/start` asks for a work
+email and nothing else. Once the platform exists the address goes there
+with the intent and the platform sends the magic link that signs the
+person in as a free user and starts LeadQ. Until then the address posts to
+`/api/lead` as flow `start` (name no longer required for that flow) and the
+thank-you says the link is on its way, so SAMUH has to send it by hand
+from the notify email. The nav and footer button is "Let's talk" and opens
+`/contact`, which now offers the same email box beside Jake's calendar
+(the `/talk` booking embed, a visible TODO until `NEXT_PUBLIC_BOOKING_URL`
+is set), with the direct details under both. The general inquiry form came
+off `/contact`; `ContactForm` stays in the tree, unused. The two-door
+`/start` of 2 Nov is gone with its component. — Wilfred

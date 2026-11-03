@@ -139,7 +139,7 @@ function Talk() {
 /** Step 2: the Google Calendar appointment schedule, inline. Google takes
  *  the booking and the confirmation; Clarify gets the event from its own
  *  Google sync. A placeholder until the schedule link is set. */
-function Booking() {
+export function Booking() {
   const url = process.env.NEXT_PUBLIC_BOOKING_URL;
   useEffect(() => {
     if (url) track("booking_open");

@@ -146,7 +146,7 @@ through the same server route.
 | 1. Contact | `/contact` | General inquiry form. Email, and phone as a direct option |
 | 2. TeamQ teaser | `/teamq` | An intro on what TeamQ does and how SAMUH uses it, then the visitor explores the toggles freely. Nothing gated. An optional ask moves the intrigued into a contact flow |
 | 3. Talk to us | `/talk`, linked from `/solutions` and `/` | Books time on Jake's calendar directly, with one or two qualifying questions first. `?tier=orgq` when the OrgQ door sent them |
-| 4. Get started | `/start`, behind every Get started button | The fork: LeadQ, TeamQ, OrgQ, or log in. LeadQ and TeamQ go to the platform once `NEXT_PUBLIC_PLATFORM_URL` is set, and to a short form (name, email, organization, the door as `intent`) until then. OrgQ goes to flow 3 |
+| 4. Start here | `/start`, behind the home's call-out and close, and the assessment box on `/contact` | One email box. The address goes to the platform once `NEXT_PUBLIC_PLATFORM_URL` is set, which sends the magic link that signs the person in as a free user and starts LeadQ. Until then the address posts as flow `start` with `intent`, and SAMUH sends the link by hand. `?door=teamq` from the TeamQ card tags the lead |
 | 5. Solutions ask | `/solutions` | An email and the tier or piece picked on the page, as `pick` |
 
 Secondary capture points from the original scope still apply where they fit:

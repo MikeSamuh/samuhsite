@@ -128,7 +128,7 @@ export function Nav({ page, menu, links: order, brand = "wordmark", partner = fa
           ))}
         </nav>
         <button className="btn btn-secondary btn-small L-menu" onClick={() => setOpen(true)} aria-expanded={open} aria-controls="L-overlay">Explore</button>
-        <Link className="btn btn-small L-cta" href={ROUTES.start} onClick={close}>{g.brand.navCta} <span className="arrow">&rarr;</span></Link>
+        <Link className="btn btn-small L-cta" href={ROUTES.contact} onClick={close}>{g.brand.navCta} <span className="arrow">&rarr;</span></Link>
         {/* on small screens every nav collapses to this: the links and the
             Explore button hide, and the burger opens the full menu */}
         {!menu ? (
@@ -151,7 +151,7 @@ export function Nav({ page, menu, links: order, brand = "wordmark", partner = fa
             ))}
           </nav>
           <div className="L-overlay-foot L-wrap">
-            <Link className="btn" href={ROUTES.start} onClick={close}>{g.brand.navCta} <span className="arrow">&rarr;</span></Link>
+            <Link className="btn" href={ROUTES.contact} onClick={close}>{g.brand.navCta} <span className="arrow">&rarr;</span></Link>
             <span className="L-cap">{lines(g.brand.partnerLine)}</span>
           </div>
         </div>
@@ -814,7 +814,7 @@ export function Footer({ content }: { /** site-wide words from the admin; the de
             <span className="L-foot-link L-foot-todo">TODO(content): email address</span>
           )}
           <Link className="L-foot-link" href="/talk">{g.footer.bookCall}</Link>
-          <Link className="btn L-foot-cta" href={ROUTES.start}>{g.footer.cta} <span className="arrow">&rarr;</span></Link>
+          <Link className="btn L-foot-cta" href={ROUTES.contact}>{g.footer.cta} <span className="arrow">&rarr;</span></Link>
         </div>
       </div>
       <div className="L-wrap L-foot-base">

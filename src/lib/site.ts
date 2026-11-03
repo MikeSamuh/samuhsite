@@ -97,11 +97,11 @@ export function platformLink(intent: "leadq" | "teamq" | "login"): string | null
   return intent === "login" ? `${PLATFORM_URL}/login` : `${PLATFORM_URL}/start?intent=${intent}`;
 }
 
-/** The one primary call to action since Mike's call of 2 Nov 2026: the
- *  free LeadQ. On the platform once it exists, the LeadQ door on /start
- *  until then. The nav, the footer, the close and the tool all use it;
- *  /start stays as the fork behind the Solutions cards. */
-export const LEADQ_HREF: string = platformLink("leadq") ?? `${ROUTES.start}?door=leadq`;
+/** The free LeadQ, the one way in (Mike's call of 2 Nov 2026). /start is
+ *  the email box: the address, a magic link, the platform. The platform's
+ *  own LeadQ entry once it exists. The home's call-out and close use it;
+ *  the nav and footer say Let's talk and go to /contact (3 Nov). */
+export const LEADQ_HREF: string = platformLink("leadq") ?? ROUTES.start;
 
 /** The page a path belongs to, for the nav's current marker. A page owns
  *  its sub-paths: /insights/<slug> is still Insights. */

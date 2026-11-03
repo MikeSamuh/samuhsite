@@ -7,13 +7,14 @@ import Link from "next/link";
 import type { PageId } from "@/lib/layout";
 import { ROUTES } from "@/lib/site";
 import { ContactAside } from "@/components/contact/ContactAside";
-import { ContactForm } from "@/components/contact/ContactForm";
+import { StartEmail } from "@/components/start/StartEmail";
+import { Booking } from "@/components/talk/TalkForm";
 import { ProcessFigure, StageFigure } from "@/components/process-figure/ProcessFigure";
 import type { PoseId } from "@/components/process-figure/figures";
 import { Honeypot } from "@/components/lead/Honeypot";
 import { Turnstile } from "@/components/lead/Turnstile";
 import { useLeadSubmit } from "@/components/lead/useLeadSubmit";
-import { DEFAULTS, type AboutContent, type ContactContent, type GlobalContent, type ProcessContent, type SolutionsContent } from "@/lib/content/defaults";
+import { DEFAULTS, type AboutContent, type ContactContent, type GlobalContent, type ProcessContent, type SolutionsContent, type StartContent } from "@/lib/content/defaults";
 import { fill } from "@/lib/content/shared";
 import { EMAIL_SHAPE } from "@/lib/lead";
 
@@ -25,6 +26,8 @@ export interface PageCopy {
   process?: ProcessContent;
   solutions?: SolutionsContent;
   contact?: ContactContent;
+  /** the email box's words, shown on /contact too */
+  start?: StartContent;
 }
 
 /**
@@ -380,16 +383,27 @@ function About({ c = DEFAULTS.about }: { c?: AboutContent }) {
 
 /* ------------------------------------------------------------------ */
 
-function Contact({ c = DEFAULTS.contact, g = DEFAULTS.global }: { c?: ContactContent; g?: GlobalContent }) {
+/** Let's talk (Wilfred, 3 Nov 2026): the free assessment's email box on
+ *  one side, Jake's calendar on the other, the direct details under both. */
+function Contact({ c = DEFAULTS.contact, g = DEFAULTS.global, s = DEFAULTS.start }: { c?: ContactContent; g?: GlobalContent; s?: StartContent }) {
   return (
     <>
       <PageHead n="01" kicker={c.head.kicker} title={c.head.title} />
       <section className="L-sec contact-sec">
         <div className="L-wrap">
-          <div className="contact-grid">
-            <ContactForm />
-            <ContactAside title={c.aside.title} email={g.contact.email} phone={g.contact.phone} />
+          <div className="contact-choices">
+            <div className="contact-choice">
+              <h2 className="sec">{c.assess.title}</h2>
+              <p className="L-mid">{c.assess.line}</p>
+              <StartEmail c={s.form} talk={false} />
+            </div>
+            <div className="contact-choice">
+              <h2 className="sec">{c.book.title}</h2>
+              <p className="L-mid">{c.book.line}</p>
+              <Booking />
+            </div>
           </div>
+          <ContactAside title={c.aside.title} email={g.contact.email} phone={g.contact.phone} />
         </div>
       </section>
     </>
@@ -404,7 +418,7 @@ export function Page({ id, figures, content }: { id: PageId; figures?: boolean; 
     case "process": return <Process figures={figures} c={content?.process} />;
     case "insights": return <Insights />;
     case "about": return <About c={content?.about} />;
-    case "contact": return <Contact c={content?.contact} g={content?.global} />;
+    case "contact": return <Contact c={content?.contact} g={content?.global} s={content?.start} />;
     default: return null;
   }
 }

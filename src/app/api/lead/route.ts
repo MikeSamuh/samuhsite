@@ -39,8 +39,8 @@ const schema = z
     turnstileToken: z.string().max(4096).optional(),
   })
   .superRefine((data, ctx) => {
-    // the teaser and the Solutions ask take an email alone
-    if (data.flow !== "teaser" && data.flow !== "solutions" && !data.name) {
+    // the teaser, the Solutions ask and the start email take an email alone
+    if (data.flow !== "teaser" && data.flow !== "solutions" && data.flow !== "start" && !data.name) {
       ctx.addIssue({ code: "custom", path: ["name"], message: "Name is required" });
     }
   });
