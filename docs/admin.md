@@ -27,7 +27,7 @@ shows on the login page.
 since 23 October 2026, Wilfred's call: the sign-in email only reaches
 Mike until the Resend domain is verified, and nobody on our side has
 Vercel access to set an env switch, so the gate is off in code and the
-team can look around. Pages and the API act as `open-access@samuh.work`.
+team can look around. Pages and the API act as `open-access@samuh.org`.
 While it is open, anyone with the URL can edit the site. Flip it to
 `false` before launch.
 

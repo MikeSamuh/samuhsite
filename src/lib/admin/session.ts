@@ -34,7 +34,7 @@ export function adminOpen(): boolean {
 }
 
 /** Who an open admin acts as. */
-export const OPEN_USER: Session = { email: "open-access@samuh.work" };
+export const OPEN_USER: Session = { email: "open-access@samuh.org" };
 
 export async function signSession(email: string): Promise<string> {
   const secret = sessionSecret();

@@ -140,10 +140,10 @@ shown.
 
 ```
 LEAD_NOTIFY=on                       # off in local dev
-LEAD_NOTIFY_TO=                      # jake@samuh.work
-LEAD_NOTIFY_CC=                      # mike@samuh.work
+LEAD_NOTIFY_TO=                      # jake@samuh.org
+LEAD_NOTIFY_CC=                      # mike@samuh.org
 RESEND_API_KEY=
-RESEND_FROM=                         # site@samuh.work after domain verification
+RESEND_FROM=                         # site@samuh.org after domain verification
 CLARIFY_API_KEY=                     # unset until Jake cuts one
 CLARIFY_WORKSPACE=
 NEXT_PUBLIC_TURNSTILE_SITE_KEY=

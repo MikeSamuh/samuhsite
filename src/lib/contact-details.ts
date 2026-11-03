@@ -3,7 +3,7 @@
 // CLAUDE.md rule 1.
 
 /** the address visitors write to, from the client, 12 October 2026 */
-export const CONTACT_EMAIL: string | null = "hello@samuh.work";
+export const CONTACT_EMAIL: string | null = "hello@samuh.org";
 
 /** the number, from Wilfred on 21 October 2026, as shown; tel: links strip it to digits */
 export const CONTACT_PHONE: string | null = "+1 646-374-8110";

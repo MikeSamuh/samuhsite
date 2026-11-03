@@ -263,7 +263,7 @@ export const DEFAULTS = {
     form: {
       label: "Work email",
       placeholder: "you@company.com",
-      button: "Send my link",
+      button: "Begin Free Assessment",
       thanksTitle: "Check your inbox.",
       thanksText: "Your link to LeadQ is on its way to {email}. One click signs you in.",
       talk: "Prefer to talk first?",
@@ -271,19 +271,19 @@ export const DEFAULTS = {
     },
   },
 
-  // /contact: the assessment box beside Jake's calendar (Wilfred, 3 Nov 2026)
+  // /contact: the assessment box beside the calendar (Wilfred, 3 Nov 2026)
   contact: {
     head: {
       kicker: "Let’s talk",
-      title: "Take the free assessment, or book a time with Jake.",
+      title: "Take the free assessment, or book a time.",
     },
     assess: {
       title: "Take your free assessment",
       line: "LeadQ, about five minutes, for you alone. Enter your work email and we send the link.",
     },
     book: {
-      title: "Book a time with Jake",
-      line: "An intro call with Jake DeBerry, who leads growth at SAMUH. Bring your team in mind; he will say honestly whether this is the right thing for it.",
+      title: "Book a time",
+      line: "An intro call with a person at SAMUH. Bring your team in mind; we will say honestly whether this is the right thing for it.",
     },
     aside: {
       title: "Or reach us directly",

@@ -121,7 +121,7 @@ export const SCHEMA: PageSchema[] = [
   {
     id: "contact",
     name: "Contact",
-    note: "The assessment box beside Jake's calendar, and the direct details.",
+    note: "The assessment box beside the calendar, and the direct details.",
     path: "/contact",
     sections: [
       { key: "head", label: "Page head", fields: [t("kicker", "Eyebrow"), t("title", "Title")] },

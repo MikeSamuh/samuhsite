@@ -60,7 +60,7 @@ export function LoginForm() {
           autoFocus
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="you@samuh.work"
+          placeholder="you@samuh.org"
         />
       </label>
       {message ? <p className={`adm-note${state === "error" || expired ? " adm-note-error" : ""}`} role="alert">{message}</p> : null}

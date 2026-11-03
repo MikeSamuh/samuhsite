@@ -190,7 +190,7 @@ posts. sitemap.xml and robots.txt. Build, PR.
 
 No prompt. Checklist:
 
-- [ ] Resend domain verified, `RESEND_FROM` is `@samuh.work`
+- [ ] Resend domain verified, `RESEND_FROM` is `@samuh.org`
 - [ ] All env vars set on production in Vercel
 - [ ] `LEAD_NOTIFY_TO` is Jake, CC is Mike
 - [ ] Clarify key is the production key
