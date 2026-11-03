@@ -6,7 +6,7 @@ import { TEAM_SIZE } from "./model";
 import { EMPTY_VALUES, TeamQTeaser, type Answer, type TeaserResult } from "./TeamQTeaser";
 import { TeaserValues } from "./TeaserValues";
 import { DEFAULTS, type HomeContent } from "@/lib/content/defaults";
-import { LEADQ_HREF } from "@/lib/site";
+import { ROUTES } from "@/lib/site";
 import "./teaser.css";
 
 export interface HomeTeamQProps {
@@ -35,12 +35,15 @@ export function HomeTeamQ({ baseline, answer, tool = DEFAULTS.home.tool }: HomeT
             A team of {TEAM_SIZE}, as they are today. {one(baseline.days)} productive days a month. Capacity to perform {one(baseline.mhq)}, {mhqBand(baseline.mhq).name}.
           </p>
           <TeamQTeaser baseline={baseline} answer={answer} staged />
-          <div className="teaser-pitch">
-            {tool.pitch ? <p className="L-mid">{tool.pitch}</p> : null}
-            <div className="cta-row">
-              <Link className="btn" href={LEADQ_HREF}>{tool.cta} <span className="arrow">&rarr;</span></Link>
-            </div>
-          </div>
+          {tool.pitch ? <p className="L-mid teaser-pitch">{tool.pitch}</p> : null}
+        </div>
+      </section>
+
+      {/* the call-out between the tool and the cards: one line, one button to Start here */}
+      <section className="L-sec teaser-callout" data-n="05" aria-labelledby="home-callout-title">
+        <div className="L-wrap teaser-callout-in">
+          <h2 className="sec" id="home-callout-title">{tool.callout}</h2>
+          <Link className="btn" href={ROUTES.start}>{tool.cta} <span className="arrow">&rarr;</span></Link>
         </div>
       </section>
     </TeaserValues>

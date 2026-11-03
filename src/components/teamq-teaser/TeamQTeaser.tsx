@@ -204,6 +204,14 @@ export function TeamQTeaser({ baseline, answer, staged = false }: { baseline: Te
       {/* one fold: the readout on the left, the eleven sliders on the right */}
       <div className="teaser-fold">
         <div className="teaser-left">
+          {/* the second move, above the readout once the example is in (Wilfred, 3 Nov 2026) */}
+          {staged && stage === "example" ? (
+            <div className="teaser-next">
+              <button className="btn btn-alt" type="button" onClick={() => tween(answer.values, "optimized")} disabled={moving}>
+                Show optimized results <span className="arrow">&rarr;</span>
+              </button>
+            </div>
+          ) : null}
           {MODEL_VERIFIED ? (
             <div className="teaser-readout" data-stale={stale} data-blank={blank || undefined} aria-live="polite" aria-atomic="true">
               <div className="teaser-headline">
@@ -239,26 +247,26 @@ export function TeamQTeaser({ baseline, answer, staged = false }: { baseline: Te
 
         {staged ? (
           <div className="teaser-inputs">
-            <fieldset className="teaser-group">
+            {/* the dials greyed out under one floating button until the example is generated */}
+            {blank ? (
+              <div className="teaser-cover">
+                <button className="btn btn-alt" type="button" onClick={() => tween(BASELINE, "example")} disabled={moving}>
+                  Generate an example <span className="arrow">&rarr;</span>
+                </button>
+              </div>
+            ) : null}
+            <fieldset className="teaser-group" disabled={blank}>
               <legend>{GROUP_LABELS.environment}</legend>
               {environment.map((factor) => (
                 <Slider key={factor.id} factor={factor} value={values[factor.id]} onChange={move} />
               ))}
             </fieldset>
-            <fieldset className="teaser-group">
+            <fieldset className="teaser-group" disabled={blank}>
               <legend>{GROUP_LABELS.lifestyle}</legend>
               {lifestyle.map((factor) => (
                 <Slider key={factor.id} factor={factor} value={values[factor.id]} onChange={move} />
               ))}
             </fieldset>
-            <div className="teaser-actions">
-              <button className="btn btn-alt" type="button" onClick={() => tween(BASELINE, "example")} disabled={moving || stage !== "empty"}>
-                Generate an example <span className="arrow">&rarr;</span>
-              </button>
-              <button className="btn btn-secondary" type="button" onClick={() => tween(answer.values, "optimized")} disabled={moving || stage !== "example"}>
-                Show optimized results <span className="arrow">&rarr;</span>
-              </button>
-            </div>
           </div>
         ) : (
         <div className="teaser-inputs">

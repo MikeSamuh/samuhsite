@@ -1447,7 +1447,8 @@
   transform: translate(calc(var(--i) * 3px), calc(var(--i) * -3px)) rotate(calc(var(--i) * 1deg - 3deg));
   transition: transform var(--dur) var(--ease), border-color var(--dur) var(--ease), opacity var(--dur) var(--ease);
 }
-.L-deck-back img { width: 34%; height: auto; }
+/* the star on the back, mirrored so it points the way the nav's mark does (Wilfred, 3 Nov 2026) */
+.L-deck-back img { width: 34%; height: auto; transform: scaleX(-1); }
 .L-deck[data-phase="shuffling"] .L-deck-back { animation: L-deck-shuffle calc(var(--dur) * 3) var(--ease) calc(var(--i) * var(--dur) * 0.3) infinite both; }
 @keyframes L-deck-shuffle {
   0% { transform: translate(calc(var(--i) * 3px), calc(var(--i) * -3px)) rotate(calc(var(--i) * 1deg - 3deg)); }

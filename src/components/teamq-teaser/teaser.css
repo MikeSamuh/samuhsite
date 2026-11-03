@@ -918,3 +918,15 @@
 .teaser-lede { margin: 0 0 40px; max-width: 60ch; }
 .teaser-blank { margin: 0; font-size: 15px; line-height: 1.55; color: var(--muted); max-width: 32ch; }
 .teaser-readout[data-blank] .teaser-days { color: var(--muted); }
+
+/* the home's empty stage (Wilfred, 3 Nov 2026): the dials sit greyed
+   out under one button, Generate an example, floating over them */
+.teaser-inputs { position: relative; }
+.teaser[data-stage="empty"] .teaser-group { opacity: 0.3; filter: grayscale(1); pointer-events: none; transition: opacity calc(var(--dur) * 2) var(--ease), filter calc(var(--dur) * 2) var(--ease); }
+.teaser-cover { position: absolute; inset: 0; display: grid; place-items: center; z-index: 1; }
+.teaser-cover .btn { box-shadow: 0 0 0 10px color-mix(in srgb, var(--base) 70%, transparent); }
+/* the second move sits above the readout once the example is in */
+.teaser-next { display: grid; justify-items: start; }
+/* the call-out between the tool and the cards */
+.teaser-callout-in { display: grid; gap: 20px; justify-items: start; }
+.teaser-callout .sec { margin: 0; }

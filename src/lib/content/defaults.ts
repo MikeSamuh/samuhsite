@@ -90,7 +90,8 @@ export const DEFAULTS = {
       kicker: "TeamQ",
       title: "Find your team’s hidden performance tax",
       pitch: "",
-      cta: "Take LeadQ, free",
+      callout: "Ready to take your free assessment?",
+      cta: "Start here",
     },
     voices: {
       kicker: "In their words",
