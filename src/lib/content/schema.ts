@@ -121,12 +121,17 @@ export const SCHEMA: PageSchema[] = [
   {
     id: "contact",
     name: "Contact",
-    note: "The assessment box beside the calendar, and the direct details.",
+    note: "The call back form, then the free assessment CTA.",
     path: "/contact",
     sections: [
       { key: "head", label: "Page head", fields: [t("kicker", "Eyebrow"), t("title", "Title")] },
-      { key: "assess", label: "The assessment box", note: "The box's own words are under Start here", fields: [t("title", "Title"), ta("line", "Line")] },
-      { key: "book", label: "Book a time", note: "The calendar comes from NEXT_PUBLIC_BOOKING_URL", fields: [t("title", "Title"), ta("line", "Line")] },
+      { key: "form", label: "The form", note: "Two dropdowns, email and phone required, the message optional", fields: [
+        t("imA", "First dropdown label"), list("personas", "I'm a: options", "option", [t("label", "Option")]),
+        t("lookingFor", "Second dropdown label"), list("needs", "Looking for: options", "option", [t("label", "Option")]),
+        t("choose", "Unpicked option", "The first line of each dropdown"), t("email", "Email label"), t("phone", "Phone label"), t("message", "Message label"),
+        t("button", "Button"), t("sending", "Button while sending"), t("doneTitle", "Thanks title"), ta("doneText", "Thanks line"),
+      ] },
+      { key: "assess", label: "The assessment CTA", note: "At the foot of the page. The box's own words are under Start here", fields: [t("kicker", "Eyebrow"), t("title", "Title"), ta("line", "Line")] },
     ],
   },
   {
@@ -157,7 +162,7 @@ export const SCHEMA: PageSchema[] = [
     path: "/",
     sections: [
       { key: "brand", label: "Navigation", fields: [ta("partnerLine", "Partner line", "Two lines; the break is kept"), t("navCta", "Nav button")] },
-      { key: "footer", label: "Footer", fields: [t("line", "Line", MARKERS), ta("about", "About"), t("talkHeading", "Talk to us heading"), t("bookCall", "Book a call link"), t("cta", "Button"), t("reportLabel", "Report link"), t("youtubeLabel", "YouTube link"), url("youtubeUrl", "YouTube URL")] },
+      { key: "footer", label: "Footer", fields: [t("line", "Line", MARKERS), ta("about", "About"), t("talkHeading", "Talk to us heading"), t("bookCall", "Call back link", "Goes to Contact"), t("reportLabel", "Report link"), t("youtubeLabel", "YouTube link"), url("youtubeUrl", "YouTube URL")] },
       { key: "contact", label: "Contact details", fields: [t("email", "Email"), t("phone", "Phone", "As dialled, for example +15551234567. Empty shows a TODO")] },
       { key: "report", label: "Sapien Labs report", fields: [t("tag", "Tag"), ta("line", "The claim"), t("kicker", "Kicker"), t("download", "Download link"), t("onSite", "Site link"), url("page", "Report page URL"), url("pdf", "PDF URL")] },
       { key: "testimonials", label: "Testimonials", note: "Shown on Home and Solutions, one at a time", fields: [list("items", "Quotes", "quote", [

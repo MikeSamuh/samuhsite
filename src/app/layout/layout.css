@@ -918,13 +918,10 @@
 .L-foot-link { font-family: var(--font-ui); font-size: 16px; color: var(--text); cursor: pointer; text-decoration: none; transition: color var(--dur) var(--ease); }
 .L-foot-link:hover { color: var(--accent); }
 .L-foot-todo { color: var(--muted); cursor: default; }
+.L-foot-plain { cursor: default; }
+.L-foot-plain:hover { color: var(--text); }
 .L-foot-cta { margin-top: 10px; }
 .L-foot-base { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-top: 22px; padding-bottom: 30px; border-top: var(--rule-thin) solid var(--border); }
-.L-foot-base-left { display: grid; gap: 10px; }
-/* the direct details, bottom right: email as text with [at], the phone dialable */
-.L-foot-reach { display: grid; gap: 6px; justify-items: end; text-align: right; font-family: var(--font-ui); font-size: 15px; color: var(--text); }
-.L-foot-reach-line { display: grid; justify-items: end; }
-.L-foot-vanity { font-size: 13px; color: var(--muted); }
 .L-foot-legal { display: flex; flex-wrap: wrap; gap: 8px 22px; }
 .L-foot-legal a { text-decoration: none; cursor: pointer; transition: color var(--dur) var(--ease); }
 .L-foot-legal a:hover { color: var(--accent); }
@@ -978,8 +975,7 @@
 
 @container page (max-width: 560px) {
   .L-foot-grid { grid-template-columns: 1fr 1fr; }
-  .L-foot-base { flex-direction: column; gap: 18px; }
-  .L-foot-reach, .L-foot-reach-line { justify-items: start; text-align: left; }
+  .L-foot-base { flex-direction: column; gap: 10px; }
   /* the bar shows the Samuh mark at every scroll position: the full
      wordmark does not fit beside the call to action and the burger */
   .L-nav .L-brand { gap: 12px; }

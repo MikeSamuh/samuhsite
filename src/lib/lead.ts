@@ -13,8 +13,10 @@ export interface Lead {
   email: string;
   phone?: string;
   organization?: string;
-  /** job title, the teaser's intake */
+  /** job title, the teaser's intake; on /contact the "I'm a" pick */
   role?: string;
+  /** /contact, the "looking for" pick */
+  need?: string;
   /** the teaser's intake posts twice: the email alone as soon as it is
    *  given, then everything once the rest is filled in. Clarify takes
    *  both, matched on the email; the notify email goes once, on complete */

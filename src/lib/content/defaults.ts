@@ -22,8 +22,7 @@ export const DEFAULTS = {
       line: "High performance *without* the cost to people.",
       about: "Organizational and high-performance consulting. We work with teams on the conditions they work in.",
       talkHeading: "Talk to us",
-      bookCall: "Book a call",
-      cta: "Let’s talk",
+      bookCall: "Request Call Back",
       reportLabel: "Work Culture Report",
       youtubeLabel: "Human Expansion on YouTube",
       youtubeUrl: "https://www.youtube.com/@HumanExpansion-ACorePurpose",
@@ -281,19 +280,47 @@ export const DEFAULTS = {
     },
   },
 
-  // /contact: the assessment box beside the calendar (Wilfred, 3 Nov 2026)
+  // /contact (Wilfred, 5 Nov 2026): the form, then the free assessment CTA.
+  // The two lists are from Mike's Persona Journey sheet (Reference material)
   contact: {
     head: {
       kicker: "Let’s talk",
-      title: "Take the free assessment, or book a time.",
+      title: "Tell us a little, and we will call you back.",
+    },
+    form: {
+      imA: "I’m a",
+      personas: [
+        { label: "Senior Business Leader" },
+        { label: "HR Business Partner" },
+        { label: "HR Talent Lead" },
+        { label: "Team Lead" },
+        { label: "Team Coach" },
+        { label: "Team Member" },
+        { label: "Founder" },
+        { label: "CEO" },
+      ],
+      lookingFor: "Looking for",
+      needs: [
+        { label: "I want to improve my team’s performance" },
+        { label: "I want to improve performance across my organization" },
+        { label: "I want to understand what’s affecting employee performance and wellbeing" },
+        { label: "I want to build stronger leadership and team practices" },
+        { label: "I want support for a specific organizational change or challenge" },
+        { label: "I want to show measurable impact for my coaching" },
+      ],
+      choose: "Select one",
+      email: "Email",
+      phone: "Phone",
+      message: "Message",
+      button: "Request Call Back",
+      sending: "Sending",
+      doneTitle: "Thank you.",
+      doneText: "A person at SAMUH will call you back.",
     },
     assess: {
+      kicker: "Or start on your own",
       title: "Take your free assessment",
       line: "LeadQ, about five minutes, for you alone. Enter your work email and we send the link.",
-    },
-    book: {
-      title: "Book a time",
-      line: "An intro call with a person at SAMUH. Bring your team in mind; we will say honestly whether this is the right thing for it.",
     },
   },
 

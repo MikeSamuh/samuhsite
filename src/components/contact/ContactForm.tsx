@@ -1,37 +1,37 @@
 "use client";
 
-import Link from "next/link";
-import { ROUTES } from "@/lib/site";
 import { useEffect, useRef, useState } from "react";
 import { Field } from "@/components/lead/Field";
 import { Honeypot } from "@/components/lead/Honeypot";
 import { Turnstile } from "@/components/lead/Turnstile";
 import { useLeadSubmit } from "@/components/lead/useLeadSubmit";
 import { CONTACT_EMAIL } from "@/lib/contact-details";
-import { EMAIL_SHAPE, type Lead } from "@/lib/lead";
+import type { ContactContent } from "@/lib/content/defaults";
+import { EMAIL_SHAPE } from "@/lib/lead";
 import "./contact.css";
 
-const REASONS: { value: NonNullable<Lead["reason"]>; label: string }[] = [
-  { value: "general", label: "General inquiry" },
-  { value: "solutions", label: "Learn more about our solutions" },
-  { value: "partnership", label: "Partnership opportunity" },
-  { value: "other", label: "Something else" },
-];
+type Errors = Partial<Record<"role" | "need" | "email" | "phone", string>>;
 
-type Errors = Partial<Record<"name" | "email" | "message", string>>;
+/** enough digits to be a number someone can call back */
+const PHONE_SHAPE = /^\+?[\d\s().-]{7,}$/;
 
-function validate(name: string, email: string, message: string): Errors {
+function validate(role: string, need: string, email: string, phone: string): Errors {
   const errors: Errors = {};
-  if (!name) errors.name = "Enter your name.";
+  if (!role) errors.role = "Choose one.";
+  if (!need) errors.need = "Choose one.";
   if (!email) errors.email = "Enter your email address.";
   else if (!EMAIL_SHAPE.test(email)) errors.email = "Enter an email address like name@company.com.";
-  if (!message) errors.message = "Enter a message.";
+  if (!phone) errors.phone = "Enter a phone number we can call back.";
+  else if (!PHONE_SHAPE.test(phone)) errors.phone = "Enter a phone number with the country code.";
   return errors;
 }
 
-/** Flow 1. Posts flow "contact" to /api/lead and swaps to a success block in
- *  place. Spec: docs/sprint-intakes.md, "Flow 1". */
-export function ContactForm() {
+/** The contact form (Wilfred, 5 Nov 2026): "I'm a" and "looking for" as
+ *  two dropdowns from Mike's Persona Journey sheet, email and phone
+ *  required, the message optional. Posts flow "contact" to /api/lead and
+ *  swaps to a thanks block in place. The words and the two lists are the
+ *  admin's, under Contact. */
+export function ContactForm({ c }: { c: ContactContent["form"] }) {
   const { submit, state, attempt } = useLeadSubmit("contact");
   const [errors, setErrors] = useState<Errors>({});
   const [token, setToken] = useState<string>();
@@ -46,11 +46,8 @@ export function ContactForm() {
   if (state === "done") {
     return (
       <div className="contact-done" ref={success} tabIndex={-1} role="status">
-        <h2 className="contact-done-title">Message sent.</h2>
-        <p>Thank you. A person at SAMUH will read it and reply.</p>
-        <Link className="btn btn-secondary" href={ROUTES.contact}>
-          Or book a time <span className="arrow">&rarr;</span>
-        </Link>
+        <h2 className="contact-done-title">{c.doneTitle}</h2>
+        <p>{c.doneText}</p>
       </div>
     );
   }
@@ -59,11 +56,12 @@ export function ContactForm() {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const text = (field: string) => String(data.get(field) ?? "").trim();
-    const name = text("name");
+    const role = text("role");
+    const need = text("need");
     const email = text("email");
-    const message = text("message");
+    const phone = text("phone");
 
-    const found = validate(name, email, message);
+    const found = validate(role, need, email, phone);
     setErrors(found);
     const first = Object.keys(found)[0];
     if (first) {
@@ -72,40 +70,42 @@ export function ContactForm() {
     }
 
     void submit({
-      name,
+      role,
+      need,
       email,
-      message,
-      organization: text("organization") || undefined,
-      reason: text("reason") as Lead["reason"],
+      phone,
+      message: text("message") || undefined,
       company_website: text("company_website") || undefined,
       turnstileToken: token,
     });
   };
 
   const pending = state === "pending";
+  const choose = { value: "", label: c.choose };
+  const personas = [choose, ...c.personas.map(({ label }) => ({ value: label, label }))];
+  const needs = [choose, ...c.needs.map(({ label }) => ({ value: label, label }))];
 
   return (
-    <form className="lead-form" ref={form} onSubmit={onSubmit} noValidate>
-      <Field label="Name" name="name" autoComplete="name" required error={errors.name} />
-      <Field label="Email" name="email" type="email" autoComplete="email" required error={errors.email} />
-      <Field label="Organization" name="organization" autoComplete="organization" />
-      <Field as="select" label="What brings you here" name="reason" defaultValue="general" required options={REASONS} />
-      <Field as="textarea" label="Message" name="message" required error={errors.message} />
+    <form className="lead-form contact-form" ref={form} onSubmit={onSubmit} noValidate>
+      <div className="contact-form-who">
+        <Field as="select" label={c.imA} name="role" defaultValue="" required options={personas} error={errors.role} />
+        <Field as="select" label={c.lookingFor} name="need" defaultValue="" required options={needs} error={errors.need} />
+      </div>
+      <div className="contact-form-reach">
+        <Field label={c.email} name="email" type="email" autoComplete="email" inputMode="email" required error={errors.email} />
+        <Field label={c.phone} name="phone" type="tel" autoComplete="tel" inputMode="tel" required error={errors.phone} />
+      </div>
+      <Field as="textarea" label={c.message} name="message" rows={4} />
       <Honeypot />
       <Turnstile onToken={setToken} resetKey={attempt} />
       {state === "error" ? (
         <p className="lead-error contact-failed" role="alert">
           Your message was not sent. Please try again
-          {CONTACT_EMAIL ? (
-            <>
-              , or email us at <a className="inline-link" href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
-            </>
-          ) : null}
-          .
+          {CONTACT_EMAIL ? <>, or email us at {CONTACT_EMAIL.replace("@", " [at] ")}</> : null}.
         </p>
       ) : null}
       <button className="btn" type="submit" disabled={pending}>
-        {pending ? "Sending" : "Send"} <span className="arrow">&rarr;</span>
+        {pending ? c.sending : c.button}
       </button>
     </form>
   );

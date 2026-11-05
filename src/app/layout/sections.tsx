@@ -10,7 +10,6 @@ import { TEAM_SIZE } from "@/components/teamq-teaser/model";
 import { TeaserDemo, type TeaserDemoProps } from "@/components/teamq-teaser/TeaserDemo";
 import "@/components/teamq-teaser/teaser.css";
 import { LEADQ_HREF, ROUTES, TEAMQ_PATH } from "@/lib/site";
-import { CONTACT_PHONE, CONTACT_PHONE_VANITY } from "@/lib/contact-details";
 import { FocusMorph } from "@/components/focus-morph/FocusMorph";
 import { DEFAULTS, type GlobalContent, type HomeContent } from "@/lib/content/defaults";
 import { lines, mark } from "@/lib/content/shared";
@@ -809,35 +808,32 @@ export function Footer({ content }: { /** site-wide words from the admin; the de
         </nav>
         <div className="L-foot-col">
           <span className="L-cap L-foot-h">{g.footer.talkHeading}</span>
+          {/* the direct details (Wilfred, 5 Nov 2026): the phone dialable, the
+              email written with [at] and without a mailto so harvesters get less */}
+          {g.contact.phone ? (
+            <a className="L-foot-link" href={`tel:${g.contact.phone.replace(/[^+\d]/g, "")}`}>{g.contact.phone}</a>
+          ) : (
+            <span className="L-foot-link L-foot-todo">TODO(content): phone number</span>
+          )}
+          {g.contact.email ? (
+            <span className="L-foot-link L-foot-plain">{g.contact.email.replace("@", " [at] ")}</span>
+          ) : (
+            <span className="L-foot-link L-foot-todo">TODO(content): email address</span>
+          )}
           <Link className="L-foot-link" href={ROUTES.contact}>{g.footer.bookCall}</Link>
-          <Link className="btn L-foot-cta" href={ROUTES.contact}>{g.footer.cta} <span className="arrow">&rarr;</span></Link>
         </div>
       </div>
       <div className="L-wrap L-foot-base">
-        <div className="L-foot-base-left">
-          <span className="L-cap">&copy; {new Date().getFullYear()} SAMUH. All rights reserved.</span>
-          {/* TODO(content): the privacy, terms and cookie pages, from SAMUH's
-              counsel. Until they exist the links land on Contact, where the
-              question can be asked, rather than nowhere */}
-          <nav className="L-foot-legal" aria-label="Legal">
-            <Link className="L-cap" href={ROUTES.contact}>Privacy</Link>
-            <Link className="L-cap" href={ROUTES.contact}>Terms</Link>
-            <Link className="L-cap" href={ROUTES.contact}>Cookies</Link>
-            <a className="L-cap" href="#top" onClick={(e) => { stay(e); window.scrollTo({ top: 0, behavior: "smooth" }); }}>Back to top <span className="arrow">&uarr;</span></a>
-          </nav>
-        </div>
-        {/* the direct details, moved here from the Contact page (Wilfred,
-            5 Nov 2026). The email is written with [at] and has no mailto,
-            so harvesters get less; the phone stays dialable */}
-        <div className="L-foot-reach">
-          <span className="L-foot-reach-line">{g.contact.email ? g.contact.email.replace("@", " [at] ") : <span className="L-foot-todo">TODO(content): email address</span>}</span>
-          {g.contact.phone ? (
-            <span className="L-foot-reach-line">
-              <a className="L-foot-link" href={`tel:${g.contact.phone.replace(/[^+\d]/g, "")}`}>{g.contact.phone}</a>
-              {CONTACT_PHONE_VANITY && g.contact.phone === CONTACT_PHONE ? <span className="L-foot-vanity">{CONTACT_PHONE_VANITY}</span> : null}
-            </span>
-          ) : null}
-        </div>
+        <span className="L-cap">&copy; {new Date().getFullYear()} SAMUH. All rights reserved.</span>
+        {/* TODO(content): the privacy, terms and cookie pages, from SAMUH's
+            counsel. Until they exist the links land on Contact, where the
+            question can be asked, rather than nowhere */}
+        <nav className="L-foot-legal" aria-label="Legal">
+          <Link className="L-cap" href={ROUTES.contact}>Privacy</Link>
+          <Link className="L-cap" href={ROUTES.contact}>Terms</Link>
+          <Link className="L-cap" href={ROUTES.contact}>Cookies</Link>
+          <a className="L-cap" href="#top" onClick={(e) => { stay(e); window.scrollTo({ top: 0, behavior: "smooth" }); }}>Back to top <span className="arrow">&uarr;</span></a>
+        </nav>
       </div>
     </footer>
   );

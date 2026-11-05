@@ -91,6 +91,7 @@ function noteLines(lead: Lead): string[] {
   const lines = [`Website lead: ${lead.flow}${lead.stage ? `, ${lead.stage}` : ""}. Page ${lead.page}, ${lead.submittedAt}.`];
   if (lead.phone) lines.push(`Phone: ${lead.phone}`);
   if (lead.reason) lines.push(`Reason: ${lead.reason}`);
+  if (lead.need) lines.push(`Looking for: ${lead.need}`);
   if (lead.teamSize) lines.push(`Team size: ${lead.teamSize}`);
   if (lead.tier) lines.push(`Tier: ${lead.tier}`);
   if (lead.intent) lines.push(`Door: ${lead.intent}`);

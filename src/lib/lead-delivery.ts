@@ -26,6 +26,7 @@ const LABELS: Record<keyof Lead, string> = {
   phone: "Phone",
   organization: "Organization",
   role: "Role",
+  need: "Looking for",
   stage: "Stage",
   reason: "Reason",
   teamSize: "Team size",

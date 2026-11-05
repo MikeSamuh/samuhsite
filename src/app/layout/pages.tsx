@@ -8,7 +8,7 @@ import type { PageId } from "@/lib/layout";
 import { ROUTES } from "@/lib/site";
 import "@/components/contact/contact.css";
 import { StartEmail } from "@/components/start/StartEmail";
-import { Booking } from "@/components/contact/Booking";
+import { ContactForm } from "@/components/contact/ContactForm";
 import { ProcessFigure, StageFigure } from "@/components/process-figure/ProcessFigure";
 import type { PoseId } from "@/components/process-figure/figures";
 import { Honeypot } from "@/components/lead/Honeypot";
@@ -403,29 +403,22 @@ function About({ c = DEFAULTS.about }: { c?: AboutContent }) {
 
 /* ------------------------------------------------------------------ */
 
-/** Let's talk (Wilfred, 3 Nov 2026): the free assessment's email box on
- *  one side, Jake's calendar on the other. The direct details moved to the
- *  footer's bottom right (Wilfred, 5 Nov 2026). */
+/** Let's talk (Wilfred, 5 Nov 2026): the call back form, then the free
+ *  assessment's email box as the CTA at the foot. The direct details are
+ *  in the footer's Talk to us column. */
 function Contact({ c = DEFAULTS.contact, s = DEFAULTS.start }: { c?: ContactContent; s?: StartContent }) {
   return (
     <>
       <PageHead n="01" kicker={c.head.kicker} title={c.head.title} />
       <section className="L-sec contact-sec">
         <div className="L-wrap">
-          <div className="contact-choices">
-            <div className="contact-choice">
-              <h2 className="sec">{c.assess.title}</h2>
-              <p className="L-mid">{c.assess.line}</p>
-              <StartEmail c={s.form} talk={false} />
-            </div>
-            <div className="contact-choice">
-              <h2 className="sec">{c.book.title}</h2>
-              <p className="L-mid">{c.book.line}</p>
-              <Booking />
-            </div>
-          </div>
+          <ContactForm c={c.form} />
         </div>
       </section>
+      <Sec n="02" kicker={c.assess.kicker} title={c.assess.title} cls="contact-assess">
+        <p className="L-mid">{c.assess.line}</p>
+        <StartEmail c={s.form} talk={false} />
+      </Sec>
     </>
   );
 }

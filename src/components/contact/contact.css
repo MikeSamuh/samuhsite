@@ -112,13 +112,15 @@
 /* the number as the client says it, beside the one you dial */
 .contact-vanity { display: block; margin-top: 4px; font-size: 14px; color: var(--muted); }
 
-/* the two choices (3 Nov 2026): the assessment box and Jake's calendar,
-   side by side, the direct details under them */
-.contact-choices { display: grid; grid-template-columns: 1fr 1fr; gap: 48px clamp(32px, 5cqw, 72px); align-items: start; margin-bottom: 56px; }
-.contact-choice { display: grid; gap: 14px; }
-.contact-choice .sec { margin: 0; }
-.contact-choice .L-mid { margin: 0; }
-.contact-choice .talk-embed { margin-top: 6px; }
-@container page (max-width: 900px) {
-  .contact-choices { grid-template-columns: 1fr; }
+/* the call back form (5 Nov 2026): the two dropdowns on one row, email and
+   phone on the next, the message under, the button last */
+.contact-form { max-width: 720px; }
+.contact-form-who, .contact-form-reach { width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 16px clamp(16px, 3cqw, 28px); }
+.contact-form-who { grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); }
+.contact-form .lead-field :is(input, select, textarea) { width: 100%; max-width: none; }
+.contact-form .btn { justify-self: start; }
+/* the assessment CTA at the foot */
+.contact-assess .L-mid { margin-top: 0; }
+@container page (max-width: 640px) {
+  .contact-form-who, .contact-form-reach { grid-template-columns: 1fr; }
 }
