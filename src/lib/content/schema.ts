@@ -78,7 +78,7 @@ export const SCHEMA: PageSchema[] = [
       { key: "head", label: "Page head", fields: [t("kicker", "Eyebrow"), ta("title", "Title"), ta("lede", "Lede")] },
       { key: "believe", label: "What we believe", fields: [t("kicker", "Eyebrow"), t("title", "Title"), ta("big", "Big line"), ta("p1", "Paragraph one"), ta("p2", "Paragraph two")] },
       { key: "partner", label: "Sapien Labs", fields: [t("kicker", "Eyebrow"), t("title", "Title"), ta("p1", "Paragraph one"), ta("p2", "Paragraph two")] },
-      { key: "team", label: "Team", fields: [t("kicker", "Eyebrow"), t("title", "Title"), list("members", "People", "person", [t("name", "Name"), t("role", "Role"), ta("bio", "One line"), img("photo", "Headshot", "Square works best")]), ta("closing", "Line under the team")] },
+      { key: "team", label: "Team", fields: [t("kicker", "Eyebrow"), t("title", "Title"), list("members", "People", "person", [t("name", "Name"), t("role", "Role"), ta("bio", "One line", "Shown when there is no full bio"), ta("about", "Full bio", "Blank line between paragraphs. Leave empty to show the one line"), img("photo", "Headshot", "Square works best")]), ta("closing", "Line under the team")] },
       { key: "partners", label: "Partners", note: "Logos are placeholders until SAMUH supplies them", fields: [t("kicker", "Eyebrow"), t("title", "Title")] },
     ],
   },
@@ -127,7 +127,6 @@ export const SCHEMA: PageSchema[] = [
       { key: "head", label: "Page head", fields: [t("kicker", "Eyebrow"), t("title", "Title")] },
       { key: "assess", label: "The assessment box", note: "The box's own words are under Start here", fields: [t("title", "Title"), ta("line", "Line")] },
       { key: "book", label: "Book a time", note: "The calendar comes from NEXT_PUBLIC_BOOKING_URL", fields: [t("title", "Title"), ta("line", "Line")] },
-      { key: "aside", label: "Direct details", note: "Email and phone are under Site-wide", fields: [t("title", "Title")] },
     ],
   },
   {

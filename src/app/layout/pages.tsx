@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { PageId } from "@/lib/layout";
 import { ROUTES } from "@/lib/site";
-import { ContactAside } from "@/components/contact/ContactAside";
+import "@/components/contact/contact.css";
 import { StartEmail } from "@/components/start/StartEmail";
 import { Booking } from "@/components/contact/Booking";
 import { ProcessFigure, StageFigure } from "@/components/process-figure/ProcessFigure";
@@ -364,16 +364,19 @@ function About({ c = DEFAULTS.about }: { c?: AboutContent }) {
       <PageHead n="01" kicker={c.head.kicker} title={c.head.title} lede={c.head.lede} />
       <Sec n="02" kicker={c.team.kicker} title={c.team.title}>
         <div className="L-team">
-          {c.team.members.map(({ name, role, bio, photo }) => (
-            <article className="L-person" key={name}>
-              {photo ? <Image className="L-person-photo" src={photo} alt={name} width={141} height={141} /> : <Frame label="Photo" />}
-              <div className="L-person-text">
-                <span className="L-person-name">{name}</span>
-                <span className="L-cap">{role}</span>
-                <p>{bio}</p>
-              </div>
-            </article>
-          ))}
+          {c.team.members.map(({ name, role, bio, about, photo }) => {
+            const paras = (about ?? "").split(/\n\s*\n/).map((x) => x.trim()).filter(Boolean);
+            return (
+              <article className="L-person" key={name}>
+                {photo ? <Image className="L-person-photo" src={photo} alt={name} width={141} height={141} /> : <Frame label="Photo" />}
+                <div className="L-person-text">
+                  <span className="L-person-name">{name}</span>
+                  <span className="L-cap">{role}</span>
+                  {paras.length ? paras.map((x, i) => <p key={i}>{x}</p>) : <p>{bio}</p>}
+                </div>
+              </article>
+            );
+          })}
         </div>
         <p className="L-mid">{c.team.closing}</p>
       </Sec>
@@ -401,8 +404,9 @@ function About({ c = DEFAULTS.about }: { c?: AboutContent }) {
 /* ------------------------------------------------------------------ */
 
 /** Let's talk (Wilfred, 3 Nov 2026): the free assessment's email box on
- *  one side, Jake's calendar on the other, the direct details under both. */
-function Contact({ c = DEFAULTS.contact, g = DEFAULTS.global, s = DEFAULTS.start }: { c?: ContactContent; g?: GlobalContent; s?: StartContent }) {
+ *  one side, Jake's calendar on the other. The direct details moved to the
+ *  footer's bottom right (Wilfred, 5 Nov 2026). */
+function Contact({ c = DEFAULTS.contact, s = DEFAULTS.start }: { c?: ContactContent; s?: StartContent }) {
   return (
     <>
       <PageHead n="01" kicker={c.head.kicker} title={c.head.title} />
@@ -420,7 +424,6 @@ function Contact({ c = DEFAULTS.contact, g = DEFAULTS.global, s = DEFAULTS.start
               <Booking />
             </div>
           </div>
-          <ContactAside title={c.aside.title} email={g.contact.email} phone={g.contact.phone} />
         </div>
       </section>
     </>
@@ -435,7 +438,7 @@ export function Page({ id, figures, content }: { id: PageId; figures?: boolean; 
     case "process": return <Process figures={figures} c={content?.process} />;
     case "insights": return <Insights />;
     case "about": return <About c={content?.about} />;
-    case "contact": return <Contact c={content?.contact} g={content?.global} s={content?.start} />;
+    case "contact": return <Contact c={content?.contact} s={content?.start} />;
     default: return null;
   }
 }

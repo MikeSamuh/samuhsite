@@ -920,6 +920,11 @@
 .L-foot-todo { color: var(--muted); cursor: default; }
 .L-foot-cta { margin-top: 10px; }
 .L-foot-base { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; padding-top: 22px; padding-bottom: 30px; border-top: var(--rule-thin) solid var(--border); }
+.L-foot-base-left { display: grid; gap: 10px; }
+/* the direct details, bottom right: email as text with [at], the phone dialable */
+.L-foot-reach { display: grid; gap: 6px; justify-items: end; text-align: right; font-family: var(--font-ui); font-size: 15px; color: var(--text); }
+.L-foot-reach-line { display: grid; justify-items: end; }
+.L-foot-vanity { font-size: 13px; color: var(--muted); }
 .L-foot-legal { display: flex; flex-wrap: wrap; gap: 8px 22px; }
 .L-foot-legal a { text-decoration: none; cursor: pointer; transition: color var(--dur) var(--ease); }
 .L-foot-legal a:hover { color: var(--accent); }
@@ -973,7 +978,8 @@
 
 @container page (max-width: 560px) {
   .L-foot-grid { grid-template-columns: 1fr 1fr; }
-  .L-foot-base { flex-direction: column; gap: 10px; }
+  .L-foot-base { flex-direction: column; gap: 18px; }
+  .L-foot-reach, .L-foot-reach-line { justify-items: start; text-align: left; }
   /* the bar shows the Samuh mark at every scroll position: the full
      wordmark does not fit beside the call to action and the burger */
   .L-nav .L-brand { gap: 12px; }
@@ -1101,14 +1107,15 @@
 /* one person to a row: the photo on the left, name, role and bio beside
    it, a hairline between rows. The people are the page's subject */
 .L-team { display: grid; grid-template-columns: 1fr; margin-bottom: 28px; }
-.L-person { display: grid; grid-template-columns: 140px 1fr; gap: 32px; align-items: center; padding: 28px 0; border-top: var(--rule-thin) solid var(--border); }
+.L-person { display: grid; grid-template-columns: 140px 1fr; gap: 32px; align-items: start; padding: 28px 0; border-top: var(--rule-thin) solid var(--border); }
 .L-person:first-child { border-top: 0; padding-top: 0; }
 .L-person .ph { min-height: 140px; }
 .L-person-photo { width: 140px; height: 140px; border-radius: 50%; object-fit: cover; }
 .L-person-text { display: grid; row-gap: 6px; }
+.L-person p + p { margin-top: 8px; }
 .L-person-name { font-family: var(--font-display); font-weight: var(--display-weight); font-size: 26px; line-height: 1.15; transition: color var(--dur) var(--ease); }
 .L-person .L-cap { transition: color var(--dur) var(--ease); }
-.L-person p { margin: 6px 0 0; font-size: 15px; max-width: 60ch; color: var(--muted); line-height: 1.5; transition: color var(--dur) var(--ease); }
+.L-person p { margin: 6px 0 0; font-size: 15px; max-width: 68ch; color: var(--muted); line-height: 1.5; transition: color var(--dur) var(--ease); }
 /* hover: the name takes the primary, the role the secondary, the bio comes
    forward to the text colour, and the photo lifts a touch */
 .L-person-photo { transition: transform var(--dur) var(--ease), box-shadow var(--dur) var(--ease); }
