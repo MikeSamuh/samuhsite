@@ -159,9 +159,9 @@ export const DEFAULTS = {
       title: "Team",
       members: [
         { name: "Rahul Varma", role: "Co-Founder & CEO", bio: "Former CHRO, Accenture Technology.", photo: "/team/rahul-varma.webp" },
+        { name: "Dr. Tara Thiagarajan", role: "Chief Scientific Advisor", bio: "Founder, Sapien Labs. Ph.D., Stanford.", photo: "/team/tara-thiagarajan.webp" },
         { name: "Calina Mircea", role: "Co-Founder & Methodology Lead", bio: "Systemic coach, learning and leadership expert.", photo: "/team/calina-mircea.webp" },
         { name: "Mike Gabour", role: "Co-Founder & CTO", bio: "Global analytics strategy and design leader.", photo: "/team/mike-gabour.webp" },
-        { name: "Dr. Tara Thiagarajan", role: "Chief Scientific Advisor", bio: "Founder, Sapien Labs. Ph.D., Stanford.", photo: "/team/tara-thiagarajan.webp" },
         { name: "Jake DeBerry", role: "Lead, Enterprise Growth", bio: "CEB/Gartner, Deloitte, NeuroLeadership Institute.", photo: "/team/jake-deberry.webp" },
       ],
       closing: "An interdisciplinary team spanning enterprise transformation, team practice, data science and human performance research.",
