@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { DEFAULTS, type HomeContent } from "@/lib/content/defaults";
 import { mark } from "@/lib/content/shared";
+import { MHQ_BANDS, MHQ_SCALE, mhqBand } from "@/lib/tokens";
 
 // Where others focus, where we focus, then what we aspire to, in one
 // picture. The section is a tall track; its content pins while the visitor
@@ -14,11 +15,13 @@ import { mark } from "@/lib/content/shared";
 // circle is. Scrolling on, the team circle grows in between them, lit
 // because the team is the subject, the individual rises to the top of it,
 // the head becomes "Where we focus" and the key keeps the team alone.
-// That is where it stops. The third move, the four-set Venn of capacities
-// (Cognitive, Relational, Emotional, Physical) with the star at the centre,
-// was cut by the client on 2 November 2026: MORPH sits past the end of the
-// track, and the Venn's geometry stays only so the shapes still
-// interpolate. Scrolling back reverses it. No animation library: the scroll
+// The third move, the four-set Venn of capacities, was cut by the client on
+// 2 November 2026; its geometry stays only so the shapes still interpolate.
+// In its place (Wilfred, 6 Nov 2026) a fourth beat: the circles give way to
+// three hollow people, the team, and a few scrolls on they fill up from
+// the feet while a capacity meter beside them, the one from the TeamQ
+// section, climbs toward Thriving. The head reads "How teams reach their
+// best". Scrolling back reverses it. No animation library: the scroll
 // position is the clock, and the geometry is interpolated.
 //
 // Motion, as the Circles diagram has it: each circle floats on its own slow
@@ -78,10 +81,37 @@ const GROW = { from: 0.2, to: 0.95 };
 /** three beats on the pinned scroll (Wilfred, 2 Nov 2026): the enterprise
  *  alone, then the individual appears at its centre, then the team arrives
  *  between them */
-const INDIVIDUAL = { from: 0.08, to: 0.32 };
-const ARRIVE = { from: 0.5, to: 0.85 };
-/** past the end of the track: the Venn never comes (2 Nov 2026) */
-const MORPH = { from: 2, to: 3 };
+const INDIVIDUAL = { from: 0.06, to: 0.22 };
+const ARRIVE = { from: 0.32, to: 0.52 };
+/** the fourth beat (6 Nov 2026): the circles cross to three people, then
+ *  the people fill and the meter climbs. The Venn never comes */
+const PEOPLE = { from: 0.58, to: 0.74 };
+const FILL = { from: 0.78, to: 0.98 };
+
+/** the three people, hollow, in a row where the team circle was. Each is a
+ *  head and a bust with round shoulders; the fill is a rect clipped to
+ *  them, rising from the feet. The figures fill in turn, a little apart */
+const PERSON = { headR: 26, headCy: 108, shoulderY: 206, footY: 300, halfW: 56 };
+const PEOPLE_X = [172, 320, 468];
+const STAGGER = 0.16;
+const bust = (x: number) => `M ${x - PERSON.halfW} ${PERSON.footY} V ${PERSON.shoulderY} A ${PERSON.halfW} ${PERSON.halfW} 0 0 1 ${x + PERSON.halfW} ${PERSON.shoulderY} V ${PERSON.footY} Z`;
+
+/** the meter: the TeamQ section's half circle, from -100 on the left to
+ *  200 on the right, the bands along it and a needle that climbs with
+ *  the people. Abstract: the figure is a position, not a result */
+const GAUGE = { cx: 100, cy: 100, r: 78, gap: 1.6 };
+const METER_FROM = -30;
+const METER_TO = 172;
+const gAngle = (score: number) => 180 - ((score - MHQ_SCALE.min) / (MHQ_SCALE.max - MHQ_SCALE.min)) * 180;
+const gPoint = (deg: number) => {
+  const rad = (deg * Math.PI) / 180;
+  return { x: GAUGE.cx + GAUGE.r * Math.cos(rad), y: GAUGE.cy - GAUGE.r * Math.sin(rad) };
+};
+const gArc = (from: number, to: number) => {
+  const a = gPoint(gAngle(from) - GAUGE.gap);
+  const b = gPoint(gAngle(to) + GAUGE.gap);
+  return `M ${a.x.toFixed(2)} ${a.y.toFixed(2)} A ${GAUGE.r} ${GAUGE.r} 0 0 1 ${b.x.toFixed(2)} ${b.y.toFixed(2)}`;
+};
 
 /** how each circle moves, the Circles diagram's numbers. share: how much
  *  of the tether it takes. lag: follow time in --dur units. float: idle
@@ -97,7 +127,6 @@ const TETHER = 32; // five percent of the frame
 /** the supplied star, square, set small where the four circles meet. It
  *  follows the pointer on its own short tether and never leaves the lens:
  *  its centre is kept inside every circle by its own half-size */
-const STAR = 44;
 const STAR_TETHER = 14;
 const STAR_LAG = 1.2;
 
@@ -192,8 +221,9 @@ export function FocusMorph({ words = DEFAULTS.home.focus }: { /** the heads and 
       m.current.g = over(enter, GROW);
       m.current.i = over(next, INDIVIDUAL);
       m.current.q = over(next, ARRIVE);
-      m.current.e = over(next, MORPH);
+      m.current.e = over(next, PEOPLE);
       stage.style.setProperty("--h", over(enter, HEAD).toFixed(4));
+      stage.style.setProperty("--f", over(next, FILL).toFixed(4));
       stage.style.setProperty("--g", m.current.g.toFixed(4));
       stage.style.setProperty("--i", m.current.i.toFixed(4));
       stage.style.setProperty("--q", m.current.q.toFixed(4));
@@ -214,16 +244,24 @@ export function FocusMorph({ words = DEFAULTS.home.focus }: { /** the heads and 
       stage.style.removeProperty("--i");
       stage.style.removeProperty("--q");
       stage.style.removeProperty("--p");
+      stage.style.removeProperty("--f");
     };
   }, []);
 
   const i = over(p, INDIVIDUAL);
   const q = over(p, ARRIVE);
-  const e = over(p, MORPH);
+  const e = over(p, PEOPLE);
+  const f = over(p, FILL);
   const joined = i > 0.5;
   const arrived = q > 0.5;
-  const venn = e > 0.5;
-  const shapes = shapesAt(e, q, g, i);
+  const people = e > 0.5;
+  // the circles hold their nested shape while they fade (no Venn)
+  const shapes = shapesAt(0, q, g, i);
+  /** each person's fill, 0 to 1, the first ahead of the second ahead of the third */
+  const fills = PEOPLE_X.map((_, j) => ease(clamp((f - j * STAGGER) / (1 - STAGGER * (PEOPLE_X.length - 1)))));
+  const meter = lerp(METER_FROM, METER_TO, f);
+  const meterBand = mhqBand(meter);
+  const meterTurn = 180 - gAngle(meter);
 
   /** which circles the pointer is in, against the live positions. Nested:
    *  the innermost only, so the individual wins over the team, the team
@@ -232,22 +270,20 @@ export function FocusMorph({ words = DEFAULTS.home.focus }: { /** the heads and 
   const hit = (pt: Pt | null): Key[] => {
     if (!pt) return [];
     const s = m.current;
-    const live = shapesAt(s.e, s.q, s.g, s.i);
+    if (s.e > 0.5) return [];
+    const live = shapesAt(0, s.q, s.g, s.i);
     const x = pt.x + FRAME.w / 2;
     const y = pt.y + FRAME.h / 2;
     const inside = (k: Key, pad = 0) => {
       const c = live[k];
       return Math.hypot(x - (c.cx + s.off[k].x), y - (c.cy + s.off[k].y)) <= c.r + pad;
     };
-    if (s.e <= 0.5) {
-      for (const k of ["ind", "team", "org"] as const) {
-        if (k === "team" && s.q < 0.5) continue;
-        if (k === "ind" && s.i < 0.5) continue;
-        if (inside(k, 4)) return [k];
-      }
-      return [];
+    for (const k of ["ind", "team", "org"] as const) {
+      if (k === "team" && s.q < 0.5) continue;
+      if (k === "ind" && s.i < 0.5) continue;
+      if (inside(k, 4)) return [k];
     }
-    return KEYS.filter((k) => inside(k));
+    return [];
   };
   const setHotIfChanged = (h: Key[]) => {
     if (!same(h, m.current.hot)) { m.current.hot = h; setHot(h); }
@@ -309,23 +345,6 @@ export function FocusMorph({ words = DEFAULTS.home.focus }: { /** the heads and 
         const scale = STAR_TETHER / TETHER;
         st.x += (s.target.x * scale - st.x) * f;
         st.y += (s.target.y * scale - st.y) * f;
-        if (s.e > 0.5) {
-          // held inside every circle, where they are drawn right now. A few
-          // passes, since pulling toward one circle can push out of another
-          const live = shapesAt(s.e, s.q, s.g, s.i);
-          for (let pass = 0; pass < 3; pass += 1) {
-            for (const k of KEYS) {
-              const c = live[k];
-              const cx = c.cx + s.off[k].x - FRAME.w / 2;
-              const cy = c.cy + s.off[k].y - FRAME.h / 2;
-              const dx = st.x - cx;
-              const dy = st.y - cy;
-              const d = Math.hypot(dx, dy);
-              const max = c.r - STAR / 2;
-              if (d > max && d > 0) { st.x = cx + (dx / d) * max; st.y = cy + (dy / d) * max; }
-            }
-          }
-        }
         star.setAttribute("transform", `translate(${st.x.toFixed(2)} ${st.y.toFixed(2)})`);
       }
       if (s.pointer) setHotIfChanged(hit(s.pointer)); // circles drift under a still pointer
@@ -348,14 +367,15 @@ export function FocusMorph({ words = DEFAULTS.home.focus }: { /** the heads and 
           eyebrow and rule fixed and its title alone changing, one for each
           state taking turns, and under it the key, one for each state
           crossfading */}
-      <div className="L-fm-side" data-venn={venn || undefined}>
+      <div className="L-fm-side" data-people={people || undefined}>
         <div className="L-head L-fm-head">
           {/* TODO(content): the client's words, 13 Oct. One eyebrow for all three */}
           <div>
             <p className="eyebrow L-eyebrow">{words.eyebrow}</p>
             <div className="L-fm-titles">
               <h2 className="sec L-fm-title L-fm-h0" aria-hidden={arrived || undefined}>{mark(words.titleOthers, "L-hl")}</h2>
-              <h2 className="sec L-fm-title L-fm-h1" aria-hidden={!arrived || venn || undefined}>{mark(words.titleWe, "L-hl")}</h2>
+              <h2 className="sec L-fm-title L-fm-h1" aria-hidden={!arrived || people || undefined}>{mark(words.titleWe, "L-hl")}</h2>
+              <h2 className="sec L-fm-title L-fm-h2 L-fm-in" aria-hidden={!people || undefined}>{mark(words.titleHow ?? "", "L-hl")}</h2>
             </div>
           </div>
         </div>
@@ -374,16 +394,29 @@ export function FocusMorph({ words = DEFAULTS.home.focus }: { /** the heads and 
               ))}
             </dl>
           ))}
+          {/* the fourth beat's left side: the meter from the TeamQ section,
+              climbing with the people's fill, and a line under it */}
+          <div className="L-fm-legend L-fm-meter L-fm-in" aria-hidden={!people || undefined}>
+            <span className="L-cap">{words.howLabel}</span>
+            <svg className="capacity-gauge L-fm-gauge" viewBox="0 0 200 116" role="img" aria-label={`A meter climbing from ${MHQ_BANDS[MHQ_BANDS.length - 2].name} to ${MHQ_BANDS[0].name}`}>
+              {[...MHQ_BANDS].reverse().map((b) => (
+                <path key={b.id} d={gArc(b.min, b.max)} className="gauge-band" style={{ "--band": `var(--band-${b.id})` } as React.CSSProperties} data-on={b.id === meterBand.id || undefined} />
+              ))}
+              <line className="gauge-needle L-fm-needle" x1={GAUGE.cx - GAUGE.r + 18} y1={GAUGE.cy} x2={GAUGE.cx - GAUGE.r - 14} y2={GAUGE.cy} style={{ transform: `rotate(${meterTurn.toFixed(2)}deg)` }} />
+              <text className="L-fm-gauge-word" x={GAUGE.cx} y={GAUGE.cy - 4} style={{ fill: `var(--band-${meterBand.id})` }}>{meterBand.name}</text>
+            </svg>
+            <p className="L-fm-meter-line">{words.howLine}</p>
+          </div>
         </div>
       </div>
 
-      <div className="L-circ L-fm" ref={root} data-venn={venn || undefined} data-hot={hot.join(" ") || undefined}>
+      <div className="L-circ L-fm" ref={root} data-people={people || undefined} data-hot={hot.join(" ") || undefined}>
         <svg
           ref={svgRef}
           className="L-c-svg"
           viewBox={`0 0 ${FRAME.w} ${FRAME.h}`}
           role="img"
-          aria-label={arrived ? "Three nested circles: enterprise, team, individual" : joined ? "Two nested circles: enterprise and individual" : "One circle: the enterprise"}
+          aria-label={people ? "Three people, filling up as the capacity meter climbs" : arrived ? "Three nested circles: enterprise, team, individual" : joined ? "Two nested circles: enterprise and individual" : "One circle: the enterprise"}
           onPointerMove={onMove}
           onPointerLeave={onLeave}
           onClick={(ev) => { const ks = hit(toFrame(ev)); setHotIfChanged(same(ks, m.current.hot) ? [] : ks); }}
@@ -404,6 +437,30 @@ export function FocusMorph({ words = DEFAULTS.home.focus }: { /** the heads and 
               </g>
             );
           })}
+
+          {/* the fourth beat: three hollow people where the team was, each
+              filled by a rect clipped to its shape and rising from the feet */}
+          <g className="L-fm-people L-fm-in" aria-hidden={!people || undefined}>
+            <defs>
+              {PEOPLE_X.map((x, j) => (
+                <clipPath id={`fm-person-${j}`} key={j}>
+                  <circle cx={x} cy={PERSON.headCy} r={PERSON.headR} />
+                  <path d={bust(x)} />
+                </clipPath>
+              ))}
+            </defs>
+            {PEOPLE_X.map((x, j) => {
+              const top = PERSON.headCy - PERSON.headR;
+              const h = (PERSON.footY - top) * fills[j];
+              return (
+                <g className="L-fm-person" key={j} data-full={fills[j] > 0.98 || undefined}>
+                  <rect className="L-fm-person-fill" x={x - PERSON.halfW - 2} y={PERSON.footY - h} width={PERSON.halfW * 2 + 4} height={h} clipPath={`url(#fm-person-${j})`} />
+                  <circle cx={x} cy={PERSON.headCy} r={PERSON.headR} className="L-fm-person-line" />
+                  <path d={bust(x)} className="L-fm-person-line" />
+                </g>
+              );
+            })}
+          </g>
         </svg>
 
       </div>

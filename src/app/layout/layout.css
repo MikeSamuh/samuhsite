@@ -476,9 +476,25 @@
    so something is always on screen; the words, the heads and the key
    leave early and arrive late, so no two sets overlap. Three heads share
    one cell and take turns, two keys share another */
-/* long enough that each state holds under the hand. Two states since
-   2 Nov 2026 (the Venn was cut), so the track is shorter */
-.L-s-circles[data-v="morph"] { min-height: 320vh; }
+/* long enough that each state holds under the hand. Four beats since
+   6 Nov 2026: the enterprise, the individual, the team, then the people
+   filling with the meter (--f), so the track is longer */
+.L-s-circles[data-v="morph"] { min-height: 460vh; }
+/* the people: they cross in where the circles cross out (--p, the Venn's
+   old crossfade), growing a little from the team circle's size as they
+   come; hollow, the text colour, filled in the team's colour from the feet */
+.L-fm-people { transform-box: view-box; transform-origin: 320px 200px; transform: scale(calc(0.72 + 0.28 * var(--p, 0))); }
+.L-fm-person-line { fill: none; stroke: var(--text); stroke-width: var(--c-stroke); vector-effect: non-scaling-stroke; transition: stroke var(--dur) var(--ease); }
+.L-fm-person[data-full] .L-fm-person-line { stroke: var(--accent); }
+.L-fm-person-fill { fill: var(--accent); opacity: 0.85; }
+/* the meter on the left, in the key's cell, with the third head */
+.L-fm-meter { gap: 12px; justify-items: start; }
+.L-fm-meter .L-fm-gauge { width: 100%; max-width: 300px; margin: 4px 0; }
+.L-fm-gauge .gauge-band { opacity: 0.7; }
+.L-fm-gauge .gauge-band[data-on] { opacity: 1; }
+.L-fm-gauge-word { font-family: var(--font-display); font-size: 15px; font-weight: 600; text-anchor: middle; letter-spacing: 0.02em; }
+.L-fm-needle { transition: none; }
+.L-fm-meter-line { margin: 0; font-size: 17px; line-height: 1.5; color: var(--muted); }
 /* the head arrives first as the section climbs into view (--h), the key
    and the circles close behind it (--g) */
 .L-s-circles[data-v="morph"] .L-fm-head { opacity: var(--h, var(--g, 0)); transform: translateY(calc((1 - var(--h, var(--g, 0))) * 20px)); }
@@ -510,7 +526,8 @@
 /* the third beat: the two keys share one cell and cross over on --q, the
    enterprise and the individual gone before the team's line is in */
 .L-s-circles[data-v="morph"] .L-fm-legend-others { opacity: clamp(0, 1 - var(--q, 0) / 0.35, 1); }
-.L-s-circles[data-v="morph"] .L-fm-legend-team { opacity: clamp(0, (var(--q, 0) - 0.55) / 0.35, 1); transform: translateY(calc((1 - clamp(0, (var(--q, 0) - 0.55) / 0.35, 1)) * 10px)); }
+/* the team key leaves again as the people arrive (--p), so the meter has the cell */
+.L-s-circles[data-v="morph"] .L-fm-legend-team { opacity: min(clamp(0, (var(--q, 0) - 0.55) / 0.35, 1), clamp(0, 1 - (var(--p, 0) - 0.3) / 0.2, 1)); transform: translateY(calc((1 - clamp(0, (var(--q, 0) - 0.55) / 0.35, 1)) * 10px)); }
 /* the titles take turns under one fixed eyebrow and rule, on the same
    beats as the key: where organizations focus is gone before where
    performance happens arrives */
@@ -524,7 +541,7 @@
 /* the picture takes the whole content column, so it draws large */
 .L-page[data-comp="comp-editorial"] .L-s-circles[data-v="morph"] .L-circ { grid-template-columns: 1fr; justify-items: center; gap: 28px; }
 .L-fm .L-c-svg { max-width: none; cursor: default; }
-.L-fm[data-venn] .L-c-svg { cursor: pointer; }
+.L-fm[data-people] .L-c-svg { cursor: pointer; }
 .L-fm-ring { fill: none; }
 .L-fm-ring.L-c-team { fill: color-mix(in srgb, var(--accent-4) 8%, transparent); }
 /* each circle's colour, --k: in the Venn its own, the fourth in the
@@ -535,8 +552,8 @@
 .L-fm-g-team, .L-fm-item-team { --k: var(--accent); }
 .L-fm-g-ind, .L-fm-item-ind { --k: color-mix(in srgb, var(--accent) 45%, var(--accent-2)); }
 .L-fm-g-phys, .L-fm-item-phys { --k: var(--accent-yellow); }
-:is(.L-fm, .L-fm-side):not([data-venn]) :is(.L-fm-g-org, .L-fm-g-ind, .L-fm-item-org, .L-fm-item-ind) { --k: var(--accent-2); }
-.L-fm:not([data-venn]) .L-fm-g[data-on] :is(.L-c-ind, .L-c-org) { stroke: var(--k); }
+:is(.L-fm, .L-fm-side):not([data-people]) :is(.L-fm-g-org, .L-fm-g-ind, .L-fm-item-org, .L-fm-item-ind) { --k: var(--accent-2); }
+.L-fm:not([data-people]) .L-fm-g[data-on] :is(.L-c-ind, .L-c-org) { stroke: var(--k); }
 .L-fm-legend-3 .L-fm-item:is(.L-fm-item-ind, .L-fm-item-org)[data-on] dt { color: var(--text); }
 /* the Venn: the nested circles' stroke, no fill, each its own colour */
 .L-fm-venn { fill: none; stroke: var(--k); stroke-width: var(--c-stroke); vector-effect: non-scaling-stroke; transition: stroke-width var(--dur) var(--ease); }

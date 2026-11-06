@@ -78,6 +78,11 @@ export const DEFAULTS = {
       eyebrow: "The overlooked performance driver",
       titleOthers: "Where *organizations* focus",
       titleWe: "Where *performance* happens",
+      // the fourth beat (Wilfred, 6 Nov 2026): the team becomes three people,
+      // who fill up as the meter climbs. TODO(content): draft words
+      titleHow: "How teams reach their *best*",
+      howLabel: "Capacity to perform",
+      howLine: "Measure the team environment, choose one practice, run it for ninety days, measure again. Capacity rises, and performance with it.",
       // top to bottom, in the order the circles arrive
       levels: [
         { name: "Enterprise", label: "Driving change through enterprise-wide transformations", note: "Often many at a time." },
