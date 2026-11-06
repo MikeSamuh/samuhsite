@@ -281,7 +281,8 @@ export const DEFAULTS = {
   },
 
   // /contact (Wilfred, 5 Nov 2026): the form, then the free assessment CTA.
-  // The two lists are from Mike's Persona Journey sheet (Reference material).
+  // The two lists are from Mike's Persona Journey sheet (Reference material),
+  // its Persona and Needs columns; Vendor added by Wilfred, 6 Nov 2026.
   // 6 Nov 2026: the title is the form's own sentence, "I'm a [who] and
   // [what]."; head.title is the line under it
   contact: {
@@ -298,6 +299,7 @@ export const DEFAULTS = {
         { label: "Team Lead" },
         { label: "Team Coach" },
         { label: "Team Member" },
+        { label: "Vendor" },
         { label: "Founder" },
         { label: "CEO" },
       ],
