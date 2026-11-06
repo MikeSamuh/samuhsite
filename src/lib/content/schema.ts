@@ -123,10 +123,10 @@ export const SCHEMA: PageSchema[] = [
     note: "The call back form, then the free assessment CTA.",
     path: "/contact",
     sections: [
-      { key: "head", label: "Page head", fields: [t("kicker", "Eyebrow"), t("title", "Title")] },
-      { key: "form", label: "The form", note: "Two dropdowns, email and phone required, the message optional", fields: [
-        t("imA", "First dropdown label"), list("personas", "I'm a: options", "option", [t("label", "Option")]),
-        t("lookingFor", "Second dropdown label"), list("needs", "Looking for: options", "option", [t("label", "Option")]),
+      { key: "head", label: "Page head", note: "The title is the form's sentence: I'm a [who] and [what]", fields: [t("kicker", "Eyebrow"), t("title", "Line under the sentence")] },
+      { key: "form", label: "The form", note: "The sentence with its two dropdowns, email and phone required, the message optional", fields: [
+        t("imA", "Sentence start", "Before the first dropdown"), list("personas", "I'm a: options", "option", [t("label", "Option")]),
+        t("lookingFor", "Sentence middle", "Between the two dropdowns"), list("needs", "Looking for: options", "option", [t("label", "Option")]),
         t("choose", "Unpicked option", "The first line of each dropdown"), t("email", "Email label"), t("phone", "Phone label"), t("message", "Message label"),
         t("button", "Button"), t("sending", "Button while sending"), t("doneTitle", "Thanks title"), ta("doneText", "Thanks line"),
       ] },

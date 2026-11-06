@@ -402,19 +402,27 @@ function About({ c = DEFAULTS.about }: { c?: AboutContent }) {
 
 /** Let's talk (Wilfred, 5 Nov 2026): the call back form, then the free
  *  assessment's email box as the CTA at the foot. The direct details are
- *  in the footer's Talk to us column. */
+ *  in the footer's Talk to us column.
+ *  6 Nov 2026: the form's two dropdowns are the page title, one sentence,
+ *  so the form sits in the page head. Under the assessment, the email box
+ *  first and the line under it. */
 function Contact({ c = DEFAULTS.contact, s = DEFAULTS.start }: { c?: ContactContent; s?: StartContent }) {
   return (
     <>
-      <PageHead n="01" kicker={c.head.kicker} title={c.head.title} />
-      <section className="L-sec contact-sec">
+      <section className="L-sec L-page-head contact-sec" data-n="01">
         <div className="L-wrap">
-          <ContactForm c={c.form} />
+          <div className="L-head">
+            <span className="L-n">01</span>
+            <div>
+              <p className="eyebrow L-eyebrow">{c.head.kicker}</p>
+              <ContactForm c={c.form} line={c.head.title} />
+            </div>
+          </div>
         </div>
       </section>
       <Sec n="02" kicker={c.assess.kicker} title={c.assess.title} cls="contact-assess">
-        <p className="L-mid">{c.assess.line}</p>
         <StartEmail c={s.form} talk={false} />
+        <p className="L-mid contact-assess-line">{c.assess.line}</p>
       </Sec>
     </>
   );

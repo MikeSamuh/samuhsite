@@ -281,7 +281,9 @@ export const DEFAULTS = {
   },
 
   // /contact (Wilfred, 5 Nov 2026): the form, then the free assessment CTA.
-  // The two lists are from Mike's Persona Journey sheet (Reference material)
+  // The two lists are from Mike's Persona Journey sheet (Reference material).
+  // 6 Nov 2026: the title is the form's own sentence, "I'm a [who] and
+  // [what]."; head.title is the line under it
   contact: {
     head: {
       kicker: "Let’s talk",
@@ -299,7 +301,7 @@ export const DEFAULTS = {
         { label: "Founder" },
         { label: "CEO" },
       ],
-      lookingFor: "Looking for",
+      lookingFor: "and",
       needs: [
         { label: "I want to improve my team’s performance" },
         { label: "I want to improve performance across my organization" },
