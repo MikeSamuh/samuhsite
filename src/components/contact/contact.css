@@ -194,10 +194,9 @@
 
 .contact-pick:has(select[aria-invalid="true"]), .contact-blank:has(input[aria-invalid="true"]) { color: var(--accent); }
 
-/* the blank: its width from a hidden copy of the text under the input */
-.contact-blank-box { display: inline-grid; }
-
-.contact-blank-box > * { grid-area: 1 / 1; }
+/* the blank: its width from a hidden copy of the text, the input laid over
+   it, out of flow, so the input's own default width does not count */
+.contact-blank-box { position: relative; display: inline-block; }
 
 .contact-blank-size {
   visibility: hidden;
@@ -206,7 +205,9 @@
 }
 
 .contact-blank input {
-  width: 100%;
+  position: absolute;
+  inset: 0 0.12em 0.04em;
+  width: auto;
   min-width: 0;
   margin: 0;
   padding: 0;
