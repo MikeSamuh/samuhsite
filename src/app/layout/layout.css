@@ -918,6 +918,7 @@
 .L-foot-link { font-family: var(--font-ui); font-size: 16px; color: var(--text); cursor: pointer; text-decoration: none; transition: color var(--dur) var(--ease); }
 .L-foot-link:hover { color: var(--accent); }
 .L-foot-todo { color: var(--muted); cursor: default; }
+.L-foot-vanity { font-family: var(--font-ui); font-size: 13px; color: var(--muted); margin-top: -6px; }
 .L-foot-plain { cursor: default; }
 .L-foot-plain:hover { color: var(--text); }
 .L-foot-cta { margin-top: 10px; }

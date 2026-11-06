@@ -10,6 +10,7 @@ import { TEAM_SIZE } from "@/components/teamq-teaser/model";
 import { TeaserDemo, type TeaserDemoProps } from "@/components/teamq-teaser/TeaserDemo";
 import "@/components/teamq-teaser/teaser.css";
 import { LEADQ_HREF, ROUTES, TEAMQ_PATH } from "@/lib/site";
+import { CONTACT_PHONE, CONTACT_PHONE_VANITY } from "@/lib/contact-details";
 import { FocusMorph } from "@/components/focus-morph/FocusMorph";
 import { DEFAULTS, type GlobalContent, type HomeContent } from "@/lib/content/defaults";
 import { lines, mark } from "@/lib/content/shared";
@@ -811,7 +812,11 @@ export function Footer({ content }: { /** site-wide words from the admin; the de
           {/* the direct details (Wilfred, 5 Nov 2026): the phone dialable, the
               email written with [at] and without a mailto so harvesters get less */}
           {g.contact.phone ? (
-            <a className="L-foot-link" href={`tel:${g.contact.phone.replace(/[^+\d]/g, "")}`}>{g.contact.phone}</a>
+            <>
+              <a className="L-foot-link" href={`tel:${g.contact.phone.replace(/[^+\d]/g, "")}`}>{g.contact.phone}</a>
+              {/* the number as letters, for fun (Wilfred, 6 Nov 2026): grey, small, under the number */}
+              {CONTACT_PHONE_VANITY && g.contact.phone === CONTACT_PHONE ? <span className="L-foot-vanity">{CONTACT_PHONE_VANITY}</span> : null}
+            </>
           ) : (
             <span className="L-foot-link L-foot-todo">TODO(content): phone number</span>
           )}

@@ -72,14 +72,13 @@ export const SCHEMA: PageSchema[] = [
   {
     id: "about",
     name: "About",
-    note: "What we believe, Sapien Labs, the team.",
+    note: "The team, Sapien Labs, what we believe.",
     path: "/about",
     sections: [
       { key: "head", label: "Page head", fields: [t("kicker", "Eyebrow"), ta("title", "Title"), ta("lede", "Lede")] },
       { key: "believe", label: "What we believe", fields: [t("kicker", "Eyebrow"), t("title", "Title"), ta("big", "Big line"), ta("p1", "Paragraph one"), ta("p2", "Paragraph two")] },
       { key: "partner", label: "Sapien Labs", fields: [t("kicker", "Eyebrow"), t("title", "Title"), ta("p1", "Paragraph one"), ta("p2", "Paragraph two")] },
-      { key: "team", label: "Team", fields: [t("kicker", "Eyebrow"), t("title", "Title"), list("members", "People", "person", [t("name", "Name"), t("role", "Role"), ta("bio", "One line", "Shown when there is no full bio"), ta("about", "Full bio", "Blank line between paragraphs. Leave empty to show the one line"), img("photo", "Headshot", "Square works best")]), ta("closing", "Line under the team")] },
-      { key: "partners", label: "Partners", note: "Logos are placeholders until SAMUH supplies them", fields: [t("kicker", "Eyebrow"), t("title", "Title")] },
+      { key: "team", label: "Team", fields: [t("kicker", "Eyebrow"), t("title", "Title"), list("members", "People", "person", [t("name", "Name"), t("role", "Role"), ta("bio", "One line", "Shown when there is no full bio"), ta("about", "Full bio", "Blank line between paragraphs. Leave empty to show the one line"), img("photo", "Headshot", "Square works best")])] },
     ],
   },
   {

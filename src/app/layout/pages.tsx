@@ -357,7 +357,8 @@ function Insights() {
 // sends proper ones; Jake's is his own, sent 14 October 2026. The files
 // and the words are in the content layer now, editable in the admin.
 // The team comes first and one person to a row (Wilfred, 5 Nov 2026), so
-// the people are the page's most prominent thing
+// the people are the page's most prominent thing. What we believe closes
+// the page (Wilfred, 6 Nov 2026)
 function About({ c = DEFAULTS.about }: { c?: AboutContent }) {
   return (
     <>
@@ -378,14 +379,8 @@ function About({ c = DEFAULTS.about }: { c?: AboutContent }) {
             );
           })}
         </div>
-        <p className="L-mid">{c.team.closing}</p>
       </Sec>
-      <Sec n="03" kicker={c.believe.kicker} title={c.believe.title}>
-        <p className="L-big">{c.believe.big}</p>
-        <p className="L-mid">{c.believe.p1}</p>
-        <p className="L-mid">{c.believe.p2}</p>
-      </Sec>
-      <Sec n="04" kicker={c.partner.kicker} title={c.partner.title}>
+      <Sec n="03" kicker={c.partner.kicker} title={c.partner.title}>
         <div className="L-partner">
           <Image className="L-partner-logo" src="/sapien-labs.png" alt="Sapien Labs" width={820} height={240} sizes="200px" />
           <div>
@@ -394,8 +389,10 @@ function About({ c = DEFAULTS.about }: { c?: AboutContent }) {
           </div>
         </div>
       </Sec>
-      <Sec n="05" kicker={c.partners.kicker} title={c.partners.title}>
-        <div className="L-logos">{[0, 1, 2, 3, 4].map((i) => <Frame key={i} label="Partner mark" />)}</div>
+      <Sec n="04" kicker={c.believe.kicker} title={c.believe.title}>
+        <p className="L-big">{c.believe.big}</p>
+        <p className="L-mid">{c.believe.p1}</p>
+        <p className="L-mid">{c.believe.p2}</p>
       </Sec>
     </>
   );

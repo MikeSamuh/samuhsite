@@ -174,14 +174,9 @@ export const DEFAULTS = {
         { name: "Jake DeBerry", role: "Lead, Enterprise Growth", bio: "CEB/Gartner, Deloitte, NeuroLeadership Institute.",
           // Placeholder (Wilfred, 5 Nov 2026): Jake's bio is not on samuh.work and he
           // sent only his photo (30 Sep 2026). Replace from the admin when he sends one
-          about: "Jake leads enterprise growth at Samuh, bringing experience from CEB/Gartner, Deloitte and the NeuroLeadership Institute. Full bio to come.",
+          about: "TEST COPY. Lorem ipsum dolor sit amet, consectetur adipiscing elit. This is placeholder text and not a bio. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n\nTEST COPY. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Real bio to replace this.",
           photo: "/team/jake-deberry.webp" },
       ],
-      closing: "An interdisciplinary team spanning enterprise transformation, team practice, data science and human performance research.",
-    },
-    partners: {
-      kicker: "Partners",
-      title: "Channel partners and coaching teams",
     },
   },
 
