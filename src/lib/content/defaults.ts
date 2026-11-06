@@ -283,12 +283,12 @@ export const DEFAULTS = {
   // /contact (Wilfred, 5 Nov 2026): the form, then the free assessment CTA.
   // The two lists are from Mike's Persona Journey sheet (Reference material),
   // its Persona and Needs columns; Vendor added by Wilfred, 6 Nov 2026.
-  // 6 Nov 2026: the title is the form's own sentence, "I'm a [who] and
-  // [what]."; head.title is the line under it
+  // 6 Nov 2026: the form is two sentences in the display type, "I'm a [who]
+  // and [what]. My email is [ ], and phone is [ ]." then the message box
+  // and the button, the whole thing inside one screen
   contact: {
     head: {
       kicker: "Let’s talk",
-      title: "Tell us a little, and we will call you back.",
     },
     form: {
       imA: "I’m a",
@@ -313,8 +313,12 @@ export const DEFAULTS = {
         { label: "I want to show measurable impact for my coaching" },
       ],
       choose: "Select one",
+      myEmail: "My email is",
+      myPhone: "and phone is",
       email: "Email",
+      emailHint: "you@company.com",
       phone: "Phone",
+      phoneHint: "+1 555 000 0000",
       message: "Message",
       button: "Request Call Back",
       sending: "Sending",

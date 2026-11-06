@@ -403,8 +403,8 @@ function About({ c = DEFAULTS.about }: { c?: AboutContent }) {
 /** Let's talk (Wilfred, 5 Nov 2026): the call back form, then the free
  *  assessment's email box as the CTA at the foot. The direct details are
  *  in the footer's Talk to us column.
- *  6 Nov 2026: the form's two dropdowns are the page title, one sentence,
- *  so the form sits in the page head. Under the assessment, the email box
+ *  6 Nov 2026: the form is two sentences in the display type, so it is the
+ *  page head, and the whole of it fits one screen. Under the assessment, the email box
  *  first and the line under it. */
 function Contact({ c = DEFAULTS.contact, s = DEFAULTS.start }: { c?: ContactContent; s?: StartContent }) {
   return (
@@ -415,7 +415,7 @@ function Contact({ c = DEFAULTS.contact, s = DEFAULTS.start }: { c?: ContactCont
             <span className="L-n">01</span>
             <div>
               <p className="eyebrow L-eyebrow">{c.head.kicker}</p>
-              <ContactForm c={c.form} line={c.head.title} />
+              <ContactForm c={c.form} />
             </div>
           </div>
         </div>

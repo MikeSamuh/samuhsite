@@ -30,14 +30,17 @@ function validate(role: string, need: string, email: string, phone: string): Err
  *  chosen option shown in the display type with a caret, the real select
  *  laid over it, invisible, so the native menu and the keyboard still
  *  work. Until something is chosen the placeholder sits there, muted. */
-function Pick({ name, label, choose, options, error, errorId }: { name: string; label: string; choose: string; options: { label: string }[]; error?: string; errorId: string }) {
+function Pick({ name, label, choose, options, error, errorId, after }: { name: string; label: string; choose: string; options: { label: string }[]; error?: string; errorId: string; /** punctuation after the word, kept on its line */ after?: string }) {
   const [value, setValue] = useState("");
   return (
     <span className={`contact-pick${value ? "" : " contact-pick-empty"}`}>
-      <span className="contact-pick-text" aria-hidden="true">{value || choose}</span>
-      <svg className="contact-pick-caret" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-        <path d="M3 6l5 5 5-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
+      <span className="contact-pick-text" aria-hidden="true">
+        {value || choose}
+        <svg className="contact-pick-caret" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+          <path d="M3 6l5 5 5-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+        </svg>
+      </span>
+      {after ? <span className="contact-after" aria-hidden="true">{after}</span> : null}
       <select name={name} aria-label={label} value={value} onChange={(event) => setValue(event.target.value)} required aria-invalid={error ? true : undefined} aria-describedby={error ? errorId : undefined}>
         <option value="">{choose}</option>
         {options.map(({ label: option }) => (
@@ -48,16 +51,33 @@ function Pick({ name, label, choose, options, error, errorId }: { name: string; 
   );
 }
 
+/** A blank in the sentence: a text input in the display type, as wide as
+ *  what is typed in it (a hidden copy of the text sets the width), the
+ *  placeholder showing while it is empty. */
+function Blank({ name, label, hint, error, errorId, after, ...rest }: { name: string; label: string; hint: string; error?: string; errorId: string; /** punctuation after the blank, kept on its line */ after?: string } & Pick<React.InputHTMLAttributes<HTMLInputElement>, "type" | "autoComplete" | "inputMode">) {
+  const [value, setValue] = useState("");
+  return (
+    <span className="contact-blank">
+      <span className="contact-blank-box">
+        <span className="contact-blank-size" aria-hidden="true">{value || hint}</span>
+        <input {...rest} name={name} aria-label={label} placeholder={hint} value={value} onChange={(event) => setValue(event.target.value)} required aria-invalid={error ? true : undefined} aria-describedby={error ? errorId : undefined} />
+      </span>
+      {after ? <span className="contact-after" aria-hidden="true">{after}</span> : null}
+    </span>
+  );
+}
+
 /** The contact form (Wilfred, 5 Nov 2026): who you are and what you are
  *  looking for as two dropdowns from Mike's Persona Journey sheet, email
  *  and phone required, the message optional. Posts flow "contact" to
  *  /api/lead and swaps to a thanks block in place. The words and the two
  *  lists are the admin's, under Contact.
  *
- *  6 Nov 2026: the two dropdowns are the page's title, one sentence in the
- *  display type: "I'm a [who] and [what]." The old title is the line under
- *  it. */
-export function ContactForm({ c, line }: { c: ContactContent["form"]; /** the line between the sentence and the fields */ line?: string }) {
+ *  6 Nov 2026: the form is two sentences in the display type, the page's
+ *  title: "I'm a [who] and [what]. My email is [ ], and phone is [ ]."
+ *  The dropdowns and the blanks are words of them. The message box and
+ *  the button sit under, and the whole form holds one screen. */
+export function ContactForm({ c }: { c: ContactContent["form"] }) {
   const { submit, state, attempt } = useLeadSubmit("contact");
   const [errors, setErrors] = useState<Errors>({});
   const [token, setToken] = useState<string>();
@@ -108,25 +128,28 @@ export function ContactForm({ c, line }: { c: ContactContent["form"]; /** the li
   };
 
   const pending = state === "pending";
-  const roleError = `${id}-role`;
-  const needError = `${id}-need`;
+  const errorId = (field: keyof Errors) => `${id}-${field}`;
 
   return (
     <form className="lead-form contact-form" ref={form} onSubmit={onSubmit} noValidate>
-      <h1 className="display L-page-title contact-sentence">
-        {c.imA}{" "}
-        <Pick name="role" label={c.imA} choose={c.choose} options={c.personas} error={errors.role} errorId={roleError} />
-        {" "}{c.lookingFor}{" "}
-        <Pick name="need" label="Looking for" choose={c.choose} options={c.needs} error={errors.need} errorId={needError} />
-      </h1>
-      {errors.role ? <p className="lead-error" id={roleError} role="alert">{errors.role}</p> : null}
-      {errors.need ? <p className="lead-error" id={needError} role="alert">{errors.need}</p> : null}
-      {line ? <p className="L-mid contact-line">{line}</p> : null}
-      <div className="contact-form-reach">
-        <Field label={c.email} name="email" type="email" autoComplete="email" inputMode="email" required error={errors.email} />
-        <Field label={c.phone} name="phone" type="tel" autoComplete="tel" inputMode="tel" required error={errors.phone} />
+      <div className="contact-sentences">
+        <h1 className="display L-page-title contact-sentence">
+          {c.imA}{" "}
+          <Pick name="role" label={c.imA} choose={c.choose} options={c.personas} error={errors.role} errorId={errorId("role")} />
+          {" "}{c.lookingFor}{" "}
+          <Pick name="need" label="Looking for" choose={c.choose} options={c.needs} error={errors.need} errorId={errorId("need")} after="." />
+        </h1>
+        <p className="display L-page-title contact-sentence">
+          {c.myEmail}{" "}
+          <Blank name="email" label={c.email} hint={c.emailHint} type="email" autoComplete="email" inputMode="email" error={errors.email} errorId={errorId("email")} after="," />
+          {" "}{c.myPhone}{" "}
+          <Blank name="phone" label={c.phone} hint={c.phoneHint} type="tel" autoComplete="tel" inputMode="tel" error={errors.phone} errorId={errorId("phone")} after="." />
+        </p>
       </div>
-      <Field as="textarea" label={c.message} name="message" rows={4} />
+      {(["role", "need", "email", "phone"] as const).map((field) =>
+        errors[field] ? <p className="lead-error contact-error" key={field} id={errorId(field)} role="alert">{errors[field]}</p> : null,
+      )}
+      <Field as="textarea" label={c.message} name="message" rows={2} />
       <Honeypot />
       <Turnstile onToken={setToken} resetKey={attempt} />
       {state === "error" ? (

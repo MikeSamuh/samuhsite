@@ -123,11 +123,13 @@ export const SCHEMA: PageSchema[] = [
     note: "The call back form, then the free assessment CTA.",
     path: "/contact",
     sections: [
-      { key: "head", label: "Page head", note: "The title is the form's sentence: I'm a [who] and [what]", fields: [t("kicker", "Eyebrow"), t("title", "Line under the sentence")] },
-      { key: "form", label: "The form", note: "The sentence with its two dropdowns, email and phone required, the message optional", fields: [
+      { key: "head", label: "Page head", note: "The title is the form's sentences", fields: [t("kicker", "Eyebrow")] },
+      { key: "form", label: "The form", note: "Two sentences: I'm a [who] and [what]. My email is [ ], and phone is [ ]. Then the message, optional", fields: [
         t("imA", "Sentence start", "Before the first dropdown"), list("personas", "I'm a: options", "option", [t("label", "Option")]),
         t("lookingFor", "Sentence middle", "Between the two dropdowns"), list("needs", "Looking for: options", "option", [t("label", "Option")]),
-        t("choose", "Unpicked option", "The first line of each dropdown"), t("email", "Email label"), t("phone", "Phone label"), t("message", "Message label"),
+        t("choose", "Unpicked option", "The first line of each dropdown"),
+        t("myEmail", "Second sentence start", "Before the email blank"), t("myPhone", "Second sentence middle", "Before the phone blank"),
+        t("email", "Email name", "Read out by screen readers"), t("emailHint", "Email blank, empty"), t("phone", "Phone name", "Read out by screen readers"), t("phoneHint", "Phone blank, empty"), t("message", "Message label"),
         t("button", "Button"), t("sending", "Button while sending"), t("doneTitle", "Thanks title"), ta("doneText", "Thanks line"),
       ] },
       { key: "assess", label: "The assessment CTA", note: "At the foot of the page. The box's own words are under Start here", fields: [t("kicker", "Eyebrow"), t("title", "Title"), ta("line", "Line")] },

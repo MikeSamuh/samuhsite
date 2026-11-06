@@ -1,10 +1,12 @@
 /* /contact. Form left, direct contact right, stacked on a narrow page.
    Every design value is a custom property from src/lib/tokens.ts. */
 
-/* the page head is the form (6 Nov 2026): the eyebrow, then the sentence
-   with its two dropdowns as the title, the line, the fields */
+/* the page head is the form (6 Nov 2026): the eyebrow, then the two
+   sentences as the title, the message box, the button. It fits one screen
+   on a laptop, so the padding is tighter than a page head's */
 .L-page .L-sec.contact-sec {
   border-top: 0;
+  padding: calc(40px * var(--space, 1)) 0 calc(48px * var(--space, 1));
 }
 
 .contact-sec .L-head {
@@ -108,56 +110,67 @@
 /* the number as the client says it, beside the one you dial */
 .contact-vanity { display: block; margin-top: 4px; font-size: 14px; color: var(--muted); }
 
-/* the call back form (5 Nov 2026): the sentence, the line, email and phone
-   on one row, the message under, the button last */
-.contact-form { width: 100%; }
-.contact-form-reach { width: 100%; max-width: 720px; display: grid; grid-template-columns: 1fr 1fr; gap: 16px clamp(16px, 3cqw, 28px); }
+/* the call back form (5 Nov 2026): the sentences, the message under, the
+   button last */
+.contact-form { width: 100%; gap: 14px; }
 .contact-form > .lead-field { max-width: 720px; }
 .contact-form .lead-field :is(input, select, textarea) { width: 100%; max-width: none; }
+.contact-form .lead-field textarea { padding: 10px 14px; }
 .contact-form .btn { justify-self: start; }
-.contact-line { margin: 4px 0 8px; }
+.contact-error { margin: -6px 0 0; }
 
-/* the sentence (Wilfred, 6 Nov 2026): "I'm a [who] and [what]." in the
-   display type, each dropdown a word of it */
-.contact-sentence {
+/* the sentences (Wilfred, 6 Nov 2026): "I'm a [who] and [what]. My email
+   is [ ], and phone is [ ]." in the display type, each dropdown and each
+   blank a word of them */
+.contact-sentences { display: grid; gap: 0.3em; width: 100%; margin-bottom: 8px; font-size: clamp(26px, 3.2cqw, 40px); }
+.contact-form .contact-sentence {
   width: 100%;
   max-width: none;
-  margin: 0 0 8px;
-  font-size: clamp(30px, 4cqw, 48px);
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: var(--display-weight);
+  font-style: var(--display-style);
+  letter-spacing: var(--display-tracking);
+  font-size: inherit;
   line-height: 1.25;
+  color: var(--text);
 }
 
-/* the chosen words: the text and a caret, underlined in the accent; a long
-   choice wraps inside its underline. The real select is laid over it,
-   invisible, so the native menu and the keyboard work */
-.contact-pick {
+/* a word that is a dropdown or a blank: the text underlined in the accent,
+   any punctuation after it kept on the same line, outside the underline.
+   The real control is laid over the dropdown's text, invisible, so the
+   native menu and the keyboard work; the blank's input is the text */
+.contact-pick, .contact-blank {
   position: relative;
   display: inline-grid;
   grid-template-columns: minmax(0, auto) auto;
-  align-items: baseline;
-  column-gap: 0.22em;
+  /* the punctuation sits on the last line of a choice that wraps */
+  align-items: last baseline;
   max-width: 100%;
   vertical-align: baseline;
+  color: var(--text);
+}
+
+.contact-pick { cursor: pointer; transition: color var(--dur) var(--ease); }
+
+.contact-pick-text, .contact-blank-box {
+  min-width: 0;
   padding: 0 0.12em 0.04em;
   border-bottom: var(--rule-fat) solid var(--accent);
-  color: var(--text);
-  cursor: pointer;
-  transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
+  transition: border-color var(--dur) var(--ease);
 }
 
-.contact-pick-text {
-  min-width: 0;
-  text-wrap: pretty;
-}
+.contact-pick-text { text-wrap: pretty; }
 
-.contact-pick-empty { color: var(--muted); }
+.contact-pick-empty .contact-pick-text { color: var(--muted); }
 
 .contact-pick-caret {
+  display: inline-block;
   width: 0.5em;
   height: 0.5em;
+  margin-left: 0.2em;
+  vertical-align: middle;
   color: var(--accent);
-  flex-shrink: 0;
-  align-self: center;
 }
 
 .contact-pick select {
@@ -173,22 +186,52 @@
 
 .contact-pick:hover { color: var(--accent); }
 
-.contact-pick:focus-within {
+.contact-pick:focus-within .contact-pick-text, .contact-blank:focus-within .contact-blank-box {
   border-radius: 4px;
   outline: var(--rule-fat) solid var(--accent);
   outline-offset: 6px;
 }
 
-.contact-pick:has(select[aria-invalid="true"]) { color: var(--accent); }
+.contact-pick:has(select[aria-invalid="true"]), .contact-blank:has(input[aria-invalid="true"]) { color: var(--accent); }
+
+/* the blank: its width from a hidden copy of the text under the input */
+.contact-blank-box { display: inline-grid; }
+
+.contact-blank-box > * { grid-area: 1 / 1; }
+
+.contact-blank-size {
+  visibility: hidden;
+  white-space: pre;
+  min-width: 5ch;
+}
+
+.contact-blank input {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--text);
+  font: inherit;
+  font-variation-settings: inherit;
+  font-feature-settings: inherit;
+  font-kerning: inherit;
+  letter-spacing: inherit;
+  outline: none;
+}
+
+.contact-blank input::placeholder { color: var(--muted); opacity: 1; }
 
 /* the assessment CTA at the foot: the email box, then the line under it */
 .contact-assess .L-mid { margin: 18px 0 0; }
 
 @container page (max-width: 640px) {
-  .contact-form-reach { grid-template-columns: 1fr; }
-  .contact-sentence { font-size: clamp(28px, 7.6cqw, 36px); }
+  .contact-sentences { font-size: clamp(24px, 6.8cqw, 32px); }
+  .L-page .L-sec.contact-sec { padding-top: calc(28px * var(--space, 1)); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .contact-pick { transition: none; }
+  .contact-pick, .contact-blank { transition: none; }
 }
