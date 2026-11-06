@@ -490,9 +490,9 @@
 /* the meter on the left, in the key's cell, with the third head */
 .L-fm-meter { gap: 12px; justify-items: start; }
 .L-fm-meter .L-fm-gauge { width: 100%; max-width: 300px; margin: 4px 0; }
-.L-fm-gauge .gauge-band { opacity: 0.7; }
+.L-fm-gauge .gauge-band { stroke: url(#fm-gauge-grad); opacity: 0.55; }
 .L-fm-gauge .gauge-band[data-on] { opacity: 1; }
-.L-fm-gauge-word { font-family: var(--font-display); font-size: 15px; font-weight: 600; text-anchor: middle; letter-spacing: 0.02em; }
+.L-fm-gauge-word { font-family: var(--font-display); font-size: 15px; font-weight: 600; text-anchor: middle; letter-spacing: 0.02em; fill: var(--text); }
 .L-fm-needle { transition: none; }
 .L-fm-meter-line { margin: 0; font-size: 17px; line-height: 1.5; color: var(--muted); }
 /* the head arrives first as the section climbs into view (--h), the key

@@ -399,11 +399,19 @@ export function FocusMorph({ words = DEFAULTS.home.focus }: { /** the heads and 
           <div className="L-fm-legend L-fm-meter L-fm-in" aria-hidden={!people || undefined}>
             <span className="L-cap">{words.howLabel}</span>
             <svg className="capacity-gauge L-fm-gauge" viewBox="0 0 200 116" role="img" aria-label={`A meter climbing from ${MHQ_BANDS[MHQ_BANDS.length - 2].name} to ${MHQ_BANDS[0].name}`}>
+              {/* the brand's two colours along the arc (Wilfred, 6 Nov 2026): pink
+                  at the left end, cyan at the right, blended between */}
+              <defs>
+                <linearGradient id="fm-gauge-grad" gradientUnits="userSpaceOnUse" x1={GAUGE.cx - GAUGE.r} y1={0} x2={GAUGE.cx + GAUGE.r} y2={0}>
+                  <stop offset="0" style={{ stopColor: "var(--accent)" }} />
+                  <stop offset="1" style={{ stopColor: "var(--accent-2)" }} />
+                </linearGradient>
+              </defs>
               {[...MHQ_BANDS].reverse().map((b) => (
-                <path key={b.id} d={gArc(b.min, b.max)} className="gauge-band" style={{ "--band": `var(--band-${b.id})` } as React.CSSProperties} data-on={b.id === meterBand.id || undefined} />
+                <path key={b.id} d={gArc(b.min, b.max)} className="gauge-band" data-on={b.id === meterBand.id || undefined} />
               ))}
               <line className="gauge-needle L-fm-needle" x1={GAUGE.cx - GAUGE.r + 18} y1={GAUGE.cy} x2={GAUGE.cx - GAUGE.r - 14} y2={GAUGE.cy} style={{ transform: `rotate(${meterTurn.toFixed(2)}deg)` }} />
-              <text className="L-fm-gauge-word" x={GAUGE.cx} y={GAUGE.cy - 4} style={{ fill: `var(--band-${meterBand.id})` }}>{meterBand.name}</text>
+              <text className="L-fm-gauge-word" x={GAUGE.cx} y={GAUGE.cy - 4}>{meterBand.name}</text>
             </svg>
             <p className="L-fm-meter-line">{words.howLine}</p>
           </div>
