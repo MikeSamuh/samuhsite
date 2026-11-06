@@ -35,7 +35,12 @@ export const SITE: Site = {
   // around it, and the thesis band goes
   layout: { ...BASE, sections: { ...BASE.sections, circles: "circles-morph", thesis: "thesis-band", cards: "cards-one" } },
   nav: { links: ["about", "process", "solutions", "insights"], brand: "icons" },
-  order: ["hero", "meaning", "circles", "tool", "cards", "voices", "case", "faq", "start"],
+  // the metaphor cards came off the home on 6 Nov 2026: they are a landing
+  // page of their own now, /l/metaphor-cards, listed in src/lib/landing.ts
+  // the TeamQ tool section ("Find your team's hidden performance tax") is
+  // off the home too (Wilfred, 6 Nov 2026), to clean the page; the code
+  // stays, put "tool" back in the order to have it again
+  order: ["hero", "meaning", "circles", "voices", "case", "faq", "start"],
   copy: {
     heroLede: null,
     thesis: "When the team environment is right, people thrive and results follow. Most teams pay a hidden performance tax instead, through their environment, not their effort. TeamQ shows where yours is.",
@@ -76,9 +81,10 @@ export const ROUTES: Record<PageId, string> = {
   insights: "/insights",
   about: "/about",
   contact: "/contact",
-  // the way in: the email box on the home, under the tool (3 Nov 2026).
-  // /start the page is gone; Get started buttons on other pages land here
-  start: "/#assess",
+  // the way in: the email box on the home's close (6 Nov 2026, the tool
+  // section with its box is off the page). /start the page is gone; Get
+  // started buttons on other pages land here
+  start: "/#start",
 };
 
 /** The TeamQ explainer, not a nav page: linked from the tool on the home,

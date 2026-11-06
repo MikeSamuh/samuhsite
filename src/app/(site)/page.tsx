@@ -1,7 +1,6 @@
 import { BASELINE, OPTIMIZER_MOVES } from "@/components/teamq-teaser/model";
 import { bestForProductiveDays, score } from "@/lib/teaser/score";
 import { getContent } from "@/lib/content/content";
-import { getCards } from "@/lib/admin/cards";
 import { SiteHome } from "@/components/site/Site";
 import { JsonLd } from "@/components/site/JsonLd";
 import { faqLd, pageMeta, SITE_NAME, TAGLINE } from "@/lib/seo";
@@ -22,11 +21,10 @@ export default async function Home() {
   const { values, levers, score: best } = bestForProductiveDays(OPTIMIZER_MOVES);
   const answer = { values, levers, days: best.days, mhq: best.mhq };
   const { home, global, start } = await getContent();
-  const cards = (await getCards()).map((c) => [c.name, "", c.image] as [string, string, string]);
   return (
     <>
       <JsonLd data={faqLd(home.faq.items)} />
-      <SiteHome teamq={{ baseline, answer, tool: home.tool, box: start.form }} content={{ home, global }} cards={cards} />
+      <SiteHome teamq={{ baseline, answer, tool: home.tool, box: start.form }} content={{ home, global }} />
     </>
   );
 }

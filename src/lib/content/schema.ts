@@ -137,7 +137,7 @@ export const SCHEMA: PageSchema[] = [
     id: "start",
     name: "The email box",
     note: "The way in: on the home under the tool, on Contact, and under the Solutions cards.",
-    path: "/#assess",
+    path: "/#start",
     sections: [
       { key: "form", label: "The box", note: "{email} becomes the address given", fields: [t("label", "Field label"), t("placeholder", "Placeholder"), t("button", "Button"), t("thanksTitle", "Thank you title"), ta("thanksText", "Thank you text"), t("talk", "Prefer to talk line"), t("talkLink", "Its link text")] },
     ],

@@ -1,14 +1,16 @@
-// The metaphor cards, as the team keeps them in the admin's Cards tab.
+// The metaphor cards, as the team keeps them in the admin's Landing pages
+// tab (the Cards tab until 6 Nov 2026).
 // Server only. One document under cards:list; without one, the cards in
 // src/lib/site.ts show, which are the two Wilfred drew on 30 September.
 // Each card is a drawing and a name; the name is what screen readers get
-// and what a visitor's response is filed under. The home page reads the
+// and what a visitor's response is filed under. The landing page reads the
 // list through getCards(), cached under the "cards" tag, so it stays
 // static between edits.
 
 import { revalidatePath, revalidateTag, unstable_cache } from "next/cache";
 import { store } from "./store";
 import { SITE } from "@/lib/site";
+import { landingPage } from "@/lib/landing";
 
 export const CARDS_TAG = "cards";
 const KEY = "cards:list";
@@ -63,7 +65,7 @@ export async function saveCards(input: unknown, email: string): Promise<Card[]> 
   });
   await store().set(KEY, { items, updatedAt: new Date().toISOString(), updatedBy: email } satisfies CardsRecord);
   revalidateTag(CARDS_TAG);
-  revalidatePath("/");
+  revalidatePath(landingPage("metaphor-cards")!.path);
   return items;
 }
 
@@ -71,5 +73,5 @@ export async function saveCards(input: unknown, email: string): Promise<Card[]> 
 export async function resetCards(): Promise<void> {
   await store().del(KEY);
   revalidateTag(CARDS_TAG);
-  revalidatePath("/");
+  revalidatePath(landingPage("metaphor-cards")!.path);
 }
