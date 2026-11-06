@@ -1622,7 +1622,9 @@
    Samuh mark once the page has scrolled. Widths are 37.5px tall by the PNG
    aspect ratios: samuh-logo 960x285, samuh-star-inverted 1:1 */
 .L-brand-samuh { width: calc(37.5px * 960 / 285); transition: width var(--brand-dur) var(--brand-ease); }
-.L-nav-icons[data-scrolled="true"] .L-brand-samuh { width: 37.5px; }
+/* the swap to the mark on scroll is off (Wilfred, 6 Nov 2026): the full
+   logo and the partner line stay at every scroll position. The mark and
+   its rules below are kept so the swap is one line to put back */
 /* "Partnered with Sapien Labs" sits beside the logo at every scroll position */
 .L-brand-partner {
   font-family: var(--font-caption);
@@ -1640,8 +1642,10 @@
    it, in both directions */
 .L-brand-full { transition-delay: var(--brand-wait); }
 .L-brand-mark { opacity: 0; transform: scale(0.82); pointer-events: none; transition-delay: 0ms; }
+/* to swap on scroll again, restore:
+.L-nav-icons[data-scrolled="true"] .L-brand-samuh { width: 37.5px; }
 .L-nav-icons[data-scrolled="true"] .L-brand-full { opacity: 0; transform: scale(0.96); transition-delay: 0ms; }
-.L-nav-icons[data-scrolled="true"] .L-brand-mark { opacity: 1; transform: none; transition-delay: var(--brand-wait); }
+.L-nav-icons[data-scrolled="true"] .L-brand-mark { opacity: 1; transform: none; transition-delay: var(--brand-wait); } */
 
 /* ---------- circles: motion and hover notes ---------- */
 

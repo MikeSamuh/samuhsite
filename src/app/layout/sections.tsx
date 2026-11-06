@@ -47,7 +47,8 @@ export interface NavProps {
   links?: PageId[];
   /** "wordmark" is the Samuh logo alone. "icons" shows the Samuh wordmark
    *  with "Partnered with Sapien Labs" beside it, and swaps the wordmark for
-   *  the Samuh mark once the page has scrolled, with the nav stuck to the top */
+   *  the Samuh mark once the page has scrolled (the swap is off in CSS since
+   *  6 Nov 2026), with the nav stuck to the top */
   brand?: "wordmark" | "icons";
   /** "in partnership with Sapien Labs" beside the wordmark, per the scope */
   partner?: boolean;
