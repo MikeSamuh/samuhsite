@@ -88,13 +88,24 @@ const ARRIVE = { from: 0.32, to: 0.52 };
 const PEOPLE = { from: 0.58, to: 0.74 };
 const FILL = { from: 0.78, to: 0.98 };
 
-/** the three people, hollow, in a row where the team circle was. Each is a
- *  head and a bust with round shoulders; the fill is a rect clipped to
- *  them, rising from the feet. The figures fill in turn, a little apart */
-const PERSON = { headR: 26, headCy: 108, shoulderY: 206, footY: 300, halfW: 56 };
-const PEOPLE_X = [172, 320, 468];
+/** the three people, hollow, in a row where the team circle was. Each is
+ *  drawn in the style of SAMUH's Belonging icon (public/icons), facing
+ *  forward: a tilted head clear of the shoulders, the body one brush
+ *  silhouette with arms swept out and legs as thick tapered strokes. Our
+ *  drawing, a stand-in until Wilfred redraws the icon front on (6 Nov
+ *  2026). Drawn in a 200 by 300 box and scaled into the frame; the fill
+ *  is a rect clipped to the figure, rising from the feet. The figures
+ *  fill in turn, a little apart */
+const FIGURE = {
+  w: 200,
+  h: 300,
+  head: { cx: 100, cy: 46, rx: 33, ry: 37, tilt: -12 },
+  body: "M 68 102 C 48 84, 20 86, 6 106 C 26 100, 48 110, 66 132 C 58 162, 58 192, 64 214 C 48 238, 38 262, 42 290 C 44 298, 58 300, 64 292 C 72 264, 82 242, 92 226 L 100 234 L 108 226 C 118 242, 128 264, 136 292 C 142 300, 156 298, 158 290 C 162 262, 152 238, 136 214 C 142 192, 142 162, 134 132 C 152 110, 174 100, 194 106 C 180 86, 152 84, 132 102 C 112 94, 88 94, 68 102 Z",
+};
+const FIGURE_SCALE = 0.72;
+const FIGURE_TOP = 84;
+const PEOPLE_X = [158, 320, 482];
 const STAGGER = 0.16;
-const bust = (x: number) => `M ${x - PERSON.halfW} ${PERSON.footY} V ${PERSON.shoulderY} A ${PERSON.halfW} ${PERSON.halfW} 0 0 1 ${x + PERSON.halfW} ${PERSON.shoulderY} V ${PERSON.footY} Z`;
 
 /** the meter: the TeamQ section's half circle, from -100 on the left to
  *  200 on the right, the bands along it and a needle that climbs with
@@ -442,21 +453,20 @@ export function FocusMorph({ words = DEFAULTS.home.focus }: { /** the heads and 
               filled by a rect clipped to its shape and rising from the feet */}
           <g className="L-fm-people L-fm-in" aria-hidden={!people || undefined}>
             <defs>
-              {PEOPLE_X.map((x, j) => (
-                <clipPath id={`fm-person-${j}`} key={j}>
-                  <circle cx={x} cy={PERSON.headCy} r={PERSON.headR} />
-                  <path d={bust(x)} />
-                </clipPath>
-              ))}
+              <ellipse id="fm-figure-head" cx={FIGURE.head.cx} cy={FIGURE.head.cy} rx={FIGURE.head.rx} ry={FIGURE.head.ry} transform={`rotate(${FIGURE.head.tilt} ${FIGURE.head.cx} ${FIGURE.head.cy})`} />
+              <path id="fm-figure-body" d={FIGURE.body} />
+              <clipPath id="fm-figure-clip">
+                <use href="#fm-figure-head" />
+                <use href="#fm-figure-body" />
+              </clipPath>
             </defs>
             {PEOPLE_X.map((x, j) => {
-              const top = PERSON.headCy - PERSON.headR;
-              const h = (PERSON.footY - top) * fills[j];
+              const h = FIGURE.h * fills[j];
               return (
-                <g className="L-fm-person" key={j} data-full={fills[j] > 0.98 || undefined}>
-                  <rect className="L-fm-person-fill" x={x - PERSON.halfW - 2} y={PERSON.footY - h} width={PERSON.halfW * 2 + 4} height={h} clipPath={`url(#fm-person-${j})`} />
-                  <circle cx={x} cy={PERSON.headCy} r={PERSON.headR} className="L-fm-person-line" />
-                  <path d={bust(x)} className="L-fm-person-line" />
+                <g className="L-fm-person" key={j} data-full={fills[j] > 0.98 || undefined} transform={`translate(${x - (FIGURE.w * FIGURE_SCALE) / 2} ${FIGURE_TOP}) scale(${FIGURE_SCALE})`}>
+                  <rect className="L-fm-person-fill" x={-4} y={FIGURE.h - h} width={FIGURE.w + 8} height={h} clipPath="url(#fm-figure-clip)" />
+                  <use href="#fm-figure-head" className="L-fm-person-line" />
+                  <use href="#fm-figure-body" className="L-fm-person-line" />
                 </g>
               );
             })}
