@@ -578,3 +578,20 @@ LeadQ and TeamQ buttons with the intent set; and on `/contact` beside the
 calendar. OrgQ's button and every "Talk to us" go to `/contact`. Both
 retired paths redirect. The booking embed moved from the talk component
 into `src/components/contact/Booking.tsx`. — Wilfred
+
+**2026-11-06 — The home tells the chain, then asks.** The circles beat
+gains a fourth move in three steps: the team circle becomes three hollow
+people, water rises through all three as one level (a struggling team
+environment, a managing one, a thriving one, when the team is full), the
+TeamQ meter steps through the same three MHQ windows in pink to cyan,
+and a readout gives each step's days lost and the performance tax per
+person per year, from the client's sheet ("Copy of Samuh Graph Base
+File", rows 4, 8, 13, in `src/lib/performance-tax.ts`). Per person at a
+$115,000 fully loaded cost, never the sheet's org-wide column. The
+Thriving step says the tax is gone and still shows its residual, since we
+never claim zero. The ask ("Find your team's hidden performance tax",
+the tool's words) follows under the people, so the tool section and the
+close came off the page; the way in is `/contact#assess`. The metaphor
+cards came off the home the same day to a landing page of their own,
+`/l/metaphor-cards`, listed in the admin's new Landing pages tab. Order:
+hero, meaning, circles, testimonials, case study, FAQ. — Wilfred

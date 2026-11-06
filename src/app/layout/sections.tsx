@@ -1070,7 +1070,8 @@ export function Section({ def, variant, copy = {}, demo, content }: { def: (type
         )}
 
         {/* the morph carries its own head: it changes as the picture does */}
-        {def.id === "circles" && v === "morph" && <FocusMorph words={h.focus} />}
+        {/* the ask at the end of the beat is the tool section's title and button (6 Nov 2026) */}
+        {def.id === "circles" && v === "morph" && <FocusMorph words={h.focus} cta={{ title: toolTitle, label: toolCta, href: LEADQ_HREF }} />}
 
         {def.id === "circles" && v !== "nested" && v !== "morph" && (
           <>

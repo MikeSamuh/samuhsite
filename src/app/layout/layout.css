@@ -477,24 +477,33 @@
    leave early and arrive late, so no two sets overlap. Three heads share
    one cell and take turns, two keys share another */
 /* long enough that each state holds under the hand. Four beats since
-   6 Nov 2026: the enterprise, the individual, the team, then the people
-   filling with the meter (--f), so the track is longer */
-.L-s-circles[data-v="morph"] { min-height: 460vh; }
+   6 Nov 2026, the fourth in three steps with the CTA after (--c), so the
+   track is long */
+.L-s-circles[data-v="morph"] { min-height: 600vh; }
 /* the people: they cross in where the circles cross out (--p, the Venn's
    old crossfade), growing a little from the team circle's size as they
-   come; hollow, the text colour, filled in the team's colour from the feet */
+   come; hollow, the text colour, and the water the same colour */
 .L-fm-people { transform-box: view-box; transform-origin: 320px 200px; transform: scale(calc(0.72 + 0.28 * var(--p, 0))); }
-.L-fm-person-line { fill: none; stroke: var(--text); stroke-width: var(--c-stroke); vector-effect: non-scaling-stroke; transition: stroke var(--dur) var(--ease); }
-.L-fm-person[data-full] .L-fm-person-line { stroke: var(--accent); }
-.L-fm-person-fill { fill: var(--accent); opacity: 0.85; }
-/* the meter on the left, in the key's cell, with the third head */
+.L-fm-person-line { fill: none; stroke: var(--text); stroke-width: var(--c-stroke); vector-effect: non-scaling-stroke; }
+.L-fm-water { fill: var(--text); opacity: 0.92; }
+/* the meter on the left, in the key's cell, with the third head; the
+   readouts share one cell under it and take turns (--r) */
 .L-fm-meter { gap: 12px; justify-items: start; }
-.L-fm-meter .L-fm-gauge { width: 100%; max-width: 300px; margin: 4px 0; }
+.L-fm-meter .L-fm-gauge { width: 100%; max-width: 260px; margin: 0; }
 .L-fm-gauge .gauge-band { stroke: url(#fm-gauge-grad); opacity: 0.55; }
 .L-fm-gauge .gauge-band[data-on] { opacity: 1; }
 .L-fm-gauge-word { font-family: var(--font-display); font-size: 15px; font-weight: 600; text-anchor: middle; letter-spacing: 0.02em; fill: var(--text); }
 .L-fm-needle { transition: none; }
-.L-fm-meter-line { margin: 0; font-size: 17px; line-height: 1.5; color: var(--muted); }
+.L-fm-readouts { display: grid; width: 100%; }
+.L-fm-readout { grid-area: 1 / 1; display: grid; gap: 8px; align-content: start; opacity: var(--r, 0); transform: translateY(calc((1 - var(--r, 0)) * 8px)); pointer-events: none; }
+.L-fm-readout-big { margin: 0; font-size: 18px; line-height: 1.4; color: var(--muted); }
+.L-fm-readout-big strong { font-family: var(--font-display); font-weight: var(--display-weight); font-size: 26px; color: var(--text); }
+.L-fm-readout-small { margin: 0; font-size: 15px; line-height: 1.5; color: var(--muted); }
+/* the ask under the people, in with the last step (--c) */
+.L-fm-cta { display: grid; gap: 16px; justify-items: center; text-align: center; margin-top: 8px; opacity: var(--c, 0); transform: translateY(calc((1 - var(--c, 0)) * 12px)); }
+.L-fm-cta[aria-hidden="true"] { pointer-events: none; }
+.L-fm-cta-title { margin: 0; font-family: var(--font-display); font-weight: var(--display-weight); font-size: 28px; line-height: 1.2; color: var(--text); }
+.L-fm-meter-line { margin: 0; font-size: 13px; line-height: 1.5; color: var(--muted); }
 /* the head arrives first as the section climbs into view (--h), the key
    and the circles close behind it (--g) */
 .L-s-circles[data-v="morph"] .L-fm-head { opacity: var(--h, var(--g, 0)); transform: translateY(calc((1 - var(--h, var(--g, 0))) * 20px)); }

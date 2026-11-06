@@ -40,7 +40,9 @@ export const SITE: Site = {
   // the TeamQ tool section ("Find your team's hidden performance tax") is
   // off the home too (Wilfred, 6 Nov 2026), to clean the page; the code
   // stays, put "tool" back in the order to have it again
-  order: ["hero", "meaning", "circles", "voices", "case", "faq", "start"],
+  // the close at the foot is off too (6 Nov 2026): the ask is at the end of
+  // the circles beat, and the FAQ ends the page
+  order: ["hero", "meaning", "circles", "voices", "case", "faq"],
   copy: {
     heroLede: null,
     thesis: "When the team environment is right, people thrive and results follow. Most teams pay a hidden performance tax instead, through their environment, not their effort. TeamQ shows where yours is.",
@@ -81,10 +83,10 @@ export const ROUTES: Record<PageId, string> = {
   insights: "/insights",
   about: "/about",
   contact: "/contact",
-  // the way in: the email box on the home's close (6 Nov 2026, the tool
-  // section with its box is off the page). /start the page is gone; Get
-  // started buttons on other pages land here
-  start: "/#start",
+  // the way in: the free assessment's email box on /contact (6 Nov 2026,
+  // the home's tool section and its close are off the page). /start the
+  // page is gone; Get started buttons on other pages land here
+  start: "/contact#assess",
 };
 
 /** The TeamQ explainer, not a nav page: linked from the tool on the home,

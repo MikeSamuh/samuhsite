@@ -83,6 +83,15 @@ export const DEFAULTS = {
       titleHow: "How teams reach their *best*",
       howLabel: "Capacity to perform",
       howLine: "Measure the team environment, choose one practice, run it for ninety days, measure again. Capacity rises, and performance with it.",
+      // the three steps' words; the numbers are in src/lib/performance-tax.ts
+      daysLine: "lost or unproductive, per person, each month",
+      moneyLine: "performance tax, per person, each year",
+      steps: [
+        { label: "A struggling team environment", line: "The environment drains capacity. The team pays for it in days, and the organization in money." },
+        { label: "A managing team environment", line: "Better, and still paying. Most teams live here without knowing." },
+        { label: "A thriving team environment", line: "No performance tax left to carry. The team's capacity goes to the work." },
+      ],
+      source: "Per person, at a $115,000 fully loaded cost. TODO(content): the source line for the days.",
       // top to bottom, in the order the circles arrive
       levels: [
         { name: "Enterprise", label: "Driving change through enterprise-wide transformations", note: "Often many at a time." },

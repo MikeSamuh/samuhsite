@@ -420,7 +420,7 @@ function Contact({ c = DEFAULTS.contact, s = DEFAULTS.start }: { c?: ContactCont
           </div>
         </div>
       </section>
-      <Sec n="02" kicker={c.assess.kicker} title={c.assess.title} cls="contact-assess">
+      <Sec n="02" kicker={c.assess.kicker} title={c.assess.title} cls="contact-assess" id="assess">
         <StartEmail c={s.form} talk={false} />
         <p className="L-mid contact-assess-line">{c.assess.line}</p>
       </Sec>

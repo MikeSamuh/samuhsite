@@ -61,7 +61,7 @@ export const SCHEMA: PageSchema[] = [
       { key: "hero", label: "Hero", note: "Over the film", fields: [t("title", "Headline", MARKERS), ta("lede", "Lede", "The line under the headline. Leave empty for none"), t("ctaPrimary", "Primary button"), t("ctaSecondary", "Secondary button")] },
       { key: "thesis", label: "Thesis", note: "The performance tax line, below the circles", fields: [ta("text", "The line", MARKERS)] },
       { key: "dictionary", label: "What Samuh means", fields: [t("word", "Word"), t("pronunciation", "Pronunciation"), t("origin", "Part of speech and origin"), ta("definition", "Definition", "Asterisks around the part to colour")] },
-      { key: "focus", label: "The overlooked performance driver", note: "Two nested circles become three, then three people filling up as the meter climbs", fields: [t("eyebrow", "Eyebrow"), t("titleOthers", "Title, first state", MARKERS), t("titleWe", "Title, second state", MARKERS), t("titleHow", "Title, third state", MARKERS), t("howLabel", "Meter label"), ta("howLine", "Line under the meter"), list("levels", "The three circles", "level", [t("name", "Name"), t("label", "Label"), ta("note", "Note")], "In this order: enterprise, individual, team. Keep three")] },
+      { key: "focus", label: "The overlooked performance driver", note: "Two nested circles become three, then three people filling up as the meter climbs", fields: [t("eyebrow", "Eyebrow"), t("titleOthers", "Title, first state", MARKERS), t("titleWe", "Title, second state", MARKERS), t("titleHow", "Title, third state", MARKERS), t("howLabel", "Meter label"), ta("howLine", "Line under the meter"), t("daysLine", "After the days figure"), t("moneyLine", "After the money figure"), list("steps", "The three steps", "step", [t("label", "Label"), ta("line", "Line")], "Struggling, managing, thriving. Keep three. The numbers are in code"), ta("source", "Source line under the readout"), list("levels", "The three circles", "level", [t("name", "Name"), t("label", "Label"), ta("note", "Note")], "In this order: enterprise, individual, team. Keep three")] },
       { key: "tool", label: "TeamQ", note: "The section head, and the call-out between the tool and the cards", fields: [t("kicker", "Eyebrow"), t("title", "Title"), ta("pitch", "Pitch under the tool", "Leave empty for none"), t("callout", "Call-out line", "Above the button, between the tool and the cards"), t("cta", "Call-out button")] },
       { key: "voices", label: "Testimonials", note: "The quotes themselves are under Site-wide", fields: [t("kicker", "Eyebrow"), t("title", "Title")] },
       { key: "case", label: "Case study", fields: [t("kicker", "Eyebrow"), t("title", "Title"), t("tag", "Tag line"), t("line", "Headline"), list("stats", "Figures", "figure", [t("n", "Number"), t("label", "Label")], "Only figures SAMUH has supplied in writing"), t("cta", "Download link")] },
@@ -139,7 +139,7 @@ export const SCHEMA: PageSchema[] = [
     id: "start",
     name: "The email box",
     note: "The way in: on the home under the tool, on Contact, and under the Solutions cards.",
-    path: "/#start",
+    path: "/contact#assess",
     sections: [
       { key: "form", label: "The box", note: "{email} becomes the address given", fields: [t("label", "Field label"), t("placeholder", "Placeholder"), t("button", "Button"), t("thanksTitle", "Thank you title"), ta("thanksText", "Thank you text"), t("talk", "Prefer to talk line"), t("talkLink", "Its link text")] },
     ],
