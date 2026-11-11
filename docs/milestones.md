@@ -152,19 +152,20 @@ scope.
 Spec: `docs/sprint-solutions.md`. The edits agreed on the call of
 6 November 2026.
 
-- [ ] Docs and vocabulary: "Self-guided", never "DIY", stale references
-- [ ] Methodology at `/methodology`, `/process` redirecting: research first,
+- [x] Built locally 11 Nov 2026, each step on its own branch, not pushed.
+      Docs and vocabulary: "Self-guided", never "DIY", stale references
+- [x] Methodology at `/methodology`, `/process` redirecting: research first,
       the four stages, the star on the rail, the sprint path, the science
-- [ ] Solutions in its new order, with section ids. The assessments on the
+- [x] Solutions in its new order, with section ids. The assessments on the
       org structure, two platform tiers, Executive Team Sprints, keynotes
       and workshops
-- [ ] Who we work with: leaders, teams, organizations, each leading to its
+- [x] Who we work with: leaders, teams, organizations, each leading to its
       assessment
-- [ ] Nav dropdowns and the footer
-- [ ] The way in: the email box on the home, the lead posted first, then
+- [x] Nav dropdowns and the footer
+- [x] The way in: the email box on the home, the lead posted first, then
       the hand-off to the platform
-- [ ] Home foot, Contact sentences and Consultant, Jake's bio on About
-- [ ] Careers: `/careers`, `/careers/<slug>`, the Careers tab in the admin
+- [x] Home foot, Contact sentences and Consultant, Jake's bio on About
+- [x] Careers: `/careers`, `/careers/<slug>`, the Careers tab in the admin
 - [ ] Science graphs carousel. Waits for Jake's list and numbers
 - [ ] Review pass
 
