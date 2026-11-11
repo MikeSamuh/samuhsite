@@ -12,6 +12,7 @@ import "@/components/teamq-teaser/teaser.css";
 import { CAREERS_LIVE, CAREERS_PATH, NAV_MENUS, navHref, ROUTES, TEAMQ_PATH } from "@/lib/site";
 import { CONTACT_PHONE, CONTACT_PHONE_VANITY } from "@/lib/contact-details";
 import { FocusMorph } from "@/components/focus-morph/FocusMorph";
+import { Who } from "@/components/focus-morph/Who";
 import { DEFAULTS, type GlobalContent, type StartContent, type HomeContent } from "@/lib/content/defaults";
 import { lines, mark } from "@/lib/content/shared";
 
@@ -1119,6 +1120,9 @@ export function Section({ def, variant, copy = {}, demo, content }: { def: (type
         )}
 
         {def.id === "meaning" && !copy.thesisWithMeaning && (copy.revealIntro ? <Reveal><Dictionary d={h.dictionary} /></Reveal> : <Dictionary d={h.dictionary} />)}
+
+        {/* who we work with carries its own head: the org chart sits in it */}
+        {def.id === "who" && <Who c={h.who} n={String(def.n).padStart(2, "0")} />}
 
         {def.id === "circles" && v === "nested" && (
           <>

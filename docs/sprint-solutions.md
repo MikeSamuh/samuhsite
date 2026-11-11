@@ -5,6 +5,13 @@ dates. The sprint is done when the "Done when" line at the foot is true.
 
 Runbook: `docs/sprint-solutions-runbook.md`.
 
+**Superseded in part, 11 Nov 2026.** Wilfred's sitemap moved sections
+between pages after this was written: who we work with is on the home,
+the four stages are on Solutions under the sprints, Methodology is the
+science then the path, and the dropdowns changed. The entry of 2026-11-11
+in `docs/decisions.md` has the current order and wins over sections 1, 2,
+3 and 5 below. The copy, the sources and the claims table still hold.
+
 ## Sources
 
 Everything below traces to one of these. If a line of copy or a number is

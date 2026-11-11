@@ -138,8 +138,8 @@ export interface PageDef {
 
 export const PAGES: PageDef[] = [
   { id: "home", name: "Home", nav: true, note: "The argument, then conversion." },
-  { id: "solutions", name: "Solutions", nav: true, note: "One page in sections: who we work with, the assessments, the sprints, keynotes and workshops, talk to us, testimonials." },
-  { id: "process", name: "Methodology", nav: true, note: "Research first, then the 90-day sprint in four stages, and the science. /methodology." },
+  { id: "solutions", name: "Solutions", nav: true, note: "One page in sections: team sprints and how one runs, the assessments, keynotes and workshops." },
+  { id: "process", name: "Methodology", nav: true, note: "Research first: the science, then the path of three sprints. /methodology." },
   { id: "insights", name: "Insights", nav: true, note: "Foundations, articles, video and research in one filterable feed. Research gets its own weight." },
   { id: "about", name: "About", nav: true, note: "About SAMUH, the team, Sapien Labs in the body. Partners TBA." },
   { id: "contact", name: "Contact", nav: true, note: "Form plus calendar booking, contact details." },
@@ -151,7 +151,7 @@ export const PAGES: PageDef[] = [
 /* ------------------------------------------------------------------ */
 
 export type SectionId =
-  | "hero" | "thesis" | "meaning" | "circles" | "aspire" | "research"
+  | "hero" | "thesis" | "meaning" | "who" | "circles" | "aspire" | "research"
   | "voices" | "case" | "tool" | "cards" | "equation" | "faq" | "offer" | "start";
 
 export interface SectionDef {
@@ -197,6 +197,13 @@ export const SECTIONS: SectionDef[] = [
       { id: "meaning-line", name: "One line", note: "A single centred sentence." },
       { id: "meaning-aside", name: "Aside", note: "Small, beside a rule, like a footnote that got promoted." },
       { id: "meaning-block", name: "Block", note: "The full entry beside a rule, its own section right under the thesis." },
+    ],
+  },
+  {
+    id: "who", n: 15, kicker: "Who we work with", title: "Leaders, teams, organizations.", optIn: true,
+    intent: "Leaders, teams, organizations on the org chart, ahead of the circles. On the home since the sitemap of 11 November 2026.",
+    variants: [
+      { id: "who-chart", name: "Org chart", note: "The chart sticks on the left and builds as the three levels scroll past." },
     ],
   },
   {

@@ -6,7 +6,6 @@
 
 import { PRESETS, parseLayoutHash, type Layout, type PageId, type SectionId } from "@/lib/layout";
 import type { NavProps, CopyOverrides } from "@/app/layout/sections";
-import { REPORT } from "@/lib/report";
 
 export interface Site {
   /** the frame and section variants, from layout.ts */
@@ -34,7 +33,7 @@ export const SITE: Site = {
   // Then Mike's call the same day: the funnel narrows to the free LeadQ,
   // the tool sits straight under the circles with nothing explained
   // around it, and the thesis band goes
-  layout: { ...BASE, sections: { ...BASE.sections, circles: "circles-morph", thesis: "thesis-band", cards: "cards-one" } },
+  layout: { ...BASE, sections: { ...BASE.sections, who: "who-chart", circles: "circles-morph", thesis: "thesis-band", cards: "cards-one" } },
   // About, Methodology, Solutions, Insights (Wilfred, 11 Nov 2026); the lists under each are NAV_MENUS
   nav: { links: ["about", "process", "solutions", "insights"], brand: "icons" },
   // the metaphor cards came off the home on 6 Nov 2026: they are a landing
@@ -44,8 +43,10 @@ export const SITE: Site = {
   // stays, put "tool" back in the order to have it again
   // the close at the foot is off too (6 Nov 2026): the ask is at the end of
   // the circles beat, and the FAQ ends the page
-  // the closing block, what Samuh offers in three links, ends the page (call of 6 Nov 2026)
-  order: ["hero", "meaning", "circles", "voices", "case", "faq", "offer"],
+  // the sitemap of 11 Nov 2026: who we work with, on the org chart, comes
+  // in ahead of the circles, and the closing block of three links ("offer")
+  // is off; the FAQ ends the page
+  order: ["hero", "meaning", "who", "circles", "voices", "case", "faq"],
   copy: {
     heroLede: null,
     thesis: "When the team environment is right, people thrive and results follow. Most teams pay a hidden performance tax instead, through their environment, not their effort. TeamQ shows where yours is.",
@@ -108,16 +109,18 @@ export interface NavItem { label: string; page?: PageId; hash?: string; path?: s
  *  to the page; a chevron button beside it opens its list. In the mobile
  *  overlay the lists are open under their page. */
 export const NAV_MENUS: Partial<Record<PageId, NavItem[]>> = {
+  // the sitemap of 11 Nov 2026: the lists follow the pages' own order.
+  // Who we work with is on the home now, so it is on neither list, and
+  // the Work Culture Report is off the Methodology list (it is in the
+  // science section and the footer)
   solutions: [
-    { label: "Who we work with", page: "solutions", hash: "who" },
+    { label: "Team Sprints", page: "solutions", hash: "sprints" },
     { label: "Assessments", page: "solutions", hash: "assess" },
-    { label: "Sprints", page: "solutions", hash: "sprints" },
-    { label: "Workshops", page: "solutions", hash: "workshops" },
+    { label: "Workshops & Keynotes", page: "solutions", hash: "workshops" },
   ],
   process: [
-    { label: "The 90-day sprint", page: "process", hash: "sprint" },
     { label: "The science", page: "process", hash: "science" },
-    { label: "Work Culture Report", external: REPORT.page },
+    { label: "The path", page: "process", hash: "path" },
   ],
   // About has no list (Wilfred, 11 Nov 2026): a plain link. Careers stays
   // in the footer

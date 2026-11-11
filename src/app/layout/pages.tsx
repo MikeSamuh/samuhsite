@@ -6,19 +6,14 @@ import Image from "next/image";
 import Link from "next/link";
 import type { PageId } from "@/lib/layout";
 import { ROUTES, SHOW_CASES } from "@/lib/site";
-import { OrgFigure, type OrgLevel } from "@/components/focus-morph/people";
+import { useActiveItem } from "@/components/focus-morph/Who";
 import "@/components/contact/contact.css";
 import { StartEmail } from "@/components/start/StartEmail";
 import { ContactForm } from "@/components/contact/ContactForm";
 import { ReportCard } from "@/app/layout/sections";
 import { ProcessFigure, StageFigure } from "@/components/process-figure/ProcessFigure";
 import type { PoseId } from "@/components/process-figure/figures";
-import { Honeypot } from "@/components/lead/Honeypot";
-import { Turnstile } from "@/components/lead/Turnstile";
-import { useLeadSubmit } from "@/components/lead/useLeadSubmit";
 import { DEFAULTS, type AboutContent, type ContactContent, type GlobalContent, type ProcessContent, type SolutionsContent, type StartContent } from "@/lib/content/defaults";
-import { fill } from "@/lib/content/shared";
-import { EMAIL_SHAPE } from "@/lib/lead";
 
 /** The words the admin's Content tab edits, passed down from the server.
  *  Without them a page shows the defaults, which are the same words. */
@@ -82,159 +77,91 @@ function Sec({ n, kicker, title, children, id, cls }: { n: string; kicker: strin
 
 /* ------------------------------------------------------------------ */
 
-const HEAD_TOP = 28; // the sticky head's offset below the nav, as in layout.css
+// the traced pose the page morphs between (scripts/figures), one per stage,
+// in the order of the words in the content layer. Ritualize has no traced
+// pose: the star at rest stands in.
+// TODO(asset): a traced figure for Ritualize
+const STAR = "/samuh-star.png";
+const STAGE_ART: [string, PoseId | null][] = [
+  ["/icons/Discover%202.png", "discover"],
+  ["/icons/Align%202.png", "align"],
+  ["/icons/Belonging%202.png", "cocreate"],
+  [STAR, null],
+];
 
-/** Which of a section's items the reader is on: the last one whose top has
- *  passed a line `below` px under the stuck head. One scroll listener,
- *  one frame at a time. The Methodology stages and Who we work with both
- *  read it. */
-function useActiveItem(ref: React.RefObject<HTMLElement | null>, selector: string, below: number) {
-  const [active, setActive] = useState(0);
-  useEffect(() => {
-    const root = ref.current;
-    if (!root) return;
-    const items = Array.from(root.querySelectorAll<HTMLElement>(selector));
-    if (!items.length) return;
-    let raf = 0;
-    const tick = () => {
-      raf = 0;
-      const navH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--nav-h")) || 0;
-      const line = navH + HEAD_TOP + below;
-      let i = 0;
-      items.forEach((el, j) => { if (el.getBoundingClientRect().top <= line) i = j; });
-      setActive(i);
-    };
-    const kick = () => { if (!raf) raf = requestAnimationFrame(tick); };
-    const ro = new ResizeObserver(kick);
-    ro.observe(root);
-    kick();
-    window.addEventListener("scroll", kick, { passive: true });
-    return () => { ro.disconnect(); cancelAnimationFrame(raf); window.removeEventListener("scroll", kick); };
-  }, [ref, selector, below]);
-  return active;
-}
+const STAGE_LINE = 96; // a stage takes over once its top is this far below the nav
 
-const LEVELS: OrgLevel[] = ["one", "team", "teams"];
-
-/** Who we work with (Wilfred, 11 Nov 2026): the org chart stays on the
- *  left and builds as the page scrolls: one person alone at first, then
- *  the team arrives under it and takes the light, then the teams. A level
- *  not yet reached is not shown; one already passed stays, dimmed. On the
- *  right the three levels scroll past. On a
- *  narrow page the chart is off and each level carries its own figure. */
-function Who({ c }: { c: SolutionsContent["who"] }) {
+/** How a sprint runs: the four stages of the 90-day sprint in one section,
+ *  on Solutions under the sprints since the sitemap of 11 Nov 2026 (it was
+ *  Methodology's section 02). No rail over them (Wilfred, 11 Nov 2026):
+ *  the running head alone says which stage is on, from `active`, the one
+ *  scroll listener. The running head is decorative and hidden from
+ *  readers, who get each stage's own heading.
+ *  On the editorial columns at desktop width, with figures on, the
+ *  section's running head is the active stage's eyebrow, title and figure:
+ *  it sticks in the left column and swaps in place as the bodies scroll
+ *  past on the right. Everywhere else the running head is off and the
+ *  stages stack, each with its head and its own figure. */
+function Stages({ figures, c }: { figures?: boolean; c: SolutionsContent["stages"] }) {
   const ref = useRef<HTMLElement>(null);
-  const active = useActiveItem(ref, ".L-who-item", 120);
+  const active = useActiveItem(ref, ".L-stage", STAGE_LINE);
+  const STAGES: [string, string, string, string, PoseId | null][] = c.items.slice(0, STAGE_ART.length).map((st, i) => [st.verb, st.when, st.body, STAGE_ART[i][0], STAGE_ART[i][1]]);
+
+  const [verb, when, , icon, pose] = STAGES[Math.min(active, STAGES.length - 1)] ?? ["", "", "", STAR, null];
   return (
-    <section className="L-sec L-sec-h L-whos" id="who" data-n="02" ref={ref}>
+    <section className="L-sec L-sec-h L-stages" id="how" data-n="02" ref={ref} data-slot={figures ? "" : undefined}>
       <div className="L-wrap">
-        <div className="L-head">
+        <div className="L-head L-stages-head" aria-hidden>
           <span className="L-n">02</span>
           <div>
-            <p className="eyebrow L-eyebrow">{c.kicker}</p>
-            <h2 className="sec">{c.title}</h2>
+            <p className="eyebrow L-eyebrow" key={`when-${active}`}>{when}</p>
+            <h2 className="sec" key={`verb-${active}`}>{verb}</h2>
           </div>
-          <span className="L-who-chart" aria-hidden>
-            {c.items.map((it, i) => (
-              <span className="L-who-node" key={it.name} data-on={i === active ? "" : undefined} data-wait={i > active ? "" : undefined}><OrgFigure level={LEVELS[i] ?? "teams"} /></span>
-            ))}
-          </span>
+          {figures ? <span className="L-stage-fig">{pose ? <StageFigure pose={pose} /> : <Image src={icon} alt="" width={240} height={240} sizes="240px" />}</span> : null}
         </div>
-        <ol className="L-who-list">
-          {c.items.map((it, i) => (
-            <li className="L-who-item" key={it.name} data-on={i === active ? "" : undefined}>
-              <span className="L-who-art"><OrgFigure level={LEVELS[i] ?? "teams"} /></span>
-              <h3 className="L-who-name">{it.name}</h3>
-              <span className="L-who-who">{it.who}</span>
-              <p className="L-mid">{it.line}</p>
-              <Link className="inline-link" href={`${ROUTES.solutions}#${it.door}`}>{it.link} <span className="arrow">&darr;</span></Link>
+        <ol className="L-stage-list">
+          {STAGES.map(([verb, when, body, icon, pose], i) => (
+            <li key={verb} className="L-stage" data-on={i === active ? "" : undefined}>
+              <p className="eyebrow L-eyebrow L-stage-line">{when}</p>
+              <h2 className="sec L-stage-verb">{verb}</h2>
+              <div className="L-stage-copy">
+                <p className="L-mid">{body}</p>
+              </div>
+              <span className="L-stage-art" aria-hidden>
+                {figures && pose ? (
+                  <ProcessFigure pose={pose} from={i ? STAGES[i - 1][4] ?? undefined : undefined} />
+                ) : (
+                  <Image src={icon} alt="" width={336} height={336} sizes="320px" />
+                )}
+              </span>
             </li>
           ))}
         </ol>
-        <p className="L-mid">{c.coaches} <Link className="inline-link" href={ROUTES.contact}>{c.coachesLink}</Link></p>
+        <p className="L-mid L-stages-keepers">{c.keepers}</p>
       </div>
     </section>
   );
 }
 
-/** Solutions (call of 6 Nov 2026, docs/sprint-solutions.md): one page in
- *  sections, each with an id the nav dropdown lands on. Who we work with
- *  first, on the org chart (Who, above), then the assessment for each of
- *  the three as three columns (Wilfred, 11 Nov 2026); the sprints, on the platform and then Executive Team
- *  Sprints; keynotes and workshops; the ask; proof. All of it is in the
- *  HTML from the start. */
-function Solutions({ c = DEFAULTS.solutions, g = DEFAULTS.global, s = DEFAULTS.start }: { c?: SolutionsContent; g?: GlobalContent; /** the email box's words */ s?: StartContent }) {
+/** Solutions (sitemap of 11 Nov 2026, docs/sprint-solutions.md): one page
+ *  in sections, each with an id the nav dropdown lands on. Team sprints
+ *  first: on the platform, then Executive Team Sprints, then how a sprint
+ *  runs, the four stages that were on Methodology. Then the assessments
+ *  as three cards, then keynotes and workshops. Who we work with went to
+ *  the home; the form and the quotes at the foot are off, and every ask
+ *  goes to Contact. All of it is in the HTML from the start. */
+function Solutions({ figures, c = DEFAULTS.solutions, s = DEFAULTS.start }: { figures?: boolean; c?: SolutionsContent; /** the email box's words */ s?: StartContent }) {
   const TIERS = c.tiers.items;
-  // nothing picked until the reader picks: a tier's button, or the form's
-  const [tier, setTier] = useState("");
   // the email box in an assessment's row: LeadQ or TeamQ, opened by the row's button (3 Nov 2026)
   const [box, setBox] = useState<"leadq" | "teamq" | null>(null);
   const boxRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (box) boxRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
   }, [box]);
-  // the ask at the foot: an email and the pick, posted as flow "solutions"
-  const { submit, state, attempt } = useLeadSubmit("solutions");
-  const [token, setToken] = useState<string>();
-  const [emailError, setEmailError] = useState<string>();
-  const [nameError, setNameError] = useState<string>();
-  const [pickError, setPickError] = useState<string>();
-  const pickOf = (name: string) => { setTier(name); setPickError(undefined); };
-  // a tier's button: it goes to the form and sits pressed there
-  const ask = (name: string) => {
-    pickOf(name);
-    document.getElementById("talk")?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
-  const onTalk = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const name = String(data.get("name") ?? "").trim();
-    const phone = String(data.get("phone") ?? "").trim();
-    const email = String(data.get("email") ?? "").trim();
-    const noName = name ? undefined : "Enter your name.";
-    const found = !email ? "Enter your email address." : !EMAIL_SHAPE.test(email) ? "Enter an email address like name@company.com." : undefined;
-    const unpicked = tier ? undefined : c.talk.pickFirst;
-    setNameError(noName);
-    setEmailError(found);
-    setPickError(unpicked);
-    if (noName || found || unpicked) return;
-    void submit({ name, phone: phone || undefined, email, pick: tier, company_website: String(data.get("company_website") ?? "") || undefined, turnstileToken: token });
-  };
   return (
     <>
       <PageHead n="01" kicker={c.head.kicker} title={c.head.title} lede={c.head.lede} />
-      <Who c={c.who} />
-      <Sec n="03" kicker={c.assess.kicker} title={c.assess.title} cls="L-sec-full" id="assess">
-        {c.assess.lede ? <p className="L-mid">{c.assess.lede}</p> : null}
-        <ul className="L-assess">
-          {c.assess.items.map((it, i) => (
-            <li className="card L-assess-card L-assess-anchor" key={it.name} id={it.door}>
-              <span className="card-tag">{it.tag}</span>
-              <h3 className="L-assess-name">{it.name}</h3>
-              <span className="L-assess-price">{it.price}</span>
-              <p className="L-assess-what">{it.what}</p>
-              {it.more ? <p className="L-assess-what L-org-more">{it.more}</p> : null}
-              <dl className="L-assess-meta">
-                <div><dt className="L-cap">{c.assess.rowWho}</dt><dd>{it.who}</dd></div>
-                <div><dt className="L-cap">{c.assess.rowGet}</dt><dd>{it.get}</dd></div>
-              </dl>
-              {it.door === "orgq" ? (
-                <Link className="btn btn-secondary" href={ROUTES.contact}>{it.button}</Link>
-              ) : (
-                <button type="button" className={`btn${i === 1 ? "" : " btn-secondary"}`} onClick={() => setBox(it.door === "teamq" ? "teamq" : "leadq")} aria-pressed={box === it.door} aria-controls="assess-box">{it.button}</button>
-              )}
-            </li>
-          ))}
-        </ul>
-        {box ? (
-          <div className="L-assess-box" id="assess-box" ref={boxRef}>
-            <p className="eyebrow L-eyebrow">{box === "teamq" ? "TeamQ" : "LeadQ"}</p>
-            <StartEmail c={s.form} intent={box} talk={false} key={box} />
-          </div>
-        ) : null}
-        {c.assess.note ? <p className="L-mid">{c.assess.note}</p> : null}
-      </Sec>
-      <Sec n="04" kicker={c.tiers.kicker} title={c.tiers.title} cls="L-sec-full" id="sprints">
+      <Sec n="02" kicker={c.tiers.kicker} title={c.tiers.title} cls="L-sec-full" id="sprints">
         <p className="L-cap L-sub-h">{c.tiers.platform}</p>
         <ul className="L-assess L-tiers">
           {TIERS.map((t, i) => (
@@ -249,7 +176,7 @@ function Solutions({ c = DEFAULTS.solutions, g = DEFAULTS.global, s = DEFAULTS.s
                   <div key={r.label}><dt className="L-cap">{r.label}</dt><dd>{[r.a, r.b][i]}</dd></div>
                 ))}
               </dl>
-              <button type="button" className="btn btn-secondary" onClick={() => ask(t.name)} aria-pressed={t.name === tier}>{c.tiers.ask} <span className="arrow">&rarr;</span></button>
+              <Link className="btn btn-secondary" href={ROUTES.contact}>{c.tiers.ask} <span className="arrow">&rarr;</span></Link>
             </li>
           ))}
         </ul>
@@ -287,51 +214,41 @@ function Solutions({ c = DEFAULTS.solutions, g = DEFAULTS.global, s = DEFAULTS.s
           </div>
         ) : null}
       </Sec>
-      <Sec n="05" kicker={c.workshops.kicker} title={c.workshops.title} id="workshops">
+      <Stages figures={figures} c={c.stages} />
+      <Sec n="03" kicker={c.assess.kicker} title={c.assess.title} cls="L-sec-full" id="assess">
+        {c.assess.lede ? <p className="L-mid">{c.assess.lede}</p> : null}
+        <ul className="L-assess">
+          {c.assess.items.map((it, i) => (
+            <li className="card L-assess-card L-assess-anchor" key={it.name} id={it.door}>
+              <span className="card-tag">{it.tag}</span>
+              <h3 className="L-assess-name">{it.name}</h3>
+              <span className="L-assess-price">{it.price}</span>
+              <p className="L-assess-what">{it.what}</p>
+              {it.more ? <p className="L-assess-what L-org-more">{it.more}</p> : null}
+              <dl className="L-assess-meta">
+                <div><dt className="L-cap">{c.assess.rowWho}</dt><dd>{it.who}</dd></div>
+                <div><dt className="L-cap">{c.assess.rowGet}</dt><dd>{it.get}</dd></div>
+              </dl>
+              {it.door === "orgq" ? (
+                <Link className="btn btn-secondary" href={ROUTES.contact}>{it.button}</Link>
+              ) : (
+                <button type="button" className={`btn${i === 1 ? "" : " btn-secondary"}`} onClick={() => setBox(it.door === "teamq" ? "teamq" : "leadq")} aria-pressed={box === it.door} aria-controls="assess-box">{it.button}</button>
+              )}
+            </li>
+          ))}
+        </ul>
+        {box ? (
+          <div className="L-assess-box" id="assess-box" ref={boxRef}>
+            <p className="eyebrow L-eyebrow">{box === "teamq" ? "TeamQ" : "LeadQ"}</p>
+            <StartEmail c={s.form} intent={box} talk={false} key={box} />
+          </div>
+        ) : null}
+        {c.assess.note ? <p className="L-mid">{c.assess.note}</p> : null}
+      </Sec>
+      <Sec n="04" kicker={c.workshops.kicker} title={c.workshops.title} id="workshops">
         <p className="L-mid">{c.workshops.body}</p>
         <div className="cta-row">
           <Link className="btn btn-secondary" href={ROUTES.contact}>{c.workshops.button} <span className="arrow">&rarr;</span></Link>
-        </div>
-      </Sec>
-      <Sec n="06" kicker={c.talk.kicker} title={c.talk.title} id="talk">
-        {state !== "done" ? (
-          <form className="L-talk" onSubmit={onTalk} noValidate>
-            <div className="L-talk-tiers" role="group" aria-label="Which one">
-              {c.talk.options.map((o) => (
-                <button key={o.label} type="button" className="opt" aria-pressed={o.label === tier} onClick={() => pickOf(o.label)}>{o.label}</button>
-              ))}
-            </div>
-            <div className="L-talk-who">
-              <div className="field"><input type="text" name="name" required autoComplete="name" placeholder="Your name" aria-label="Your name" aria-invalid={nameError ? true : undefined} /></div>
-              <div className="field"><input type="tel" name="phone" autoComplete="tel" placeholder="Phone (optional)" aria-label="Your phone number, optional" /></div>
-            </div>
-            <div className="field L-talk-field">
-              <input type="email" name="email" required autoComplete="email" placeholder="you@company.com" aria-label="Your email" aria-invalid={emailError ? true : undefined} />
-              <button className="btn" type="submit" disabled={state === "pending"}>{state === "pending" ? "Sending" : c.talk.button} <span className="arrow">&rarr;</span></button>
-            </div>
-            {pickError ? <p className="lead-error" role="alert">{pickError}</p> : null}
-            {nameError ? <p className="lead-error" role="alert">{nameError}</p> : null}
-            {emailError ? <p className="lead-error" role="alert">{emailError}</p> : null}
-            {state === "error" ? <p className="lead-error" role="alert">That did not go through. Please try again.</p> : null}
-            <Honeypot />
-            <Turnstile onToken={setToken} resetKey={attempt} />
-            <span className="L-cap">{fill(c.talk.note, { tier: tier || "what you pick" })}</span>
-          </form>
-        ) : (
-          <div className="L-talk-thanks">
-            <p className="L-big">{fill(c.talk.thanks, { tier })}</p>
-            <Link href={ROUTES.process} className="inline-link L-text-cta">{c.talk.wait} <span className="arrow">&rarr;</span></Link>
-          </div>
-        )}
-      </Sec>
-      <Sec n="07" kicker={c.voices.kicker} title={c.voices.title}>
-        <div className="L-voices L-voices-grid">
-          {g.testimonials.items.map((q, i) => (
-            <figure className="card L-quote" key={i}>
-              <blockquote>&ldquo;{q.quote}&rdquo;</blockquote>
-              <figcaption className="L-cap">{q.who} &middot; {q.role}</figcaption>
-            </figure>
-          ))}
         </div>
       </Sec>
     </>
@@ -340,83 +257,14 @@ function Solutions({ c = DEFAULTS.solutions, g = DEFAULTS.global, s = DEFAULTS.s
 
 /* ------------------------------------------------------------------ */
 
-// the traced pose the page morphs between (scripts/figures), one per stage,
-// in the order of the words in the content layer. Ritualize has no traced
-// pose: the star at rest stands in.
-// TODO(asset): a traced figure for Ritualize
-const STAR = "/samuh-star.png";
-const STAGE_ART: [string, PoseId | null][] = [
-  ["/icons/Discover%202.png", "discover"],
-  ["/icons/Align%202.png", "align"],
-  ["/icons/Belonging%202.png", "cocreate"],
-  [STAR, null],
-];
-
-const STAGE_LINE = 96; // a stage takes over once its top is this far below the nav
-
-/** Methodology (the page id is still "process"). The four stages of the
- *  90-day sprint in one section. No rail over them (Wilfred, 11 Nov
- *  2026): the running head alone says which stage is on, from `active`,
- *  the one scroll listener. The running head is decorative and hidden
- *  from readers, who get each stage's own heading.
- *  On the editorial columns at desktop width, with figures on, the
- *  section's running head is the active stage's eyebrow, title and figure:
- *  it sticks in the left column and swaps in place as the bodies scroll
- *  past on the right. Everywhere else the running head is off and the
- *  stages stack, each with its head and its own figure. Then the sprint
- *  path, and the science. */
-function Process({ figures, c = DEFAULTS.process, g = DEFAULTS.global }: { figures?: boolean; c?: ProcessContent; g?: GlobalContent }) {
-  const ref = useRef<HTMLElement>(null);
-  const active = useActiveItem(ref, ".L-stage", STAGE_LINE);
-  const STAGES: [string, string, string, string, PoseId | null][] = c.stages.items.slice(0, STAGE_ART.length).map((st, i) => [st.verb, st.when, st.body, STAGE_ART[i][0], STAGE_ART[i][1]]);
-
-  const [verb, when, , icon, pose] = STAGES[Math.min(active, STAGES.length - 1)] ?? ["", "", "", STAR, null];
+/** Methodology (the page id is still "process"), research first
+ *  (sitemap of 11 Nov 2026): the science, then the path of three sprints,
+ *  and the ask. The four stages of a sprint are on Solutions (Stages). */
+function Process({ c = DEFAULTS.process, g = DEFAULTS.global }: { c?: ProcessContent; g?: GlobalContent }) {
   return (
     <>
       <PageHead n="01" kicker={c.head.kicker} title={c.head.title} lede={c.head.lede} />
-      <section className="L-sec L-sec-h L-stages" id="sprint" data-n="02" ref={ref} data-slot={figures ? "" : undefined}>
-        <div className="L-wrap">
-          <div className="L-head L-stages-head" aria-hidden>
-            <span className="L-n">02</span>
-            <div>
-              <p className="eyebrow L-eyebrow" key={`when-${active}`}>{when}</p>
-              <h2 className="sec" key={`verb-${active}`}>{verb}</h2>
-            </div>
-            {figures ? <span className="L-stage-fig">{pose ? <StageFigure pose={pose} /> : <Image src={icon} alt="" width={240} height={240} sizes="240px" />}</span> : null}
-          </div>
-          <ol className="L-stage-list">
-            {STAGES.map(([verb, when, body, icon, pose], i) => (
-              <li key={verb} className="L-stage" data-on={i === active ? "" : undefined}>
-                <p className="eyebrow L-eyebrow L-stage-line">{when}</p>
-                <h2 className="sec L-stage-verb">{verb}</h2>
-                <div className="L-stage-copy">
-                  <p className="L-mid">{body}</p>
-                </div>
-                <span className="L-stage-art" aria-hidden>
-                  {figures && pose ? (
-                    <ProcessFigure pose={pose} from={i ? STAGES[i - 1][4] ?? undefined : undefined} />
-                  ) : (
-                    <Image src={icon} alt="" width={336} height={336} sizes="320px" />
-                  )}
-                </span>
-              </li>
-            ))}
-          </ol>
-          <p className="L-mid L-stages-keepers">{c.stages.keepers}</p>
-        </div>
-      </section>
-      <Sec n="03" kicker={c.path.kicker} title={c.path.title} id="path">
-        <ol className="L-steps L-path">
-          {c.path.items.map((it) => (
-            <li className="L-step" key={it.tag}>
-              <span className="card-tag">{it.tag}</span>
-              <span className="L-path-line">{it.line}</span>
-            </li>
-          ))}
-        </ol>
-        <p className="L-mid">{c.path.note}</p>
-      </Sec>
-      <Sec n="04" kicker={c.science.kicker} title={c.science.title} id="science">
+      <Sec n="02" kicker={c.science.kicker} title={c.science.title} id="science">
         <p className="L-mid">{c.science.p1}</p>
         <p className="L-mid">{c.science.p2}</p>
         <dl className="L-case-stats L-sci-stats">
@@ -431,6 +279,17 @@ function Process({ figures, c = DEFAULTS.process, g = DEFAULTS.global }: { figur
         {/* the Sapien Labs graphs, redrawn, as a carousel: step 9 of the
             runbook, once Jake sends which graphs and their numbers.
             Nothing renders until then (docs/sprint-solutions.md, section 8) */}
+      </Sec>
+      <Sec n="03" kicker={c.path.kicker} title={c.path.title} id="path">
+        <ol className="L-steps L-path">
+          {c.path.items.map((it) => (
+            <li className="L-step" key={it.tag}>
+              <span className="card-tag">{it.tag}</span>
+              <span className="L-path-line">{it.line}</span>
+            </li>
+          ))}
+        </ol>
+        <p className="L-mid">{c.path.note}</p>
         <div className="cta-row L-stages-cta">
           <Link className="btn" href={ROUTES.start}>{c.science.ctaPrimary} <span className="arrow">&rarr;</span></Link>
           <Link className="btn btn-secondary" href={ROUTES.solutions}>{c.science.ctaSecondary}</Link>
@@ -562,8 +421,8 @@ function Contact({ c = DEFAULTS.contact, s = DEFAULTS.start }: { c?: ContactCont
 
 export function Page({ id, figures, content }: { id: PageId; figures?: boolean; /** the admin's words; the defaults without them */ content?: PageCopy }) {
   switch (id) {
-    case "solutions": return <Solutions c={content?.solutions} g={content?.global} s={content?.start} />;
-    case "process": return <Process figures={figures} c={content?.process} g={content?.global} />;
+    case "solutions": return <Solutions figures={figures} c={content?.solutions} s={content?.start} />;
+    case "process": return <Process c={content?.process} g={content?.global} />;
     case "insights": return <Insights />;
     case "about": return <About c={content?.about} />;
     case "contact": return <Contact c={content?.contact} s={content?.start} />;

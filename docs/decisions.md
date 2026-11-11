@@ -618,3 +618,27 @@ Not decided: the hero line. "Great team environments sustain high
 performance." stays as the placeholder. Open, with defaults in the spec:
 the nav label (Methodology), Careers under About and not in the top nav,
 and the site's domain, which this sprint does not change. — Client and Wilfred
+
+**2026-11-11 — The sitemap: who we work with on the home, the stages on Solutions.**
+Wilfred's sitemap doc of 11 Nov ("SAMUH Site Map", Drive), with his answers
+the same day. Where it and `docs/sprint-solutions.md` differ, it wins.
+Home: hero, what Samuh means, who we work with (the org chart, id `who`),
+the circles and the overlooked performance driver with the email ask,
+testimonials, case study, FAQ. The closing block of three links is off.
+Methodology: head, the science, the path. Research first; the four stages
+left the page.
+Solutions: head, team sprints (`sprints`: Self-guided, Supported, Executive
+Team Sprints, then how a sprint runs, the four stages, id `how`),
+assessments (`assess`), workshops and keynotes (`workshops`). Who we work
+with left for the home. The Talk to us form and the testimonials at the
+foot are off, since the sitemap does not list them: every ask goes to
+`/contact`.
+Nav dropdowns follow the pages: Solutions is Team Sprints, Assessments,
+Workshops & Keynotes; Methodology is The science, The path. The Work
+Culture Report is off the dropdown and stays in the science section and
+the footer.
+Open: the Methodology dropdown's second item (the sitemap says Who we work
+with, which is now on the home; The path is the stand-in); whether the
+Solutions form and quotes should come back; and the org chart moving into
+the circles as one animation, which is not built: the chart sits straight
+above the circles. — Wilfred

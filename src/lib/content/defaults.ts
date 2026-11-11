@@ -138,6 +138,22 @@ export const DEFAULTS = {
         { q: "How do we start?", a: "Take LeadQ. It is free, takes about five minutes, and gives you a first read on your own team before anyone else is involved. From there, TeamQ for the whole team, or a conversation about your organization." },
       ],
     },
+    // on the home since the sitemap of 11 Nov 2026, between the dictionary
+    // and the circles; it was Solutions' section 02
+    // Rahul's whiteboard of 6 Nov 2026, top to bottom. The level names are
+    // Wilfred's; the who and the lines are the whiteboard's, word for word.
+    // The team leaders line was left open on the board
+    who: {
+      kicker: "Who we work with",
+      title: "Leaders, teams, organizations.",
+      items: [
+        { name: "Leaders", who: "Team leaders", line: "For team leaders curious about ... TODO(content): the end of this line, from Rahul.", link: "LeadQ", door: "leadq" },
+        { name: "Teams", who: "CXOs, founders, NGO leaders, team leaders, managers", line: "Seeking to accelerate their performance.", link: "TeamQ", door: "teamq" },
+        { name: "Organizations", who: "HR leaders, business leaders", line: "Looking for scaled solutions for high-performing organizations.", link: "OrgQ", door: "orgq" },
+      ],
+      coaches: "Coaches and consultants. TODO(content): what Samuh offers them, from Jake.",
+      coachesLink: "Talk to us",
+    },
     // the closing block above the footer (call of 6 Nov 2026): what Samuh
     // offers in three lines, each a link into a Solutions section, the same
     // three the nav dropdown names. Draft, from the three-pager of Oct 2026,
@@ -220,16 +236,6 @@ export const DEFAULTS = {
       title: "The evidence guides where to focus. The team decides what to change.",
       lede: "Built on Sapien Labs’ research into human capacity. Samuh uses 90-day sprints to turn evidence into a better way of working. The approach mainly draws on Otto Scharmer’s Theory U, systemic coaching, and design thinking.",
     },
-    // the three-pager of Oct 2026, page 2, in its words
-    stages: {
-      items: [
-        { verb: "Discover", when: "Pre-work", body: "TeamQ and interviews with the team members. TeamQ is repeated before day 90 to measure what changed." },
-        { verb: "Align", when: "Day 1", body: "Opening workshop. The team aligns on its goals and chooses a high-performance practice." },
-        { verb: "Co-create", when: "In between", body: "The practice is co-created within the rhythm of the team’s work and iterated over a few weeks." },
-        { verb: "Ritualize", when: "Day 90", body: "Closing workshop. The practice is ritualized and the team sees the impact in the second TeamQ result." },
-      ],
-      keepers: "Two ritual keepers from the team are coached by Samuh to maintain and strengthen the practice, with a call every two weeks and a midpoint check-in.",
-    },
     path: {
       kicker: "The path",
       title: "A path to sustained high performance",
@@ -265,20 +271,6 @@ export const DEFAULTS = {
       kicker: "Start by measuring",
       title: "Assess yourself, your team, or your organization.",
       lede: "Measurement first, then the practices the team owns. Three measures built with Sapien Labs, and the ways to act on what they show.",
-    },
-    // Rahul's whiteboard of 6 Nov 2026, top to bottom. The level names are
-    // Wilfred's; the who and the lines are the whiteboard's, word for word.
-    // The team leaders line was left open on the board
-    who: {
-      kicker: "Who we work with",
-      title: "Leaders, teams, organizations.",
-      items: [
-        { name: "Leaders", who: "Team leaders", line: "For team leaders curious about ... TODO(content): the end of this line, from Rahul.", link: "LeadQ", door: "leadq" },
-        { name: "Teams", who: "CXOs, founders, NGO leaders, team leaders, managers", line: "Seeking to accelerate their performance.", link: "TeamQ", door: "teamq" },
-        { name: "Organizations", who: "HR leaders, business leaders", line: "Looking for scaled solutions for high-performing organizations.", link: "OrgQ", door: "orgq" },
-      ],
-      coaches: "Coaches and consultants. TODO(content): what Samuh offers them, from Jake.",
-      coachesLink: "Talk to us",
     },
     assess: {
       kicker: "Assessments",
@@ -326,6 +318,18 @@ export const DEFAULTS = {
       get: "Confidential interviews, a facilitated day one, coaching for two ritual keepers every two weeks, and the close.",
       button: "Talk to us",
     },
+    // how a sprint runs, under the tiers (sitemap of 11 Nov 2026; it was
+    // Methodology's section 02)
+    // the three-pager of Oct 2026, page 2, in its words
+    stages: {
+      items: [
+        { verb: "Discover", when: "Pre-work", body: "TeamQ and interviews with the team members. TeamQ is repeated before day 90 to measure what changed." },
+        { verb: "Align", when: "Day 1", body: "Opening workshop. The team aligns on its goals and chooses a high-performance practice." },
+        { verb: "Co-create", when: "In between", body: "The practice is co-created within the rhythm of the team’s work and iterated over a few weeks." },
+        { verb: "Ritualize", when: "Day 90", body: "Closing workshop. The practice is ritualized and the team sees the impact in the second TeamQ result." },
+      ],
+      keepers: "Two ritual keepers from the team are coached by Samuh to maintain and strengthen the practice, with a call every two weeks and a midpoint check-in.",
+    },
     // the three-pager of Oct 2026, page 3, word for word. Behind SHOW_CASES
     // in site.ts, off until Rahul clears them
     cases: {
@@ -342,26 +346,6 @@ export const DEFAULTS = {
       title: "Keynotes and workshops",
       body: "TODO(content): keynotes and workshops copy, from Jake.",
       button: "Talk to us",
-    },
-    talk: {
-      kicker: "Talk to us",
-      title: "Tell us which one, and where to reach you",
-      options: [
-        { label: "Self-guided" },
-        { label: "Supported" },
-        { label: "Executive Team Sprint" },
-        { label: "Keynote or workshop" },
-        { label: "Other" },
-      ],
-      pickFirst: "Pick one first.",
-      button: "Talk to us",
-      note: "A person replies. Tagged {tier}, so we come prepared.",
-      thanks: "Thank you. We’ll be in touch about {tier}.",
-      wait: "Read about the methodology while you wait",
-    },
-    voices: {
-      kicker: "Trust before proof",
-      title: "What teams say",
     },
   },
 

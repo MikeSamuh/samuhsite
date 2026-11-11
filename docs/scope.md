@@ -12,12 +12,12 @@ shape of the engagement and the functions the site has to perform.
 
 | Route | Contains |
 |---|---|
-| Home | The argument, then conversion |
-| Solutions | One page in sections: who we work with, the assessments (LeadQ, TeamQ, OrgQ), the sprints (Self-guided and Supported on the platform, then Executive Team Sprints), keynotes and workshops, talk to us, testimonials. `docs/sprint-solutions.md` |
-| Methodology (was Process, 6 Nov 2026) | `/methodology`, `/process` redirects. Research first, then the 90-day sprint in four stages: Discover, Align, Co-create, Ritualize. The science and the Sapien Labs graphs. Content from Calina |
+| Home | The argument, then conversion. Since the sitemap of 11 Nov 2026: hero, what Samuh means, who we work with, the circles and the email ask, testimonials, case study, FAQ |
+| Solutions | One page in sections (sitemap of 11 Nov 2026): team sprints (Self-guided and Supported on the platform, Executive Team Sprints, then the four stages: Discover, Align, Co-create, Ritualize), the assessments (LeadQ, TeamQ, OrgQ), workshops and keynotes. `docs/sprint-solutions.md`, `docs/decisions.md` |
+| Methodology (was Process, 6 Nov 2026) | `/methodology`, `/process` redirects. Research first: the science and the Sapien Labs graphs, then the path of three sprints. The four stages are on Solutions since 11 Nov 2026. Content from Calina |
 | Insights | Foundations, case studies, articles and video with transcripts, Sapien Labs Work Culture Report |
 | About | About SAMUH, team profiles, Sapien Labs. Channel partners and coaching teams TBA |
-| Careers | `/careers` and `/careers/<slug>`. Open roles posted from the admin, or an invitation to write when there are none. Under About in the nav, and in the footer |
+| Careers | `/careers` and `/careers/<slug>`. Open roles posted from the admin, or an invitation to write when there are none. In the footer, not the nav |
 | Contact | Form plus calendar booking |
 
 CTA paths: Get Started (intake assessment), results page on its own shareable
