@@ -8,6 +8,7 @@ import { ADMIN_API, ADMIN_BASE } from "@/lib/admin/paths";
 const TABS = [
   { href: `${ADMIN_BASE}/content`, name: "Content" },
   { href: `${ADMIN_BASE}/blog`, name: "Blog" },
+  { href: `${ADMIN_BASE}/careers`, name: "Careers" },
   { href: `${ADMIN_BASE}/landing`, name: "Landing pages" },
   { href: `${ADMIN_BASE}/brand`, name: "Brand" },
   { href: `${ADMIN_BASE}/analytics`, name: "Analytics" },

@@ -94,9 +94,9 @@ export const ROUTES: Record<PageId, string> = {
   start: "/contact#assess",
 };
 
-/** Careers is built in step 8 of the sprint runbook; until /careers
- *  exists its link stays out of the nav and the footer. */
-export const CAREERS_LIVE = false;
+/** Careers (call of 6 Nov 2026): /careers and /careers/<slug>, under About
+ *  in the nav and in the footer. Off takes the links away, not the pages. */
+export const CAREERS_LIVE = true;
 export const CAREERS_PATH = "/careers";
 
 /** One link in a nav dropdown: a section of a page (page and hash), a path

@@ -60,7 +60,7 @@ function subject(lead: Lead): string {
   const parts = [lead.flow, lead.name, lead.organization]
     .filter((part): part is string => Boolean(part))
     .map(oneLine);
-  return `New lead: ${parts.join(" · ")}`;
+  return `${lead.flow === "careers" ? "Careers note" : "New lead"}: ${parts.join(" · ")}`;
 }
 
 function body(lead: Lead): string {
@@ -115,6 +115,8 @@ async function notify(lead: Lead): Promise<SinkResult> {
 }
 
 async function clarify(lead: Lead): Promise<SinkResult> {
+  // a note from /careers is not a sales lead: the inbox only
+  if (lead.flow === "careers") return "skipped";
   return upsertLead(lead);
 }
 

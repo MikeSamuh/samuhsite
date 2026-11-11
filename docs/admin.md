@@ -86,6 +86,16 @@ The site swaps the embed for its own click-to-play player.
 
 Only `published` posts with a date show. `draft` and `review` never render.
 
+**Careers.** A posting is a document under `job:<slug>`
+(`src/lib/admin/jobs.ts`): title, location or Remote, type, summary, a body
+from the same editor as posts, how to apply (an email address or a link),
+status and dates. Only `open` postings are on the site, at `/careers` and
+`/careers/<slug>`, with `JobPosting` structured data and a sitemap entry;
+`draft` and `closed` 404. With none open, `/careers` invites a note, which
+posts to `/api/lead` as flow `careers`: the notify email only, never
+Clarify. Staff access, the same exception as the rest of the admin: no
+uploads, no stored applications (6 November 2026).
+
 **Cards.** The metaphor deck on the home page: each card is a drawing
 and a name. Add a card (upload the drawing, it goes to Blob, or paste a
 path), rename, move, delete, then Save; the list is one document under

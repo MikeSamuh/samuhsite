@@ -2,9 +2,10 @@
 // deliver() sends it. Spec: docs/sprint-intakes.md, "Lead shape".
 
 /** contact, the teaser's ask, talk (book a call), start (the /start doors
- *  until the platform opens) and solutions (the email ask at the foot of
- *  /solutions) */
-export type LeadFlow = "contact" | "teaser" | "talk" | "start" | "solutions";
+ *  until the platform opens), solutions (the email ask at the foot of
+ *  /solutions) and careers (the note on /careers when no role is open:
+ *  it goes to the notify email and never to the CRM, 6 Nov 2026) */
+export type LeadFlow = "contact" | "teaser" | "talk" | "start" | "solutions" | "careers";
 
 export interface Lead {
   flow: LeadFlow;

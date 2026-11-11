@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { openJobs } from "@/lib/admin/jobs";
 import { publishedPosts } from "@/lib/insights";
 import { SITE_URL } from "@/lib/seo";
 
@@ -16,9 +17,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${SITE_URL}/teamq`, changeFrequency: "monthly", priority: 0.8 },
     { url: `${SITE_URL}/insights`, changeFrequency: "weekly", priority: 0.8, lastModified: latest },
     { url: `${SITE_URL}/contact`, changeFrequency: "yearly", priority: 0.6 },
+    { url: `${SITE_URL}/careers`, changeFrequency: "weekly", priority: 0.5 },
   ];
+  // open roles only: a closed or draft role is not on the site
+  const jobs = await openJobs();
   return [
     ...pages,
+    ...jobs.map((j) => ({ url: `${SITE_URL}/careers/${j.slug}`, lastModified: j.updatedAt, changeFrequency: "weekly" as const, priority: 0.5 })),
     ...posts.map((p) => ({
       url: `${SITE_URL}/insights/${p.slug}`,
       lastModified: p.date,

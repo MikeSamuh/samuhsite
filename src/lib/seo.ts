@@ -107,6 +107,27 @@ export function breadcrumbLd(trail: { name: string; path: string }[]) {
   };
 }
 
+/** An open role as a JobPosting. Only what the posting says: no salary,
+ *  and a place only when one was given. */
+export function jobLd(job: { slug: string; title: string; summary: string; html: string; location: string; remote: boolean; type: string; posted: string; closes: string }) {
+  const TYPE: Record<string, string> = { "Full-time": "FULL_TIME", "Part-time": "PART_TIME", Contract: "CONTRACTOR", Internship: "INTERN" };
+  return {
+    "@context": "https://schema.org",
+    "@type": "JobPosting",
+    title: job.title,
+    description: job.html || job.summary,
+    url: `${SITE_URL}/careers/${job.slug}`,
+    datePosted: job.posted || undefined,
+    validThrough: job.closes || undefined,
+    employmentType: TYPE[job.type],
+    hiringOrganization: { "@type": "Organization", "@id": `${SITE_URL}/#organization`, name: SITE_NAME, sameAs: SITE_URL },
+    ...(job.remote
+      ? { jobLocationType: "TELECOMMUTE", ...(job.location ? { applicantLocationRequirements: { "@type": "Country", name: job.location } } : {}) }
+      : job.location ? { jobLocation: { "@type": "Place", address: { "@type": "PostalAddress", addressLocality: job.location } } } : {}),
+    directApply: false,
+  };
+}
+
 /** "3:15" to PT3M15S; "1:02:10" to PT1H2M10S. */
 function isoDuration(d?: string): string | undefined {
   if (!d) return undefined;

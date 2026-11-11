@@ -1173,6 +1173,10 @@
   .L-offer-line .L-mid { grid-column: 1 / -1; grid-row: 2; }
 }
 @media (prefers-reduced-motion: reduce) { .L-offer-line, .L-offer-line .L-mid, .L-offer-name { transition: none; } }
+/* /careers: a role's facts under its summary, and the note's box */
+.careers-meta { display: block; margin-top: 8px; }
+.careers-note { display: grid; gap: 16px; max-width: 640px; }
+.careers-note .lead-field :is(input, textarea) { width: 100%; max-width: none; }
 /* a section reached by a link lands clear of the stuck nav */
 /* --nav-h is set once the nav has measured itself; a link straight to a
    section arrives before that, so the fallback is the nav's height */

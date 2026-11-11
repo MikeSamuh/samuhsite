@@ -25,6 +25,7 @@ Sapien Labs is SAMUH's research partner and the source of the research the site 
 - Solutions, who SAMUH works with, the assessments and the sprints: https://samuh.work/solutions
 - Explore TeamQ, the demonstration tool: https://samuh.work/teamq
 - Insights, video and articles including the Human Expansion episodes: https://samuh.work/insights
+- Careers, open roles: https://samuh.work/careers
 - Contact: https://samuh.work/contact
 - Sitemap: https://samuh.work/sitemap.xml
 

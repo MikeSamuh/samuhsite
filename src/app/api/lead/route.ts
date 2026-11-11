@@ -17,7 +17,7 @@ const optional = (schema: z.ZodString) =>
 
 const schema = z
   .object({
-    flow: z.enum(["contact", "teaser", "talk", "start", "solutions"]),
+    flow: z.enum(["contact", "teaser", "talk", "start", "solutions", "careers"]),
     name: optional(short),
     email: z.email().max(200),
     phone: optional(short),
@@ -44,6 +44,9 @@ const schema = z
     // back on and no name (Wilfred, 5 Nov 2026); the rest take an email alone
     if (data.flow === "talk" && !data.name) {
       ctx.addIssue({ code: "custom", path: ["name"], message: "Name is required" });
+    }
+    if (data.flow === "careers" && (!data.name || !data.message)) {
+      ctx.addIssue({ code: "custom", path: ["message"], message: "Name and a note are required" });
     }
     if (data.flow === "contact" && !data.phone) {
       ctx.addIssue({ code: "custom", path: ["phone"], message: "Phone is required" });
