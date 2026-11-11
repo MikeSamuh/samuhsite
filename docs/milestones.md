@@ -155,7 +155,7 @@ Spec: `docs/sprint-solutions.md`. The edits agreed on the call of
 - [x] Built locally 11 Nov 2026, each step on its own branch, not pushed.
       Docs and vocabulary: "Self-guided", never "DIY", stale references
 - [x] Methodology at `/methodology`, `/process` redirecting: research first,
-      the four stages, the star on the rail, the sprint path, the science
+      the four stages, the sprint path, the science
 - [x] Solutions in its new order, with section ids. The assessments on the
       org structure, two platform tiers, Executive Team Sprints, keynotes
       and workshops

@@ -352,13 +352,13 @@ const STAGE_ART: [string, PoseId | null][] = [
   [STAR, null],
 ];
 
-const STAGE_LINE = 172; // a stage takes over once its top is this far below that: the rail (76) and 96 more
+const STAGE_LINE = 96; // a stage takes over once its top is this far below the nav
 
 /** Methodology (the page id is still "process"). The four stages of the
- *  90-day sprint in one section, under a rail: one line, four stops, the
- *  star on the active one. The rail draws from the same `active` the
- *  running head reads, so there is one scroll listener, not two; it is
- *  decorative and hidden from readers, who get each stage's own heading.
+ *  90-day sprint in one section. No rail over them (Wilfred, 11 Nov
+ *  2026): the running head alone says which stage is on, from `active`,
+ *  the one scroll listener. The running head is decorative and hidden
+ *  from readers, who get each stage's own heading.
  *  On the editorial columns at desktop width, with figures on, the
  *  section's running head is the active stage's eyebrow, title and figure:
  *  it sticks in the left column and swaps in place as the bodies scroll
@@ -383,15 +383,6 @@ function Process({ figures, c = DEFAULTS.process, g = DEFAULTS.global }: { figur
               <h2 className="sec" key={`verb-${active}`}>{verb}</h2>
             </div>
             {figures ? <span className="L-stage-fig">{pose ? <StageFigure pose={pose} /> : <Image src={icon} alt="" width={240} height={240} sizes="240px" />}</span> : null}
-          </div>
-          <div className="L-rail" aria-hidden style={{ "--at": active } as React.CSSProperties}>
-            {STAGES.map(([verb, when], i) => (
-              <span className="L-rail-stop" key={verb} data-on={i === active ? "" : undefined}>
-                <span className="L-cap">{when}</span>
-                <span className="L-rail-verb">{verb}</span>
-              </span>
-            ))}
-            <span className="L-rail-star"><Image src={STAR} alt="" width={48} height={48} sizes="24px" /></span>
           </div>
           <ol className="L-stage-list">
             {STAGES.map(([verb, when, body, icon, pose], i) => (

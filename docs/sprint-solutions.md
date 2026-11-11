@@ -29,7 +29,7 @@ Gemini misheard some names. Read them as: "lead Q" and "lead queue" are
 |---|---|
 | Process becomes Methodology, research and science up front | `/process` becomes `/methodology`, 301 from the old path. Nav, footer, sitemap, `llms.txt`, schema path |
 | The 90-day journey is Discover (pre-work), Align, Co-create, Ritualize | Four stages replace Assess, Discover, Align, Co-create. The TeamQ baseline is part of Discover (three-pager, page 2) |
-| A star moves across the steps | A four-stop rail with the Samuh star on the active step |
+| A star moves across the steps | Built as a four-stop rail, then taken off (Wilfred, 11 Nov 2026). The stages scroll under the running head with no rail |
 | Solutions stays one page, in sections, reached from a nav dropdown | Section ids. The dropdown is four items: Who we work with, Assessments, Sprints, Workshops |
 | Solutions opens with who Samuh works with | "Who we work with": leaders, teams, organizations, the three levels on Rahul's whiteboard |
 | The assessments go hand in hand with those three | Straight under it, the assessment for each level in the same order: LeadQ, TeamQ, OrgQ. The org structure draws them. Figure on the left, copy on the right |
@@ -89,9 +89,8 @@ Wilfred, 10 Nov: all changes use the same design format. That means:
 
 - Under the stages: two ritual keepers from the team are coached by Samuh,
   a call every two weeks, a midpoint check-in
-- **The rail.** Pre-work, Day 1, Day 90 along one line, four stops, the
-  star (`public/samuh-star.png`) on the active stop, travelling as the
-  stages scroll. Reduced motion: it jumps. The traced figures stay for
+- **No rail** (Wilfred, 11 Nov 2026). The four-stop rail with the
+  travelling star was built and removed. The traced figures stay for
   Discover, Align and Co-create. Ritualize has no figure: the star at rest
   stands in, marked `TODO(asset)`. The Assess stand-in goes with Assess
 - **The path** (three-pager): Sprint 1, ritualize one practice. Sprint 2,
@@ -207,6 +206,9 @@ is Talk to us. The Guided price `TODO(content)` stays a TODO and stays off
 the page.
 
 ## 3. Nav
+
+**Changed on review, 11 Nov 2026 (Wilfred).** The order across the top is
+About, Methodology, Solutions, Insights. The dropdowns are unchanged.
 
 | Item | Dropdown |
 |---|---|

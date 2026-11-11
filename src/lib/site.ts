@@ -35,8 +35,8 @@ export const SITE: Site = {
   // the tool sits straight under the circles with nothing explained
   // around it, and the thesis band goes
   layout: { ...BASE, sections: { ...BASE.sections, circles: "circles-morph", thesis: "thesis-band", cards: "cards-one" } },
-  // the order of the call of 6 Nov 2026; the lists under each are NAV_MENUS
-  nav: { links: ["solutions", "process", "insights", "about"], brand: "icons" },
+  // About, Methodology, Solutions, Insights (Wilfred, 11 Nov 2026); the lists under each are NAV_MENUS
+  nav: { links: ["about", "process", "solutions", "insights"], brand: "icons" },
   // the metaphor cards came off the home on 6 Nov 2026: they are a landing
   // page of their own now, /l/metaphor-cards, listed in src/lib/landing.ts
   // the TeamQ tool section ("Find your team's hidden performance tax") is
