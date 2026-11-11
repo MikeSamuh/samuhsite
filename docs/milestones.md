@@ -8,7 +8,8 @@ The term is three months from 22 Sep 2026 and the site is live at the end of
 it. That is the only date, and it lives in the proposal.
 
 Runbooks: `docs/sprint-intakes-runbook.md` for M1,
-`docs/milestones-runbook.md` for the rest.
+`docs/milestones-runbook.md` for the rest, and
+`docs/sprint-solutions-runbook.md` for the Solutions sprint.
 
 ---
 
@@ -146,6 +147,37 @@ scope.
 
 ---
 
+## Sprint. Solutions, Methodology, Careers
+
+Spec: `docs/sprint-solutions.md`. The edits agreed on the call of
+6 November 2026.
+
+- [ ] Docs and vocabulary: "Self-guided", never "DIY", stale references
+- [ ] Methodology at `/methodology`, `/process` redirecting: research first,
+      the four stages, the star on the rail, the sprint path, the science
+- [ ] Solutions in its new order, with section ids. The assessments on the
+      org structure, two platform tiers, Executive Team Sprints, keynotes
+      and workshops
+- [ ] Who we work with: leaders, teams, organizations, each leading to its
+      assessment
+- [ ] Nav dropdowns and the footer
+- [ ] The way in: the email box on the home, the lead posted first, then
+      the hand-off to the platform
+- [ ] Home foot, Contact sentences and Consultant, Jake's bio on About
+- [ ] Careers: `/careers`, `/careers/<slug>`, the Careers tab in the admin
+- [ ] Science graphs carousel. Waits for Jake's list and numbers
+- [ ] Review pass
+
+**Done when:** every item Wilfred owns in the call notes is on the preview:
+Methodology at its new path with the four stages and the star, Solutions in
+its new order, Who we work with leading straight into the assessments on
+the org structure, the nav dropdowns, the email box on the home handing off
+after posting the lead, Jake's bio in, `/careers` live with a posting made
+from the admin, no "DIY" anywhere, and `npm run build` passes. The graphs
+follow when Jake sends them.
+
+---
+
 ## Client owes
 
 | Item | Owner | Blocks |
@@ -165,6 +197,17 @@ scope.
 | GA4 property and LinkedIn Insight Tag ID | Client | M4 |
 | Resend DNS record | Mike | M5 |
 | Registrar and DNS access for cutover | Mike | M5 |
+| Which Sapien Labs graphs, and their numbers | Jake | Sprint, science graphs |
+| Recording and transcript of the 6 Nov call | Jake | Nothing. Settles the order of who and assessments on Solutions |
+| Platform entry point: URL, method, parameters | Mike | Sprint, the hand-off |
+| Methodology copy and the term for "systemic" | Calina | Sprint, Methodology sign-off |
+| End of the team leaders line | Rahul | Sprint, Who we work with copy |
+| What Samuh offers coaches and consultants | Jake | Sprint, Who we work with copy |
+| Length of the Executive Team Sprint pre-work, in writing | Jake | Sprint, one line in Sprints |
+| Clearance to publish the three cases, and client logos | Rahul | Sprint, proof on Solutions |
+| What LeadQ is, in writing: question count, what it covers | Jake | Sprint, one line on LeadQ |
+| Keynotes and workshops copy | Jake | Sprint, section 05 on Solutions |
+| Signatures and social links moved to `.org` | Everyone | Nothing here |
 
 ## Open
 

@@ -595,3 +595,26 @@ close came off the page; the way in is `/contact#assess`. The metaphor
 cards came off the home the same day to a landing page of their own,
 `/l/metaphor-cards`, listed in the admin's new Landing pages tab. Order:
 hero, meaning, circles, testimonials, case study, FAQ. — Wilfred
+
+**2026-11-06 — The Solutions call: Methodology, the four stages, Solutions in sections.**
+Jake, Rahul and Wilfred. The spec is `docs/sprint-solutions.md`, with the
+source of every line and number. What was decided:
+Process becomes Methodology at `/methodology`, research and science up
+front, `/process` redirecting. The 90-day journey is Discover (pre-work),
+Align, Co-create, Ritualize, the three-pager's words, with the TeamQ
+baseline inside Discover, and a star that moves across the steps.
+Solutions stays one page, in sections, reached from a nav dropdown: who
+Samuh works with (leaders, teams, organizations, Rahul's whiteboard), the
+assessment for each in the same order (LeadQ, TeamQ, OrgQ) drawn on the
+org structure, the sprints, then keynotes and workshops. "Self-guided",
+never "DIY". Executive Team Sprints are the main offering and a sales
+conversation: no checkout, no public price. Coaches and consultants are
+an audience. A careers page the team can post to from the admin. The
+Sapien Labs graphs, redrawn in the brand, on Methodology, once Jake sends
+which ones. The home ask takes an email, then hands off to the platform.
+Every change is built from the sections, classes and tokens the site
+already has (Wilfred, 10 Nov).
+Not decided: the hero line. "Great team environments sustain high
+performance." stays as the placeholder. Open, with defaults in the spec:
+the nav label (Methodology), Careers under About and not in the top nav,
+and the site's domain, which this sprint does not change. — Client and Wilfred

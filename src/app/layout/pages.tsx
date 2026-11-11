@@ -110,7 +110,7 @@ function Solutions({ c = DEFAULTS.solutions, g = DEFAULTS.global, s = DEFAULTS.s
     const email = String(data.get("email") ?? "").trim();
     const noName = name ? undefined : "Enter your name.";
     const found = !email ? "Enter your email address." : !EMAIL_SHAPE.test(email) ? "Enter an email address like name@company.com." : undefined;
-    const unpicked = tier ? undefined : "Pick DIY, Supported, Guided or Other first.";
+    const unpicked = tier ? undefined : "Pick Self-guided, Supported, Guided or Other first.";
     setNameError(noName);
     setEmailError(found);
     setPickError(unpicked);

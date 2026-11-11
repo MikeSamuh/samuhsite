@@ -95,6 +95,10 @@ nothing about a visitor is stored. The one thing a visitor can leave is a
 line beside a metaphor card, kept anonymous: the card, the words and the
 time, nothing else (23 October 2026). See `docs/admin.md`.
 
+Careers postings are part of the same exception (6 November 2026): staff
+post roles from the admin. Applying is an email address or a link on the
+posting. No uploads, no stored applications.
+
 The admin's sign-in is switched off in code while the site is in
 development (`ADMIN_OPEN`, 23 October 2026), because the sign-in email
 only reaches Mike. Switch it back on before launch.
@@ -158,6 +162,8 @@ From the signed scope. These are contractual, not aspirational.
 | `docs/crm-integration.md` | You are touching any form, the assessment result, or lead capture |
 | `docs/sprint-intakes.md` | You are building /contact, /talk, the TeamQ teaser, or /api/lead |
 | `docs/sprint-intakes-runbook.md` | Wilfred is driving the sprint step by step. Follow the step he pasted, not the whole spec at once |
+| `docs/sprint-solutions.md` | You are building Methodology, Solutions, the nav dropdowns, the way in, or Careers (the 6 Nov 2026 call) |
+| `docs/sprint-solutions-runbook.md` | Wilfred is driving that sprint step by step. Follow the step he pasted |
 | `docs/insights-inventory.md` | You are working on Insights or the content migration |
 | `docs/insights-pipeline.md` | You are turning a transcript into an Insights post |
 | `docs/admin.md` | You are touching `/hq-7h3k`, the content layer, or how posts are stored |

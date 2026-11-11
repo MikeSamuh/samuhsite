@@ -10,7 +10,7 @@ The word is Sanskrit: a group of people who come together for a purpose larger t
 
 - Works with teams, not only individuals or the whole organization. The team is where people experience their work life, and where capacity is won or lost.
 - Reads the team environment with TeamQ, SAMUH's instrument built on Sapien Labs team environment factors. TeamQ is done with a real team; the tool on samuh.work/teamq is a demonstration of how it thinks, not an assessment.
-- Three ways to engage: Self-guided (the team works through the material on its own), Supported (adds periodic calls with SAMUH), Guided (SAMUH delivers in person). The team process is the method in all three: see the team clearly, choose the practice together, ritualize it in the flow of work.
+- Measures first: LeadQ for a leader, TeamQ for a team, OrgQ across an organization. Then the 90-day sprint. On the platform it runs Self-guided (the team works through it on its own) or Supported (Self-guided plus calls with SAMUH). Executive Team Sprints are delivered by SAMUH with the leadership team, and start with a conversation.
 - Audience: leadership teams in multi-team organizations, team leads, store managers, and founders of fast-growing companies.
 
 ## Sapien Labs
@@ -22,11 +22,10 @@ Sapien Labs is SAMUH's research partner and the source of the research the site 
 - Home: https://samuh.work/
 - About, the team and the research: https://samuh.work/about
 - The team process: https://samuh.work/process
-- Solutions, three ways to engage: https://samuh.work/solutions
+- Solutions, who SAMUH works with, the assessments and the sprints: https://samuh.work/solutions
 - Explore TeamQ, the demonstration tool: https://samuh.work/teamq
 - Insights, video and articles including the Human Expansion episodes: https://samuh.work/insights
 - Contact: https://samuh.work/contact
-- Book a call: https://samuh.work/talk
 - Sitemap: https://samuh.work/sitemap.xml
 
 ## Contact

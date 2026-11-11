@@ -13,10 +13,11 @@ shape of the engagement and the functions the site has to perform.
 | Route | Contains |
 |---|---|
 | Home | The argument, then conversion |
-| Solutions | Self-guided, Supported, Guided as sections on one page, plus testimonials |
-| Process | The three initial phases of the team process, expanded. Content from Calina |
+| Solutions | One page in sections: who we work with, the assessments (LeadQ, TeamQ, OrgQ), the sprints (Self-guided and Supported on the platform, then Executive Team Sprints), keynotes and workshops, talk to us, testimonials. `docs/sprint-solutions.md` |
+| Methodology (was Process, 6 Nov 2026) | `/methodology`, `/process` redirects. Research first, then the 90-day sprint in four stages: Discover, Align, Co-create, Ritualize. The science and the Sapien Labs graphs. Content from Calina |
 | Insights | Foundations, case studies, articles and video with transcripts, Sapien Labs Work Culture Report |
 | About | About SAMUH, team profiles, Sapien Labs. Channel partners and coaching teams TBA |
+| Careers | `/careers` and `/careers/<slug>`. Open roles posted from the admin, or an invitation to write when there are none. Under About in the nav, and in the footer |
 | Contact | Form plus calendar booking |
 
 CTA paths: Get Started (intake assessment), results page on its own shareable
@@ -79,6 +80,10 @@ the logic. Design proceeds once the question set is fixed.
 | Self-guided | Fully automated. The team works through the material on its own | Price to confirm, or talk to us |
 | Supported | Self-guided plus periodic support calls | Talk to us |
 | Guided | In person. The SAMUH team delivers hands on | Talk to us |
+
+Since the call of 6 November 2026 the page says Executive Team Sprints for
+Guided, and it is the main offering: a sales conversation, no checkout and
+no public price. "Self-guided", never "DIY". `docs/sprint-solutions.md`.
 
 One page, same structure each: what it is, who it is for, what you get. A
 comparison table underneath.
