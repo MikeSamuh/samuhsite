@@ -21,8 +21,8 @@ function validate(role: string, need: string, email: string, phone: string): Err
   if (!need) errors.need = "Choose what you are looking for.";
   if (!email) errors.email = "Enter your email address.";
   else if (!EMAIL_SHAPE.test(email)) errors.email = "Enter an email address like name@company.com.";
-  if (!phone) errors.phone = "Enter a phone number we can call back.";
-  else if (!PHONE_SHAPE.test(phone)) errors.phone = "Enter a phone number with the country code.";
+  // the phone is optional (Wilfred, 11 Nov 2026): checked only when given
+  if (phone && !PHONE_SHAPE.test(phone)) errors.phone = "Enter a phone number with the country code.";
   return errors;
 }
 
@@ -54,13 +54,13 @@ function Pick({ name, label, choose, options, error, errorId, after }: { name: s
 /** A blank in the sentence: a text input in the display type, as wide as
  *  what is typed in it (a hidden copy of the text sets the width), the
  *  placeholder showing while it is empty. */
-function Blank({ name, label, hint, error, errorId, after, ...rest }: { name: string; label: string; hint: string; error?: string; errorId: string; /** punctuation after the blank, kept on its line */ after?: string } & Pick<React.InputHTMLAttributes<HTMLInputElement>, "type" | "autoComplete" | "inputMode">) {
+function Blank({ name, label, hint, error, errorId, after, optional, ...rest }: { name: string; label: string; hint: string; error?: string; errorId: string; /** punctuation after the blank, kept on its line */ after?: string; /** may be left empty */ optional?: boolean } & Pick<React.InputHTMLAttributes<HTMLInputElement>, "type" | "autoComplete" | "inputMode">) {
   const [value, setValue] = useState("");
   return (
     <span className="contact-blank">
       <span className="contact-blank-box">
         <span className="contact-blank-size" aria-hidden="true">{value || hint}</span>
-        <input {...rest} name={name} aria-label={label} placeholder={hint} value={value} onChange={(event) => setValue(event.target.value)} required aria-invalid={error ? true : undefined} aria-describedby={error ? errorId : undefined} />
+        <input {...rest} name={name} aria-label={label} placeholder={hint} value={value} onChange={(event) => setValue(event.target.value)} required={!optional} aria-invalid={error ? true : undefined} aria-describedby={error ? errorId : undefined} />
       </span>
       {after ? <span className="contact-after" aria-hidden="true">{after}</span> : null}
     </span>
@@ -69,7 +69,7 @@ function Blank({ name, label, hint, error, errorId, after, ...rest }: { name: st
 
 /** The contact form (Wilfred, 5 Nov 2026): who you are and what you are
  *  looking for as two dropdowns from Mike's Persona Journey sheet, email
- *  and phone required, the message optional. Posts flow "contact" to
+ *  required, the phone and the message optional. Posts flow "contact" to
  *  /api/lead and swaps to a thanks block in place. The words and the two
  *  lists are the admin's, under Contact.
  *
@@ -121,7 +121,7 @@ export function ContactForm({ c }: { c: ContactContent["form"] }) {
       role,
       need,
       email,
-      phone,
+      phone: phone || undefined,
       message: text("message") || undefined,
       company_website: text("company_website") || undefined,
       turnstileToken: token,
@@ -143,8 +143,13 @@ export function ContactForm({ c }: { c: ContactContent["form"] }) {
         <p className="display L-page-title contact-sentence">
           {c.myEmail}{" "}
           <Blank name="email" label={c.email} hint={c.emailHint} type="email" autoComplete="email" inputMode="email" error={errors.email} errorId={errorId("email")} after="," />
-          {" "}{c.myPhone}{" "}
-          <Blank name="phone" label={c.phone} hint={c.phoneHint} type="tel" autoComplete="tel" inputMode="tel" error={errors.phone} errorId={errorId("phone")} after="." />
+          {" "}
+          {/* the phone's words and its blank wrap as one, never the blank alone */}
+          <span className="contact-clause">
+            {c.myPhone}{" "}
+            <Blank name="phone" label={c.phone} hint={c.phoneHint} type="tel" autoComplete="tel" inputMode="tel" optional error={errors.phone} errorId={errorId("phone")} after="." />
+            {" "}<span className="contact-optional">(optional)</span>
+          </span>
         </p>
       </div>
       {(["role", "need", "email", "phone"] as const).map((field) =>

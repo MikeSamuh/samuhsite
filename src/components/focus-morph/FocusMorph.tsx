@@ -439,9 +439,9 @@ export function FocusMorph({ words = DEFAULTS.home.focus, cta }: { /** the heads
             </dl>
           ))}
           {/* the fourth beat's left side: the meter from the TeamQ section
-              stepping through the three windows, and under it the readout
-              for the step: the window, the days, the money. The three
-              readouts share one cell and take turns */}
+              stepping through the three windows. The readout for the
+              step (the window, the days, the money) is under the picture,
+              across the section; the three share one cell and take turns */}
           <div className="L-fm-legend L-fm-meter L-fm-in" aria-hidden={!people || undefined}>
             <span className="L-cap">{words.howLabel}</span>
             <svg className="capacity-gauge L-fm-gauge" viewBox="0 0 200 116" role="img" aria-label={`A meter at ${meterBand.name}, stepping from ${mhqBand(SCORES[0]).name} to ${mhqBand(SCORES[SCORES.length - 1]).name}`}>
@@ -459,29 +459,6 @@ export function FocusMorph({ words = DEFAULTS.home.focus, cta }: { /** the heads
               <line className="gauge-needle L-fm-needle" x1={GAUGE.cx - GAUGE.r + 18} y1={GAUGE.cy} x2={GAUGE.cx - GAUGE.r - 14} y2={GAUGE.cy} style={{ transform: `rotate(${meterTurn.toFixed(2)}deg)` }} />
               <text className="L-fm-gauge-word" x={GAUGE.cx} y={GAUGE.cy - 4}>{meterBand.name}</text>
             </svg>
-            <div className="L-fm-readouts" aria-live="polite">
-              {TAX_STEPS.map((t, j) => {
-                const last = j === TAX_STEPS.length - 1;
-                const w = words.steps?.[j];
-                return (
-                  <div className="L-fm-readout" key={t.row} style={{ "--r": readouts[j].toFixed(3) } as React.CSSProperties} aria-hidden={stepNow !== j + 1 || undefined}>
-                    <span className="L-cap">{w?.label} · MHQ {t.window}</span>
-                    {last ? (
-                      <>
-                        <p className="L-fm-readout-big">{w?.line}</p>
-                        <p className="L-fm-readout-small">{fmtDays(t.days)} days a month. {money(t.perPerson)} a year.</p>
-                      </>
-                    ) : (
-                      <>
-                        <p className="L-fm-readout-big"><strong>{fmtDays(t.days)} days</strong> {words.daysLine}</p>
-                        <p className="L-fm-readout-big"><strong>{money(t.perPerson)}</strong> {words.moneyLine}</p>
-                        <p className="L-fm-readout-small">{w?.line}</p>
-                      </>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
             <p className="L-fm-meter-line">{words.source}</p>
           </div>
         </div>
@@ -543,6 +520,31 @@ export function FocusMorph({ words = DEFAULTS.home.focus, cta }: { /** the heads
             )}
           </div>
         ) : null}
+      </div>
+      {/* the step's readout, out of the side column and across the whole
+          section under the picture, larger (Wilfred, 11 Nov 2026) */}
+      <div className="L-fm-readouts L-fm-in" aria-live="polite" aria-hidden={!people || undefined}>
+        {TAX_STEPS.map((t, j) => {
+          const last = j === TAX_STEPS.length - 1;
+          const w = words.steps?.[j];
+          return (
+            <div className="L-fm-readout" key={t.row} style={{ "--r": readouts[j].toFixed(3) } as React.CSSProperties} aria-hidden={stepNow !== j + 1 || undefined}>
+              <span className="L-cap">{w?.label} · MHQ {t.window}</span>
+              {last ? (
+                <>
+                  <p className="L-fm-readout-big L-fm-readout-wide">{w?.line}</p>
+                  <p className="L-fm-readout-small">{fmtDays(t.days)} days a month. {money(t.perPerson)} a year.</p>
+                </>
+              ) : (
+                <>
+                  <p className="L-fm-readout-big"><strong>{fmtDays(t.days)} days</strong> {words.daysLine}</p>
+                  <p className="L-fm-readout-big"><strong>{money(t.perPerson)}</strong> {words.moneyLine}</p>
+                  <p className="L-fm-readout-small">{w?.line}</p>
+                </>
+              )}
+            </div>
+          );
+        })}
       </div>
     </>
   );

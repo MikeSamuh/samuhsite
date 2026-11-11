@@ -106,7 +106,7 @@ export const SCHEMA: PageSchema[] = [
       { key: "exec", label: "Executive Team Sprints", note: "The main offering, first on the page. A conversation: no price on the page", fields: [t("tag", "Tag"), t("name", "Name"), ta("what", "What it is"), ta("who", "Who it is for"), ta("get", "What you get")] },
       { key: "stages", label: "How a sprint runs", note: "The four stages, under Executive Team Sprints", fields: [list("items", "The stages", "stage", [t("verb", "Verb"), t("when", "When", "Pre-work, Day 1, Day 90. Shown above the verb"), ta("body", "Body")], "Four stages, in order: Discover, Align, Co-create, Ritualize. Keep four"), ta("keepers", "Line under the stages", "The ritual keepers")] },
       { key: "cases", label: "The three cases", note: "Hidden until Rahul clears them. Only figures SAMUH has supplied in writing", fields: [t("title", "Title"), ta("lede", "Lede"), list("items", "Cases", "case", [t("who", "Team"), t("span", "Length"), t("n1", "First figure"), t("l1", "Its label"), t("n2", "Second figure"), t("l2", "Its label"), ta("quote", "Quote or line"), t("by", "Who said it")])] },
-      { key: "workshops", label: "Keynotes and workshops", fields: [t("kicker", "Eyebrow"), t("title", "Title"), ta("body", "Body")] },
+      { key: "workshops", label: "Workshops and Keynotes", fields: [t("kicker", "Eyebrow"), t("title", "Title"), ta("body", "Body")] },
     ],
   },
   {

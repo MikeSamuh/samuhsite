@@ -40,16 +40,13 @@ const schema = z
     turnstileToken: z.string().max(4096).optional(),
   })
   .superRefine((data, ctx) => {
-    // booking a call takes a name; the contact form takes a phone to call
-    // back on and no name (Wilfred, 5 Nov 2026); the rest take an email alone
+    // booking a call takes a name; the contact form takes no name, and its
+    // phone is optional (Wilfred, 11 Nov 2026); the rest take an email alone
     if (data.flow === "talk" && !data.name) {
       ctx.addIssue({ code: "custom", path: ["name"], message: "Name is required" });
     }
     if (data.flow === "careers" && (!data.name || !data.message)) {
       ctx.addIssue({ code: "custom", path: ["message"], message: "Name and a note are required" });
-    }
-    if (data.flow === "contact" && !data.phone) {
-      ctx.addIssue({ code: "custom", path: ["phone"], message: "Phone is required" });
     }
   });
 

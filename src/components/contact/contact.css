@@ -132,9 +132,14 @@
   font-style: var(--display-style);
   letter-spacing: var(--display-tracking);
   font-size: inherit;
-  line-height: 1.25;
+  /* room under each line for the underline and the focus tint */
+  line-height: 1.5;
   color: var(--text);
 }
+
+/* a clause that wraps whole: its words stay with its blank */
+.contact-clause { display: inline-block; max-width: 100%; }
+.contact-optional { font-family: var(--font-body); font-size: 15px; font-weight: 400; letter-spacing: 0; color: var(--muted); white-space: nowrap; }
 
 /* a word that is a dropdown or a blank: the text underlined in the accent,
    any punctuation after it kept on the same line, outside the underline.
@@ -157,7 +162,7 @@
   min-width: 0;
   padding: 0 0.12em 0.04em;
   border-bottom: var(--rule-fat) solid var(--accent);
-  transition: border-color var(--dur) var(--ease);
+  transition: border-color var(--dur) var(--ease), background-color var(--dur) var(--ease);
 }
 
 .contact-pick-text { text-wrap: pretty; }
@@ -186,10 +191,11 @@
 
 .contact-pick:hover { color: var(--accent); }
 
+/* focus: the underline goes to the text colour over an accent tint, no
+   box round the word (Wilfred, 11 Nov 2026) */
 .contact-pick:focus-within .contact-pick-text, .contact-blank:focus-within .contact-blank-box {
-  border-radius: 4px;
-  outline: var(--rule-fat) solid var(--accent);
-  outline-offset: 6px;
+  border-bottom-color: var(--text);
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
 }
 
 .contact-pick:has(select[aria-invalid="true"]), .contact-blank:has(input[aria-invalid="true"]) { color: var(--accent); }

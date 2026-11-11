@@ -6,9 +6,9 @@ import Image from "next/image";
 import Link from "next/link";
 import type { PageId } from "@/lib/layout";
 import { ROUTES, SHOW_CASES } from "@/lib/site";
-import { useActiveItem } from "@/components/focus-morph/Who";
 import "@/components/contact/contact.css";
 import { StartEmail } from "@/components/start/StartEmail";
+import { useActiveItem } from "@/components/focus-morph/Who";
 import { ContactForm } from "@/components/contact/ContactForm";
 import { ReportCard } from "@/app/layout/sections";
 import { ProcessFigure, StageFigure } from "@/components/process-figure/ProcessFigure";
@@ -58,7 +58,7 @@ function PageHead({ n, kicker, title, lede }: { n: string; kicker: string; title
   );
 }
 
-function Sec({ n, kicker, title, children, id, cls }: { n: string; kicker: string; title: string; children: React.ReactNode; id?: string; cls?: string }) {
+function Sec({ n, kicker, title, children, id, cls, extra }: { n: string; kicker: string; title: string; children: React.ReactNode; id?: string; cls?: string; /** under the title, in the head */ extra?: React.ReactNode }) {
   return (
     <section className={`L-sec L-sec-h${cls ? ` ${cls}` : ""}`} id={id} data-n={n}>
       <div className="L-wrap">
@@ -68,6 +68,7 @@ function Sec({ n, kicker, title, children, id, cls }: { n: string; kicker: strin
             <p className="eyebrow L-eyebrow">{kicker}</p>
             <h2 className="sec">{title}</h2>
           </div>
+          {extra}
         </div>
         {children}
       </div>
@@ -91,55 +92,69 @@ const STAGE_ART: [string, PoseId | null][] = [
 
 const STAGE_LINE = 96; // a stage takes over once its top is this far below the nav
 
-/** How a sprint runs: the four stages of the 90-day sprint in one section,
- *  on Solutions under the sprints since the sitemap of 11 Nov 2026 (it was
- *  Methodology's section 02). No rail over them (Wilfred, 11 Nov 2026):
- *  the running head alone says which stage is on, from `active`, the one
- *  scroll listener. The running head is decorative and hidden from
- *  readers, who get each stage's own heading.
- *  On the editorial columns at desktop width, with figures on, the
- *  section's running head is the active stage's eyebrow, title and figure:
- *  it sticks in the left column and swaps in place as the bodies scroll
- *  past on the right. Everywhere else the running head is off and the
- *  stages stack, each with its head and its own figure. */
-function Stages({ figures, c }: { figures?: boolean; c: SolutionsContent["stages"] }) {
-  const ref = useRef<HTMLElement>(null);
+/** The stage the reader is on, and whether the stages have come up the
+ *  page yet: the figure under the section's title waits for Pre-work. */
+function useStages(ref: React.RefObject<HTMLElement | null>) {
   const active = useActiveItem(ref, ".L-stage", STAGE_LINE);
-  const STAGES: [string, string, string, string, PoseId | null][] = c.items.slice(0, STAGE_ART.length).map((st, i) => [st.verb, st.when, st.body, STAGE_ART[i][0], STAGE_ART[i][1]]);
+  const [started, setStarted] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const tick = () => setStarted(el.getBoundingClientRect().top <= window.innerHeight * 0.7);
+    tick();
+    window.addEventListener("scroll", tick, { passive: true });
+    window.addEventListener("resize", tick);
+    return () => { window.removeEventListener("scroll", tick); window.removeEventListener("resize", tick); };
+  }, [ref]);
+  return { active, started };
+}
 
-  const [verb, when, , icon, pose] = STAGES[Math.min(active, STAGES.length - 1)] ?? ["", "", "", STAR, null];
+/** The four stages of an Executive Team Sprint, in the body of its section
+ *  (Wilfred, 11 Nov 2026): the section keeps its own head, The main
+ *  offering. Pre-work is the one stage with a line over its verb. On the
+ *  editorial columns at desktop width the stage's figure is under the
+ *  section's title (StageHeadFigure) and swaps as the stages scroll past;
+ *  narrower, each stage carries its own. `how` is still the nav's anchor. */
+function Stages({ figures, c, lead, listRef }: { figures?: boolean; c: SolutionsContent["stages"]; /** what the sprint is, over the stages */ lead?: string; listRef: React.RefObject<HTMLDivElement | null> }) {
   return (
-    <section className="L-sec L-sec-h L-stages" id="how" data-n="02" ref={ref} data-slot={figures ? "" : undefined}>
-      <div className="L-wrap">
-        <div className="L-head L-stages-head" aria-hidden>
-          <span className="L-n">02</span>
-          <div>
-            <p className="eyebrow L-eyebrow" key={`when-${active}`}>{when}</p>
-            <h2 className="sec" key={`verb-${active}`}>{verb}</h2>
-          </div>
-          {figures ? <span className="L-stage-fig">{pose ? <StageFigure pose={pose} /> : <Image src={icon} alt="" width={240} height={240} sizes="240px" />}</span> : null}
-        </div>
+    <div className="L-exec-stages L-assess-anchor" id="how">
+      {lead ? <p className="L-mid L-stages-lead">{lead}</p> : null}
+      <div ref={listRef}>
         <ol className="L-stage-list">
-          {STAGES.map(([verb, when, body, icon, pose], i) => (
-            <li key={verb} className="L-stage" data-on={i === active ? "" : undefined}>
-              <p className="eyebrow L-eyebrow L-stage-line">{when}</p>
-              <h2 className="sec L-stage-verb">{verb}</h2>
-              <div className="L-stage-copy">
-                <p className="L-mid">{body}</p>
-              </div>
-              <span className="L-stage-art" aria-hidden>
-                {figures && pose ? (
-                  <ProcessFigure pose={pose} from={i ? STAGES[i - 1][4] ?? undefined : undefined} />
-                ) : (
-                  <Image src={icon} alt="" width={336} height={336} sizes="320px" />
-                )}
-              </span>
-            </li>
-          ))}
+          {c.items.slice(0, STAGE_ART.length).map((st, i) => {
+            const [icon, pose] = STAGE_ART[i];
+            return (
+              <li key={st.verb} className="L-stage">
+                {st.when ? <p className="eyebrow L-eyebrow L-stage-line">{st.when}</p> : null}
+                <h3 className="sec L-stage-verb">{st.verb}</h3>
+                <div className="L-stage-copy">
+                  <p className="L-mid">{st.body}</p>
+                </div>
+                <span className="L-stage-art" aria-hidden>
+                  {figures && pose ? (
+                    <ProcessFigure pose={pose} from={i ? STAGE_ART[i - 1][1] ?? undefined : undefined} />
+                  ) : (
+                    <Image src={icon} alt="" width={336} height={336} sizes="240px" />
+                  )}
+                </span>
+              </li>
+            );
+          })}
         </ol>
-        <p className="L-mid L-stages-keepers">{c.keepers}</p>
       </div>
-    </section>
+      <p className="L-mid L-stages-keepers">{c.keepers}</p>
+    </div>
+  );
+}
+
+/** The active stage's figure, under the section's title: unseen until the
+ *  stages come up, then one figure that morphs from stage to stage. */
+function StageHeadFigure({ figures, active, started }: { figures?: boolean; active: number; started: boolean }) {
+  const [icon, pose] = STAGE_ART[Math.min(active, STAGE_ART.length - 1)];
+  return (
+    <span className="L-stage-fig" data-on={started ? "" : undefined} aria-hidden>
+      {figures && pose ? <StageFigure pose={pose} /> : <Image src={icon} alt="" width={240} height={240} sizes="240px" />}
+    </span>
   );
 }
 
@@ -156,6 +171,8 @@ function Solutions({ figures, c = DEFAULTS.solutions, s = DEFAULTS.start }: { fi
   // the email box in an assessment's row: LeadQ or TeamQ, opened by the row's button (3 Nov 2026)
   const [box, setBox] = useState<"leadq" | "teamq" | null>(null);
   const boxRef = useRef<HTMLDivElement>(null);
+  const stagesRef = useRef<HTMLDivElement>(null);
+  const stage = useStages(stagesRef);
   useEffect(() => {
     if (box) boxRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
   }, [box]);
@@ -165,14 +182,14 @@ function Solutions({ figures, c = DEFAULTS.solutions, s = DEFAULTS.start }: { fi
       {/* the main offering leads (Wilfred, 11 Nov 2026), set as the stages
           under it are: the head beside, the words in the column. A sales
           conversation: no checkout, no price, and no button, the nav has it */}
-      <Sec n="02" kicker={c.exec.tag} title={c.exec.name} id="sprints">
+      <Sec n="02" kicker={c.exec.tag} title={c.exec.name} id="sprints" extra={<StageHeadFigure figures={figures} active={stage.active} started={stage.started} />}>
         <div className="L-exec-copy" id="executive-sprints">
-          <p className="L-mid">{c.exec.what}</p>
           <dl className="L-exec-meta">
-            <div><dt className="L-cap">{c.tiers.rowWho}</dt><dd>{c.exec.who}</dd></div>
-            <div><dt className="L-cap">{c.tiers.rowGet}</dt><dd>{c.exec.get}</dd></div>
+            <div><dt>{c.tiers.rowWho}</dt><dd>{c.exec.who}</dd></div>
+            <div><dt>{c.tiers.rowGet}</dt><dd>{c.exec.get}</dd></div>
           </dl>
         </div>
+        <Stages figures={figures} c={c.stages} lead={c.exec.what} listRef={stagesRef} />
         {SHOW_CASES ? (
           <div className="L-cases">
             <p className="L-big">{c.cases.title}</p>
@@ -193,9 +210,7 @@ function Solutions({ figures, c = DEFAULTS.solutions, s = DEFAULTS.start }: { fi
           </div>
         ) : null}
       </Sec>
-      <Stages figures={figures} c={c.stages} />
       <Sec n="02" kicker={c.tiers.kicker} title={c.tiers.title} cls="L-sec-full" id="platform">
-        <p className="L-cap L-sub-h">{c.tiers.platform}</p>
         <ul className="L-assess L-tiers">
           {TIERS.map((t, i) => (
             <li className="card L-assess-card" key={t.name}>

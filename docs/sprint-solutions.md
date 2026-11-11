@@ -90,9 +90,9 @@ Wilfred, 10 Nov: all changes use the same design format. That means:
 | Stage | When | Copy |
 |---|---|---|
 | Discover | Pre-work | TeamQ and interviews with the team members. TeamQ is repeated before day 90 to measure what changed |
-| Align | Day 1 | Opening workshop. The team aligns on its goals and chooses a high-performance practice |
-| Co-create | In between | The practice is co-created within the rhythm of the team's work and iterated over a few weeks |
-| Ritualize | Day 90 | Closing workshop. The practice is ritualized and the team sees the impact in the second TeamQ result |
+| Align | (none) | The team aligns on its goals and chooses a high-performance practice |
+| Co-create | (none) | The practice is co-created within the rhythm of the team's work and iterated over a few weeks |
+| Ritualize | (none) | The practice is ritualized and the team sees the impact in the second TeamQ result |
 
 - Under the stages: two ritual keepers from the team are coached by Samuh,
   a call every two weeks, a midpoint check-in
@@ -125,7 +125,7 @@ copy is in the HTML from the start. Nothing is fetched on a click.
 | 02 | `who` | Who we work with | Leaders, teams, organizations, below |
 | 03 | `assess` | Assessments | The assessment for each of the three, same order, on the org structure, below |
 | 04 | `sprints` | Sprints | The 90-day sprint. Two parts: on the platform (Self-guided, or Self-guided with support), then Executive Team Sprints, id `executive-sprints` |
-| 05 | `workshops` | Keynotes and workshops | Short. `TODO(content)` |
+| 05 | `workshops` | Workshops and Keynotes | Short. Placeholder until Jake's copy |
 | 06 | `talk` | Talk to us | Existing form. Options: Self-guided, Supported, Executive Team Sprint, Keynote or workshop, Other |
 | 07 | | Proof | Testimonials, and client logos once cleared |
 

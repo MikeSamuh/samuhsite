@@ -320,12 +320,13 @@ export const DEFAULTS = {
     // how a sprint runs, under the tiers (sitemap of 11 Nov 2026; it was
     // Methodology's section 02)
     // the three-pager of Oct 2026, page 2, in its words
+    // Pre-work alone has a line over its verb (Wilfred, 11 Nov 2026)
     stages: {
       items: [
         { verb: "Discover", when: "Pre-work", body: "TeamQ and interviews with the team members. TeamQ is repeated before day 90 to measure what changed." },
-        { verb: "Align", when: "Day 1", body: "Opening workshop. The team aligns on its goals and chooses a high-performance practice." },
-        { verb: "Co-create", when: "In between", body: "The practice is co-created within the rhythm of the team’s work and iterated over a few weeks." },
-        { verb: "Ritualize", when: "Day 90", body: "Closing workshop. The practice is ritualized and the team sees the impact in the second TeamQ result." },
+        { verb: "Align", when: "", body: "The team aligns on its goals and chooses a high-performance practice." },
+        { verb: "Co-create", when: "", body: "The practice is co-created within the rhythm of the team’s work and iterated over a few weeks." },
+        { verb: "Ritualize", when: "", body: "The practice is ritualized and the team sees the impact in the second TeamQ result." },
       ],
       keepers: "Two ritual keepers from the team are coached by Samuh to maintain and strengthen the practice, with a call every two weeks and a midpoint check-in.",
     },
@@ -342,8 +343,9 @@ export const DEFAULTS = {
     },
     workshops: {
       kicker: "Shorter formats",
-      title: "Keynotes and workshops",
-      body: "" /* TODO(content): keynotes and workshops copy, from Jake. Empty: the title alone */,
+      title: "Workshops and Keynotes",
+      // a placeholder, on the page until Jake's copy lands (Wilfred, 11 Nov 2026)
+      body: "TODO(content): placeholder. A short paragraph on Workshops and Keynotes goes here, from Jake: what each format is, who it is for, and how to book one.",
     },
   },
 
