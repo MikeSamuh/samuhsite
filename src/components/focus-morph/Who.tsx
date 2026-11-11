@@ -181,7 +181,7 @@ export function Who({ c }: { c: HomeContent["who"] }) {
             </div>
           ))}
         </div>
-        <p className="L-ws-coaches">{c.coaches} <Link className="inline-link" href={ROUTES.contact}>{c.coachesLink}</Link></p>
+        {c.coaches ? <p className="L-ws-coaches">{c.coaches} <Link className="inline-link" href={ROUTES.contact}>{c.coachesLink}</Link></p> : null}
       </div>
       <div className="L-ws-pic" ref={root}>
         <svg className="L-c-svg" viewBox={`0 0 ${FRAME.w} ${FRAME.h}`} role="img" aria-label={PICTURE[active]} style={{ opacity: 1 - gone }}>

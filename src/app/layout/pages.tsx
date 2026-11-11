@@ -246,7 +246,7 @@ function Solutions({ figures, c = DEFAULTS.solutions, s = DEFAULTS.start }: { fi
         {c.assess.note ? <p className="L-mid">{c.assess.note}</p> : null}
       </Sec>
       <Sec n="04" kicker={c.workshops.kicker} title={c.workshops.title} id="workshops">
-        <p className="L-mid">{c.workshops.body}</p>
+        {c.workshops.body ? <p className="L-mid">{c.workshops.body}</p> : null}
         <div className="cta-row">
           <Link className="btn btn-secondary" href={ROUTES.contact}>{c.workshops.button} <span className="arrow">&rarr;</span></Link>
         </div>

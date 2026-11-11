@@ -964,7 +964,7 @@ export function Carousel({ quotes = QUOTES }: { quotes?: typeof QUOTES }) {
         <blockquote>&ldquo;{cur.q}&rdquo;</blockquote>
         <figcaption>
           <span className="L-car-who">{cur.who}</span>
-          <span className="L-cap">{cur.role}</span>
+          {cur.role ? <span className="L-cap">{cur.role}</span> : null}
         </figcaption>
         <div className="L-car2-nav">
           <button className="L-car-arrow" onClick={() => go(-1)} aria-label="Previous testimonial">
@@ -1189,7 +1189,7 @@ export function Section({ def, variant, copy = {}, demo, content }: { def: (type
               {quotes.map((q, i) => (
                 <figure className="card L-quote" key={i}>
                   <blockquote>&ldquo;{q.q}&rdquo;</blockquote>
-                  <figcaption className="L-cap">{q.who} &middot; {q.role}</figcaption>
+                  <figcaption className="L-cap">{q.who}{q.role ? <> &middot; {q.role}</> : null}</figcaption>
                 </figure>
               ))}
             </div>

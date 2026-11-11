@@ -44,7 +44,7 @@ export const DEFAULTS = {
       items: [
         // Santosh's email, read out in the client's copy review of 2 Nov 2026
         // and agreed there as a testimonial. Title and organization to come
-        { quote: "There is some real progress reflected in the findings and honestly it exceeded my expectations. The real value will be in making the behaviors part of how we lead and operate every day. Thank you for your partnership.", who: "Santosh", role: "TODO(content): title, organization", photo: "" },
+        { quote: "There is some real progress reflected in the findings and honestly it exceeded my expectations. The real value will be in making the behaviors part of how we lead and operate every day. Thank you for your partnership.", who: "Santosh", role: "" /* TODO(content): title, organization */, photo: "" },
         { quote: "A second sample. Long enough to show how a real quote wraps at this size, short enough to read in one breath.", who: "Name", role: "Role, Organization", photo: "" },
         { quote: "A third sample, so the arrows and the dots have somewhere to go.", who: "Name", role: "Role, Organization", photo: "" },
       ],
@@ -91,7 +91,7 @@ export const DEFAULTS = {
         { label: "A managing team environment", line: "Better, and still paying. Most teams live here without knowing." },
         { label: "A thriving team environment", line: "No performance tax left to carry. The team's capacity goes to the work." },
       ],
-      source: "Per person, at a $115,000 fully loaded cost. TODO(content): the source line for the days.",
+      source: "Per person, at a $115,000 fully loaded cost." /* TODO(content): the source line for the days */,
       // top to bottom, in the order the circles arrive
       levels: [
         { name: "Enterprise", label: "Driving change through enterprise-wide transformations", note: "Often many at a time." },
@@ -151,7 +151,7 @@ export const DEFAULTS = {
         { name: "Teams", before: "For", words: "CXOs, founders, team leaders, managers", after: "seeking to accelerate their performance.", link: "TeamQ", door: "teamq" },
         { name: "Organizations", before: "For", words: "HR leaders, business leaders", after: "looking for scaled solutions for high-performance organizations.", link: "OrgQ", door: "orgq" },
       ],
-      coaches: "Coaches and consultants. TODO(content): what Samuh offers them, from Jake.",
+      coaches: "" /* TODO(content): the coaches and consultants line, what Samuh offers them, from Jake. Empty: no line on the page */,
       coachesLink: "Talk to us",
     },
     // the closing block above the footer (call of 6 Nov 2026): what Samuh
@@ -164,7 +164,7 @@ export const DEFAULTS = {
       items: [
         { name: "Assessments", line: "Samuh measures the team environment and practices, guiding the team to the levers with the highest expected performance gain.", hash: "assess" },
         { name: "Sprints", line: "Samuh uses 90-day sprints to turn evidence into a better way of working.", hash: "sprints" },
-        { name: "Workshops", line: "TODO(content): one line on keynotes and workshops, from Jake.", hash: "workshops" },
+        { name: "Workshops", line: "" /* TODO(content): one line on keynotes and workshops, from Jake */, hash: "workshops" },
       ],
     },
     start: {
@@ -279,7 +279,7 @@ export const DEFAULTS = {
       rowWho: "Who it is for",
       rowGet: "What you get",
       items: [
-        { tag: "You", name: "LeadQ", price: "Free", what: "A first read on your team’s environment, from your own answers. About five minutes.", who: "A leader who wants to see the shape of the problem before involving the team.", get: "A high-level view of where your team environment helps or hinders performance, and what TeamQ would add.", button: "Take LeadQ", door: "leadq", more: "TODO(content): what LeadQ covers and how many questions, once Jake confirms it in writing." },
+        { tag: "You", name: "LeadQ", price: "Free", what: "A first read on your team’s environment, from your own answers. About five minutes.", who: "A leader who wants to see the shape of the problem before involving the team.", get: "A high-level view of where your team environment helps or hinders performance, and what TeamQ would add.", button: "Take LeadQ", door: "leadq", more: "" /* TODO(content): what LeadQ covers and how many questions, once Jake confirms it in writing */ },
         { tag: "Your team", name: "TeamQ", price: "$99 per team", what: "Every team member answers, about five minutes each. Thirteen team environment factors and thirteen team practices.", who: "A leadership team, or any team, that wants evidence rather than opinion.", get: "Your team placed within Sapien Labs’ benchmark, productive days gained or lost each month, and the levers ranked by expected gain. Repeated at day 90 to measure what moved.", button: "Get TeamQ", door: "teamq", more: "" },
         { tag: "Your organization", name: "OrgQ", price: "Packages from $10 per person", what: "Every team in scope, one capacity map.", who: "CHROs, CEOs and transformation leaders working across many teams.", get: "Where capacity leaks across the organization and where the biggest gains are. Scoped with us.", button: "Talk to us", door: "orgq", more: "" },
       ],
@@ -344,7 +344,7 @@ export const DEFAULTS = {
     workshops: {
       kicker: "Shorter formats",
       title: "Keynotes and workshops",
-      body: "TODO(content): keynotes and workshops copy, from Jake.",
+      body: "" /* TODO(content): keynotes and workshops copy, from Jake. Empty: the title and the button alone */,
       button: "Talk to us",
     },
   },
