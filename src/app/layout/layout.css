@@ -158,6 +158,25 @@
   animation-delay: calc(var(--dur) * 0.12 * var(--i, 0));
 }
 .L-overlay-links a:hover, .L-overlay-links a[aria-current="page"] { color: var(--accent); padding-left: 12px; }
+/* a page's list in the overlay, open under its link (6 Nov 2026): the
+   body type, a step in from the page's name */
+.L-overlay-links .L-overlay-sub { list-style: none; margin: 0; padding: 10px 0 16px; display: flex; flex-wrap: wrap; gap: 6px 24px; border-bottom: var(--rule-thin) solid var(--border); animation: L-drop calc(var(--dur) * 1.6) var(--ease) backwards; animation-delay: calc(var(--dur) * 0.12 * var(--i, 0)); }
+.L-overlay-links .L-overlay-sub a { font: inherit; font-size: 16px; letter-spacing: 0; line-height: 1.5; color: var(--muted); padding: 4px 0; border-bottom: 0; animation: none; }
+.L-overlay-links .L-overlay-sub a:hover { color: var(--accent); padding-left: 0; }
+.L-overlay-links a:has(+ .L-overlay-sub) { border-bottom: 0; }
+/* the nav's dropdowns (6 Nov 2026): the page's link, a chevron button
+   beside it, and its list under them. Styled from the nav's own links */
+.L-drop { position: relative; display: inline-flex; align-items: center; gap: 2px; }
+.L-drop-btn { display: grid; place-items: center; width: 24px; height: 24px; padding: 0; border: 0; background: none; color: var(--muted); cursor: pointer; }
+.L-drop-btn:hover, .L-drop-btn[aria-expanded="true"] { color: var(--text); }
+.L-drop-btn:focus-visible { outline: var(--rule-fat) solid var(--accent-2); outline-offset: 2px; }
+.L-drop-chev { width: 7px; height: 7px; border-right: var(--rule-thin) solid currentColor; border-bottom: var(--rule-thin) solid currentColor; transform: translateY(-2px) rotate(45deg); transition: transform var(--dur) var(--ease); }
+.L-drop-btn[aria-expanded="true"] .L-drop-chev { transform: translateY(1px) rotate(225deg); }
+/* the padding at the top keeps the pointer inside on its way down */
+.L-drop-list { position: absolute; top: 100%; left: -16px; z-index: 5; list-style: none; margin: 0; padding: 14px 16px 12px; min-width: 220px; display: grid; gap: 10px; background: var(--base); border: var(--rule-thin) solid var(--border); border-top: var(--rule-fat) solid var(--accent); border-radius: 0 0 var(--radius) var(--radius); }
+.L-drop-list[hidden] { display: none; }
+.L-drop-list a { white-space: nowrap; }
+@media (prefers-reduced-motion: reduce) { .L-drop-chev { transition: none; } }
 .L-overlay-foot { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-top: 24px; padding-bottom: 40px; border-top: var(--rule-fat) solid var(--accent); }
 
 /* ---------- buttons ---------- */

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useRef, useState, type TouchEvent } from "react";
+import { Fragment, useEffect, useId, useRef, useState, type TouchEvent } from "react";
 import { preload } from "react-dom";
 import { REPORT } from "@/lib/report";
 import Image from "next/image";
@@ -9,7 +9,7 @@ import { PAGES, SECTIONS, type PageId, type SectionId } from "@/lib/layout";
 import { TEAM_SIZE } from "@/components/teamq-teaser/model";
 import { TeaserDemo, type TeaserDemoProps } from "@/components/teamq-teaser/TeaserDemo";
 import "@/components/teamq-teaser/teaser.css";
-import { LEADQ_HREF, ROUTES, TEAMQ_PATH } from "@/lib/site";
+import { CAREERS_LIVE, CAREERS_PATH, LEADQ_HREF, NAV_MENUS, navHref, ROUTES, TEAMQ_PATH } from "@/lib/site";
 import { CONTACT_PHONE, CONTACT_PHONE_VANITY } from "@/lib/contact-details";
 import { FocusMorph } from "@/components/focus-morph/FocusMorph";
 import { DEFAULTS, type GlobalContent, type HomeContent } from "@/lib/content/defaults";
@@ -64,7 +64,12 @@ export function Nav({ page, menu, links: order, brand = "wordmark", partner = fa
     ? order.map((id) => PAGES.find((x) => x.id === id)!).filter(Boolean)
     : PAGES.filter((x) => x.nav && x.id !== "home");
   // the overlay closes on its own link; the Link itself does the navigation
-  const close = () => setOpen(false);
+  const close = () => { setOpen(false); setDrop(null); };
+  // the list under a page's link, one open at a time: its chevron button
+  // opens it on click, Enter and Space; hover opens it too; Escape closes
+  // it and gives focus back to the button; focus or the pointer leaving
+  // closes it
+  const [drop, setDrop] = useState<PageId | null>(null);
   const barRef = useRef<HTMLElement>(null);
   // the page does not scroll under the open menu
   useEffect(() => {
@@ -125,9 +130,42 @@ export function Nav({ page, menu, links: order, brand = "wordmark", partner = fa
         )}
         {partner && brand !== "icons" ? <span className="nav-partner">in partnership with Sapien Labs</span> : null}
         <nav className="nav-links L-links" aria-label="Primary">
-          {links.map((x) => (
-            <Link key={x.id} href={ROUTES[x.id]} onClick={close} aria-current={x.id === page ? "page" : undefined}>{x.name}</Link>
-          ))}
+          {links.map((x) => {
+            const items = NAV_MENUS[x.id];
+            const link = <Link key={x.id} href={ROUTES[x.id]} onClick={close} aria-current={x.id === page ? "page" : undefined}>{x.name}</Link>;
+            if (!items?.length) return link;
+            const on = drop === x.id;
+            return (
+              <span
+                key={x.id}
+                className="L-drop"
+                onMouseEnter={() => setDrop(x.id)}
+                onMouseLeave={() => setDrop((d) => (d === x.id ? null : d))}
+                onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setDrop((d) => (d === x.id ? null : d)); }}
+                onKeyDown={(e) => {
+                  if (e.key !== "Escape" || !on) return;
+                  setDrop(null);
+                  e.currentTarget.querySelector<HTMLButtonElement>(".L-drop-btn")?.focus();
+                }}
+              >
+                {link}
+                <button type="button" className="L-drop-btn" aria-expanded={on} aria-controls={`L-drop-${x.id}`} aria-label={`${x.name} menu`} onClick={() => setDrop(on ? null : x.id)}>
+                  <span className="L-drop-chev" aria-hidden />
+                </button>
+                <ul className="L-drop-list" id={`L-drop-${x.id}`} hidden={!on}>
+                  {items.map((it) => (
+                    <li key={it.label}>
+                      {it.external ? (
+                        <a href={it.external} target="_blank" rel="noopener noreferrer" onClick={close}>{it.label}</a>
+                      ) : (
+                        <Link href={navHref(it)} onClick={close}>{it.label}</Link>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </span>
+            );
+          })}
         </nav>
         <button className="btn btn-secondary btn-small L-menu" onClick={() => setOpen(true)} aria-expanded={open} aria-controls="L-overlay">Explore</button>
         <Link className="btn btn-small L-cta" href={ROUTES.contact} onClick={close}>{g.brand.navCta} <span className="arrow">&rarr;</span></Link>
@@ -149,7 +187,23 @@ export function Nav({ page, menu, links: order, brand = "wordmark", partner = fa
           <nav className="L-overlay-links L-wrap" aria-label="Full menu">
             <Link href={ROUTES.home} onClick={close} aria-current={page === "home" ? "page" : undefined}>Home</Link>
             {links.map((x, i) => (
-              <Link key={x.id} href={ROUTES[x.id]} onClick={close} aria-current={x.id === page ? "page" : undefined} style={{ "--i": i + 1 } as React.CSSProperties}>{x.name}</Link>
+              <Fragment key={x.id}>
+                <Link href={ROUTES[x.id]} onClick={close} aria-current={x.id === page ? "page" : undefined} style={{ "--i": i + 1 } as React.CSSProperties}>{x.name}</Link>
+                {/* the page's list, open under it */}
+                {NAV_MENUS[x.id]?.length ? (
+                  <ul className="L-overlay-sub" style={{ "--i": i + 1 } as React.CSSProperties}>
+                    {NAV_MENUS[x.id]!.map((it) => (
+                      <li key={it.label}>
+                        {it.external ? (
+                          <a href={it.external} target="_blank" rel="noopener noreferrer" onClick={close}>{it.label}</a>
+                        ) : (
+                          <Link href={navHref(it)} onClick={close}>{it.label}</Link>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                ) : null}
+              </Fragment>
             ))}
           </nav>
           <div className="L-overlay-foot L-wrap">
@@ -799,6 +853,7 @@ export function Footer({ content }: { /** site-wide words from the admin; the de
           <Link className="L-foot-link" href={ROUTES.about}>About</Link>
           <Link className="L-foot-link" href={ROUTES.process}>Methodology</Link>
           <Link className="L-foot-link" href={ROUTES.solutions}>Solutions</Link>
+          {CAREERS_LIVE ? <Link className="L-foot-link" href={CAREERS_PATH}>Careers</Link> : null}
           <Link className="L-foot-link" href={ROUTES.contact}>Contact</Link>
         </nav>
         <nav className="L-foot-col" aria-label="Resources">

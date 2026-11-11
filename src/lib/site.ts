@@ -6,6 +6,7 @@
 
 import { PRESETS, parseLayoutHash, type Layout, type PageId, type SectionId } from "@/lib/layout";
 import type { NavProps, CopyOverrides } from "@/app/layout/sections";
+import { REPORT } from "@/lib/report";
 
 export interface Site {
   /** the frame and section variants, from layout.ts */
@@ -34,7 +35,8 @@ export const SITE: Site = {
   // the tool sits straight under the circles with nothing explained
   // around it, and the thesis band goes
   layout: { ...BASE, sections: { ...BASE.sections, circles: "circles-morph", thesis: "thesis-band", cards: "cards-one" } },
-  nav: { links: ["about", "process", "solutions", "insights"], brand: "icons" },
+  // the order of the call of 6 Nov 2026; the lists under each are NAV_MENUS
+  nav: { links: ["solutions", "process", "insights", "about"], brand: "icons" },
   // the metaphor cards came off the home on 6 Nov 2026: they are a landing
   // page of their own now, /l/metaphor-cards, listed in src/lib/landing.ts
   // the TeamQ tool section ("Find your team's hidden performance tax") is
@@ -91,6 +93,37 @@ export const ROUTES: Record<PageId, string> = {
   start: "/contact#assess",
 };
 
+/** Careers is built in step 8 of the sprint runbook; until /careers
+ *  exists its link stays out of the nav and the footer. */
+export const CAREERS_LIVE = false;
+export const CAREERS_PATH = "/careers";
+
+/** One link in a nav dropdown: a section of a page (page and hash), a path
+ *  on the site, or a link out. */
+export interface NavItem { label: string; page?: PageId; hash?: string; path?: string; external?: string }
+
+/** The lists under the nav's pages (call of 6 Nov 2026,
+ *  docs/sprint-solutions.md section 3). The page's own label stays a link
+ *  to the page; a chevron button beside it opens its list. In the mobile
+ *  overlay the lists are open under their page. */
+export const NAV_MENUS: Partial<Record<PageId, NavItem[]>> = {
+  solutions: [
+    { label: "Who we work with", page: "solutions", hash: "who" },
+    { label: "Assessments", page: "solutions", hash: "assess" },
+    { label: "Sprints", page: "solutions", hash: "sprints" },
+    { label: "Workshops", page: "solutions", hash: "workshops" },
+  ],
+  process: [
+    { label: "The 90-day sprint", page: "process", hash: "sprint" },
+    { label: "The science", page: "process", hash: "science" },
+    { label: "Work Culture Report", external: REPORT.page },
+  ],
+  about: [
+    { label: "Team", page: "about", hash: "team" },
+    ...(CAREERS_LIVE ? [{ label: "Careers", path: CAREERS_PATH }] : []),
+  ],
+};
+
 /** The three cases from the three-pager of Oct 2026, page 3, under
  *  Executive Team Sprints on Solutions. Off until Rahul clears them for
  *  the public site (docs/sprint-solutions.md, "Client owes"). */
@@ -119,6 +152,13 @@ export const LEADQ_HREF: string = platformLink("leadq") ?? ROUTES.start;
 
 /** The page a path belongs to, for the nav's current marker. A page owns
  *  its sub-paths: /insights/<slug> is still Insights. */
+/** Where a nav item goes. */
+export function navHref(item: NavItem): string {
+  if (item.external) return item.external;
+  if (item.path) return item.path;
+  return `${ROUTES[item.page ?? "home"]}${item.hash ? `#${item.hash}` : ""}`;
+}
+
 export function pageFromPath(path: string): PageId {
   const clean = path.replace(/\/$/, "") || "/";
   return (

@@ -466,7 +466,7 @@ function About({ c = DEFAULTS.about }: { c?: AboutContent }) {
   return (
     <>
       <PageHead n="01" kicker={c.head.kicker} title={c.head.title} lede={c.head.lede} />
-      <Sec n="02" kicker={c.team.kicker} title={c.team.title}>
+      <Sec n="02" kicker={c.team.kicker} title={c.team.title} id="team">
         <div className="L-team">
           {c.team.members.map(({ name, role, bio, about, photo }) => {
             const paras = (about ?? "").split(/\n\s*\n/).map((x) => x.trim()).filter(Boolean);
