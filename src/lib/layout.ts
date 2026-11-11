@@ -124,6 +124,9 @@ export const VIEWS: (Opt<ViewId> & { px: number })[] = [
 // "start" is the fork behind Get started (LeadQ, TeamQ, OrgQ, log in), not
 // in the nav. Its page is src/app/(site)/start, not pages.tsx.
 
+// "process" is the Methodology page (6 Nov 2026). Only the route, the names
+// and the labels changed: the id and the content key stay "process" so
+// anything the team saved in the admin under content:process survives
 export type PageId = "home" | "solutions" | "process" | "insights" | "about" | "contact" | "start";
 
 export interface PageDef {
@@ -136,7 +139,7 @@ export interface PageDef {
 export const PAGES: PageDef[] = [
   { id: "home", name: "Home", nav: true, note: "The argument, then conversion." },
   { id: "solutions", name: "Solutions", nav: true, note: "Self-guided, Supported, Guided on one page, a comparison table, testimonials." },
-  { id: "process", name: "Process", nav: true, note: "The team process. Structure still TBD in the scope." },
+  { id: "process", name: "Methodology", nav: true, note: "Research first, then the 90-day sprint in four stages, and the science. /methodology." },
   { id: "insights", name: "Insights", nav: true, note: "Foundations, articles, video and research in one filterable feed. Research gets its own weight." },
   { id: "about", name: "About", nav: true, note: "About SAMUH, the team, Sapien Labs in the body. Partners TBA." },
   { id: "contact", name: "Contact", nav: true, note: "Form plus calendar booking, contact details." },

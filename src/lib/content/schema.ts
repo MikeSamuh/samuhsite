@@ -83,12 +83,14 @@ export const SCHEMA: PageSchema[] = [
   },
   {
     id: "process",
-    name: "Process",
-    note: "The team process in four stages.",
-    path: "/process",
+    name: "Methodology",
+    note: "Research first, the 90-day sprint in four stages, the path, the science.",
+    path: "/methodology",
     sections: [
       { key: "head", label: "Page head", fields: [t("kicker", "Eyebrow"), t("title", "Title"), ta("lede", "Lede")] },
-      { key: "stages", label: "Stages", fields: [list("items", "The stages", "stage", [t("verb", "Verb"), t("line", "One line"), ta("body", "Body")], "Four stages; Assess shows a placeholder icon until its figure is drawn"), t("ctaPrimary", "Primary button"), t("ctaSecondary", "Secondary button")] },
+      { key: "stages", label: "Stages", fields: [list("items", "The stages", "stage", [t("verb", "Verb"), t("when", "When", "Pre-work, Day 1, Day 90. Shown on the rail and above the verb"), ta("body", "Body")], "Four stages, in order: Discover, Align, Co-create, Ritualize. Keep four"), ta("keepers", "Line under the stages", "The ritual keepers")] },
+      { key: "path", label: "The path", note: "Three sprints", fields: [t("kicker", "Eyebrow"), t("title", "Title"), list("items", "Sprints", "sprint", [t("tag", "Tag"), t("line", "Line")], "Keep three"), ta("note", "Line under them")] },
+      { key: "science", label: "The science", note: "Sapien Labs. Only figures SAMUH has supplied in writing", fields: [t("kicker", "Eyebrow"), t("title", "Title"), ta("p1", "Paragraph one"), ta("p2", "Paragraph two"), list("stats", "Figures", "figure", [t("n", "Number"), t("label", "Label")], "Only figures SAMUH has supplied in writing"), t("ctaPrimary", "Primary button"), t("ctaSecondary", "Secondary button")] },
     ],
   },
   {

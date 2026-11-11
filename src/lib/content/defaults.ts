@@ -194,18 +194,49 @@ export const DEFAULTS = {
     },
   },
 
+  // Methodology, /methodology (was Process, call of 6 Nov 2026). The key
+  // stays "process" so saved content survives. docs/sprint-solutions.md.
+  // The head is a draft for Calina, who owns this page's copy and was not
+  // on the call: Jake's sentence of 29 Oct on what the approach draws on,
+  // Theory U credited to Otto Scharmer, "systemic coaching" as he wrote it
+  // until she says which term she wants
   process: {
     head: {
-      kicker: "The methodology across all three tiers",
-      title: "The team process.",
-      lede: "See the team clearly. Choose the practice together. Ritualize it in the flow of work.",
+      kicker: "Methodology",
+      title: "The evidence guides where to focus. The team decides what to change.",
+      lede: "Built on Sapien Labs’ research into human capacity. Samuh uses 90-day sprints to turn evidence into a better way of working. The approach mainly draws on Otto Scharmer’s Theory U, systemic coaching, and design thinking.",
     },
+    // the three-pager of Oct 2026, page 2, in its words
     stages: {
       items: [
-        { verb: "Assess", line: "The team takes its own measure.", body: "Every team member completes TeamQ. From that data, Samuh establishes the team\u2019s performance baseline: where it stands today, so that every change that follows can be measured against it." },
-        { verb: "Discover", line: "The team turns the lens on itself.", body: "Through confidential conversations, read alongside the baseline, the team gets a clear read on its own environment: what it is working toward, what already goes well, and what is quietly getting in the way." },
-        { verb: "Align", line: "The team agrees on what better looks like.", body: "With that picture in front of it, the team decides what better performance means here, and where one change would do the most for the work and for the people doing it." },
-        { verb: "Co-create", line: "Together, we turn moments into practice.", body: "Decisions, feedback, disagreement, change: the moments that shape performance become specific, repeatable practices. The team designs them, tests them, and runs them inside the work it already does." },
+        { verb: "Discover", when: "Pre-work", body: "TeamQ and interviews with the team members. TeamQ is repeated before day 90 to measure what changed." },
+        { verb: "Align", when: "Day 1", body: "Opening workshop. The team aligns on its goals and chooses a high-performance practice." },
+        { verb: "Co-create", when: "In between", body: "The practice is co-created within the rhythm of the team’s work and iterated over a few weeks." },
+        { verb: "Ritualize", when: "Day 90", body: "Closing workshop. The practice is ritualized and the team sees the impact in the second TeamQ result." },
+      ],
+      keepers: "Two ritual keepers from the team are coached by Samuh to maintain and strengthen the practice, with a call every two weeks and a midpoint check-in.",
+    },
+    path: {
+      kicker: "The path",
+      title: "A path to sustained high performance",
+      items: [
+        { tag: "Sprint 1", line: "Ritualize one practice" },
+        { tag: "Sprint 2", line: "Strengthen the team environment" },
+        { tag: "Sprint 3", line: "Scale to the teams they lead" },
+      ],
+      note: "How the team works changes in the first sprint. Over time, high-performance practices become a way of being for leaders and the teams they lead.",
+    },
+    // every figure is in the spec's claims table: the three-pager, page 1,
+    // and Jake's email of 29 Oct
+    science: {
+      kicker: "In partnership with Sapien Labs",
+      title: "The science",
+      p1: "TeamQ was developed with Sapien Labs and builds on their MHQ, a scientifically validated measure of human capacity. It takes about five minutes and covers 13 team environment factors and 13 team practices. A team’s results are placed within Sapien Labs’ data on tens of thousands of senior employees, which estimates the team’s collective capacity as productive days gained or lost each month.",
+      p2: "Most leadership teams lose 15 to 20% each month. Leadership teams Samuh has measured lose about 3 to 3.5 days a month on average.",
+      stats: [
+        { n: "3 million+", label: "people in the Global Mind Project, in 130+ countries, about 2,000 more every day" },
+        { n: "55,000", label: "employed people in 64 countries, in the work culture research" },
+        { n: "About 8", label: "fewer productive days a month, reported by people in a Distressed team" },
       ],
       ctaPrimary: "Get started",
       ctaSecondary: "Ways to engage",

@@ -797,7 +797,7 @@ export function Footer({ content }: { /** site-wide words from the admin; the de
         <nav className="L-foot-col" aria-label="Company">
           <span className="L-cap L-foot-h">Company</span>
           <Link className="L-foot-link" href={ROUTES.about}>About</Link>
-          <Link className="L-foot-link" href={ROUTES.process}>Process</Link>
+          <Link className="L-foot-link" href={ROUTES.process}>Methodology</Link>
           <Link className="L-foot-link" href={ROUTES.solutions}>Solutions</Link>
           <Link className="L-foot-link" href={ROUTES.contact}>Contact</Link>
         </nav>

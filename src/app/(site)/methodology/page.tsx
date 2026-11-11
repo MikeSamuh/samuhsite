@@ -3,13 +3,13 @@ import { SitePage } from "@/components/site/Site";
 import { pageMeta } from "@/lib/seo";
 
 export const metadata = pageMeta({
-  title: "The team process",
+  title: "Methodology",
   description:
-    "See the team clearly. Choose the practice together. Ritualize it in the flow of work. The methodology behind every way of working with SAMUH.",
-  path: "/process",
+    "The research behind SAMUH, in partnership with Sapien Labs, and the 90-day sprint in four stages: Discover, Align, Co-create, Ritualize.",
+  path: "/methodology",
 });
 
-export default async function ProcessPage() {
+export default async function MethodologyPage() {
   const { process, global } = await getContent();
   return <SitePage id="process" content={{ process, global }} />;
 }

@@ -79,7 +79,9 @@ export const SITE: Site = {
 export const ROUTES: Record<PageId, string> = {
   home: "/",
   solutions: "/solutions",
-  process: "/process",
+  // Methodology since the call of 6 Nov 2026; /process redirects here.
+  // The page id stays "process", see PageId in layout.ts
+  process: "/methodology",
   insights: "/insights",
   about: "/about",
   contact: "/contact",

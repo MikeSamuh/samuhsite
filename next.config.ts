@@ -15,7 +15,9 @@ const nextConfig: NextConfig = {
       // and tool URL that went out in review lands on its page at the root
       { source: "/draft/working", destination: "/", permanent: true },
       { source: "/draft/working/about", destination: "/about", permanent: true },
-      { source: "/draft/working/process", destination: "/process", permanent: true },
+      { source: "/draft/working/process", destination: "/methodology", permanent: true },
+      // Process became Methodology on the call of 6 November 2026
+      { source: "/process", destination: "/methodology", permanent: true },
       { source: "/draft/working/solutions", destination: "/solutions", permanent: true },
       { source: "/draft/working/insights", destination: "/insights", permanent: true },
       { source: "/draft/working/contact", destination: "/contact", permanent: true },

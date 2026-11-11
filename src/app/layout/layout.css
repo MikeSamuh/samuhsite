@@ -1111,9 +1111,33 @@
   /* the copy sticks at the same offset as the running head, so the words
      stay level with the stage's title and figure for the whole of its
      scroll, instead of sliding away above them (Wilfred, 23 October) */
-  .L-page[data-comp="comp-editorial"] .L-stages[data-slot] .L-stage-copy { position: sticky; top: calc(var(--nav-h, 0px) + 28px); }
+  .L-page[data-comp="comp-editorial"] .L-stages[data-slot] .L-stage-copy { position: sticky; top: calc(var(--nav-h, 0px) + var(--rail-h) + 28px); }
 }
 .L-stages-cta { margin-top: calc(24px * var(--space, 1)); }
+.L-stages-keepers { margin-top: calc(40px * var(--space, 1)); color: var(--text); }
+/* the rail (6 Nov 2026): one line, four stops, the star on the active one.
+   It sticks under the nav for the length of the stages. --at is the active
+   stage, set by the page from the scroll state it already keeps; the star
+   and the travelled line move to it. Reduced motion: they jump */
+.L-stages { --rail-h: 76px; }
+.L-rail { position: sticky; top: var(--nav-h, 0px); z-index: 2; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); height: var(--rail-h); padding-top: 12px; margin-bottom: calc(28px * var(--space, 1)); background: var(--base); }
+.L-rail::before, .L-rail::after { content: ""; position: absolute; left: 0; top: 24px; }
+.L-rail::before { right: 0; border-top: var(--rule-thin) solid var(--border); }
+.L-rail::after { width: calc(var(--at, 0) * 25%); border-top: var(--rule-fat) solid var(--accent); transition: width calc(var(--dur) * 2) var(--ease); }
+.L-rail-stop { position: relative; display: grid; align-content: start; gap: 2px; padding: 26px 8px 0 0; }
+.L-rail-stop::before { content: ""; position: absolute; left: 0; top: 8px; width: 9px; height: 9px; border-radius: 50%; background: var(--muted); }
+.L-rail-verb { font-size: 14px; color: var(--muted); transition: color var(--dur) var(--ease); }
+.L-rail-stop[data-on] .L-rail-verb { color: var(--text); }
+.L-rail-star { position: absolute; left: 0; top: 0; width: 100%; height: 24px; margin-top: 12px; transform: translateX(calc(var(--at, 0) * 25%)); transition: transform calc(var(--dur) * 2) var(--ease); pointer-events: none; }
+.L-rail-star img { display: block; width: 24px; height: 24px; margin-left: -8px; }
+@media (prefers-reduced-motion: reduce) {
+  .L-rail::after, .L-rail-star, .L-rail-verb { transition: none; }
+}
+/* the three sprints after the first: the tag, then the line in the display type */
+.L-path { list-style: none; padding: 0; margin: 0 0 20px; }
+.L-path-line { font-family: var(--font-display); font-weight: var(--display-weight); font-size: 20px; line-height: 1.2; }
+/* a section reached by a link lands clear of the stuck nav */
+.L-sec[id] { scroll-margin-top: var(--nav-h, 0px); }
 
 /* insights */
 .L-research-card { display: grid; grid-template-columns: 200px 1fr; gap: 28px; align-items: center; padding: 28px; }
@@ -1191,6 +1215,7 @@
   .L-person-photo { width: 120px; height: 120px; }
   .L-person-name { font-size: 22px; }
   .L-stage, .L-stage:nth-child(even) { --stage-art: 144px; grid-template-columns: 1fr; gap: 16px; }
+  .L-stages { --rail-h: 92px; }
   .L-stage-art, .L-stage:nth-child(even) .L-stage-art { order: -1; justify-self: start; }
   /* the morph on a short screen: the key's type a step down and the
      picture capped by the view's height, so the pinned stage fits */

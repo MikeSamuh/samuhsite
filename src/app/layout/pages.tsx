@@ -9,6 +9,7 @@ import { ROUTES } from "@/lib/site";
 import "@/components/contact/contact.css";
 import { StartEmail } from "@/components/start/StartEmail";
 import { ContactForm } from "@/components/contact/ContactForm";
+import { ReportCard } from "@/app/layout/sections";
 import { ProcessFigure, StageFigure } from "@/components/process-figure/ProcessFigure";
 import type { PoseId } from "@/components/process-figure/figures";
 import { Honeypot } from "@/components/lead/Honeypot";
@@ -218,36 +219,40 @@ function Solutions({ c = DEFAULTS.solutions, g = DEFAULTS.global, s = DEFAULTS.s
 
 /* ------------------------------------------------------------------ */
 
-// icon (Wilfred's, public/icons, the same files the poses are traced from)
-// and the traced pose the working draft morphs between (scripts/figures),
-// one per stage. The words come from the content layer, in the same order.
-// Assess has no icon of its own yet: Awareness stands in, and with no traced
-// pose the figure path shows the icon instead
+// the traced pose the page morphs between (scripts/figures), one per stage,
+// in the order of the words in the content layer. Ritualize has no traced
+// pose: the star at rest stands in.
+// TODO(asset): a traced figure for Ritualize
+const STAR = "/samuh-star.png";
 const STAGE_ART: [string, PoseId | null][] = [
-  ["/icons/Awareness.png", null],
   ["/icons/Discover%202.png", "discover"],
   ["/icons/Align%202.png", "align"],
   ["/icons/Belonging%202.png", "cocreate"],
+  [STAR, null],
 ];
 
 const HEAD_TOP = 28; // the sticky head's offset below the nav, as in layout.css
-const STAGE_LINE = 96; // a stage takes over once its top is this far below that
+const STAGE_LINE = 172; // a stage takes over once its top is this far below that: the rail (76) and 96 more
 
-/** The three stages in one section. On the editorial columns at desktop
- *  width, with figures on, the section's running head is the active stage's
- *  eyebrow, title and figure: it sticks in the left column and swaps in
- *  place as the bodies scroll past on the right, the figure morphing into
- *  the next pose. The running head is decorative; every stage carries its
- *  own heading, visually hidden there. Everywhere else the running head is
- *  off and the stages stack, each with its head and its own figure or icon. */
-function Process({ figures, c = DEFAULTS.process }: { figures?: boolean; c?: ProcessContent }) {
+/** Methodology (the page id is still "process"). The four stages of the
+ *  90-day sprint in one section, under a rail: one line, four stops, the
+ *  star on the active one. The rail draws from the same `active` the
+ *  running head reads, so there is one scroll listener, not two; it is
+ *  decorative and hidden from readers, who get each stage's own heading.
+ *  On the editorial columns at desktop width, with figures on, the
+ *  section's running head is the active stage's eyebrow, title and figure:
+ *  it sticks in the left column and swaps in place as the bodies scroll
+ *  past on the right. Everywhere else the running head is off and the
+ *  stages stack, each with its head and its own figure. Then the sprint
+ *  path, and the science. */
+function Process({ figures, c = DEFAULTS.process, g = DEFAULTS.global }: { figures?: boolean; c?: ProcessContent; g?: GlobalContent }) {
   const ref = useRef<HTMLElement>(null);
   const [active, setActive] = useState(0);
-  const STAGES: [string, string, string, string, PoseId | null][] = c.stages.items.slice(0, STAGE_ART.length).map((st, i) => [st.verb, st.line, st.body, STAGE_ART[i][0], STAGE_ART[i][1]]);
+  const STAGES: [string, string, string, string, PoseId | null][] = c.stages.items.slice(0, STAGE_ART.length).map((st, i) => [st.verb, st.when, st.body, STAGE_ART[i][0], STAGE_ART[i][1]]);
 
   useEffect(() => {
     const root = ref.current;
-    if (!root || !figures) return;
+    if (!root) return;
     const items = Array.from(root.querySelectorAll<HTMLElement>(".L-stage"));
     if (!items.length) return;
     let raf = 0;
@@ -265,26 +270,35 @@ function Process({ figures, c = DEFAULTS.process }: { figures?: boolean; c?: Pro
     kick();
     window.addEventListener("scroll", kick, { passive: true });
     return () => { ro.disconnect(); cancelAnimationFrame(raf); window.removeEventListener("scroll", kick); };
-  }, [figures]);
+  }, []);
 
-  const [verb, line, , icon, pose] = STAGES[Math.min(active, STAGES.length - 1)] ?? ["", "", "", "", "discover" as PoseId];
+  const [verb, when, , icon, pose] = STAGES[Math.min(active, STAGES.length - 1)] ?? ["", "", "", STAR, null];
   return (
     <>
       <PageHead n="01" kicker={c.head.kicker} title={c.head.title} lede={c.head.lede} />
-      <section className="L-sec L-sec-h L-stages" data-n="02" ref={ref} data-slot={figures ? "" : undefined}>
+      <section className="L-sec L-sec-h L-stages" id="sprint" data-n="02" ref={ref} data-slot={figures ? "" : undefined}>
         <div className="L-wrap">
           <div className="L-head L-stages-head" aria-hidden>
             <span className="L-n">02</span>
             <div>
-              <p className="eyebrow L-eyebrow" key={`line-${active}`}>{line}</p>
+              <p className="eyebrow L-eyebrow" key={`when-${active}`}>{when}</p>
               <h2 className="sec" key={`verb-${active}`}>{verb}</h2>
             </div>
-            {figures ? <span className="L-stage-fig">{pose ? <StageFigure pose={pose} /> : <Image src={icon} alt="" width={2048} height={2048} sizes="240px" />}</span> : null}
+            {figures ? <span className="L-stage-fig">{pose ? <StageFigure pose={pose} /> : <Image src={icon} alt="" width={240} height={240} sizes="240px" />}</span> : null}
+          </div>
+          <div className="L-rail" aria-hidden style={{ "--at": active } as React.CSSProperties}>
+            {STAGES.map(([verb, when], i) => (
+              <span className="L-rail-stop" key={verb} data-on={i === active ? "" : undefined}>
+                <span className="L-cap">{when}</span>
+                <span className="L-rail-verb">{verb}</span>
+              </span>
+            ))}
+            <span className="L-rail-star"><Image src={STAR} alt="" width={48} height={48} sizes="24px" /></span>
           </div>
           <ol className="L-stage-list">
-            {STAGES.map(([verb, line, body, icon, pose], i) => (
+            {STAGES.map(([verb, when, body, icon, pose], i) => (
               <li key={verb} className="L-stage" data-on={i === active ? "" : undefined}>
-                <p className="eyebrow L-eyebrow L-stage-line">{line}</p>
+                <p className="eyebrow L-eyebrow L-stage-line">{when}</p>
                 <h2 className="sec L-stage-verb">{verb}</h2>
                 <div className="L-stage-copy">
                   <p className="L-mid">{body}</p>
@@ -293,19 +307,46 @@ function Process({ figures, c = DEFAULTS.process }: { figures?: boolean; c?: Pro
                   {figures && pose ? (
                     <ProcessFigure pose={pose} from={i ? STAGES[i - 1][4] ?? undefined : undefined} />
                   ) : (
-                    <Image src={icon} alt="" width={2048} height={2048} sizes="320px" />
+                    <Image src={icon} alt="" width={336} height={336} sizes="320px" />
                   )}
                 </span>
               </li>
             ))}
           </ol>
-          {/* after the last stage, not inside it (Wilfred, 23 October) */}
-          <div className="cta-row L-stages-cta">
-            <Link className="btn" href={ROUTES.start}>{c.stages.ctaPrimary} <span className="arrow">&rarr;</span></Link>
-            <Link className="btn btn-secondary" href={ROUTES.solutions}>{c.stages.ctaSecondary}</Link>
-          </div>
+          <p className="L-mid L-stages-keepers">{c.stages.keepers}</p>
         </div>
       </section>
+      <Sec n="03" kicker={c.path.kicker} title={c.path.title} id="path">
+        <ol className="L-steps L-path">
+          {c.path.items.map((it) => (
+            <li className="L-step" key={it.tag}>
+              <span className="card-tag">{it.tag}</span>
+              <span className="L-path-line">{it.line}</span>
+            </li>
+          ))}
+        </ol>
+        <p className="L-mid">{c.path.note}</p>
+      </Sec>
+      <Sec n="04" kicker={c.science.kicker} title={c.science.title} id="science">
+        <p className="L-mid">{c.science.p1}</p>
+        <p className="L-mid">{c.science.p2}</p>
+        <dl className="L-case-stats">
+          {c.science.stats.map((st) => (
+            <div className="L-stat" key={st.n}>
+              <dt className="L-stat-n">{st.n}</dt>
+              <dd className="L-cap">{st.label}</dd>
+            </div>
+          ))}
+        </dl>
+        <ReportCard report={g.report} />
+        {/* the Sapien Labs graphs, redrawn, as a carousel: step 9 of the
+            runbook, once Jake sends which graphs and their numbers.
+            Nothing renders until then (docs/sprint-solutions.md, section 8) */}
+        <div className="cta-row L-stages-cta">
+          <Link className="btn" href={ROUTES.start}>{c.science.ctaPrimary} <span className="arrow">&rarr;</span></Link>
+          <Link className="btn btn-secondary" href={ROUTES.solutions}>{c.science.ctaSecondary}</Link>
+        </div>
+      </Sec>
     </>
   );
 }
@@ -433,7 +474,7 @@ function Contact({ c = DEFAULTS.contact, s = DEFAULTS.start }: { c?: ContactCont
 export function Page({ id, figures, content }: { id: PageId; figures?: boolean; /** the admin's words; the defaults without them */ content?: PageCopy }) {
   switch (id) {
     case "solutions": return <Solutions c={content?.solutions} g={content?.global} s={content?.start} />;
-    case "process": return <Process figures={figures} c={content?.process} />;
+    case "process": return <Process figures={figures} c={content?.process} g={content?.global} />;
     case "insights": return <Insights />;
     case "about": return <About c={content?.about} />;
     case "contact": return <Contact c={content?.contact} s={content?.start} />;
