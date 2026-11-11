@@ -646,6 +646,8 @@ is a pinned beat ahead of the circles, three screens of scroll at most (`src/com
 Teams, and entire Organizations.", and one line for each level takes its
 turn on the left with its open word shifting through the people it stands
 for, while the picture goes from one person to three to several teams,
-which then fall into a dot, the one the circles grow from. The lines are
+which then come together as one circle: the circles section's first,
+which is pinned behind and fades in over it, so one picture becomes the
+next in place. The lines are
 Wilfred's. Owed by Rahul: more of what team leaders are curious about
 (two words so far). — Wilfred

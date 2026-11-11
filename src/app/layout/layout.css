@@ -453,7 +453,7 @@
 .L-c-svg { width: 100%; height: auto; display: block; overflow: visible; }
 /* one standard stroke for all three circles, a hairline for the leaders.
    Deliberately not tied to the line-weight dial. */
-.L-circ { --c-stroke: 3px; --c-line: 1.5px; }
+.L-circ, .L-ws-pic { --c-stroke: 3px; --c-line: 1.5px; }
 .L-c-line { fill: none; stroke: var(--text); stroke-width: var(--c-line); vector-effect: non-scaling-stroke; }
 /* the team is the subject: highlighted in the primary. The individual and
    the organization rest in white and take the secondary on hover */
@@ -1893,7 +1893,14 @@
 .L-page[data-comp="comp-editorial"] .L-s-who[data-v="morph"] > .L-wrap > .L-ws-pic { grid-column: 2; grid-row: 1; }
 .L-page[data-comp="comp-editorial"] .L-s-who.L-sec-h .L-ws-head { position: static; top: auto; }
 .L-ws-side { display: grid; gap: 28px; align-content: center; }
-.L-ws-pic { width: 100%; --c-stroke: var(--rule-fat); }
+.L-ws-pic { width: 100%; }
+/* the handover: the circles section is pulled up under this one, so it
+   pins a fifth of a screen before this one lets go (BEHIND in Who.tsx),
+   unseen until then (--who-x, written by Who.tsx), no rule between them */
+.L-s-who[data-v="morph"]:has(+ .L-s-circles[data-v="morph"]) { padding-bottom: 0; }
+.L-s-who[data-v="morph"] + .L-s-circles[data-v="morph"] { margin-top: calc(-120vh + var(--nav-h, 0px)); padding-top: 0; border-top: 0; }
+.L-s-who[data-v="morph"] + .L-s-circles[data-v="morph"] > .L-wrap { opacity: var(--who-x, 1); }
+.L-s-who[data-v="morph"] + .L-s-circles[data-v="morph"][data-who-wait] > .L-wrap { pointer-events: none; }
 .L-ws-ring { fill: none; stroke: var(--accent-2); stroke-width: var(--rule-thin); vector-effect: non-scaling-stroke; }
 .L-ws-levels { display: grid; width: 100%; }
 .L-ws-level { grid-area: 1 / 1; display: grid; gap: 10px; align-content: start; justify-items: start; border-top: var(--rule-thin) solid var(--border); padding-top: 12px; opacity: 0; transform: translateY(8px); pointer-events: none; transition: opacity calc(var(--dur) * 2) var(--ease), transform calc(var(--dur) * 2) var(--ease); }
