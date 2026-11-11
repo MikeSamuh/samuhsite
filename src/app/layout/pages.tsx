@@ -5,7 +5,8 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import type { PageId } from "@/lib/layout";
-import { ROUTES } from "@/lib/site";
+import { ROUTES, SHOW_CASES } from "@/lib/site";
+import { OrgFigure, type OrgLevel } from "@/components/focus-morph/people";
 import "@/components/contact/contact.css";
 import { StartEmail } from "@/components/start/StartEmail";
 import { ContactForm } from "@/components/contact/ContactForm";
@@ -81,11 +82,19 @@ function Sec({ n, kicker, title, children, id, cls }: { n: string; kicker: strin
 
 /* ------------------------------------------------------------------ */
 
+const LEVELS: OrgLevel[] = ["one", "team", "teams"];
+
+/** Solutions (call of 6 Nov 2026, docs/sprint-solutions.md): one page in
+ *  sections, each with an id the nav dropdown lands on. Who we work with,
+ *  then the assessment for each of the three in the same order, drawn on
+ *  the org structure; the sprints, on the platform and then Executive Team
+ *  Sprints; keynotes and workshops; the ask; proof. All of it is in the
+ *  HTML from the start. */
 function Solutions({ c = DEFAULTS.solutions, g = DEFAULTS.global, s = DEFAULTS.start }: { c?: SolutionsContent; g?: GlobalContent; /** the email box's words */ s?: StartContent }) {
   const TIERS = c.tiers.items;
   // nothing picked until the reader picks: a tier's button, or the form's
   const [tier, setTier] = useState("");
-  // the email box under the three measures: LeadQ or TeamQ, opened by the card's button (3 Nov 2026)
+  // the email box in an assessment's row: LeadQ or TeamQ, opened by the row's button (3 Nov 2026)
   const [box, setBox] = useState<"leadq" | "teamq" | null>(null);
   const boxRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -111,7 +120,7 @@ function Solutions({ c = DEFAULTS.solutions, g = DEFAULTS.global, s = DEFAULTS.s
     const email = String(data.get("email") ?? "").trim();
     const noName = name ? undefined : "Enter your name.";
     const found = !email ? "Enter your email address." : !EMAIL_SHAPE.test(email) ? "Enter an email address like name@company.com." : undefined;
-    const unpicked = tier ? undefined : "Pick Self-guided, Supported, Guided or Other first.";
+    const unpicked = tier ? undefined : c.talk.pickFirst;
     setNameError(noName);
     setEmailError(found);
     setPickError(unpicked);
@@ -121,36 +130,53 @@ function Solutions({ c = DEFAULTS.solutions, g = DEFAULTS.global, s = DEFAULTS.s
   return (
     <>
       <PageHead n="01" kicker={c.head.kicker} title={c.head.title} lede={c.head.lede} />
-      <Sec n="02" kicker={c.assess.kicker} title={c.assess.title} cls="L-sec-full" id="assess">
-        {c.assess.lede ? <p className="L-mid">{c.assess.lede}</p> : null}
-        <ul className="L-assess">
-          {c.assess.items.map((it, i) => (
+      <Sec n="02" kicker={c.who.kicker} title={c.who.title} cls="L-sec-full" id="who">
+        <ul className="L-assess L-who">
+          {c.who.items.map((it) => (
             <li className="card L-assess-card" key={it.name}>
-              <span className="card-tag">{it.tag}</span>
               <h3 className="L-assess-name">{it.name}</h3>
-              <span className="L-assess-price">{it.price}</span>
-              <p className="L-assess-what">{it.what}</p>
-              <dl className="L-assess-meta">
-                <div><dt className="L-cap">{c.assess.rowWho}</dt><dd>{it.who}</dd></div>
-                <div><dt className="L-cap">{c.assess.rowGet}</dt><dd>{it.get}</dd></div>
-              </dl>
-              {it.door === "orgq" ? (
-                <Link className="btn btn-secondary" href={ROUTES.contact}>{it.button}</Link>
-              ) : (
-                <button type="button" className={`btn${i === 1 ? "" : " btn-secondary"}`} onClick={() => setBox(it.door === "teamq" ? "teamq" : "leadq")} aria-pressed={box === it.door} aria-controls="assess-box">{it.button}</button>
-              )}
+              <span className="L-assess-price">{it.who}</span>
+              <p className="L-assess-what">{it.line}</p>
+              <Link className="inline-link" href={`${ROUTES.solutions}#${it.door}`}>{it.link} <span className="arrow">&darr;</span></Link>
             </li>
           ))}
         </ul>
-        {box ? (
-          <div className="L-assess-box" id="assess-box" ref={boxRef}>
-            <p className="eyebrow L-eyebrow">{box === "teamq" ? "TeamQ" : "LeadQ"}</p>
-            <StartEmail c={s.form} intent={box} talk={false} key={box} />
-          </div>
-        ) : null}
+        <p className="L-mid">{c.who.coaches} <Link className="inline-link" href={ROUTES.contact}>{c.who.coachesLink}</Link></p>
+      </Sec>
+      <Sec n="03" kicker={c.assess.kicker} title={c.assess.title} cls="L-sec-full" id="assess">
+        {c.assess.lede ? <p className="L-mid">{c.assess.lede}</p> : null}
+        <ul className="L-assess L-org">
+          {c.assess.items.map((it, i) => (
+            <li className="card L-assess-card L-org-row" key={it.name} id={it.door}>
+              <span className="L-org-fig"><OrgFigure level={LEVELS[i] ?? "teams"} /></span>
+              <div className="L-org-copy">
+                <span className="card-tag">{it.tag}</span>
+                <h3 className="L-assess-name">{it.name}</h3>
+                <span className="L-assess-price">{it.price}</span>
+                <p className="L-assess-what">{it.what}</p>
+                {it.more ? <p className="L-assess-what L-org-more">{it.more}</p> : null}
+                <dl className="L-assess-meta">
+                  <div><dt className="L-cap">{c.assess.rowWho}</dt><dd>{it.who}</dd></div>
+                  <div><dt className="L-cap">{c.assess.rowGet}</dt><dd>{it.get}</dd></div>
+                </dl>
+                {it.door === "orgq" ? (
+                  <Link className="btn btn-secondary" href={ROUTES.contact}>{it.button}</Link>
+                ) : (
+                  <button type="button" className={`btn${i === 1 ? "" : " btn-secondary"}`} onClick={() => setBox(it.door === "teamq" ? "teamq" : "leadq")} aria-pressed={box === it.door} aria-controls="assess-box">{it.button}</button>
+                )}
+                {box && box === it.door ? (
+                  <div className="L-assess-box" id="assess-box" ref={boxRef}>
+                    <StartEmail c={s.form} intent={box} talk={false} key={box} />
+                  </div>
+                ) : null}
+              </div>
+            </li>
+          ))}
+        </ul>
         {c.assess.note ? <p className="L-mid">{c.assess.note}</p> : null}
       </Sec>
-      <Sec n="03" kicker={c.tiers.kicker} title={c.tiers.title} cls="L-sec-full">
+      <Sec n="04" kicker={c.tiers.kicker} title={c.tiers.title} cls="L-sec-full" id="sprints">
+        <p className="L-cap L-sub-h">{c.tiers.platform}</p>
         <ul className="L-assess L-tiers">
           {TIERS.map((t, i) => (
             <li className="card L-assess-card" key={t.name}>
@@ -161,7 +187,7 @@ function Solutions({ c = DEFAULTS.solutions, g = DEFAULTS.global, s = DEFAULTS.s
                 <div><dt className="L-cap">{c.tiers.rowWho}</dt><dd>{t.who}</dd></div>
                 <div><dt className="L-cap">{c.tiers.rowGet}</dt><dd>{t.get}</dd></div>
                 {c.tiers.rows.map((r) => (
-                  <div key={r.label}><dt className="L-cap">{r.label}</dt><dd>{[r.a, r.b, r.c][i]}</dd></div>
+                  <div key={r.label}><dt className="L-cap">{r.label}</dt><dd>{[r.a, r.b][i]}</dd></div>
                 ))}
               </dl>
               <button type="button" className="btn btn-secondary" onClick={() => ask(t.name)} aria-pressed={t.name === tier}>{c.tiers.ask} <span className="arrow">&rarr;</span></button>
@@ -169,16 +195,52 @@ function Solutions({ c = DEFAULTS.solutions, g = DEFAULTS.global, s = DEFAULTS.s
           ))}
         </ul>
         <p className="L-mid">{c.tiers.note}</p>
+        {/* the main offering, and a sales conversation: no checkout, no price */}
+        <div className="L-assess L-exec" id="executive-sprints">
+          <div className="card L-assess-card">
+            <span className="card-tag">{c.exec.tag}</span>
+            <h3 className="L-assess-name">{c.exec.name}</h3>
+            <p className="L-assess-what">{c.exec.what}</p>
+            <dl className="L-assess-meta">
+              <div><dt className="L-cap">{c.tiers.rowWho}</dt><dd>{c.exec.who}</dd></div>
+              <div><dt className="L-cap">{c.tiers.rowGet}</dt><dd>{c.exec.get}</dd></div>
+            </dl>
+            <Link className="btn" href={ROUTES.contact}>{c.exec.button} <span className="arrow">&rarr;</span></Link>
+          </div>
+        </div>
+        {SHOW_CASES ? (
+          <div className="L-cases">
+            <p className="L-big">{c.cases.title}</p>
+            <p className="L-mid">{c.cases.lede}</p>
+            <div className="L-voices L-voices-grid">
+              {c.cases.items.map((k) => (
+                <figure className="card L-quote" key={k.who}>
+                  <span className="card-tag">{k.who} &middot; {k.span}</span>
+                  <dl className="L-case-stats">
+                    <div className="L-stat"><dt className="L-stat-n">{k.n1}</dt><dd className="L-cap">{k.l1}</dd></div>
+                    <div className="L-stat"><dt className="L-stat-n">{k.n2}</dt><dd className="L-cap">{k.l2}</dd></div>
+                  </dl>
+                  <blockquote>{k.quote}</blockquote>
+                  <figcaption className="L-cap">{k.by}</figcaption>
+                </figure>
+              ))}
+            </div>
+          </div>
+        ) : null}
       </Sec>
-      <Sec n="04" kicker={c.talk.kicker} title={c.talk.title} id="talk">
+      <Sec n="05" kicker={c.workshops.kicker} title={c.workshops.title} id="workshops">
+        <p className="L-mid">{c.workshops.body}</p>
+        <div className="cta-row">
+          <Link className="btn btn-secondary" href={ROUTES.contact}>{c.workshops.button} <span className="arrow">&rarr;</span></Link>
+        </div>
+      </Sec>
+      <Sec n="06" kicker={c.talk.kicker} title={c.talk.title} id="talk">
         {state !== "done" ? (
           <form className="L-talk" onSubmit={onTalk} noValidate>
-            <div className="L-talk-tiers" role="radiogroup" aria-label="Which tier">
-              {TIERS.map((t) => (
-                <button key={t.name} type="button" className="opt" aria-pressed={t.name === tier} onClick={() => pickOf(t.name)}>{t.name}</button>
+            <div className="L-talk-tiers" role="group" aria-label="Which one">
+              {c.talk.options.map((o) => (
+                <button key={o.label} type="button" className="opt" aria-pressed={o.label === tier} onClick={() => pickOf(o.label)}>{o.label}</button>
               ))}
-              {/* none of the three, or not sure yet: the reply asks */}
-              <button type="button" className="opt" aria-pressed={tier === c.talk.other} onClick={() => pickOf(c.talk.other)}>{c.talk.other}</button>
             </div>
             <div className="L-talk-who">
               <div className="field"><input type="text" name="name" required autoComplete="name" placeholder="Your name" aria-label="Your name" aria-invalid={nameError ? true : undefined} /></div>
@@ -203,7 +265,7 @@ function Solutions({ c = DEFAULTS.solutions, g = DEFAULTS.global, s = DEFAULTS.s
           </div>
         )}
       </Sec>
-      <Sec n="05" kicker={c.voices.kicker} title={c.voices.title}>
+      <Sec n="07" kicker={c.voices.kicker} title={c.voices.title}>
         <div className="L-voices L-voices-grid">
           {g.testimonials.items.map((q, i) => (
             <figure className="card L-quote" key={i}>

@@ -133,7 +133,7 @@ export const DEFAULTS = {
         { q: "Is the tool on this page TeamQ?", a: "No. It shows how TeamQ thinks, with a demonstration team and a few factors moving. A TeamQ assessment is done with your own team, and the result is yours." },
         { q: "What is the Sapien Labs partnership?", a: "Sapien Labs is our research partner and the source of the research this site leans on. Their Work Culture Report is the spine of the argument, and the team environment factors we assess come from their work." },
         { q: "Is this about performance or about wellbeing?", a: "Both, at once. People thriving and results thriving reinforce each other rather than trading off. That is the whole point, and the reason we measure the environment instead of pushing on effort." },
-        { q: "How do you work with a team?", a: "Measurement first. LeadQ is a free read for the leader, TeamQ measures the whole team, and OrgQ maps capacity across an organization. Then the 90-day cycle, run three ways: Self-guided, where the team works through it on its own; Supported, which adds calls with us; Guided, where we deliver in person." },
+        { q: "How do you work with a team?", a: "Measurement first. LeadQ is a free read for the leader, TeamQ measures the whole team, and OrgQ maps capacity across an organization. Then the 90-day sprint: Self-guided on the platform, where the team works through it on its own; Supported, which adds calls with us; or an Executive Team Sprint, which we deliver with the leadership team." },
         { q: "What does it cost?", a: "LeadQ is free. TeamQ is $99 per team. OrgQ and the 90-day cycles are priced on the Solutions page, and we will put a number on anything larger." },
         { q: "How do we start?", a: "Take LeadQ. It is free, takes about five minutes, and gives you a first read on your own team before anyone else is involved. From there, TeamQ for the whole team, or a conversation about your organization." },
       ],
@@ -252,50 +252,98 @@ export const DEFAULTS = {
       title: "Assess yourself, your team, or your organization.",
       lede: "Measurement first, then the practices the team owns. Three measures built with Sapien Labs, and the ways to act on what they show.",
     },
+    // Rahul's whiteboard of 6 Nov 2026, top to bottom. The level names are
+    // Wilfred's; the who and the lines are the whiteboard's, word for word.
+    // The team leaders line was left open on the board
+    who: {
+      kicker: "Who we work with",
+      title: "Leaders, teams, organizations.",
+      items: [
+        { name: "Leaders", who: "Team leaders", line: "For team leaders curious about ... TODO(content): the end of this line, from Rahul.", link: "LeadQ", door: "leadq" },
+        { name: "Teams", who: "CXOs, founders, NGO leaders, team leaders, managers", line: "Seeking to accelerate their performance.", link: "TeamQ", door: "teamq" },
+        { name: "Organizations", who: "HR leaders, business leaders", line: "Looking for scaled solutions for high-performing organizations.", link: "OrgQ", door: "orgq" },
+      ],
+      coaches: "Coaches and consultants. TODO(content): what Samuh offers them, from Jake.",
+      coachesLink: "Talk to us",
+    },
     assess: {
-      kicker: "Three measures",
-      title: "Pick the one that fits where you are.",
+      kicker: "Assessments",
+      title: "One for each: you, your team, your organization.",
       lede: "",
       rowWho: "Who it is for",
       rowGet: "What you get",
       items: [
-        { tag: "You", name: "LeadQ", price: "Free", what: "A first read on your team’s environment, from your own answers. About five minutes.", who: "A leader who wants to see the shape of the problem before involving the team.", get: "A high-level view of where your team environment helps or hinders performance, and what TeamQ would add.", button: "Take LeadQ", door: "leadq" },
-        { tag: "Your team", name: "TeamQ", price: "$99 per team", what: "Every team member answers, about five minutes each. Thirteen team environment factors and thirteen team practices.", who: "A leadership team, or any team, that wants evidence rather than opinion.", get: "Your team placed within Sapien Labs’ benchmark, productive days gained or lost each month, and the levers ranked by expected gain. Repeated at day 90 to measure what moved.", button: "Get TeamQ", door: "teamq" },
-        { tag: "Your organization", name: "OrgQ", price: "Packages from $10 per person", what: "Every team in scope, one capacity map.", who: "CHROs, CEOs and transformation leaders working across many teams.", get: "Where capacity leaks across the organization and where the biggest gains are. Scoped with us.", button: "Talk to us", door: "orgq" },
+        { tag: "You", name: "LeadQ", price: "Free", what: "A first read on your team’s environment, from your own answers. About five minutes.", who: "A leader who wants to see the shape of the problem before involving the team.", get: "A high-level view of where your team environment helps or hinders performance, and what TeamQ would add.", button: "Take LeadQ", door: "leadq", more: "TODO(content): what LeadQ covers and how many questions, once Jake confirms it in writing." },
+        { tag: "Your team", name: "TeamQ", price: "$99 per team", what: "Every team member answers, about five minutes each. Thirteen team environment factors and thirteen team practices.", who: "A leadership team, or any team, that wants evidence rather than opinion.", get: "Your team placed within Sapien Labs’ benchmark, productive days gained or lost each month, and the levers ranked by expected gain. Repeated at day 90 to measure what moved.", button: "Get TeamQ", door: "teamq", more: "" },
+        { tag: "Your organization", name: "OrgQ", price: "Packages from $10 per person", what: "Every team in scope, one capacity map.", who: "CHROs, CEOs and transformation leaders working across many teams.", get: "Where capacity leaks across the organization and where the biggest gains are. Scoped with us.", button: "Talk to us", door: "orgq", more: "" },
       ],
       note: "All three are built on the same technology, developed with Sapien Labs on their MHQ, a validated measure of human capacity drawn from more than 3 million people in 130+ countries.",
     },
+    // the sprints (call of 6 Nov 2026): on the platform, two tiers, then
+    // Executive Team Sprints, which was Guided and is the main offering.
+    // Prices stay as they are until confirmed in writing
     tiers: {
-      kicker: "The main work",
-      title: "Then the 90-day cycle, with us beside the team.",
+      kicker: "Sprints",
+      title: "Then the 90-day sprint.",
+      platform: "On the platform",
       items: [
-        { tag: "Tier 01", name: "Self-guided", what: "On the platform. The team works through the cycle on its own.", who: "Teams with a strong leader who want the method without the meetings, and organizations rolling it out across many teams.", get: "The team process, two TeamQ measures a year, and the material to run one ritual for ninety days." },
+        { tag: "Tier 01", name: "Self-guided", what: "On the platform. The team works through the sprint on its own.", who: "Teams with a strong leader who want the method without the meetings, and organizations rolling it out across many teams.", get: "The team process, two TeamQ measures a year, and the material to run one ritual for ninety days." },
         { tag: "Tier 02", name: "Supported", what: "Self-guided plus periodic support calls from the Samuh team.", who: "Teams that want a second pair of eyes at the moments that matter: choosing the practice, and the check-in at day 45.", get: "Everything in Self-guided, with scheduled calls to read the data together and keep the ritual on track." },
-        { tag: "Tier 03", name: "Guided", what: "In person. The Samuh team delivers the work hands on.", who: "Leadership teams and mission-critical teams where the stakes justify having us in the room.", get: "Confidential interviews, a facilitated day one, coaching for two ritual keepers every two weeks, and the close." },
       ],
       rowWhat: "What it is",
       rowWho: "Who it is for",
       rowGet: "What you get",
       ask: "Talk to us about this",
       rows: [
-        // TODO(content): the whiteboard reads "$200/cycle" for Guided, which
-        // cannot be right beside $20K for Supported. Confirm with Mike or Jake
-        { label: "Price", a: "$1K per year, two TeamQ included", b: "$20K per cycle", c: "TODO(content): confirm, the whiteboard reads $200 per cycle" },
-        { label: "Support calls", a: "Not included", b: "Scheduled", c: "Ongoing" },
-        { label: "In-person delivery", a: "Not included", b: "Not included", c: "Included" },
-        { label: "TeamQ baseline and re-measure", a: "Included", b: "Included", c: "Included" },
-        { label: "Ritual keeper coaching", a: "Self-directed", b: "At check-ins", c: "Every two weeks" },
+        { label: "Price", a: "$1K per year, two TeamQ included", b: "$20K per cycle" },
+        { label: "Support calls", a: "Not included", b: "Scheduled" },
+        { label: "TeamQ baseline and re-measure", a: "Included", b: "Included" },
+        { label: "Ritual keeper coaching", a: "Self-directed", b: "At check-ins" },
       ],
-      note: "A cycle is ninety days: one practice, co-created, iterated inside the team’s regular work, and measured again at the end. An organization journey runs the same cycle across a team of teams. Talk to us about that one.",
+      note: "A sprint is ninety days: one practice, co-created, iterated inside the team’s regular work, and measured again at the end.",
+    },
+    // no price and no length for the pre-work on the page: both are spoken
+    // only (docs/sprint-solutions.md)
+    exec: {
+      tag: "The main offering",
+      name: "Executive Team Sprints",
+      what: "Pre-work, then ninety days with two ritual keepers from the team, coached by Samuh.",
+      who: "Leadership teams and mission-critical teams where the stakes justify having us in the room.",
+      get: "Confidential interviews, a facilitated day one, coaching for two ritual keepers every two weeks, and the close.",
+      button: "Talk to us",
+    },
+    // the three-pager of Oct 2026, page 3, word for word. Behind SHOW_CASES
+    // in site.ts, off until Rahul clears them
+    cases: {
+      title: "Different teams. Different challenges. Measurable improvement.",
+      lede: "Three teams. Three starting points. Each targeted one lever and measured what else moved.",
+      items: [
+        { who: "Fortune 10 healthcare leadership team", span: "one 90-day sprint", n1: "+39%", l1: "on feedback, the chosen practice", n2: "12 of 13", l2: "team practices improved", quote: "“You gave us something that has lasted well beyond the time we spent together.”", by: "Business Unit President" },
+        { who: "Fortune 500 technology leadership team", span: "one 90-day sprint", n1: "+30%", l1: "on the practices the team chose", n2: "13 of 13", l2: "team practices improved", quote: "“The impact you and the team have made … has been remarkable … the results are clearly beginning to show.”", by: "President, Consulting & Engineering" },
+        { who: "Global professional services firm", span: "6-month engagement", n1: "+1.1 (up 23%)", l1: "days gained per month across the firm", n2: "", l2: "Managing to Succeeding", quote: "The Learning Gym: a weekly rhythm the team owns, kept by a ritual keeper Samuh coached, where feedback and growth conversations happen inside live client work.", by: "The practice the team built after headcount doubled in a year" },
+      ],
+    },
+    workshops: {
+      kicker: "Shorter formats",
+      title: "Keynotes and workshops",
+      body: "TODO(content): keynotes and workshops copy, from Jake.",
+      button: "Talk to us",
     },
     talk: {
       kicker: "Talk to us",
       title: "Tell us which one, and where to reach you",
+      options: [
+        { label: "Self-guided" },
+        { label: "Supported" },
+        { label: "Executive Team Sprint" },
+        { label: "Keynote or workshop" },
+        { label: "Other" },
+      ],
+      pickFirst: "Pick one first.",
       button: "Talk to us",
-      other: "Other",
       note: "A person replies. Tagged {tier}, so we come prepared.",
       thanks: "Thank you. We’ll be in touch about {tier}.",
-      wait: "Read about the team process while you wait",
+      wait: "Read about the methodology while you wait",
     },
     voices: {
       kicker: "Trust before proof",
@@ -322,7 +370,8 @@ export const DEFAULTS = {
 
   // /contact (Wilfred, 5 Nov 2026): the form, then the free assessment CTA.
   // The two lists are from Mike's Persona Journey sheet (Reference material),
-  // its Persona and Needs columns; Vendor added by Wilfred, 6 Nov 2026.
+  // its Persona and Needs columns; Vendor added by Wilfred, 6 Nov 2026,
+  // Consultant after the call of the same day.
   // 6 Nov 2026: the form is two sentences in the display type, "I'm a [who]
   // and [what]. My email is [ ], and phone is [ ]." then the message box
   // and the button, the whole thing inside one screen
@@ -338,6 +387,7 @@ export const DEFAULTS = {
         { label: "HR Talent Lead" },
         { label: "Team Lead" },
         { label: "Team Coach" },
+        { label: "Consultant" },
         { label: "Team Member" },
         { label: "Vendor" },
         { label: "Founder" },

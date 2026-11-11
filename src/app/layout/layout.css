@@ -1135,9 +1135,12 @@
 }
 /* the three sprints after the first: the tag, then the line in the display type */
 .L-path { list-style: none; padding: 0; margin: 0 0 20px; }
+.L-path .L-step { align-content: start; }
 .L-path-line { font-family: var(--font-display); font-weight: var(--display-weight); font-size: 20px; line-height: 1.2; }
 /* a section reached by a link lands clear of the stuck nav */
-.L-sec[id] { scroll-margin-top: var(--nav-h, 0px); }
+/* --nav-h is set once the nav has measured itself; a link straight to a
+   section arrives before that, so the fallback is the nav's height */
+.L-sec[id] { scroll-margin-top: var(--nav-h, 80px); }
 
 /* insights */
 .L-research-card { display: grid; grid-template-columns: 200px 1fr; gap: 28px; align-items: center; padding: 28px; }
@@ -1815,6 +1818,49 @@
 /* the 90-day tiers, the same three columns under the measures. The button
    is pressed once its tier is the form's pick */
 .L-page .L-assess-card .btn[aria-pressed="true"] { border-color: var(--accent); color: var(--accent); }
+
+/* Solutions since the call of 6 Nov 2026. The assessments are three rows
+   on the org structure: the home's people on the left (one person, one
+   team, several teams), the words on the right, a hairline joining the
+   figures down the column. On a narrow page the figure sits above its
+   words and the hairline runs down the left edge */
+.L-assess.L-org { grid-template-columns: 1fr; }
+.L-page .L-assess-card.card.L-org-row { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 0 56px; padding-top: 0; padding-bottom: 0; border-top: 0; scroll-margin-top: calc(var(--nav-h, 80px) + 24px); }
+.L-page .L-assess-card.card.L-org-row + .L-org-row { border-left: 0; }
+.L-org-fig { display: grid; grid-template-rows: auto 1fr; justify-items: center; }
+.L-org-fig::after { content: ""; border-left: var(--rule-thin) solid var(--border); }
+.L-org-row:last-child .L-org-fig::after { display: none; }
+.L-org-svg { display: block; width: 100%; aspect-ratio: 1; overflow: visible; --c-stroke: var(--rule-fat); }
+/* several teams: the people are small, so the hairline draws them */
+.L-org-svg[data-level="teams"] { --c-stroke: var(--rule-thin); }
+.L-org-ring { fill: none; stroke: var(--border); stroke-width: var(--rule-thin); vector-effect: non-scaling-stroke; }
+.L-org-copy { display: flex; flex-direction: column; max-width: 640px; padding: 24px 0 56px; }
+.L-org-row:last-child .L-org-copy { padding-bottom: 32px; }
+.L-page .L-assess-card .L-org-more { color: var(--muted); }
+.L-page .L-org-copy .L-assess-meta { grid-template-columns: 1fr 1fr; gap: 18px 32px; }
+.L-page .L-org-copy .btn { margin-top: 0; }
+.L-org-copy .L-assess-box { margin: 24px 0 0; }
+/* who we work with: the three columns, shorter, each ending in its link */
+.L-page .L-who .L-assess-card .inline-link { margin-top: auto; align-self: flex-start; }
+.L-page .L-who .L-assess-card .L-assess-price { margin-bottom: 14px; }
+/* the sprints: a label over the two platform tiers, then the main offering on its own */
+.L-sub-h { display: block; margin: 0 0 14px; }
+.L-assess.L-exec { grid-template-columns: 1fr; margin-top: calc(40px * var(--space, 1)); scroll-margin-top: calc(var(--nav-h, 80px) + 24px); }
+.L-page .L-exec .L-assess-card.card { border-top-color: var(--accent); }
+.L-page .L-exec .L-assess-card :is(.L-assess-what, .L-assess-meta) { max-width: 640px; }
+.L-cases { margin-top: calc(40px * var(--space, 1)); }
+@container page (min-width: 901px) {
+  .L-assess.L-tiers { grid-template-columns: repeat(2, 1fr); }
+}
+@container page (max-width: 900px) {
+  .L-assess.L-org { margin-inline: 0; border-left: var(--rule-thin) solid var(--border); }
+  .L-page .L-assess-card.card.L-org-row { grid-template-columns: 1fr; padding: 0 0 0 16px; }
+  .L-org-fig { justify-items: start; }
+  .L-org-fig::after { display: none; }
+  .L-org-svg { width: 144px; }
+  .L-org-copy { padding-top: 12px; }
+  .L-page .L-org-copy .L-assess-meta { grid-template-columns: 1fr; }
+}
 
 /* the email box under the three measures on Solutions (3 Nov 2026) */
 .L-assess-box { display: grid; gap: 10px; margin: 8px 0 24px; padding: 24px 0 0; border-top: var(--rule-thin) solid var(--border); scroll-margin-top: calc(var(--nav-h, 0px) + 24px); }

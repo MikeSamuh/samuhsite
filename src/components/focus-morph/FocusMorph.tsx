@@ -6,6 +6,7 @@ import { mark } from "@/lib/content/shared";
 import Link from "next/link";
 import { MHQ_BANDS, MHQ_SCALE, mhqBand } from "@/lib/tokens";
 import { TAX_STEPS, days as fmtDays, money } from "@/lib/performance-tax";
+import { PERSON, Person, bust } from "./people";
 
 // Where others focus, where we focus, then what we aspire to, in one
 // picture. The section is a tall track; its content pins while the visitor
@@ -107,9 +108,8 @@ const CTA = { from: 0.94, to: 0.99 };
  *  clipped to their shapes; the level is the step's place on the MHQ
  *  scale, and the last step fills them. The surface is two slow waves,
  *  calming as the team fills */
-const PERSON = { headR: 26, headCy: 108, shoulderY: 206, footY: 300, halfW: 56 };
+// the drawing itself is in ./people, shared with the Solutions page
 const PEOPLE_X = [172, 320, 468];
-const bust = (x: number) => `M ${x - PERSON.halfW} ${PERSON.footY} V ${PERSON.shoulderY} A ${PERSON.halfW} ${PERSON.halfW} 0 0 1 ${x + PERSON.halfW} ${PERSON.shoulderY} V ${PERSON.footY} Z`;
 const WATER = { x0: 100, x1: 540, top: PERSON.headCy - PERSON.headR, bottom: PERSON.footY, amp: 4, step: 16 };
 /** how full the team is at each step: the window's middle on the scale, the last step full */
 const LEVELS = TAX_STEPS.map((t, j) => (j === TAX_STEPS.length - 1 ? 1 : ((t.from + t.to) / 2 - MHQ_SCALE.min) / (MHQ_SCALE.max - MHQ_SCALE.min)));
@@ -525,12 +525,7 @@ export function FocusMorph({ words = DEFAULTS.home.focus, cta }: { /** the heads
             </defs>
             {/* a still surface from the scroll; the motion loop moves it */}
             <path ref={waterRef} className="L-fm-water" d={waterPath(level, 0)} clipPath="url(#fm-team-clip)" />
-            {PEOPLE_X.map((x, j) => (
-              <g className="L-fm-person" key={j}>
-                <circle cx={x} cy={PERSON.headCy} r={PERSON.headR} className="L-fm-person-line" />
-                <path d={bust(x)} className="L-fm-person-line" />
-              </g>
-            ))}
+            {PEOPLE_X.map((x, j) => <Person x={x} key={j} />)}
           </g>
         </svg>
 

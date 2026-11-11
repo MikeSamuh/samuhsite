@@ -91,6 +91,11 @@ export const ROUTES: Record<PageId, string> = {
   start: "/contact#assess",
 };
 
+/** The three cases from the three-pager of Oct 2026, page 3, under
+ *  Executive Team Sprints on Solutions. Off until Rahul clears them for
+ *  the public site (docs/sprint-solutions.md, "Client owes"). */
+export const SHOW_CASES = false;
+
 /** The TeamQ explainer, not a nav page: linked from the tool on the home,
  *  the TeamQ card on Solutions and the footer. */
 export const TEAMQ_PATH = "/teamq";

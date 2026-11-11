@@ -3,9 +3,9 @@ import { SitePage } from "@/components/site/Site";
 import { pageMeta } from "@/lib/seo";
 
 export const metadata = pageMeta({
-  title: "Solutions: Self-guided, Supported, Guided",
+  title: "Solutions: assessments, sprints and workshops",
   description:
-    "One methodology, the team process, delivered with as much or as little of SAMUH in the room as the team needs. Three ways to engage, side by side, and every piece of the work on its own.",
+    "Who SAMUH works with, and how: LeadQ, TeamQ and OrgQ for a leader, a team and an organization, the 90-day sprint on the platform, Executive Team Sprints, keynotes and workshops.",
   path: "/solutions",
 });
 

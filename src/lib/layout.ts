@@ -138,7 +138,7 @@ export interface PageDef {
 
 export const PAGES: PageDef[] = [
   { id: "home", name: "Home", nav: true, note: "The argument, then conversion." },
-  { id: "solutions", name: "Solutions", nav: true, note: "Self-guided, Supported, Guided on one page, a comparison table, testimonials." },
+  { id: "solutions", name: "Solutions", nav: true, note: "One page in sections: who we work with, the assessments, the sprints, keynotes and workshops, talk to us, testimonials." },
   { id: "process", name: "Methodology", nav: true, note: "Research first, then the 90-day sprint in four stages, and the science. /methodology." },
   { id: "insights", name: "Insights", nav: true, note: "Foundations, articles, video and research in one filterable feed. Research gets its own weight." },
   { id: "about", name: "About", nav: true, note: "About SAMUH, the team, Sapien Labs in the body. Partners TBA." },
