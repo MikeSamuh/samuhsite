@@ -9,10 +9,10 @@ import { PAGES, SECTIONS, type PageId, type SectionId } from "@/lib/layout";
 import { TEAM_SIZE } from "@/components/teamq-teaser/model";
 import { TeaserDemo, type TeaserDemoProps } from "@/components/teamq-teaser/TeaserDemo";
 import "@/components/teamq-teaser/teaser.css";
-import { CAREERS_LIVE, CAREERS_PATH, LEADQ_HREF, NAV_MENUS, navHref, ROUTES, TEAMQ_PATH } from "@/lib/site";
+import { CAREERS_LIVE, CAREERS_PATH, NAV_MENUS, navHref, ROUTES, TEAMQ_PATH } from "@/lib/site";
 import { CONTACT_PHONE, CONTACT_PHONE_VANITY } from "@/lib/contact-details";
 import { FocusMorph } from "@/components/focus-morph/FocusMorph";
-import { DEFAULTS, type GlobalContent, type HomeContent } from "@/lib/content/defaults";
+import { DEFAULTS, type GlobalContent, type StartContent, type HomeContent } from "@/lib/content/defaults";
 import { lines, mark } from "@/lib/content/shared";
 
 /** The words the admin's Content tab edits, passed down from the server.
@@ -21,6 +21,8 @@ import { lines, mark } from "@/lib/content/shared";
 export interface SiteCopy {
   home: HomeContent;
   global: GlobalContent;
+  /** the email box's words, for the ask under the home's fourth beat */
+  start?: StartContent;
 }
 
 /** The copy the frozen drafts and the layout tool show when no content is
@@ -1127,7 +1129,7 @@ export function Section({ def, variant, copy = {}, demo, content }: { def: (type
 
         {/* the morph carries its own head: it changes as the picture does */}
         {/* the ask at the end of the beat is the tool section's title and button (6 Nov 2026) */}
-        {def.id === "circles" && v === "morph" && <FocusMorph words={h.focus} cta={{ title: toolTitle, label: toolCta, href: LEADQ_HREF }} />}
+        {def.id === "circles" && v === "morph" && <FocusMorph words={h.focus} cta={{ title: toolTitle, label: toolCta, box: (content?.start ?? DEFAULTS.start).form }} />}
 
         {def.id === "circles" && v !== "nested" && v !== "morph" && (
           <>
@@ -1338,7 +1340,7 @@ export function Section({ def, variant, copy = {}, demo, content }: { def: (type
                 <button className="btn">{h.start.startLabel}</button>
               </div>
               <div className="cta-row">
-                <Link className="btn" href={LEADQ_HREF}>{h.start.ctaPrimary} <span className="arrow">&rarr;</span></Link>
+                <Link className="btn" href={ROUTES.start}>{h.start.ctaPrimary} <span className="arrow">&rarr;</span></Link>
                 <Link className="btn btn-secondary" href={ROUTES.contact}>{h.start.ctaSecondary}</Link>
               </div>
             </div>

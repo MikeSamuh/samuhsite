@@ -521,6 +521,8 @@
 /* the ask under the people, in with the last step (--c) */
 .L-fm-cta { display: grid; gap: 16px; justify-items: center; text-align: center; margin-top: 8px; opacity: var(--c, 0); transform: translateY(calc((1 - var(--c, 0)) * 12px)); }
 .L-fm-cta[aria-hidden="true"] { pointer-events: none; }
+/* the email box, opened in place by the ask (6 Nov 2026) */
+.L-fm-cta-box { width: min(100%, 480px); text-align: left; }
 .L-fm-cta-title { margin: 0; font-family: var(--font-display); font-weight: var(--display-weight); font-size: 28px; line-height: 1.2; color: var(--text); }
 .L-fm-meter-line { margin: 0; font-size: 13px; line-height: 1.5; color: var(--muted); }
 /* the head arrives first as the section climbs into view (--h), the key

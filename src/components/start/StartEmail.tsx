@@ -10,15 +10,41 @@ import { CONTACT_EMAIL } from "@/lib/contact-details";
 import type { StartContent } from "@/lib/content/defaults";
 import { fill } from "@/lib/content/shared";
 import { EMAIL_SHAPE } from "@/lib/lead";
-import { ROUTES, platformLink } from "@/lib/site";
+import { track } from "@/lib/analytics";
+import { PLATFORM_HANDOFF, PLATFORM_URL, ROUTES } from "@/lib/site";
 import "./start.css";
 
 type Intent = "leadq" | "teamq";
 
-/** The one box (Wilfred, 3 Nov 2026): a work email. Once the platform
- *  exists the address goes there and the platform sends the magic link
- *  that signs the person in as a free user and starts LeadQ. Until then
- *  the address posts as flow "start" and SAMUH sends the link by hand.
+/** How long the hand-off waits for the lead post before leaving anyway. */
+const LEAD_WAIT_MS = 2000;
+
+/** Leaves for the platform with a form POST: the address travels in the
+ *  body, never in the URL. */
+function handOff(email: string, intent: Intent, utm: [string, string][]) {
+  const form = document.createElement("form");
+  form.method = "POST";
+  form.action = `${PLATFORM_URL}${PLATFORM_HANDOFF.path}`;
+  const add = (name: string, value: string) => {
+    const input = document.createElement("input");
+    input.type = "hidden";
+    input.name = name;
+    input.value = value;
+    form.appendChild(input);
+  };
+  add(PLATFORM_HANDOFF.fields.email, email);
+  add(PLATFORM_HANDOFF.fields.intent, intent);
+  utm.forEach(([key, value]) => add(key, value));
+  document.body.appendChild(form);
+  form.submit();
+}
+
+/** The one box (Wilfred, 3 Nov 2026): a work email. The address always
+ *  posts first as flow "start", so sales has the person even if they stop
+ *  on the platform (call of 6 Nov 2026). Then, once the platform exists,
+ *  the box hands off to it and the platform sends the magic link that
+ *  signs the person in as a free user and starts LeadQ. Until then SAMUH
+ *  sends the link by hand.
  *  `?door=teamq` from the TeamQ card on Solutions tags the lead. The
  *  search params need the boundary so the page stays static. */
 export function StartEmail({ c, talk = true, intent }: { c: StartContent["form"]; /** the "prefer to talk" line under the box; off where talking is beside it */ talk?: boolean; /** which assessment the box is for; the Solutions cards set it, the home means LeadQ */ intent?: Intent }) {
@@ -58,17 +84,18 @@ function EmailBox({ c, intent, talk, utm = [] }: { c: StartContent["form"]; inte
       form.current?.querySelector<HTMLElement>("input[name=email]")?.focus();
       return;
     }
-    // the platform, once it exists, sends the link itself
-    const platform = platformLink(intent);
-    if (platform) {
-      const url = new URL(platform);
-      url.searchParams.set("email", email);
-      utm.forEach(([key, value]) => url.searchParams.set(key, value));
-      window.location.assign(url.toString());
-      return;
-    }
     setSent(email);
-    void submit({ email, intent, company_website: String(data.get("company_website") ?? "") || undefined, turnstileToken: token });
+    track("start_submit", { intent });
+    // the lead first, always
+    const lead = submit({ email, intent, company_website: String(data.get("company_website") ?? "") || undefined, turnstileToken: token });
+    if (!PLATFORM_URL) return;
+    // then the platform. A slow or failed lead post does not hold the
+    // person here for more than a couple of seconds
+    const wait = new Promise<"slow">((resolve) => setTimeout(() => resolve("slow"), LEAD_WAIT_MS));
+    void Promise.race([lead, wait]).then((result) => {
+      if (result !== true) console.warn(`start: handing off with the lead post ${result === "slow" ? "still pending" : "failed"}`);
+      handOff(email, intent, utm);
+    });
   };
 
   if (state === "done") {

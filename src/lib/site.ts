@@ -144,14 +144,13 @@ export function platformLink(intent: "leadq" | "teamq" | "login"): string | null
   return intent === "login" ? `${PLATFORM_URL}/login` : `${PLATFORM_URL}/start?intent=${intent}`;
 }
 
-/** The free LeadQ, the one way in (Mike's call of 2 Nov 2026). The email
- *  box on the home: the address, a magic link, the platform. The
- *  platform's own LeadQ entry once it exists. The home's close uses it;
- *  the nav and footer say Let's talk and go to /contact (3 Nov). */
-export const LEADQ_HREF: string = platformLink("leadq") ?? ROUTES.start;
+/** The hand-off to the platform from the email box (docs/sprint-solutions.md
+ *  section 4): a form POST, so the address stays out of the URL, the logs
+ *  and the referrer. ASSUMED, Mike to confirm: the path, that it accepts a
+ *  cross-site form POST, the field names, and that the platform then sends
+ *  the magic link. Only this constant changes when he answers. */
+export const PLATFORM_HANDOFF = { path: "/start", fields: { email: "email", intent: "intent" } } as const;
 
-/** The page a path belongs to, for the nav's current marker. A page owns
- *  its sub-paths: /insights/<slug> is still Insights. */
 /** Where a nav item goes. */
 export function navHref(item: NavItem): string {
   if (item.external) return item.external;

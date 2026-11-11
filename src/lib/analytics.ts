@@ -5,6 +5,8 @@ import type { LeadFlow } from "./lead";
 
 interface AnalyticsEvents {
   lead_submit: { flow: LeadFlow };
+  /** the email box was submitted, before any hand-off to the platform */
+  start_submit: { intent: "leadq" | "teamq" };
   /** the first slider move on the TeamQ teaser */
   teaser_interact: { factor: string };
   /** the Google booking embed was shown */

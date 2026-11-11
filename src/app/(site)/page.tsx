@@ -24,7 +24,7 @@ export default async function Home() {
   return (
     <>
       <JsonLd data={faqLd(home.faq.items)} />
-      <SiteHome teamq={{ baseline, answer, tool: home.tool, box: start.form }} content={{ home, global }} />
+      <SiteHome teamq={{ baseline, answer, tool: home.tool, box: start.form }} content={{ home, global, start }} />
     </>
   );
 }

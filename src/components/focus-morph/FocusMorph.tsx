@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { DEFAULTS, type HomeContent } from "@/lib/content/defaults";
+import { DEFAULTS, type HomeContent, type StartContent } from "@/lib/content/defaults";
+import { StartEmail } from "@/components/start/StartEmail";
 import { mark } from "@/lib/content/shared";
-import Link from "next/link";
 import { MHQ_BANDS, MHQ_SCALE, mhqBand } from "@/lib/tokens";
 import { TAX_STEPS, days as fmtDays, money } from "@/lib/performance-tax";
 import { PERSON, Person, bust } from "./people";
@@ -201,7 +201,7 @@ const shapesAt = (e: number, q: number, g: number, i: number): Record<Key, Shape
 
 const same = (a: Key[], b: Key[]) => a.length === b.length && a.every((k, i) => k === b[i]);
 
-export function FocusMorph({ words = DEFAULTS.home.focus, cta }: { /** the heads and the key, from the admin */ words?: HomeContent["focus"]; /** the ask at the end of the beat: the tool's title and button */ cta?: { title: string; label: string; href: string } }) {
+export function FocusMorph({ words = DEFAULTS.home.focus, cta }: { /** the heads and the key, from the admin */ words?: HomeContent["focus"]; /** the ask at the end of the beat: the tool's title and button */ cta?: { title: string; label: string; /** the email box's words: the button opens it in place */ box: StartContent["form"] } }) {
   // the words sit on the geometry: levels in the order enterprise,
   // individual, team
   const FOCUS = FOCUS_GEOMETRY.map((f, i) => ({ ...f, name: words.levels[i]?.name ?? "", label: words.levels[i]?.label ?? "", note: words.levels[i]?.note ?? "" }));
@@ -212,6 +212,8 @@ export function FocusMorph({ words = DEFAULTS.home.focus, cta }: { /** the heads
   const [p, setP] = useState(0);
   const [g, setG] = useState(0);
   const [hot, setHot] = useState<Key[]>([]);
+  // the ask: the button opens the email box in place, as on Solutions (6 Nov 2026)
+  const [asked, setAsked] = useState(false);
   // everything the motion loop touches lives outside React state
   const m = useRef({
     pointer: null as Pt | null, // frame units, from the centre
@@ -534,7 +536,11 @@ export function FocusMorph({ words = DEFAULTS.home.focus, cta }: { /** the heads
         {cta ? (
           <div className="L-fm-cta" aria-hidden={stepNow < TAX_STEPS.length || undefined}>
             <p className="L-fm-cta-title">{mark(cta.title, "L-hl")}</p>
-            <Link className="btn" href={cta.href} tabIndex={stepNow < TAX_STEPS.length ? -1 : undefined}>{cta.label} <span className="arrow">&rarr;</span></Link>
+            {asked ? (
+              <div className="L-fm-cta-box" id="fm-cta-box"><StartEmail c={cta.box} intent="leadq" talk={false} /></div>
+            ) : (
+              <button type="button" className="btn" onClick={() => setAsked(true)} aria-expanded={false} aria-controls="fm-cta-box" tabIndex={stepNow < TAX_STEPS.length ? -1 : undefined}>{cta.label} <span className="arrow">&rarr;</span></button>
+            )}
           </div>
         ) : null}
       </div>
