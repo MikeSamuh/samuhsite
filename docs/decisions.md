@@ -651,3 +651,13 @@ which is pinned behind and fades in over it, so one picture becomes the
 next in place. The lines are
 Wilfred's. Owed by Rahul: more of what team leaders are curious about
 (two words so far). — Wilfred
+
+**2026-11-11 — Solutions leads with Executive Team Sprints, and no section ends on Talk to us.**
+The order is: Executive Team Sprints (`sprints`), how a sprint runs (the
+four stages), the two tiers on the platform (`platform`), assessments,
+workshops and keynotes. Executive Team Sprints is set as the stages are,
+the head beside and the words in the column. The Talk to us buttons under
+the tiers, Executive Team Sprints and workshops are gone: the nav carries
+it. OrgQ's card keeps its button, as the other two cards have theirs. Who
+it is for and what you get are in the text colour at body size. — Wilfred
+

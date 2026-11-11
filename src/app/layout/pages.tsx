@@ -145,11 +145,12 @@ function Stages({ figures, c }: { figures?: boolean; c: SolutionsContent["stages
 
 /** Solutions (sitemap of 11 Nov 2026, docs/sprint-solutions.md): one page
  *  in sections, each with an id the nav dropdown lands on. Team sprints
- *  first: on the platform, then Executive Team Sprints, then how a sprint
- *  runs, the four stages that were on Methodology. Then the assessments
- *  as three cards, then keynotes and workshops. Who we work with went to
- *  the home; the form and the quotes at the foot are off, and every ask
- *  goes to Contact. All of it is in the HTML from the start. */
+ *  first: Executive Team Sprints, then how a sprint runs, the four stages
+ *  that were on Methodology, then the two tiers on the platform. Then the
+ *  assessments as three cards, then keynotes and workshops. Who we work
+ *  with went to the home; the form and the quotes at the foot are off,
+ *  and no section ends on a Talk to us button (Wilfred, 11 Nov 2026): the
+ *  nav carries it. All of it is in the HTML from the start. */
 function Solutions({ figures, c = DEFAULTS.solutions, s = DEFAULTS.start }: { figures?: boolean; c?: SolutionsContent; /** the email box's words */ s?: StartContent }) {
   const TIERS = c.tiers.items;
   // the email box in an assessment's row: LeadQ or TeamQ, opened by the row's button (3 Nov 2026)
@@ -161,38 +162,16 @@ function Solutions({ figures, c = DEFAULTS.solutions, s = DEFAULTS.start }: { fi
   return (
     <>
       <PageHead n="01" kicker={c.head.kicker} title={c.head.title} lede={c.head.lede} />
-      <Sec n="02" kicker={c.tiers.kicker} title={c.tiers.title} cls="L-sec-full" id="sprints">
-        <p className="L-cap L-sub-h">{c.tiers.platform}</p>
-        <ul className="L-assess L-tiers">
-          {TIERS.map((t, i) => (
-            <li className="card L-assess-card" key={t.name}>
-              <span className="card-tag">{t.tag}</span>
-              <h3 className="L-assess-name">{t.name}</h3>
-              <p className="L-assess-what">{t.what}</p>
-              <dl className="L-assess-meta">
-                <div><dt className="L-cap">{c.tiers.rowWho}</dt><dd>{t.who}</dd></div>
-                <div><dt className="L-cap">{c.tiers.rowGet}</dt><dd>{t.get}</dd></div>
-                {c.tiers.rows.map((r) => (
-                  <div key={r.label}><dt className="L-cap">{r.label}</dt><dd>{[r.a, r.b][i]}</dd></div>
-                ))}
-              </dl>
-              <Link className="btn btn-secondary" href={ROUTES.contact}>{c.tiers.ask} <span className="arrow">&rarr;</span></Link>
-            </li>
-          ))}
-        </ul>
-        <p className="L-mid">{c.tiers.note}</p>
-        {/* the main offering, and a sales conversation: no checkout, no price */}
-        <div className="L-assess L-exec" id="executive-sprints">
-          <div className="card L-assess-card">
-            <span className="card-tag">{c.exec.tag}</span>
-            <h3 className="L-assess-name">{c.exec.name}</h3>
-            <p className="L-assess-what">{c.exec.what}</p>
-            <dl className="L-assess-meta">
-              <div><dt className="L-cap">{c.tiers.rowWho}</dt><dd>{c.exec.who}</dd></div>
-              <div><dt className="L-cap">{c.tiers.rowGet}</dt><dd>{c.exec.get}</dd></div>
-            </dl>
-            <Link className="btn" href={ROUTES.contact}>{c.exec.button} <span className="arrow">&rarr;</span></Link>
-          </div>
+      {/* the main offering leads (Wilfred, 11 Nov 2026), set as the stages
+          under it are: the head beside, the words in the column. A sales
+          conversation: no checkout, no price, and no button, the nav has it */}
+      <Sec n="02" kicker={c.exec.tag} title={c.exec.name} id="sprints">
+        <div className="L-exec-copy" id="executive-sprints">
+          <p className="L-mid">{c.exec.what}</p>
+          <dl className="L-exec-meta">
+            <div><dt className="L-cap">{c.tiers.rowWho}</dt><dd>{c.exec.who}</dd></div>
+            <div><dt className="L-cap">{c.tiers.rowGet}</dt><dd>{c.exec.get}</dd></div>
+          </dl>
         </div>
         {SHOW_CASES ? (
           <div className="L-cases">
@@ -215,6 +194,26 @@ function Solutions({ figures, c = DEFAULTS.solutions, s = DEFAULTS.start }: { fi
         ) : null}
       </Sec>
       <Stages figures={figures} c={c.stages} />
+      <Sec n="02" kicker={c.tiers.kicker} title={c.tiers.title} cls="L-sec-full" id="platform">
+        <p className="L-cap L-sub-h">{c.tiers.platform}</p>
+        <ul className="L-assess L-tiers">
+          {TIERS.map((t, i) => (
+            <li className="card L-assess-card" key={t.name}>
+              <span className="card-tag">{t.tag}</span>
+              <h3 className="L-assess-name">{t.name}</h3>
+              <p className="L-assess-what">{t.what}</p>
+              <dl className="L-assess-meta">
+                <div><dt className="L-cap">{c.tiers.rowWho}</dt><dd>{t.who}</dd></div>
+                <div><dt className="L-cap">{c.tiers.rowGet}</dt><dd>{t.get}</dd></div>
+                {c.tiers.rows.map((r) => (
+                  <div key={r.label}><dt className="L-cap">{r.label}</dt><dd>{[r.a, r.b][i]}</dd></div>
+                ))}
+              </dl>
+            </li>
+          ))}
+        </ul>
+        <p className="L-mid">{c.tiers.note}</p>
+      </Sec>
       <Sec n="03" kicker={c.assess.kicker} title={c.assess.title} cls="L-sec-full" id="assess">
         {c.assess.lede ? <p className="L-mid">{c.assess.lede}</p> : null}
         <ul className="L-assess">
@@ -247,9 +246,6 @@ function Solutions({ figures, c = DEFAULTS.solutions, s = DEFAULTS.start }: { fi
       </Sec>
       <Sec n="04" kicker={c.workshops.kicker} title={c.workshops.title} id="workshops">
         {c.workshops.body ? <p className="L-mid">{c.workshops.body}</p> : null}
-        <div className="cta-row">
-          <Link className="btn btn-secondary" href={ROUTES.contact}>{c.workshops.button} <span className="arrow">&rarr;</span></Link>
-        </div>
       </Sec>
     </>
   );

@@ -299,7 +299,6 @@ export const DEFAULTS = {
       rowWhat: "What it is",
       rowWho: "Who it is for",
       rowGet: "What you get",
-      ask: "Talk to us about this",
       rows: [
         { label: "Price", a: "$1K per year, two TeamQ included", b: "$20K per cycle" },
         { label: "Support calls", a: "Not included", b: "Scheduled" },
@@ -316,7 +315,6 @@ export const DEFAULTS = {
       what: "Pre-work, then ninety days with two ritual keepers from the team, coached by Samuh.",
       who: "Leadership teams and mission-critical teams where the stakes justify having us in the room.",
       get: "Confidential interviews, a facilitated day one, coaching for two ritual keepers every two weeks, and the close.",
-      button: "Talk to us",
     },
     // how a sprint runs, under the tiers (sitemap of 11 Nov 2026; it was
     // Methodology's section 02)
@@ -344,8 +342,7 @@ export const DEFAULTS = {
     workshops: {
       kicker: "Shorter formats",
       title: "Keynotes and workshops",
-      body: "" /* TODO(content): keynotes and workshops copy, from Jake. Empty: the title and the button alone */,
-      button: "Talk to us",
+      body: "" /* TODO(content): keynotes and workshops copy, from Jake. Empty: the title alone */,
     },
   },
 

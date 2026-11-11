@@ -1849,7 +1849,8 @@
 .L-page .L-assess-card .L-assess-what { margin: 0 0 28px; font-size: 16px; line-height: 1.6; color: var(--text); }
 .L-page .L-assess-card .L-assess-meta { margin: 0 0 32px; display: grid; gap: 18px; }
 .L-page .L-assess-card .L-assess-meta div { display: grid; gap: 6px; }
-.L-page .L-assess-card .L-assess-meta dd { margin: 0; font-size: 15px; line-height: 1.55; color: var(--muted); }
+/* who it is for and what you get, in the text colour at body size: muted and small, they were hard to read (Wilfred, 11 Nov 2026) */
+.L-page .L-assess-card .L-assess-meta dd { margin: 0; font-size: 16px; line-height: 1.6; color: var(--text); }
 .L-page .L-assess-card .btn { align-self: flex-start; margin-top: auto; }
 /* the quiet text comes up to full strength with the column under the pointer */
 .L-page .L-assess-card :is(.L-assess-price, .L-assess-meta dd) { transition: color var(--dur) var(--ease); }
@@ -1918,9 +1919,14 @@
 @media (prefers-reduced-motion: reduce) { .L-ws-level { transition: none; } .L-ws-word { animation: none; } }
 /* the sprints: a label over the two platform tiers, then the main offering on its own */
 .L-sub-h { display: block; margin: 0 0 14px; }
-.L-assess.L-exec { grid-template-columns: 1fr; margin-top: calc(40px * var(--space, 1)); scroll-margin-top: calc(var(--nav-h, 80px) + 24px); }
-.L-page .L-exec .L-assess-card.card { border-top-color: var(--accent); }
-.L-page .L-exec .L-assess-card :is(.L-assess-what, .L-assess-meta) { max-width: 640px; }
+/* Executive Team Sprints, first on Solutions (11 Nov 2026): set as the
+   stages under it are, the words in the column at the stages' size, in
+   the text colour so who it is for and what you get read */
+.L-exec-copy { display: grid; gap: 20px; scroll-margin-top: calc(var(--nav-h, 80px) + 24px); }
+.L-exec-copy .L-mid { margin: 0; font-size: 17px; max-width: 48ch; color: var(--text); }
+.L-exec-meta { display: grid; gap: 20px; margin: 0; max-width: 48ch; }
+.L-exec-meta div { display: grid; gap: 6px; }
+.L-exec-meta dd { margin: 0; font-size: 17px; line-height: 1.65; color: var(--text); }
 .L-cases { margin-top: calc(40px * var(--space, 1)); }
 @container page (min-width: 901px) {
   .L-assess.L-tiers { grid-template-columns: repeat(2, 1fr); }
