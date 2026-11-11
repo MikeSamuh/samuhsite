@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ROUTES } from "@/lib/site";
 import type { HomeContent } from "@/lib/content/defaults";
-import { OrgFigure, type OrgLevel } from "./people";
+import { PERSON, Person } from "./people";
 
 const HEAD_TOP = 28; // the sticky head's offset below the nav, as in layout.css
 
@@ -38,45 +38,159 @@ export function useActiveItem(ref: React.RefObject<HTMLElement | null>, selector
   return active;
 }
 
-const LEVELS: OrgLevel[] = ["one", "team", "teams"];
+/* ------------------------------------------------------------------ */
 
-/** Who we work with, on the home since the sitemap of 11 Nov 2026 (it was
- *  Solutions' section 02): the org chart stays on the left and builds as
- *  the page scrolls: one person alone at first, then the team arrives
- *  under it and takes the light, then the teams. A level not yet reached
- *  is not shown; one already passed stays, dimmed. On the right the three
- *  levels scroll past. On a narrow page the chart is off and each level
- *  carries its own figure. The circles follow it. The section element is
- *  the caller's: this is what goes in its wrap. */
-export function Who({ c, n }: { c: HomeContent["who"]; /** the section number, when numbers are on */ n: string }) {
-  const ref = useRef<HTMLOListElement>(null);
-  const active = useActiveItem(ref, ".L-who-item", 120);
+// Who we support, on the home ahead of the circles (Wilfred, 11 Nov 2026).
+// The section is a tall track and its content pins, as the circles' does;
+// the scroll is the clock. On the left the head stays and three lines
+// take turns, one for each level, the open word in each shifting through
+// the people it stands for. On the right the picture: one person, then
+// three, the team, then several teams, each in its ring. At the end the
+// people go and the rings fall together into one dot, the dot the
+// circles section below grows its first circle from.
+//
+// The people are the home's own (./people), so nobody is drawn twice.
+
+const FRAME = { w: 640, h: 440 };
+const MID = { x: FRAME.w / 2, y: FRAME.h / 2 };
+/** the team's row, as the circles' fourth beat sets it out */
+const ROW_X = [172, 320, 468];
+/** the row's own middle, and the ring that holds it */
+const ROW = { cx: 320, cy: (PERSON.headCy - PERSON.headR + PERSON.footY) / 2, r: 240 };
+/** a team among several: its size, and where each of the three sits */
+const SMALL = 0.36;
+const SPOTS = [{ x: 320, y: 112 }, { x: 190, y: 318 }, { x: 450, y: 318 }];
+const DOT = 0.016; // the rings at the end, as a share of ROW.r
+
+/** the beats, as shares of the pinned scroll */
+const TEAM = { from: 0.2, to: 0.32 };
+const ORGS = { from: 0.5, to: 0.64 };
+const MERGE = { from: 0.84, to: 0.96 };
+const GONE = { from: 0.96, to: 1 };
+/** the line on the left changes halfway through each arrival */
+const TURN = [(TEAM.from + TEAM.to) / 2, (ORGS.from + ORGS.to) / 2];
+
+const clamp = (v: number) => Math.max(0, Math.min(1, v));
+const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+const ease = (t: number) => t * t * (3 - 2 * t);
+const over = (p: number, span: { from: number; to: number }) => ease(clamp((p - span.from) / (span.to - span.from)));
+
+/** how far the pinned content has travelled, 0 at the first pinned frame
+ *  and 1 at the last. The same reading the circles take */
+function usePinned(root: React.RefObject<HTMLElement | null>) {
+  const [p, setP] = useState(0);
+  useEffect(() => {
+    const el = root.current;
+    const track = el?.closest<HTMLElement>(".L-sec");
+    const stage = el?.closest<HTMLElement>(".L-wrap");
+    if (!track || !stage) return;
+    let raf = 0;
+    const read = () => {
+      raf = 0;
+      const rect = track.getBoundingClientRect();
+      const cs = getComputedStyle(track);
+      const padTop = parseFloat(cs.paddingTop) || 0;
+      const padBottom = parseFloat(cs.paddingBottom) || 0;
+      const navH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--nav-h")) || 0;
+      const travel = rect.height - padTop - padBottom - stage.offsetHeight;
+      setP(travel > 0 ? clamp((navH - rect.top - padTop) / travel) : 0);
+    };
+    const on = () => { if (!raf) raf = requestAnimationFrame(read); };
+    read();
+    window.addEventListener("scroll", on, { passive: true });
+    window.addEventListener("resize", on);
+    return () => { window.removeEventListener("scroll", on); window.removeEventListener("resize", on); cancelAnimationFrame(raf); };
+  }, [root]);
+  return p;
+}
+
+const SHIFT_MS = 2200; // how long each word holds
+
+/** the open word in a line: it shifts through the list while its line is
+ *  the one on show. With reduced motion nothing shifts and the whole list
+ *  is set out */
+function Shift({ words, on }: { words: string[]; on: boolean }) {
+  const [i, setI] = useState(0);
+  const [still, setStill] = useState(false);
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) { setStill(true); return; }
+    if (!on || words.length < 2) return;
+    const id = window.setInterval(() => setI((n) => n + 1), SHIFT_MS);
+    return () => window.clearInterval(id);
+  }, [on, words.length]);
+  if (!words.length) return null;
+  return (
+    <span className="L-ws-slot L-hl">
+      {still ? words.join(", ") : <span className="L-ws-word" key={i}>{words[i % words.length]}</span>}
+    </span>
+  );
+}
+
+/** three people in a row inside their ring, drawn about the row's middle */
+function Row({ x, y, s, spread = 1, ring, people }: { x: number; y: number; s: number; /** the two at the sides: 0 behind the middle one, 1 in place */ spread?: number; /** the ring's presence */ ring: number; /** the people's presence */ people: number }) {
+  return (
+    <g transform={`translate(${x.toFixed(2)} ${y.toFixed(2)}) scale(${s.toFixed(4)}) translate(${-ROW.cx} ${-ROW.cy})`}>
+      <circle cx={ROW.cx} cy={ROW.cy} r={ROW.r} className="L-ws-ring" style={{ opacity: ring }} />
+      <g style={{ opacity: people }}>
+        {ROW_X.map((px, j) => (
+          <g key={j} style={j === 1 ? undefined : { opacity: spread }}>
+            <Person x={lerp(ROW.cx, px, j === 1 ? 1 : spread)} />
+          </g>
+        ))}
+      </g>
+    </g>
+  );
+}
+
+const words = (list: string) => list.split(",").map((w) => w.trim()).filter(Boolean);
+
+const PICTURE = ["One person", "Three people: a team", "Several teams, each in its ring"];
+
+export function Who({ c }: { c: HomeContent["who"] }) {
+  const root = useRef<HTMLDivElement>(null);
+  const p = usePinned(root);
+  const team = over(p, TEAM);
+  const orgs = over(p, ORGS);
+  const merge = over(p, MERGE);
+  const gone = over(p, GONE);
+  const active = p < TURN[0] ? 0 : p < TURN[1] ? 1 : 2;
+  // the first team: the row at full size in the middle, then small at the
+  // top; the other two come out from the middle as it goes. At the end
+  // all three fall back to the middle and down to a dot
+  const size = lerp(lerp(1, SMALL, orgs), DOT, merge);
+  const at = (k: number) => {
+    const out = k === 0 ? { x: MID.x, y: lerp(MID.y, SPOTS[0].y, orgs) } : { x: lerp(MID.x, SPOTS[k].x, orgs), y: lerp(MID.y, SPOTS[k].y, orgs) };
+    return { x: lerp(out.x, MID.x, merge), y: lerp(out.y, MID.y, merge) };
+  };
+  const people = clamp(1 - merge * 2.5);
   return (
     <>
-      <div className="L-head">
-        <span className="L-n">{n}</span>
-        <div>
-          <p className="eyebrow L-eyebrow">{c.kicker}</p>
-          <h2 className="sec">{c.title}</h2>
+      <div className="L-ws-side">
+        <div className="L-head L-ws-head">
+          <div>
+            <p className="eyebrow L-eyebrow">{c.kicker}</p>
+            <h2 className="sec">{c.title}</h2>
+          </div>
         </div>
-        <span className="L-who-chart" aria-hidden>
+        <div className="L-ws-levels">
           {c.items.map((it, i) => (
-            <span className="L-who-node" key={it.name} data-on={i === active ? "" : undefined} data-wait={i > active ? "" : undefined}><OrgFigure level={LEVELS[i] ?? "teams"} /></span>
+            <div className="L-ws-level" key={it.name} data-on={i === active ? "" : undefined} aria-hidden={i !== active || undefined}>
+              <span className="L-cap">{it.name}</span>
+              <p className="L-ws-line">{it.before} <Shift words={words(it.words)} on={i === active} /> {it.after}</p>
+              <Link className="inline-link" href={`${ROUTES.solutions}#${it.door}`} tabIndex={i === active ? undefined : -1}>{it.link} <span className="arrow">&rarr;</span></Link>
+            </div>
           ))}
-        </span>
+        </div>
+        <p className="L-ws-coaches">{c.coaches} <Link className="inline-link" href={ROUTES.contact}>{c.coachesLink}</Link></p>
       </div>
-      <ol className="L-who-list" ref={ref}>
-        {c.items.map((it, i) => (
-          <li className="L-who-item" key={it.name} data-on={i === active ? "" : undefined}>
-            <span className="L-who-art"><OrgFigure level={LEVELS[i] ?? "teams"} /></span>
-            <h3 className="L-who-name">{it.name}</h3>
-            <span className="L-who-who">{it.who}</span>
-            <p className="L-mid">{it.line}</p>
-            <Link className="inline-link" href={`${ROUTES.solutions}#${it.door}`}>{it.link} <span className="arrow">&rarr;</span></Link>
-          </li>
-        ))}
-      </ol>
-      <p className="L-mid">{c.coaches} <Link className="inline-link" href={ROUTES.contact}>{c.coachesLink}</Link></p>
+      <div className="L-ws-pic" ref={root}>
+        <svg className="L-c-svg" viewBox={`0 0 ${FRAME.w} ${FRAME.h}`} role="img" aria-label={PICTURE[active]} style={{ opacity: 1 - gone }}>
+          {[1, 2].map((k) => (
+            <g key={k} style={{ opacity: orgs }}><Row {...at(k)} s={size} ring={1} people={people} /></g>
+          ))}
+          <Row {...at(0)} s={size} spread={team} ring={orgs} people={people} />
+        </svg>
+      </div>
     </>
   );
 }

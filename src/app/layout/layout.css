@@ -1881,35 +1881,33 @@
 .L-page .L-org-copy .L-assess-meta { grid-template-columns: 1fr 1fr; gap: 18px 32px; }
 .L-page .L-org-copy .btn { margin-top: 0; }
 .L-org-copy .L-assess-box { margin: 24px 0 0; }
-/* who we work with (11 Nov 2026): the org chart sticks in the head's
-   column, three figures joined by a hairline, the one being read at full
-   strength. The levels scroll past on the right, each most of a screen so
-   the swap has room. On a narrow page the chart is off and each level
-   shows its own figure */
-.L-who-chart { order: 5; display: grid; justify-items: center; width: 112px; margin-top: 18px; }
-.L-who-node { display: block; width: 112px; opacity: 0.3; transition: opacity calc(var(--dur) * 2) var(--ease), transform calc(var(--dur) * 2) var(--ease); }
-.L-who-node[data-on] { opacity: 1; }
-/* not reached yet: not shown. It arrives when its level is read */
-.L-who-node[data-wait] { opacity: 0; transform: translateY(-10px); }
-/* in the chart the team is small too, so the hairline draws its people */
-.L-who-node .L-org-svg[data-level="team"] { --c-stroke: var(--rule-thin); }
-.L-who-node + .L-who-node::before { content: ""; display: block; width: 0; height: 22px; margin: 0 auto; border-left: var(--rule-thin) solid var(--text); }
-.L-who-list { list-style: none; margin: 0 0 24px; padding: 0; }
-.L-who-item { display: grid; gap: 10px; align-content: start; justify-items: start; min-height: 52vh; padding: calc(40px * var(--space, 1)) 0; }
-.L-who-item:first-child { padding-top: 0; }
-.L-who-item + .L-who-item { border-top: var(--rule-thin) solid var(--border); }
-.L-who-name { margin: 0; font-family: var(--font-display); font-weight: var(--display-weight); font-size: clamp(30px, 3.4cqw, 44px); line-height: 1.05; }
-.L-who-who { font-size: 15px; color: var(--muted); }
-.L-who-item .L-mid { margin: 6px 0 4px; font-size: 17px; transition: color calc(var(--dur) * 2) var(--ease); }
-.L-who-item[data-on] .L-mid { color: var(--text); }
-.L-who-art { display: none; width: 144px; }
+/* who we support (11 Nov 2026), on the home ahead of the circles: a tall
+   track whose content pins, as the circles' does. The head and the lines
+   on the left, the picture on the right; narrow, the picture first. The
+   three lines share one cell and take turns */
+.L-s-who[data-v="morph"] { min-height: 420vh; }
+.L-s-who[data-v="morph"] > .L-wrap { position: sticky; top: var(--nav-h, 0px); min-height: calc(100vh - var(--nav-h, 0px)); padding-top: calc(32px * var(--space, 1)); padding-bottom: calc(32px * var(--space, 1)); align-content: center; }
+.L-page[data-comp="comp-editorial"] .L-s-who[data-v="morph"] > .L-wrap { grid-template-columns: minmax(220px, 320px) 1fr; align-items: center; }
+.L-page[data-comp="comp-editorial"] .L-s-who[data-v="morph"] > .L-wrap > .L-ws-side { grid-column: 1; grid-row: 1; align-self: start; align-content: start; padding-top: clamp(24px, 12vh, 140px); }
+.L-page[data-comp="comp-editorial"] .L-s-who[data-v="morph"] > .L-wrap > .L-ws-pic { grid-column: 2; grid-row: 1; }
+.L-page[data-comp="comp-editorial"] .L-s-who.L-sec-h .L-ws-head { position: static; top: auto; }
+.L-ws-side { display: grid; gap: 28px; align-content: center; }
+.L-ws-pic { width: 100%; --c-stroke: var(--rule-fat); }
+.L-ws-ring { fill: none; stroke: var(--accent-2); stroke-width: var(--rule-thin); vector-effect: non-scaling-stroke; }
+.L-ws-levels { display: grid; width: 100%; }
+.L-ws-level { grid-area: 1 / 1; display: grid; gap: 10px; align-content: start; justify-items: start; border-top: var(--rule-thin) solid var(--border); padding-top: 12px; opacity: 0; transform: translateY(8px); pointer-events: none; transition: opacity calc(var(--dur) * 2) var(--ease), transform calc(var(--dur) * 2) var(--ease); }
+.L-ws-level[data-on] { opacity: 1; transform: none; pointer-events: auto; }
+.L-ws-line { margin: 0; font-size: 18px; line-height: 1.4; color: var(--muted); }
+/* the open word, on its own line so the line around it never reflows */
+.L-ws-slot { display: block; min-height: 1.3em; font-family: var(--font-display); font-weight: var(--display-weight); font-size: 26px; line-height: 1.3; }
+.L-ws-word { display: inline-block; animation: L-stage-in calc(var(--dur) * 2) var(--ease) both; }
+.L-ws-coaches { margin: 0; font-size: 13px; line-height: 1.5; color: var(--muted); }
 @container page (max-width: 900px) {
-  .L-who-chart { display: none; }
-  .L-who-art { display: block; }
-  .L-who-item { min-height: 0; }
-  .L-who-item .L-mid { color: var(--text); }
+  .L-page[data-comp="comp-editorial"] .L-s-who[data-v="morph"] > .L-wrap { grid-template-columns: 1fr; row-gap: 24px; padding-top: 16px; padding-bottom: 16px; }
+  .L-page[data-comp="comp-editorial"] .L-s-who[data-v="morph"] > .L-wrap > .L-ws-pic { grid-column: 1; grid-row: 1; }
+  .L-page[data-comp="comp-editorial"] .L-s-who[data-v="morph"] > .L-wrap > .L-ws-side { grid-column: 1; grid-row: 2; gap: 20px; padding-top: 0; align-self: auto; }
 }
-@media (prefers-reduced-motion: reduce) { .L-who-node, .L-who-item .L-mid { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .L-ws-level { transition: none; } .L-ws-word { animation: none; } }
 /* the sprints: a label over the two platform tiers, then the main offering on its own */
 .L-sub-h { display: block; margin: 0 0 14px; }
 .L-assess.L-exec { grid-template-columns: 1fr; margin-top: calc(40px * var(--space, 1)); scroll-margin-top: calc(var(--nav-h, 80px) + 24px); }

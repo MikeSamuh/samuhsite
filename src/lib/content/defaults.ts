@@ -138,18 +138,18 @@ export const DEFAULTS = {
         { q: "How do we start?", a: "Take LeadQ. It is free, takes about five minutes, and gives you a first read on your own team before anyone else is involved. From there, TeamQ for the whole team, or a conversation about your organization." },
       ],
     },
-    // on the home since the sitemap of 11 Nov 2026, between the dictionary
-    // and the circles; it was Solutions' section 02
-    // Rahul's whiteboard of 6 Nov 2026, top to bottom. The level names are
-    // Wilfred's; the who and the lines are the whiteboard's, word for word.
-    // The team leaders line was left open on the board
+    // who we support, on the home ahead of the circles (Wilfred, 11 Nov
+    // 2026; it was Solutions' section 02). The lines are Wilfred's, after
+    // Rahul's whiteboard of 6 Nov. The open word in each line shifts
+    // through `words`, comma separated.
+    // TODO(content): more of what team leaders are curious about, from Rahul
     who: {
-      kicker: "Who we work with",
-      title: "Leaders, teams, organizations.",
+      kicker: "Who we support",
+      title: "Leaders, Teams, and entire Organizations.",
       items: [
-        { name: "Leaders", who: "Team leaders", line: "For team leaders curious about ... TODO(content): the end of this line, from Rahul.", link: "LeadQ", door: "leadq" },
-        { name: "Teams", who: "CXOs, founders, NGO leaders, team leaders, managers", line: "Seeking to accelerate their performance.", link: "TeamQ", door: "teamq" },
-        { name: "Organizations", who: "HR leaders, business leaders", line: "Looking for scaled solutions for high-performing organizations.", link: "OrgQ", door: "orgq" },
+        { name: "Leaders", before: "Team leaders curious about", words: "workplace optimization, team building", after: "", link: "LeadQ", door: "leadq" },
+        { name: "Teams", before: "For", words: "CXOs, founders, team leaders, managers", after: "seeking to accelerate their performance.", link: "TeamQ", door: "teamq" },
+        { name: "Organizations", before: "For", words: "HR leaders, business leaders", after: "looking for scaled solutions for high-performance organizations.", link: "OrgQ", door: "orgq" },
       ],
       coaches: "Coaches and consultants. TODO(content): what Samuh offers them, from Jake.",
       coachesLink: "Talk to us",

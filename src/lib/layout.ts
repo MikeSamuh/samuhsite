@@ -200,10 +200,10 @@ export const SECTIONS: SectionDef[] = [
     ],
   },
   {
-    id: "who", n: 15, kicker: "Who we work with", title: "Leaders, teams, organizations.", optIn: true,
+    id: "who", n: 15, kicker: "Who we support", title: "Leaders, Teams, and entire Organizations.", optIn: true,
     intent: "Leaders, teams, organizations on the org chart, ahead of the circles. On the home since the sitemap of 11 November 2026.",
     variants: [
-      { id: "who-chart", name: "Org chart", note: "The chart sticks on the left and builds as the three levels scroll past." },
+      { id: "who-morph", name: "People, then the dot", note: "Pinned: one person, the team, several teams, then they fall into the dot the circles grow from." },
     ],
   },
   {

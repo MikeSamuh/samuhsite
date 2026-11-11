@@ -637,8 +637,15 @@ Nav dropdowns follow the pages: Solutions is Team Sprints, Assessments,
 Workshops & Keynotes; Methodology is The science, The path. The Work
 Culture Report is off the dropdown and stays in the science section and
 the footer.
-Open: the Methodology dropdown's second item (the sitemap says Who we work
-with, which is now on the home; The path is the stand-in); whether the
-Solutions form and quotes should come back; and the org chart moving into
-the circles as one animation, which is not built: the chart sits straight
-above the circles. — Wilfred
+Confirmed by Wilfred the same day: the Methodology dropdown, and the
+Solutions form and quotes staying off. New copy for the Solutions head and
+the sprints title, which still assume the assessments come first, is the
+client's to supply.
+Who we work with became "Who we support", a pinned beat ahead of the
+circles (`src/components/focus-morph/Who.tsx`): the title is "Leaders,
+Teams, and entire Organizations.", and one line for each level takes its
+turn on the left with its open word shifting through the people it stands
+for, while the picture goes from one person to three to several teams,
+which then fall into a dot, the one the circles grow from. The lines are
+Wilfred's. Owed by Rahul: more of what team leaders are curious about
+(two words so far). — Wilfred

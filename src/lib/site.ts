@@ -33,7 +33,7 @@ export const SITE: Site = {
   // Then Mike's call the same day: the funnel narrows to the free LeadQ,
   // the tool sits straight under the circles with nothing explained
   // around it, and the thesis band goes
-  layout: { ...BASE, sections: { ...BASE.sections, who: "who-chart", circles: "circles-morph", thesis: "thesis-band", cards: "cards-one" } },
+  layout: { ...BASE, sections: { ...BASE.sections, who: "who-morph", circles: "circles-morph", thesis: "thesis-band", cards: "cards-one" } },
   // About, Methodology, Solutions, Insights (Wilfred, 11 Nov 2026); the lists under each are NAV_MENUS
   nav: { links: ["about", "process", "solutions", "insights"], brand: "icons" },
   // the metaphor cards came off the home on 6 Nov 2026: they are a landing
