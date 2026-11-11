@@ -117,9 +117,10 @@ function useActiveItem(ref: React.RefObject<HTMLElement | null>, selector: strin
 const LEVELS: OrgLevel[] = ["one", "team", "teams"];
 
 /** Who we work with (Wilfred, 11 Nov 2026): the org chart stays on the
- *  left, one person, one team, several teams, joined by a hairline, the
- *  home's people. On the right the three levels scroll past, and the one
- *  being read lights its figure, the way the Methodology stages swap. On a
+ *  left and builds as the page scrolls: one person alone at first, then
+ *  the team arrives under it and takes the light, then the teams. A level
+ *  not yet reached is not shown; one already passed stays, dimmed. On the
+ *  right the three levels scroll past. On a
  *  narrow page the chart is off and each level carries its own figure. */
 function Who({ c }: { c: SolutionsContent["who"] }) {
   const ref = useRef<HTMLElement>(null);
@@ -135,7 +136,7 @@ function Who({ c }: { c: SolutionsContent["who"] }) {
           </div>
           <span className="L-who-chart" aria-hidden>
             {c.items.map((it, i) => (
-              <span className="L-who-node" key={it.name} data-on={i === active ? "" : undefined}><OrgFigure level={LEVELS[i] ?? "teams"} /></span>
+              <span className="L-who-node" key={it.name} data-on={i === active ? "" : undefined} data-wait={i > active ? "" : undefined}><OrgFigure level={LEVELS[i] ?? "teams"} /></span>
             ))}
           </span>
         </div>

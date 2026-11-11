@@ -1139,7 +1139,10 @@
 @container page (min-width: 901px) {
   .L-page[data-comp="comp-editorial"] .L-sec.L-stages[data-slot] > .L-wrap { grid-template-columns: minmax(180px, 240px) 1fr; }
   .L-page[data-comp="comp-editorial"] .L-sec.L-stages[data-slot] > .L-wrap > :not(.L-head) { grid-column: 2; }
-  .L-page[data-comp="comp-editorial"] .L-stages[data-slot] .L-stages-head { display: flex; }
+  /* the head spans the rail, the stages and the closing line, so its
+     figure's height does not open a gap between the rail and the first
+     stage's words (11 Nov 2026) */
+  .L-page[data-comp="comp-editorial"] .L-stages[data-slot] .L-stages-head { display: flex; grid-row: 1 / span 3; }
   .L-page[data-comp="comp-editorial"] .L-stages[data-slot] .L-stage, .L-page[data-comp="comp-editorial"] .L-stages[data-slot] .L-stage:nth-child(even) { grid-template-columns: minmax(0, 1fr); min-height: 56vh; align-content: start; }
   .L-page[data-comp="comp-editorial"] .L-stages[data-slot] :is(.L-stage-art, .L-stage-line) { display: none; }
   .L-page[data-comp="comp-editorial"] .L-stages[data-slot] .L-stage-verb { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
@@ -1151,15 +1154,12 @@
 }
 .L-stages-cta { margin-top: calc(24px * var(--space, 1)); }
 .L-stages-keepers { margin-top: calc(40px * var(--space, 1)); color: var(--text); }
-/* the rail (6 Nov 2026): one line, four stops, the star on the active one.
-   It sticks under the nav for the length of the stages. --at is the active
-   stage, set by the page from the scroll state it already keeps; the star
-   and the travelled line move to it. Reduced motion: they jump */
+/* the rail (6 Nov 2026): four stops, the star on the active one. No line
+   through them (Wilfred, 11 Nov 2026). It sticks under the nav for the
+   length of the stages. --at is the active stage, set by the page from the
+   scroll state it already keeps; the star moves to it. Reduced motion: they jump */
 .L-stages { --rail-h: 76px; }
 .L-rail { position: sticky; top: var(--nav-h, 0px); z-index: 2; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); height: var(--rail-h); padding-top: 12px; margin-bottom: calc(28px * var(--space, 1)); background: var(--base); }
-.L-rail::before, .L-rail::after { content: ""; position: absolute; left: 0; top: 24px; }
-.L-rail::before { right: 0; border-top: var(--rule-thin) solid var(--border); }
-.L-rail::after { width: calc(var(--at, 0) * 25%); border-top: var(--rule-fat) solid var(--accent); transition: width calc(var(--dur) * 2) var(--ease); }
 .L-rail-stop { position: relative; display: grid; align-content: start; gap: 2px; padding: 26px 8px 0 0; }
 .L-rail-stop::before { content: ""; position: absolute; left: 0; top: 8px; width: 9px; height: 9px; border-radius: 50%; background: var(--muted); }
 .L-rail-verb { font-size: 14px; color: var(--muted); transition: color var(--dur) var(--ease); }
@@ -1167,7 +1167,7 @@
 .L-rail-star { position: absolute; left: 0; top: 0; width: 100%; height: 24px; margin-top: 12px; transform: translateX(calc(var(--at, 0) * 25%)); transition: transform calc(var(--dur) * 2) var(--ease); pointer-events: none; }
 .L-rail-star img { display: block; width: 24px; height: 24px; margin-left: -8px; }
 @media (prefers-reduced-motion: reduce) {
-  .L-rail::after, .L-rail-star, .L-rail-verb { transition: none; }
+  .L-rail-star, .L-rail-verb { transition: none; }
 }
 /* the three sprints after the first: the tag, then the line in the display type */
 .L-path { list-style: none; padding: 0; margin: 0 0 20px; }
@@ -1903,8 +1903,12 @@
    the swap has room. On a narrow page the chart is off and each level
    shows its own figure */
 .L-who-chart { order: 5; display: grid; justify-items: center; width: 112px; margin-top: 18px; }
-.L-who-node { display: block; width: 112px; opacity: 0.3; transition: opacity calc(var(--dur) * 2) var(--ease); }
+.L-who-node { display: block; width: 112px; opacity: 0.3; transition: opacity calc(var(--dur) * 2) var(--ease), transform calc(var(--dur) * 2) var(--ease); }
 .L-who-node[data-on] { opacity: 1; }
+/* not reached yet: not shown. It arrives when its level is read */
+.L-who-node[data-wait] { opacity: 0; transform: translateY(-10px); }
+/* in the chart the team is small too, so the hairline draws its people */
+.L-who-node .L-org-svg[data-level="team"] { --c-stroke: var(--rule-thin); }
 .L-who-node + .L-who-node::before { content: ""; display: block; width: 0; height: 22px; margin: 0 auto; border-left: var(--rule-thin) solid var(--text); }
 .L-who-list { list-style: none; margin: 0 0 24px; padding: 0; }
 .L-who-item { display: grid; gap: 10px; align-content: start; justify-items: start; min-height: 52vh; padding: calc(40px * var(--space, 1)) 0; }
