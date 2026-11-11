@@ -1121,7 +1121,7 @@ export function Section({ def, variant, copy = {}, demo, content }: { def: (type
 
         {def.id === "meaning" && !copy.thesisWithMeaning && (copy.revealIntro ? <Reveal><Dictionary d={h.dictionary} /></Reveal> : <Dictionary d={h.dictionary} />)}
 
-        {/* who we support carries its own head, beside the picture */}
+        {/* who we work with carries its own head, beside the picture */}
         {def.id === "who" && <Who c={h.who} />}
 
         {def.id === "circles" && v === "nested" && (

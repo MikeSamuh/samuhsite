@@ -641,8 +641,8 @@ Confirmed by Wilfred the same day: the Methodology dropdown, and the
 Solutions form and quotes staying off. New copy for the Solutions head and
 the sprints title, which still assume the assessments come first, is the
 client's to supply.
-Who we work with became "Who we support", a pinned beat ahead of the
-circles (`src/components/focus-morph/Who.tsx`): the title is "Leaders,
+Who we work with (the eyebrow; "Who we support" for an hour, then back)
+is a pinned beat ahead of the circles, three screens of scroll at most (`src/components/focus-morph/Who.tsx`): the title is "Leaders,
 Teams, and entire Organizations.", and one line for each level takes its
 turn on the left with its open word shifting through the people it stands
 for, while the picture goes from one person to three to several teams,

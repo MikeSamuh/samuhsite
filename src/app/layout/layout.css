@@ -1881,11 +1881,12 @@
 .L-page .L-org-copy .L-assess-meta { grid-template-columns: 1fr 1fr; gap: 18px 32px; }
 .L-page .L-org-copy .btn { margin-top: 0; }
 .L-org-copy .L-assess-box { margin: 24px 0 0; }
-/* who we support (11 Nov 2026), on the home ahead of the circles: a tall
+/* who we work with (11 Nov 2026), on the home ahead of the circles: a tall
    track whose content pins, as the circles' does. The head and the lines
    on the left, the picture on the right; narrow, the picture first. The
    three lines share one cell and take turns */
-.L-s-who[data-v="morph"] { min-height: 420vh; }
+/* three screens of scroll at most, the pinned one included (Wilfred, 11 Nov 2026) */
+.L-s-who[data-v="morph"] { min-height: 300vh; }
 .L-s-who[data-v="morph"] > .L-wrap { position: sticky; top: var(--nav-h, 0px); min-height: calc(100vh - var(--nav-h, 0px)); padding-top: calc(32px * var(--space, 1)); padding-bottom: calc(32px * var(--space, 1)); align-content: center; }
 .L-page[data-comp="comp-editorial"] .L-s-who[data-v="morph"] > .L-wrap { grid-template-columns: minmax(220px, 320px) 1fr; align-items: center; }
 .L-page[data-comp="comp-editorial"] .L-s-who[data-v="morph"] > .L-wrap > .L-ws-side { grid-column: 1; grid-row: 1; align-self: start; align-content: start; padding-top: clamp(24px, 12vh, 140px); }

@@ -40,7 +40,7 @@ export function useActiveItem(ref: React.RefObject<HTMLElement | null>, selector
 
 /* ------------------------------------------------------------------ */
 
-// Who we support, on the home ahead of the circles (Wilfred, 11 Nov 2026).
+// Who we work with, on the home ahead of the circles (Wilfred, 11 Nov 2026).
 // The section is a tall track and its content pins, as the circles' does;
 // the scroll is the clock. On the left the head stays and three lines
 // take turns, one for each level, the open word in each shifting through

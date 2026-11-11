@@ -138,13 +138,13 @@ export const DEFAULTS = {
         { q: "How do we start?", a: "Take LeadQ. It is free, takes about five minutes, and gives you a first read on your own team before anyone else is involved. From there, TeamQ for the whole team, or a conversation about your organization." },
       ],
     },
-    // who we support, on the home ahead of the circles (Wilfred, 11 Nov
+    // who we work with, on the home ahead of the circles (Wilfred, 11 Nov
     // 2026; it was Solutions' section 02). The lines are Wilfred's, after
     // Rahul's whiteboard of 6 Nov. The open word in each line shifts
     // through `words`, comma separated.
     // TODO(content): more of what team leaders are curious about, from Rahul
     who: {
-      kicker: "Who we support",
+      kicker: "Who we work with",
       title: "Leaders, Teams, and entire Organizations.",
       items: [
         { name: "Leaders", before: "Team leaders curious about", words: "workplace optimization, team building", after: "", link: "LeadQ", door: "leadq" },
