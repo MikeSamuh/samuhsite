@@ -102,6 +102,13 @@ Wilfred, 10 Nov: all changes use the same design format. That means:
 
 ## 2. Solutions
 
+**Changed on review, 11 Nov 2026 (Wilfred).** Assessments lead the page,
+as section 02, in the three side-by-side cards the page had before: the
+rows on the org structure are gone. Who we work with follows as 03, each
+level linking back up to its assessment. The dropdown order follows:
+Assessments, Who we work with, Sprints, Workshops. Where the text below
+says otherwise, this wins.
+
 One page. Every section has an id so the nav dropdown can land on it. All
 copy is in the HTML from the start. Nothing is fetched on a click.
 

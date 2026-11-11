@@ -6,7 +6,6 @@ import Image from "next/image";
 import Link from "next/link";
 import type { PageId } from "@/lib/layout";
 import { ROUTES, SHOW_CASES } from "@/lib/site";
-import { OrgFigure, type OrgLevel } from "@/components/focus-morph/people";
 import "@/components/contact/contact.css";
 import { StartEmail } from "@/components/start/StartEmail";
 import { ContactForm } from "@/components/contact/ContactForm";
@@ -82,12 +81,11 @@ function Sec({ n, kicker, title, children, id, cls }: { n: string; kicker: strin
 
 /* ------------------------------------------------------------------ */
 
-const LEVELS: OrgLevel[] = ["one", "team", "teams"];
-
 /** Solutions (call of 6 Nov 2026, docs/sprint-solutions.md): one page in
- *  sections, each with an id the nav dropdown lands on. Who we work with,
- *  then the assessment for each of the three in the same order, drawn on
- *  the org structure; the sprints, on the platform and then Executive Team
+ *  sections, each with an id the nav dropdown lands on. The assessments
+ *  first, as three columns (Wilfred, 11 Nov 2026: the cards read better
+ *  than the rows on the org structure, and they lead the page), then who
+ *  we work with, each level pointing back up at its assessment; the sprints, on the platform and then Executive Team
  *  Sprints; keynotes and workshops; the ask; proof. All of it is in the
  *  HTML from the start. */
 function Solutions({ c = DEFAULTS.solutions, g = DEFAULTS.global, s = DEFAULTS.start }: { c?: SolutionsContent; g?: GlobalContent; /** the email box's words */ s?: StartContent }) {
@@ -130,50 +128,48 @@ function Solutions({ c = DEFAULTS.solutions, g = DEFAULTS.global, s = DEFAULTS.s
   return (
     <>
       <PageHead n="01" kicker={c.head.kicker} title={c.head.title} lede={c.head.lede} />
-      <Sec n="02" kicker={c.who.kicker} title={c.who.title} cls="L-sec-full" id="who">
+      <Sec n="02" kicker={c.assess.kicker} title={c.assess.title} cls="L-sec-full" id="assess">
+        {c.assess.lede ? <p className="L-mid">{c.assess.lede}</p> : null}
+        <ul className="L-assess">
+          {c.assess.items.map((it, i) => (
+            <li className="card L-assess-card L-assess-anchor" key={it.name} id={it.door}>
+              <span className="card-tag">{it.tag}</span>
+              <h3 className="L-assess-name">{it.name}</h3>
+              <span className="L-assess-price">{it.price}</span>
+              <p className="L-assess-what">{it.what}</p>
+              {it.more ? <p className="L-assess-what L-org-more">{it.more}</p> : null}
+              <dl className="L-assess-meta">
+                <div><dt className="L-cap">{c.assess.rowWho}</dt><dd>{it.who}</dd></div>
+                <div><dt className="L-cap">{c.assess.rowGet}</dt><dd>{it.get}</dd></div>
+              </dl>
+              {it.door === "orgq" ? (
+                <Link className="btn btn-secondary" href={ROUTES.contact}>{it.button}</Link>
+              ) : (
+                <button type="button" className={`btn${i === 1 ? "" : " btn-secondary"}`} onClick={() => setBox(it.door === "teamq" ? "teamq" : "leadq")} aria-pressed={box === it.door} aria-controls="assess-box">{it.button}</button>
+              )}
+            </li>
+          ))}
+        </ul>
+        {box ? (
+          <div className="L-assess-box" id="assess-box" ref={boxRef}>
+            <p className="eyebrow L-eyebrow">{box === "teamq" ? "TeamQ" : "LeadQ"}</p>
+            <StartEmail c={s.form} intent={box} talk={false} key={box} />
+          </div>
+        ) : null}
+        {c.assess.note ? <p className="L-mid">{c.assess.note}</p> : null}
+      </Sec>
+      <Sec n="03" kicker={c.who.kicker} title={c.who.title} cls="L-sec-full" id="who">
         <ul className="L-assess L-who">
           {c.who.items.map((it) => (
             <li className="card L-assess-card" key={it.name}>
               <h3 className="L-assess-name">{it.name}</h3>
               <span className="L-assess-price">{it.who}</span>
               <p className="L-assess-what">{it.line}</p>
-              <Link className="inline-link" href={`${ROUTES.solutions}#${it.door}`}>{it.link} <span className="arrow">&darr;</span></Link>
+              <Link className="inline-link" href={`${ROUTES.solutions}#${it.door}`}>{it.link} <span className="arrow">&uarr;</span></Link>
             </li>
           ))}
         </ul>
         <p className="L-mid">{c.who.coaches} <Link className="inline-link" href={ROUTES.contact}>{c.who.coachesLink}</Link></p>
-      </Sec>
-      <Sec n="03" kicker={c.assess.kicker} title={c.assess.title} cls="L-sec-full" id="assess">
-        {c.assess.lede ? <p className="L-mid">{c.assess.lede}</p> : null}
-        <ul className="L-assess L-org">
-          {c.assess.items.map((it, i) => (
-            <li className="card L-assess-card L-org-row" key={it.name} id={it.door}>
-              <span className="L-org-fig"><OrgFigure level={LEVELS[i] ?? "teams"} /></span>
-              <div className="L-org-copy">
-                <span className="card-tag">{it.tag}</span>
-                <h3 className="L-assess-name">{it.name}</h3>
-                <span className="L-assess-price">{it.price}</span>
-                <p className="L-assess-what">{it.what}</p>
-                {it.more ? <p className="L-assess-what L-org-more">{it.more}</p> : null}
-                <dl className="L-assess-meta">
-                  <div><dt className="L-cap">{c.assess.rowWho}</dt><dd>{it.who}</dd></div>
-                  <div><dt className="L-cap">{c.assess.rowGet}</dt><dd>{it.get}</dd></div>
-                </dl>
-                {it.door === "orgq" ? (
-                  <Link className="btn btn-secondary" href={ROUTES.contact}>{it.button}</Link>
-                ) : (
-                  <button type="button" className={`btn${i === 1 ? "" : " btn-secondary"}`} onClick={() => setBox(it.door === "teamq" ? "teamq" : "leadq")} aria-pressed={box === it.door} aria-controls="assess-box">{it.button}</button>
-                )}
-                {box && box === it.door ? (
-                  <div className="L-assess-box" id="assess-box" ref={boxRef}>
-                    <StartEmail c={s.form} intent={box} talk={false} key={box} />
-                  </div>
-                ) : null}
-              </div>
-            </li>
-          ))}
-        </ul>
-        {c.assess.note ? <p className="L-mid">{c.assess.note}</p> : null}
       </Sec>
       <Sec n="04" kicker={c.tiers.kicker} title={c.tiers.title} cls="L-sec-full" id="sprints">
         <p className="L-cap L-sub-h">{c.tiers.platform}</p>

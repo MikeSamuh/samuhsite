@@ -109,8 +109,8 @@ export interface NavItem { label: string; page?: PageId; hash?: string; path?: s
  *  overlay the lists are open under their page. */
 export const NAV_MENUS: Partial<Record<PageId, NavItem[]>> = {
   solutions: [
-    { label: "Who we work with", page: "solutions", hash: "who" },
     { label: "Assessments", page: "solutions", hash: "assess" },
+    { label: "Who we work with", page: "solutions", hash: "who" },
     { label: "Sprints", page: "solutions", hash: "sprints" },
     { label: "Workshops", page: "solutions", hash: "workshops" },
   ],

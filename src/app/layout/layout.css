@@ -172,10 +172,16 @@
 .L-drop-btn:focus-visible { outline: var(--rule-fat) solid var(--accent-2); outline-offset: 2px; }
 .L-drop-chev { width: 7px; height: 7px; border-right: var(--rule-thin) solid currentColor; border-bottom: var(--rule-thin) solid currentColor; transform: translateY(-2px) rotate(45deg); transition: transform var(--dur) var(--ease); }
 .L-drop-btn[aria-expanded="true"] .L-drop-chev { transform: translateY(1px) rotate(225deg); }
-/* the padding at the top keeps the pointer inside on its way down */
-.L-drop-list { position: absolute; top: 100%; left: -16px; z-index: 5; list-style: none; margin: 0; padding: 14px 16px 12px; min-width: 220px; display: grid; gap: 10px; background: var(--base); border: var(--rule-thin) solid var(--border); border-top: var(--rule-fat) solid var(--accent); border-radius: 0 0 var(--radius) var(--radius); }
+/* the list (11 Nov 2026): a quiet panel a step under the nav, no accent
+   bar. Each row is a full-width target that lifts on hover. The ::before
+   bridges the gap so the pointer stays inside on its way down */
+.L-drop-list { position: absolute; top: calc(100% + 10px); left: -19px; z-index: 5; list-style: none; margin: 0; padding: 6px; min-width: 200px; display: grid; gap: 2px; background: var(--surface); border: var(--rule-thin) solid var(--border); border-radius: var(--radius); animation: L-drop-in var(--dur) var(--ease) backwards; }
+.L-drop-list::before { content: ""; position: absolute; left: 0; right: 0; top: -12px; height: 12px; }
 .L-drop-list[hidden] { display: none; }
-.L-drop-list a { white-space: nowrap; }
+.L-nav .L-drop-list a { display: block; padding: 8px 12px; white-space: nowrap; background-image: none; border-radius: var(--radius); transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease); }
+.L-nav .L-drop-list a:hover, .L-nav .L-drop-list a:focus-visible { color: var(--text); background-color: var(--surface-alt); }
+@keyframes L-drop-in { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .L-drop-list { animation: none; } }
 @media (prefers-reduced-motion: reduce) { .L-drop-chev { transition: none; } }
 .L-overlay-foot { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-top: 24px; padding-bottom: 40px; border-top: var(--rule-fat) solid var(--accent); }
 
@@ -1877,6 +1883,8 @@
 .L-org-copy { display: flex; flex-direction: column; max-width: 640px; padding: 24px 0 56px; }
 .L-org-row:last-child .L-org-copy { padding-bottom: 32px; }
 .L-page .L-assess-card .L-org-more { color: var(--muted); }
+.L-assess-anchor { scroll-margin-top: calc(var(--nav-h, 80px) + 24px); }
+.L-page .L-assess-card .L-assess-what:has(+ .L-org-more) { margin-bottom: 12px; }
 .L-page .L-org-copy .L-assess-meta { grid-template-columns: 1fr 1fr; gap: 18px 32px; }
 .L-page .L-org-copy .btn { margin-top: 0; }
 .L-org-copy .L-assess-box { margin: 24px 0 0; }
