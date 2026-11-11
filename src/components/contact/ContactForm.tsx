@@ -103,7 +103,8 @@ export function ContactForm({ c }: { c: ContactContent["form"] }) {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const text = (field: string) => String(data.get(field) ?? "").trim();
-    const role = text("role");
+    // the options carry their article for the sentence; the record does not
+    const role = text("role").replace(/^an? /i, "");
     const need = text("need");
     const email = text("email");
     const phone = text("phone");

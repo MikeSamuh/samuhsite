@@ -1328,6 +1328,23 @@ export function Section({ def, variant, copy = {}, demo, content }: { def: (type
           </>
         )}
 
+        {def.id === "offer" && (
+          <>
+            <Head def={headOf(h.offer)} />
+            <ul className="L-offer">
+              {h.offer.items.map((it) => (
+                <li key={it.name}>
+                  <Link className="L-offer-line" href={`${ROUTES.solutions}#${it.hash}`}>
+                    <span className="L-offer-name">{it.name}</span>
+                    <span className="L-mid">{it.line}</span>
+                    <span className="arrow" aria-hidden>&rarr;</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+
         {def.id === "start" && (
           <div className="L-start">
             <div>

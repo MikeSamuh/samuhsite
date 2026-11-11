@@ -1158,6 +1158,21 @@
 .L-path { list-style: none; padding: 0; margin: 0 0 20px; }
 .L-path .L-step { align-content: start; }
 .L-path-line { font-family: var(--font-display); font-weight: var(--display-weight); font-size: 20px; line-height: 1.2; }
+/* the home's closing block (6 Nov 2026): three lines, each a link into a
+   Solutions section. The name in the display type, the line beside it */
+.L-offer { list-style: none; margin: 0; padding: 0; }
+.L-offer-line { display: grid; grid-template-columns: minmax(140px, 220px) minmax(0, 1fr) auto; gap: 8px 32px; align-items: baseline; padding: 22px 0; border-top: var(--rule-thin) solid var(--border); color: var(--text); text-decoration: none; transition: border-color var(--dur) var(--ease); }
+.L-offer-line .L-mid { margin: 0; transition: color var(--dur) var(--ease); }
+.L-offer-name { font-family: var(--font-display); font-weight: var(--display-weight); font-size: clamp(22px, 2.4cqw, 30px); line-height: 1.1; transition: color var(--dur) var(--ease); }
+.L-offer-line:hover { border-top-color: var(--accent); }
+.L-offer-line:hover .L-offer-name { color: var(--accent); }
+.L-offer-line:hover .L-mid { color: var(--text); }
+.L-offer-line:focus-visible { outline: var(--rule-fat) solid var(--accent-2); outline-offset: 4px; }
+@container page (max-width: 560px) {
+  .L-offer-line { grid-template-columns: minmax(0, 1fr) auto; }
+  .L-offer-line .L-mid { grid-column: 1 / -1; grid-row: 2; }
+}
+@media (prefers-reduced-motion: reduce) { .L-offer-line, .L-offer-line .L-mid, .L-offer-name { transition: none; } }
 /* a section reached by a link lands clear of the stuck nav */
 /* --nav-h is set once the nav has measured itself; a link straight to a
    section arrives before that, so the fallback is the nav's height */

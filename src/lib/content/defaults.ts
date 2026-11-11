@@ -138,6 +138,19 @@ export const DEFAULTS = {
         { q: "How do we start?", a: "Take LeadQ. It is free, takes about five minutes, and gives you a first read on your own team before anyone else is involved. From there, TeamQ for the whole team, or a conversation about your organization." },
       ],
     },
+    // the closing block above the footer (call of 6 Nov 2026): what Samuh
+    // offers in three lines, each a link into a Solutions section, the same
+    // three the nav dropdown names. Draft, from the three-pager of Oct 2026,
+    // pages 1 and 2; it says nothing on workshops, so that line waits
+    offer: {
+      kicker: "What we offer",
+      title: "Where to start",
+      items: [
+        { name: "Assessments", line: "Samuh measures the team environment and practices, guiding the team to the levers with the highest expected performance gain.", hash: "assess" },
+        { name: "Sprints", line: "Samuh uses 90-day sprints to turn evidence into a better way of working.", hash: "sprints" },
+        { name: "Workshops", line: "TODO(content): one line on keynotes and workshops, from Jake.", hash: "workshops" },
+      ],
+    },
     start: {
       title: "What could stronger performance look like for your team?",
       sub: "",
@@ -186,9 +199,10 @@ export const DEFAULTS = {
           about: "Mike Gabour co-founded and leads several innovative ventures from a deep belief that technology and data can create transformative human experiences. His career spans nearly two decades focused on leveraging data science, AI, and analytics to drive organizational transformation and empower individuals to reach their full potential.\n\nAs Global Analytics Strategy & Design Lead at Accenture, Mike led a significant team driving employee experience for professionals worldwide. His innovations have revolutionized how organizations approach talent development and workforce planning. Mike co-authored multiple patents with MIT and The University of Chicago, creating groundbreaking solutions that have transformed recruiting practices and helped employees navigate career opportunities in an evolving digital landscape. His “Next Horizon Skills” and “Demand Driven Skilling” products have fundamentally changed how organizations invest in future-ready workforces, shaping strategic investment decisions across the enterprise.\n\nBeyond his corporate leadership, Mike is deeply committed to social impact and innovation. He founded Koinonia Ventures, a micro-lending organization empowering marginalized entrepreneurs in Egypt, creating generational wealth for families across the region. An avid sailor and craftsman, Mike designed and built his own wooden boat from mahogany and red cedar, and went on to invent Sona, an app enabling blind sailors to race and navigate autonomously. His commitment to social causes extends to his board service with two organizations: The Littlest Lamb, an orphanage near Cairo that transforms the lives of orphaned and at-risk children through comprehensive care and education, and Lila, which preserves sacred cultural traditions through immersive travel experiences and documentary films.\n\nMike holds a Bachelor of Science in Electrical/Biomedical Engineering from Northeastern University and multiple professional certifications in Strategic Workforce Planning and Design Thinking. His work has garnered numerous accolades, including multiple Brandon Hall Group Human Capital Management Excellence Awards: Gold for Future of Work, Excellence in Talent Management, and Excellence in Technology. A sought-after thought leader, Mike regularly shares his insights as a guest lecturer at Harvard and keynote speaker at Business Intelligence and HR Tech conferences.",
           photo: "/team/mike-gabour.webp" },
         { name: "Jake DeBerry", role: "Lead, Enterprise Growth", bio: "CEB/Gartner, Deloitte, NeuroLeadership Institute.",
-          // Placeholder (Wilfred, 5 Nov 2026): Jake's bio is not on samuh.work and he
-          // sent only his photo (30 Sep 2026). Replace from the admin when he sends one
-          about: "TEST COPY. Lorem ipsum dolor sit amet, consectetur adipiscing elit. This is placeholder text and not a bio. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\n\nTEST COPY. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Real bio to replace this.",
+          // his own, the 17 September 2026 version, forwarded 6 Nov 2026, word for
+          // word (Reference material, jake-bio.md). Harvard Business Review was
+          // italic in his email; the page sets plain paragraphs
+          about: "Jake joined Samuh from a belief that insight matters when it changes what people do. For more than twenty years, he has worked in the space between knowing and doing, helping grow organizations that turn research and insight into meaningful change. At Samuh, he leads enterprise growth, building the operations, relationships and partnerships that put this approach into action.\n\nJake spent eight years at CEB, now Gartner, in commercial, business leadership, and executive advisory roles. He opened new markets across Asia, beginning as the first member of the new team on the ground in Singapore and later relocating to Hong Kong. He helped Western multinationals adapt global strategies to regional realities. He also launched new advisory programs and led a business that grew more than fivefold, becoming the fastest-growing business at CEB for a time. Between his two chapters at CEB, Jake served as a Peace Corps Business Development Volunteer in the Peruvian Andes, working with artisan associations on business growth and supporting community programs in business, health, and education.\n\nHe went on to build the North American commercial function at the NeuroLeadership Institute, design and facilitate executive labs at Deloitte’s Greenhouse, and build the commercial and go-to-market function at Mentora. There, he helped bring a leadership approach developed by a Columbia Business School professor into large organizations, and work he led contributed to a leadership framework that became a Harvard Business Review cover feature.\n\nJake holds a B.A. in Economics and Psychology from the University of Virginia, with additional training across his career in sales, management, organizational design, neuroscience, finance and facilitation. He also completed a stand-up comedy course at the Washington DC Improv.\n\nPeru remains an important part of Jake’s life. He married a Peruvian, returns regularly, and continues investing in various projects there. He also tries to run one marathon and climb at least one mountain every year and, at home, can usually be found at his son’s soccer games or hosting friends and family.",
           photo: "/team/jake-deberry.webp" },
       ],
     },
@@ -380,18 +394,20 @@ export const DEFAULTS = {
       kicker: "Let’s talk",
     },
     form: {
-      imA: "I’m a",
+      // the article rides with each option, so "an HR Business Partner"
+      // reads as speech (6 Nov 2026); the form drops it from what it posts
+      imA: "I’m",
       personas: [
-        { label: "Senior Business Leader" },
-        { label: "HR Business Partner" },
-        { label: "HR Talent Lead" },
-        { label: "Team Lead" },
-        { label: "Team Coach" },
-        { label: "Consultant" },
-        { label: "Team Member" },
-        { label: "Vendor" },
-        { label: "Founder" },
-        { label: "CEO" },
+        { label: "a Senior Business Leader" },
+        { label: "an HR Business Partner" },
+        { label: "an HR Talent Lead" },
+        { label: "a Team Lead" },
+        { label: "a Team Coach" },
+        { label: "a Consultant" },
+        { label: "a Team Member" },
+        { label: "a Vendor" },
+        { label: "a Founder" },
+        { label: "a CEO" },
       ],
       lookingFor: "and",
       needs: [

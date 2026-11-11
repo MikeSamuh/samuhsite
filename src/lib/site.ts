@@ -44,7 +44,8 @@ export const SITE: Site = {
   // stays, put "tool" back in the order to have it again
   // the close at the foot is off too (6 Nov 2026): the ask is at the end of
   // the circles beat, and the FAQ ends the page
-  order: ["hero", "meaning", "circles", "voices", "case", "faq"],
+  // the closing block, what Samuh offers in three links, ends the page (call of 6 Nov 2026)
+  order: ["hero", "meaning", "circles", "voices", "case", "faq", "offer"],
   copy: {
     heroLede: null,
     thesis: "When the team environment is right, people thrive and results follow. Most teams pay a hidden performance tax instead, through their environment, not their effort. TeamQ shows where yours is.",

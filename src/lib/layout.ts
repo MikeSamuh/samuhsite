@@ -152,7 +152,7 @@ export const PAGES: PageDef[] = [
 
 export type SectionId =
   | "hero" | "thesis" | "meaning" | "circles" | "aspire" | "research"
-  | "voices" | "case" | "tool" | "cards" | "equation" | "faq" | "start";
+  | "voices" | "case" | "tool" | "cards" | "equation" | "faq" | "offer" | "start";
 
 export interface SectionDef {
   id: SectionId;
@@ -279,6 +279,13 @@ export const SECTIONS: SectionDef[] = [
     intent: "Ten questions a cold visitor asks before they book a call. Added 14 October 2026, working draft only.",
     variants: [
       { id: "faq-list", name: "List", note: "Questions down the page, each opens on click." },
+    ],
+  },
+  {
+    id: "offer", n: 14, kicker: "What we offer", title: "Where to start", optIn: true,
+    intent: "The closing block above the footer: assessments, sprints, workshops, each a link into Solutions. Added after the call of 6 November 2026.",
+    variants: [
+      { id: "offer-lines", name: "Lines", note: "Three lines, each a link." },
     ],
   },
   {

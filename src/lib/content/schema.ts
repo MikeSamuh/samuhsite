@@ -66,6 +66,7 @@ export const SCHEMA: PageSchema[] = [
       { key: "voices", label: "Testimonials", note: "The quotes themselves are under Site-wide", fields: [t("kicker", "Eyebrow"), t("title", "Title")] },
       { key: "case", label: "Case study", fields: [t("kicker", "Eyebrow"), t("title", "Title"), t("tag", "Tag line"), t("line", "Headline"), list("stats", "Figures", "figure", [t("n", "Number"), t("label", "Label")], "Only figures SAMUH has supplied in writing"), t("cta", "Download link")] },
       { key: "faq", label: "FAQ", fields: [t("kicker", "Eyebrow"), t("title", "Title"), list("items", "Questions", "question", [t("q", "Question"), ta("a", "Answer", MARKERS)])] },
+      { key: "offer", label: "What we offer", note: "The closing block above the footer. Each line links into a Solutions section", fields: [t("kicker", "Eyebrow"), t("title", "Title"), list("items", "Lines", "line", [t("name", "Name"), ta("line", "Line"), t("hash", "Section", "who, assess, sprints or workshops: the Solutions section it lands on")], "Assessments, sprints, workshops. Keep three")] },
       { key: "start", label: "The close", fields: [t("title", "Question"), ta("sub", "Line under it", "Leave empty for none"), t("placeholder", "Field placeholder"), t("startLabel", "Start button"), t("ctaPrimary", "Primary button"), t("ctaSecondary", "Secondary button")] },
     ],
   },
@@ -131,7 +132,7 @@ export const SCHEMA: PageSchema[] = [
     sections: [
       { key: "head", label: "Page head", note: "The title is the form's sentences", fields: [t("kicker", "Eyebrow")] },
       { key: "form", label: "The form", note: "Two sentences: I'm a [who] and [what]. My email is [ ], and phone is [ ]. Then the message, optional", fields: [
-        t("imA", "Sentence start", "Before the first dropdown"), list("personas", "I'm a: options", "option", [t("label", "Option")]),
+        t("imA", "Sentence start", "Before the first dropdown"), list("personas", "I'm: options", "option", [t("label", "Option", "With its article: a Team Lead, an HR Talent Lead")]),
         t("lookingFor", "Sentence middle", "Between the two dropdowns"), list("needs", "Looking for: options", "option", [t("label", "Option")]),
         t("choose", "Unpicked option", "The first line of each dropdown"),
         t("myEmail", "Second sentence start", "Before the email blank"), t("myPhone", "Second sentence middle", "Before the phone blank"),
