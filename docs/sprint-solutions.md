@@ -102,12 +102,13 @@ Wilfred, 10 Nov: all changes use the same design format. That means:
 
 ## 2. Solutions
 
-**Changed on review, 11 Nov 2026 (Wilfred).** Assessments lead the page,
-as section 02, in the three side-by-side cards the page had before: the
-rows on the org structure are gone. Who we work with follows as 03, each
-level linking back up to its assessment. The dropdown order follows:
-Assessments, Who we work with, Sprints, Workshops. Where the text below
-says otherwise, this wins.
+**Changed on review, 11 Nov 2026 (Wilfred).** The org structure belongs
+to Who we work with, not to the assessments. Section 02, Who we work with:
+the org chart stays on the left (one person, one team, several teams), and
+the info on the right changes as the page scrolls, Leaders, Teams,
+Organizations. Section 03, Assessments: the three side-by-side cards the
+page had before, LeadQ, TeamQ, OrgQ. Where the text below says otherwise,
+this wins.
 
 One page. Every section has an id so the nav dropdown can land on it. All
 copy is in the HTML from the start. Nothing is fetched on a click.
@@ -212,7 +213,7 @@ the page.
 | Solutions | Who we work with, Assessments, Sprints, Workshops. Each lands on its section id |
 | Methodology | The 90-day sprint, The science, Work Culture Report |
 | Insights | none |
-| About | Team, Careers |
+| About | none (Wilfred, 11 Nov 2026). Careers is in the footer only |
 | Let's talk | the button, unchanged |
 
 - A dropdown is a button that discloses a list of real `<Link>`s. Opens on
@@ -350,9 +351,9 @@ Rule 1. Use these as written. Anything else is `TODO(content)`.
    dropdown, the call renamed the page Methodology. Default: Methodology,
    because a nav label should match the page it opens, with "The science"
    as the second item
-2. **Careers in the top nav.** The call said top nav. Default: under About
-   and in the footer. A top-level Careers link on a site with no open
-   roles spends a nav slot on an empty page
+2. **Careers in the top nav.** The call said top nav. It went under About
+   first; on 11 Nov 2026 Wilfred took the About dropdown off, so Careers
+   is in the footer only
 3. **Site domain.** `SITE_URL` is still `https://samuh.work`. Email moved
    to `.org`; nobody has said the site does. Not changed in this sprint
 

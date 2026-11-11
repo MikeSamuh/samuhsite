@@ -823,6 +823,15 @@
 .L-stat { display: grid; gap: 4px; }
 .L-stat-n { font-family: var(--font-display); font-weight: var(--display-weight); font-size: clamp(26px, 3cqw, 40px); line-height: 1; color: var(--accent); }
 .L-stat dd { margin: 0; max-width: 16ch; }
+/* the science's three figures (11 Nov 2026): equal columns across the
+   section, a hairline over each, the number then its line in sentence
+   type. The labels are sentences, too long for the tracked caption */
+.L-case-stats.L-sci-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px 40px; max-width: 880px; margin: calc(40px * var(--space, 1)) 0 calc(56px * var(--space, 1)); }
+.L-sci-stats .L-stat { align-content: start; gap: 12px; padding-top: 18px; border-top: var(--rule-thin) solid var(--border); }
+.L-sci-stats .L-stat-n { font-size: clamp(30px, 3.6cqw, 46px); white-space: nowrap; }
+.L-sci-stats .L-stat dd { max-width: 26ch; font-family: inherit; font-size: 14px; line-height: 1.5; letter-spacing: 0; text-transform: none; }
+.L-report + .L-stages-cta { margin-top: calc(48px * var(--space, 1)); }
+@container page (max-width: 720px) { .L-case-stats.L-sci-stats { grid-template-columns: 1fr; gap: 20px; } }
 .L-sec[data-v="split"] .ph { min-height: 300px; }
 .L-sec[data-v="inline"] .ph { display: none; }
 .L-sec[data-v="inline"].L-sec { padding: calc(40px * var(--space, 1)) 0; }
@@ -1888,9 +1897,31 @@
 .L-page .L-org-copy .L-assess-meta { grid-template-columns: 1fr 1fr; gap: 18px 32px; }
 .L-page .L-org-copy .btn { margin-top: 0; }
 .L-org-copy .L-assess-box { margin: 24px 0 0; }
-/* who we work with: the three columns, shorter, each ending in its link */
-.L-page .L-who .L-assess-card .inline-link { margin-top: auto; align-self: flex-start; }
-.L-page .L-who .L-assess-card .L-assess-price { margin-bottom: 14px; }
+/* who we work with (11 Nov 2026): the org chart sticks in the head's
+   column, three figures joined by a hairline, the one being read at full
+   strength. The levels scroll past on the right, each most of a screen so
+   the swap has room. On a narrow page the chart is off and each level
+   shows its own figure */
+.L-who-chart { order: 5; display: grid; justify-items: center; width: 112px; margin-top: 18px; }
+.L-who-node { display: block; width: 112px; opacity: 0.3; transition: opacity calc(var(--dur) * 2) var(--ease); }
+.L-who-node[data-on] { opacity: 1; }
+.L-who-node + .L-who-node::before { content: ""; display: block; width: 0; height: 22px; margin: 0 auto; border-left: var(--rule-thin) solid var(--text); }
+.L-who-list { list-style: none; margin: 0 0 24px; padding: 0; }
+.L-who-item { display: grid; gap: 10px; align-content: start; justify-items: start; min-height: 52vh; padding: calc(40px * var(--space, 1)) 0; }
+.L-who-item:first-child { padding-top: 0; }
+.L-who-item + .L-who-item { border-top: var(--rule-thin) solid var(--border); }
+.L-who-name { margin: 0; font-family: var(--font-display); font-weight: var(--display-weight); font-size: clamp(30px, 3.4cqw, 44px); line-height: 1.05; }
+.L-who-who { font-size: 15px; color: var(--muted); }
+.L-who-item .L-mid { margin: 6px 0 4px; font-size: 17px; transition: color calc(var(--dur) * 2) var(--ease); }
+.L-who-item[data-on] .L-mid { color: var(--text); }
+.L-who-art { display: none; width: 144px; }
+@container page (max-width: 900px) {
+  .L-who-chart { display: none; }
+  .L-who-art { display: block; }
+  .L-who-item { min-height: 0; }
+  .L-who-item .L-mid { color: var(--text); }
+}
+@media (prefers-reduced-motion: reduce) { .L-who-node, .L-who-item .L-mid { transition: none; } }
 /* the sprints: a label over the two platform tiers, then the main offering on its own */
 .L-sub-h { display: block; margin: 0 0 14px; }
 .L-assess.L-exec { grid-template-columns: 1fr; margin-top: calc(40px * var(--space, 1)); scroll-margin-top: calc(var(--nav-h, 80px) + 24px); }

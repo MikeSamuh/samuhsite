@@ -109,8 +109,8 @@ export interface NavItem { label: string; page?: PageId; hash?: string; path?: s
  *  overlay the lists are open under their page. */
 export const NAV_MENUS: Partial<Record<PageId, NavItem[]>> = {
   solutions: [
-    { label: "Assessments", page: "solutions", hash: "assess" },
     { label: "Who we work with", page: "solutions", hash: "who" },
+    { label: "Assessments", page: "solutions", hash: "assess" },
     { label: "Sprints", page: "solutions", hash: "sprints" },
     { label: "Workshops", page: "solutions", hash: "workshops" },
   ],
@@ -119,10 +119,8 @@ export const NAV_MENUS: Partial<Record<PageId, NavItem[]>> = {
     { label: "The science", page: "process", hash: "science" },
     { label: "Work Culture Report", external: REPORT.page },
   ],
-  about: [
-    { label: "Team", page: "about", hash: "team" },
-    ...(CAREERS_LIVE ? [{ label: "Careers", path: CAREERS_PATH }] : []),
-  ],
+  // About has no list (Wilfred, 11 Nov 2026): a plain link. Careers stays
+  // in the footer
 };
 
 /** The three cases from the three-pager of Oct 2026, page 3, under

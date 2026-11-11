@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import type { PageId } from "@/lib/layout";
 import { ROUTES, SHOW_CASES } from "@/lib/site";
+import { OrgFigure, type OrgLevel } from "@/components/focus-morph/people";
 import "@/components/contact/contact.css";
 import { StartEmail } from "@/components/start/StartEmail";
 import { ContactForm } from "@/components/contact/ContactForm";
@@ -81,11 +82,84 @@ function Sec({ n, kicker, title, children, id, cls }: { n: string; kicker: strin
 
 /* ------------------------------------------------------------------ */
 
+const HEAD_TOP = 28; // the sticky head's offset below the nav, as in layout.css
+
+/** Which of a section's items the reader is on: the last one whose top has
+ *  passed a line `below` px under the stuck head. One scroll listener,
+ *  one frame at a time. The Methodology stages and Who we work with both
+ *  read it. */
+function useActiveItem(ref: React.RefObject<HTMLElement | null>, selector: string, below: number) {
+  const [active, setActive] = useState(0);
+  useEffect(() => {
+    const root = ref.current;
+    if (!root) return;
+    const items = Array.from(root.querySelectorAll<HTMLElement>(selector));
+    if (!items.length) return;
+    let raf = 0;
+    const tick = () => {
+      raf = 0;
+      const navH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--nav-h")) || 0;
+      const line = navH + HEAD_TOP + below;
+      let i = 0;
+      items.forEach((el, j) => { if (el.getBoundingClientRect().top <= line) i = j; });
+      setActive(i);
+    };
+    const kick = () => { if (!raf) raf = requestAnimationFrame(tick); };
+    const ro = new ResizeObserver(kick);
+    ro.observe(root);
+    kick();
+    window.addEventListener("scroll", kick, { passive: true });
+    return () => { ro.disconnect(); cancelAnimationFrame(raf); window.removeEventListener("scroll", kick); };
+  }, [ref, selector, below]);
+  return active;
+}
+
+const LEVELS: OrgLevel[] = ["one", "team", "teams"];
+
+/** Who we work with (Wilfred, 11 Nov 2026): the org chart stays on the
+ *  left, one person, one team, several teams, joined by a hairline, the
+ *  home's people. On the right the three levels scroll past, and the one
+ *  being read lights its figure, the way the Methodology stages swap. On a
+ *  narrow page the chart is off and each level carries its own figure. */
+function Who({ c }: { c: SolutionsContent["who"] }) {
+  const ref = useRef<HTMLElement>(null);
+  const active = useActiveItem(ref, ".L-who-item", 120);
+  return (
+    <section className="L-sec L-sec-h L-whos" id="who" data-n="02" ref={ref}>
+      <div className="L-wrap">
+        <div className="L-head">
+          <span className="L-n">02</span>
+          <div>
+            <p className="eyebrow L-eyebrow">{c.kicker}</p>
+            <h2 className="sec">{c.title}</h2>
+          </div>
+          <span className="L-who-chart" aria-hidden>
+            {c.items.map((it, i) => (
+              <span className="L-who-node" key={it.name} data-on={i === active ? "" : undefined}><OrgFigure level={LEVELS[i] ?? "teams"} /></span>
+            ))}
+          </span>
+        </div>
+        <ol className="L-who-list">
+          {c.items.map((it, i) => (
+            <li className="L-who-item" key={it.name} data-on={i === active ? "" : undefined}>
+              <span className="L-who-art"><OrgFigure level={LEVELS[i] ?? "teams"} /></span>
+              <h3 className="L-who-name">{it.name}</h3>
+              <span className="L-who-who">{it.who}</span>
+              <p className="L-mid">{it.line}</p>
+              <Link className="inline-link" href={`${ROUTES.solutions}#${it.door}`}>{it.link} <span className="arrow">&darr;</span></Link>
+            </li>
+          ))}
+        </ol>
+        <p className="L-mid">{c.coaches} <Link className="inline-link" href={ROUTES.contact}>{c.coachesLink}</Link></p>
+      </div>
+    </section>
+  );
+}
+
 /** Solutions (call of 6 Nov 2026, docs/sprint-solutions.md): one page in
- *  sections, each with an id the nav dropdown lands on. The assessments
- *  first, as three columns (Wilfred, 11 Nov 2026: the cards read better
- *  than the rows on the org structure, and they lead the page), then who
- *  we work with, each level pointing back up at its assessment; the sprints, on the platform and then Executive Team
+ *  sections, each with an id the nav dropdown lands on. Who we work with
+ *  first, on the org chart (Who, above), then the assessment for each of
+ *  the three as three columns (Wilfred, 11 Nov 2026); the sprints, on the platform and then Executive Team
  *  Sprints; keynotes and workshops; the ask; proof. All of it is in the
  *  HTML from the start. */
 function Solutions({ c = DEFAULTS.solutions, g = DEFAULTS.global, s = DEFAULTS.start }: { c?: SolutionsContent; g?: GlobalContent; /** the email box's words */ s?: StartContent }) {
@@ -128,7 +202,8 @@ function Solutions({ c = DEFAULTS.solutions, g = DEFAULTS.global, s = DEFAULTS.s
   return (
     <>
       <PageHead n="01" kicker={c.head.kicker} title={c.head.title} lede={c.head.lede} />
-      <Sec n="02" kicker={c.assess.kicker} title={c.assess.title} cls="L-sec-full" id="assess">
+      <Who c={c.who} />
+      <Sec n="03" kicker={c.assess.kicker} title={c.assess.title} cls="L-sec-full" id="assess">
         {c.assess.lede ? <p className="L-mid">{c.assess.lede}</p> : null}
         <ul className="L-assess">
           {c.assess.items.map((it, i) => (
@@ -157,19 +232,6 @@ function Solutions({ c = DEFAULTS.solutions, g = DEFAULTS.global, s = DEFAULTS.s
           </div>
         ) : null}
         {c.assess.note ? <p className="L-mid">{c.assess.note}</p> : null}
-      </Sec>
-      <Sec n="03" kicker={c.who.kicker} title={c.who.title} cls="L-sec-full" id="who">
-        <ul className="L-assess L-who">
-          {c.who.items.map((it) => (
-            <li className="card L-assess-card" key={it.name}>
-              <h3 className="L-assess-name">{it.name}</h3>
-              <span className="L-assess-price">{it.who}</span>
-              <p className="L-assess-what">{it.line}</p>
-              <Link className="inline-link" href={`${ROUTES.solutions}#${it.door}`}>{it.link} <span className="arrow">&uarr;</span></Link>
-            </li>
-          ))}
-        </ul>
-        <p className="L-mid">{c.who.coaches} <Link className="inline-link" href={ROUTES.contact}>{c.who.coachesLink}</Link></p>
       </Sec>
       <Sec n="04" kicker={c.tiers.kicker} title={c.tiers.title} cls="L-sec-full" id="sprints">
         <p className="L-cap L-sub-h">{c.tiers.platform}</p>
@@ -289,7 +351,6 @@ const STAGE_ART: [string, PoseId | null][] = [
   [STAR, null],
 ];
 
-const HEAD_TOP = 28; // the sticky head's offset below the nav, as in layout.css
 const STAGE_LINE = 172; // a stage takes over once its top is this far below that: the rail (76) and 96 more
 
 /** Methodology (the page id is still "process"). The four stages of the
@@ -305,30 +366,8 @@ const STAGE_LINE = 172; // a stage takes over once its top is this far below tha
  *  path, and the science. */
 function Process({ figures, c = DEFAULTS.process, g = DEFAULTS.global }: { figures?: boolean; c?: ProcessContent; g?: GlobalContent }) {
   const ref = useRef<HTMLElement>(null);
-  const [active, setActive] = useState(0);
+  const active = useActiveItem(ref, ".L-stage", STAGE_LINE);
   const STAGES: [string, string, string, string, PoseId | null][] = c.stages.items.slice(0, STAGE_ART.length).map((st, i) => [st.verb, st.when, st.body, STAGE_ART[i][0], STAGE_ART[i][1]]);
-
-  useEffect(() => {
-    const root = ref.current;
-    if (!root) return;
-    const items = Array.from(root.querySelectorAll<HTMLElement>(".L-stage"));
-    if (!items.length) return;
-    let raf = 0;
-    const tick = () => {
-      raf = 0;
-      const navH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--nav-h")) || 0;
-      const line = navH + HEAD_TOP + STAGE_LINE;
-      let i = 0;
-      items.forEach((el, j) => { if (el.getBoundingClientRect().top <= line) i = j; });
-      setActive(i);
-    };
-    const kick = () => { if (!raf) raf = requestAnimationFrame(tick); };
-    const ro = new ResizeObserver(kick);
-    ro.observe(root);
-    kick();
-    window.addEventListener("scroll", kick, { passive: true });
-    return () => { ro.disconnect(); cancelAnimationFrame(raf); window.removeEventListener("scroll", kick); };
-  }, []);
 
   const [verb, when, , icon, pose] = STAGES[Math.min(active, STAGES.length - 1)] ?? ["", "", "", STAR, null];
   return (
@@ -388,7 +427,7 @@ function Process({ figures, c = DEFAULTS.process, g = DEFAULTS.global }: { figur
       <Sec n="04" kicker={c.science.kicker} title={c.science.title} id="science">
         <p className="L-mid">{c.science.p1}</p>
         <p className="L-mid">{c.science.p2}</p>
-        <dl className="L-case-stats">
+        <dl className="L-case-stats L-sci-stats">
           {c.science.stats.map((st) => (
             <div className="L-stat" key={st.n}>
               <dt className="L-stat-n">{st.n}</dt>
