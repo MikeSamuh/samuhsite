@@ -141,15 +141,16 @@ export const DEFAULTS = {
     // who we work with, on the home ahead of the circles (Wilfred, 11 Nov
     // 2026; it was Solutions' section 02). The lines are Wilfred's, after
     // Rahul's whiteboard of 6 Nov. The open word in each line shifts
-    // through `words`, comma separated.
+    // through `words`, comma separated. The title's three parts are in
+    // asterisks: each lights when the picture is on it.
     // TODO(content): more of what team leaders are curious about, from Rahul
     who: {
       kicker: "Who we work with",
-      title: "Leaders, Teams, and entire Organizations.",
+      title: "*Leaders*, *Teams*, and *entire Organizations*.",
       items: [
-        { name: "Leaders", before: "Team leaders curious about", words: "workplace optimization, team building", after: "", link: "LeadQ", door: "leadq" },
-        { name: "Teams", before: "For", words: "CXOs, founders, team leaders, managers", after: "seeking to accelerate their performance.", link: "TeamQ", door: "teamq" },
-        { name: "Organizations", before: "For", words: "HR leaders, business leaders", after: "looking for scaled solutions for high-performance organizations.", link: "OrgQ", door: "orgq" },
+        { name: "Leaders", before: "Team leaders curious about", words: "workplace optimization, team building", after: "" },
+        { name: "Teams", before: "For", words: "CXOs, founders, team leaders, managers", after: "seeking to accelerate their performance." },
+        { name: "Organizations", before: "For", words: "HR leaders, business leaders", after: "looking for scaled solutions for high-performance organizations." },
       ],
       coaches: "" /* TODO(content): the coaches and consultants line, what Samuh offers them, from Jake. Empty: no line on the page */,
       coachesLink: "Talk to us",

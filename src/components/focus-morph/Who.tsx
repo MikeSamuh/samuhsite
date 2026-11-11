@@ -42,9 +42,10 @@ export function useActiveItem(ref: React.RefObject<HTMLElement | null>, selector
 
 // Who we work with, on the home ahead of the circles (Wilfred, 11 Nov 2026).
 // The section is a tall track and its content pins, as the circles' does;
-// the scroll is the clock. On the left the head stays and three lines
-// take turns, one for each level, the open word in each shifting through
-// the people it stands for. On the right the picture: one person, then
+// the scroll is the clock. On the left the head stays, its title naming
+// the three with the one on show lit, and three lines take turns, one
+// for each level, the open word in each shifting through the people it
+// stands for. On the right the picture: one person, then
 // three, the team, then several teams, each in its ring. At the end the
 // people go and the rings come together as one circle, the first circle
 // of the circles section below. That section is pulled up under this one
@@ -218,15 +219,14 @@ export function Who({ c }: { c: HomeContent["who"] }) {
         <div className="L-head L-ws-head">
           <div>
             <p className="eyebrow L-eyebrow">{c.kicker}</p>
-            <h2 className="sec">{c.title}</h2>
+            {/* the title names the three; the one the picture is on is lit */}
+            <h2 className="sec">{c.title.split("*").map((part, j) => (j % 2 ? <span className="L-ws-name" key={j} data-on={(j - 1) / 2 === active ? "" : undefined}>{part}</span> : part))}</h2>
           </div>
         </div>
         <div className="L-ws-levels">
           {c.items.map((it, i) => (
             <div className="L-ws-level" key={it.name} data-on={i === active ? "" : undefined} aria-hidden={i !== active || undefined}>
-              <span className="L-cap">{it.name}</span>
               <p className="L-ws-line">{it.before} <Shift words={words(it.words)} on={i === active} /> {it.after}</p>
-              <Link className="inline-link" href={`${ROUTES.solutions}#${it.door}`} tabIndex={i === active && side >= 0.5 ? undefined : -1}>{it.link} <span className="arrow">&rarr;</span></Link>
             </div>
           ))}
         </div>
