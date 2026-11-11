@@ -58,7 +58,8 @@ function PageHead({ n, kicker, title, lede }: { n: string; kicker: string; title
   );
 }
 
-function Sec({ n, kicker, title, children, id, cls, extra }: { n: string; kicker: string; title: string; children: React.ReactNode; id?: string; cls?: string; /** under the title, in the head */ extra?: React.ReactNode }) {
+function Sec({ n, kicker, title, children, id, cls, extra, h1 }: { n: string; kicker: string; title: string; children: React.ReactNode; id?: string; cls?: string; /** under the title, in the head */ extra?: React.ReactNode; /** the page's own title: an h1 */ h1?: boolean }) {
+  const H = h1 ? "h1" : "h2";
   return (
     <section className={`L-sec L-sec-h${cls ? ` ${cls}` : ""}`} id={id} data-n={n}>
       <div className="L-wrap">
@@ -66,7 +67,7 @@ function Sec({ n, kicker, title, children, id, cls, extra }: { n: string; kicker
           <span className="L-n">{n}</span>
           <div>
             <p className="eyebrow L-eyebrow">{kicker}</p>
-            <h2 className="sec">{title}</h2>
+            <H className="sec">{title}</H>
           </div>
           {extra}
         </div>
@@ -409,17 +410,11 @@ function About({ c = DEFAULTS.about }: { c?: AboutContent }) {
 function Contact({ c = DEFAULTS.contact, s = DEFAULTS.start }: { c?: ContactContent; s?: StartContent }) {
   return (
     <>
-      <section className="L-sec L-page-head contact-sec" data-n="01">
-        <div className="L-wrap">
-          <div className="L-head">
-            <span className="L-n">01</span>
-            <div>
-              <p className="eyebrow L-eyebrow">{c.head.kicker}</p>
-              <ContactForm c={c.form} />
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* set as the assessment under it is (Wilfred, 11 Nov 2026): the head
+          beside, the form in the column, so it reads as a form to fill in */}
+      <Sec n="01" kicker={c.head.kicker} title={c.head.title} cls="contact-sec" h1>
+        <ContactForm c={c.form} />
+      </Sec>
       <Sec n="02" kicker={c.assess.kicker} title={c.assess.title} cls="contact-assess" id="assess">
         <StartEmail c={s.form} talk={false} />
         <p className="L-mid contact-assess-line">{c.assess.line}</p>

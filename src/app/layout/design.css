@@ -1035,7 +1035,8 @@ section.band {
   margin: 0 0 10px;
 }
 
-h2.sec {
+/* h1.sec: a page whose title sits in a section head (Contact) */
+:is(h1, h2).sec {
   font-family: var(--font-display);
   font-weight: var(--display-weight);
   font-style: var(--display-style, normal);

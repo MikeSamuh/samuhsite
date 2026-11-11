@@ -128,7 +128,7 @@ export const SCHEMA: PageSchema[] = [
     note: "The call back form, then the free assessment CTA.",
     path: "/contact",
     sections: [
-      { key: "head", label: "Page head", note: "The title is the form's sentences", fields: [t("kicker", "Eyebrow")] },
+      { key: "head", label: "Page head", note: "Beside the form", fields: [t("kicker", "Eyebrow"), t("title", "Title")] },
       { key: "form", label: "The form", note: "Two sentences: I'm a [who] and [what]. My email is [ ], and phone is [ ]. Then the message, optional", fields: [
         t("imA", "Sentence start", "Before the first dropdown"), list("personas", "I'm: options", "option", [t("label", "Option", "With its article: a Team Lead, an HR Talent Lead")]),
         t("lookingFor", "Sentence middle", "Between the two dropdowns"), list("needs", "Looking for: options", "option", [t("label", "Option")]),

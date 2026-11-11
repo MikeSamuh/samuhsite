@@ -73,8 +73,9 @@ function Blank({ name, label, hint, error, errorId, after, optional, ...rest }: 
  *  /api/lead and swaps to a thanks block in place. The words and the two
  *  lists are the admin's, under Contact.
  *
- *  6 Nov 2026: the form is two sentences in the display type, the page's
- *  title: "I'm a [who] and [what]. My email is [ ], and phone is [ ]."
+ *  6 Nov 2026: the form is two sentences in the display type (the page's
+ *  title until 11 Nov 2026, when the head went beside and they came down
+ *  to a form's size): "I'm a [who] and [what]. My email is [ ], and phone is [ ]."
  *  The dropdowns and the blanks are words of them. The message box and
  *  the button sit under, and the whole form holds one screen. */
 export function ContactForm({ c }: { c: ContactContent["form"] }) {
@@ -134,13 +135,13 @@ export function ContactForm({ c }: { c: ContactContent["form"] }) {
   return (
     <form className="lead-form contact-form" ref={form} onSubmit={onSubmit} noValidate>
       <div className="contact-sentences">
-        <h1 className="display L-page-title contact-sentence">
+        <p className="contact-sentence">
           {c.imA}{" "}
           <Pick name="role" label={c.imA} choose={c.choose} options={c.personas} error={errors.role} errorId={errorId("role")} />
           {" "}{c.lookingFor}{" "}
           <Pick name="need" label="Looking for" choose={c.choose} options={c.needs} error={errors.need} errorId={errorId("need")} after="." />
-        </h1>
-        <p className="display L-page-title contact-sentence">
+        </p>
+        <p className="contact-sentence">
           {c.myEmail}{" "}
           <Blank name="email" label={c.email} hint={c.emailHint} type="email" autoComplete="email" inputMode="email" error={errors.email} errorId={errorId("email")} after="," />
           {" "}
