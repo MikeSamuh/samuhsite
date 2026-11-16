@@ -13,11 +13,14 @@ export function lines(text: string): ReactNode[] {
   return text.split("\n").flatMap((l, i) => (i ? [<br key={`b${i}`} />, l] : [l]));
 }
 
-/** *words* become an <em> with the class given, nothing else is parsed. */
-export function mark(text: string, className?: string): ReactNode[] {
-  return text.split(/(\*[^*]+\*)/).map((part, i) =>
-    part.startsWith("*") && part.endsWith("*") && part.length > 2
+/** *words* become an <em> with the class given; with a second class,
+ *  ~words~ become an <em> with that one. Nothing else is parsed. */
+export function mark(text: string, className?: string, className2?: string): ReactNode[] {
+  return text.split(className2 ? /(\*[^*]+\*|~[^~]+~)/ : /(\*[^*]+\*)/).map((part, i) =>
+    part.length > 2 && part.startsWith("*") && part.endsWith("*")
       ? <em className={className} key={i}>{part.slice(1, -1)}</em>
-      : part,
+      : className2 && part.length > 2 && part.startsWith("~") && part.endsWith("~")
+        ? <em className={className2} key={i}>{part.slice(1, -1)}</em>
+        : part,
   );
 }

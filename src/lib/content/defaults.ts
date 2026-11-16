@@ -75,12 +75,15 @@ export const DEFAULTS = {
     // for that one line (CLAUDE.md rule 6 otherwise). The four capacities
     // went with the Venn
     focus: {
-      eyebrow: "The overlooked performance driver",
+      eyebrow: "Overlooked Performance Driver",
       titleOthers: "Where *organizations* focus",
       titleWe: "Where *performance* happens",
       // the fourth beat (Wilfred, 6 Nov 2026): the team becomes three people,
       // who fill up as the meter climbs. TODO(content): draft words
-      titleHow: "How teams reach their *best*",
+// the call-out between the circles and the people (Wilfred, 16 Nov
+      // 2026): ~words~ take the cyan
+      callout: "We take a ~data-driven~ approach to find where your performance, and your team’s, is being taxed, using ~LeadQ~, ~TeamQ~ and ~OrgQ~: technology created in partnership with ~Sapien Labs~.",
+            titleHow: "How teams reach their *best*",
       howLabel: "Capacity to perform",
       howLine: "Measure the team environment, choose one practice, run it for ninety days, measure again. Capacity rises, and performance with it.",
       // the three steps' words; the numbers are in src/lib/performance-tax.ts
@@ -122,35 +125,31 @@ export const DEFAULTS = {
       ],
       cta: "Download the case study",
     },
+    // 16 Nov 2026: the FAQ is split by page, each question on one page
+    // only (here, The Science, Solutions). The words are from the FAQ
+    // SAMUH supplied that day; each answer names its subject so it reads
+    // on its own when quoted
     faq: {
       kicker: "FAQ",
       title: "Questions we get asked",
       items: [
-        { q: "What does SAMUH do?", a: "Organizational and high-performance consulting, in partnership with Sapien Labs. We work with teams on the conditions they work in, so performance rises without the cost to people." },
-        { q: "Who is it for?", a: "Teams. Leadership teams in multi-team organizations, team leads, store managers, and founders of fast-growing companies. If people do their work in a team, this applies." },
-        { q: "Why the team, and not the individual or the organization?", a: "Because the team is where people experience their work life. Organizations invest in individuals and look at the whole, and the team in between is where capacity is won or lost." },
-        { q: "What is TeamQ?", a: "SAMUH’s read on how a team works: what the work is like for the people doing it, how they live outside it, and what that does to their capacity to perform. It is built on Sapien Labs team environment factors." },
-        { q: "Is the tool on this page TeamQ?", a: "No. It shows how TeamQ thinks, with a demonstration team and a few factors moving. A TeamQ assessment is done with your own team, and the result is yours." },
-        { q: "What is the Sapien Labs partnership?", a: "Sapien Labs is our research partner and the source of the research this site leans on. Their Work Culture Report is the spine of the argument, and the team environment factors we assess come from their work." },
-        { q: "Is this about performance or about wellbeing?", a: "Both, at once. People thriving and results thriving reinforce each other rather than trading off. That is the whole point, and the reason we measure the environment instead of pushing on effort." },
-        { q: "How do you work with a team?", a: "Measurement first. LeadQ is a free read for the leader, TeamQ measures the whole team, and OrgQ maps capacity across an organization. Then the 90-day sprint: Self-guided on the platform, where the team works through it on its own; Supported, which adds calls with us; or an Executive Team Sprint, which we deliver with the leadership team." },
-        { q: "What does it cost?", a: "LeadQ is free. TeamQ is $99 per team. OrgQ and the 90-day cycles are priced on the Solutions page, and we will put a number on anything larger." },
-        { q: "How do we start?", a: "Take LeadQ. It is free, takes about five minutes, and gives you a first read on your own team before anyone else is involved. From there, TeamQ for the whole team, or a conversation about your organization." },
+        { q: "Does Samuh tell us what to change?", a: "Samuh shows you what the data says. Your team decides what to change, because practices a team designs for itself are the ones most likely to last." },
+        { q: "Where do we start with Samuh?", a: "Start with an assessment. TeamQ or OrgQ on its own gives you the data and the ranked priorities. If you go on to a Self-guided, Supported or Executive Team Sprint, that baseline becomes your starting point." },
+        { q: "What do we get from TeamQ?", a: "TeamQ compares your team with Sapien Labs benchmarks, estimates productive days gained or lost each month, and ranks the possible changes by expected gain." },
+        { q: "How soon will we know if it is working?", a: "At day 90. The team retakes TeamQ, and the comparison with its baseline shows what improved and where the next gains are." },
       ],
     },
     // who we work with, on the home ahead of the circles (Wilfred, 11 Nov
-    // 2026; it was Solutions' section 02). The lines are Wilfred's, after
-    // Rahul's whiteboard of 6 Nov. The open word in each line shifts
-    // through `words`, comma separated. The title's three parts are in
-    // asterisks: each lights when the picture is on it.
-    // TODO(content): more of what team leaders are curious about, from Rahul
+    // 2026; it was Solutions' section 02). Two beats since 16 Nov 2026,
+    // Wilfred's words: leaders, on one person, then teams and
+    // organizations, on the whole org. Each beat's title is its line, the
+    // part in asterisks in the accent
     who: {
       kicker: "Who we work with",
-      title: "*Leaders*, *Teams*, and *entire Organizations*.",
       items: [
-        { name: "Leaders", before: "Team leaders curious about", words: "workplace optimization, team building", after: "" },
-        { name: "Teams", before: "For", words: "CXOs, founders, team leaders, managers", after: "seeking to accelerate their performance." },
-        { name: "Organizations", before: "For", words: "HR leaders, business leaders", after: "looking for scaled solutions for high-performance organizations." },
+        // the cyan line under it points on to the next beat
+        { name: "Leaders", title: "*Leaders* seeking to accelerate their performance.\n~and…~" },
+        { name: "Teams and organizations", title: "*Teams and organizations* looking for scaled solutions for high-performance organizations." },
       ],
       coaches: "" /* TODO(content): the coaches and consultants line, what Samuh offers them, from Jake. Empty: no line on the page */,
       coachesLink: "Talk to us",
@@ -233,19 +232,9 @@ export const DEFAULTS = {
   // until she says which term she wants
   process: {
     head: {
-      kicker: "Methodology",
+      kicker: "The Science",
       title: "The evidence guides where to focus. The team decides what to change.",
       lede: "Built on Sapien Labs’ research into human capacity. Samuh uses 90-day sprints to turn evidence into a better way of working. The approach mainly draws on Otto Scharmer’s Theory U, systemic coaching, and design thinking.",
-    },
-    path: {
-      kicker: "The path",
-      title: "A path to sustained high performance",
-      items: [
-        { tag: "Sprint 1", line: "Ritualize one practice" },
-        { tag: "Sprint 2", line: "Strengthen the team environment" },
-        { tag: "Sprint 3", line: "Scale to the teams they lead" },
-      ],
-      note: "How the team works changes in the first sprint. Over time, high-performance practices become a way of being for leaders and the teams they lead.",
     },
     // every figure is in the spec's claims table: the three-pager, page 1,
     // and Jake's email of 29 Oct
@@ -261,6 +250,49 @@ export const DEFAULTS = {
       ],
       ctaPrimary: "Get started",
       ctaSecondary: "Ways to engage",
+    },
+    // the six dimensions of the MHQ and the two graphs: Jake's email of
+    // 16 Nov 2026 ("Graphs / Report - Workplace Culture"), his words. The
+    // graphs' bars are in src/components/science/BarChart.tsx. The copy is
+    // his placeholder until Calina signs the page off
+    mhq: {
+      kicker: "The MHQ",
+      title: "What shapes our capacity to perform",
+      lede: "Performance depends on more than skill. It depends on the capacity people can bring to the work. Sapien Labs’ Mind Health Quotient (MHQ) measures human functioning across six dimensions.",
+      items: [
+        { name: "Mood & Outlook", line: "Managing emotions and maintaining a constructive view of what lies ahead." },
+        { name: "Social Self", line: "How we relate to others and see ourselves among them." },
+        { name: "Drive & Motivation", line: "Starting, persisting and finishing what matters." },
+        { name: "Cognition", line: "Focus, memory, decision-making and seeing the longer view." },
+        { name: "Adaptability & Resilience", line: "Adjusting to change and recovering from setbacks." },
+        { name: "Mind-Body Connection", line: "Sleep, energy and the connection between physical and mental functioning." },
+      ],
+    },
+    env: {
+      kicker: "The research",
+      title: "The environment around a team matters.",
+      p1: "Sapien Labs’ workplace research shows that how people experience work is strongly associated with their capacity to function productively. And the weakest-looking part of a team environment is not necessarily where change will make the biggest difference.",
+      p2: "That is where Samuh begins.",
+      chart1Title: "Relationships and purpose matter most",
+      chart1Note: "The difference in MHQ score between people who rated each aspect of their work culture best and those who rated it worst. Team size, type of job and remote working are shown for comparison.",
+      chart2Title: "Good relationships outweigh workload",
+      chart2Note: "MHQ score for combinations of colleague relationships with workload and with flexibility over time.",
+      source: "Source: Sapien Labs, Work Culture and Mental Wellbeing, October 2024",
+    },
+    // the science questions (16 Nov 2026). Every figure is already on this
+    // page or in the FAQ SAMUH supplied
+    // the fifth answer is Wilfred's, 16 Nov 2026; its second sentence is
+    // the note under the assessments on Solutions
+    faq: {
+      kicker: "FAQ",
+      title: "Questions about the science",
+      items: [
+        { q: "Is TeamQ validated?", a: "Yes. TeamQ was developed with Sapien Labs and is built on the Mental Health Quotient (MHQ), their validated measure of human capacity." },
+        { q: "What is the MHQ?", a: "The Mental Health Quotient (MHQ) is Sapien Labs’ validated measure of human capacity, drawn from more than 3 million people in 130+ countries." },
+        { q: "What does TeamQ measure?", a: "TeamQ looks at one intact team: the environment it works in and the practices it uses. It applies the MHQ to the team, alongside 13 team environment factors and 13 team practices, and takes about five minutes per person." },
+        { q: "What is our team compared with?", a: "Sapien Labs benchmarks. A team’s TeamQ results are placed within Sapien Labs’ data on tens of thousands of senior employees, which is how TeamQ estimates productive days gained or lost each month." },
+        { q: "How are productive days calculated?", a: "Productive days gained or lost each month are estimated using the LeadQ, TeamQ and OrgQ assessments. All three are built on the same technology, developed with Sapien Labs on the MHQ, their validated measure of human capacity." },
+      ],
     },
   },
 
@@ -288,20 +320,20 @@ export const DEFAULTS = {
     },
     // the sprints (call of 6 Nov 2026): on the platform, two tiers, then
     // Executive Team Sprints, which was Guided and is the main offering.
-    // Prices stay as they are until confirmed in writing
+    // No price on the tiers (Wilfred, 16 Nov 2026): the two are tabs, the
+    // same rows under each
     tiers: {
       kicker: "Sprints",
       title: "Then the 90-day sprint.",
       platform: "On the platform",
       items: [
-        { tag: "Tier 01", name: "Self-guided", what: "On the platform. The team works through the sprint on its own.", who: "Teams with a strong leader who want the method without the meetings, and organizations rolling it out across many teams.", get: "The team process, two TeamQ measures a year, and the material to run one ritual for ninety days." },
-        { tag: "Tier 02", name: "Supported", what: "Self-guided plus periodic support calls from the Samuh team.", who: "Teams that want a second pair of eyes at the moments that matter: choosing the practice, and the check-in at day 45.", get: "Everything in Self-guided, with scheduled calls to read the data together and keep the ritual on track." },
+        { tag: "Option 1", name: "Self-guided", what: "On the platform. The team works through the sprint on its own.", who: "Teams with a strong leader who want the method without the meetings, and organizations rolling it out across many teams.", get: "The team process, two TeamQ measures a year, and the material to run one ritual for ninety days." },
+        { tag: "Option 2", name: "Supported", what: "Self-guided plus periodic support calls from the Samuh team.", who: "Teams that want a second pair of eyes at the moments that matter: choosing the practice, and the check-in at day 45.", get: "Everything in Self-guided, with scheduled calls to read the data together and keep the ritual on track." },
       ],
       rowWhat: "What it is",
       rowWho: "Who it is for",
       rowGet: "What you get",
       rows: [
-        { label: "Price", a: "$1K per year, two TeamQ included", b: "$20K per cycle" },
         { label: "Support calls", a: "Not included", b: "Scheduled" },
         { label: "TeamQ baseline and re-measure", a: "Included", b: "Included" },
         { label: "Ritual keeper coaching", a: "Self-directed", b: "At check-ins" },
@@ -320,15 +352,17 @@ export const DEFAULTS = {
     // how a sprint runs, under the tiers (sitemap of 11 Nov 2026; it was
     // Methodology's section 02)
     // the three-pager of Oct 2026, page 2, in its words
-    // Pre-work alone has a line over its verb (Wilfred, 11 Nov 2026)
+    // 16 Nov 2026: the words are from Jake's Executive Team Sprints page,
+    // each stage with its line over the verb. The length of the pre-work
+    // stays off the page
     stages: {
       items: [
-        { verb: "Discover", when: "Pre-work", body: "TeamQ and interviews with the team members. TeamQ is repeated before day 90 to measure what changed." },
-        { verb: "Align", when: "", body: "The team aligns on its goals and chooses a high-performance practice." },
-        { verb: "Co-create", when: "", body: "The practice is co-created within the rhythm of the team’s work and iterated over a few weeks." },
-        { verb: "Ritualize", when: "", body: "The practice is ritualized and the team sees the impact in the second TeamQ result." },
+        { verb: "Discover", when: "Pre-work", body: "A confidential 45-minute conversation with each leader on the team, and TeamQ, run inside an existing team meeting." },
+        { verb: "Align", when: "Day 1: opening workshop", body: "A full day together. The team sees its TeamQ and interview results, chooses the one practice with the greatest upside, selects two ritual keepers, and starts creating it." },
+        { verb: "Co-create", when: "Weeks 2 to 12", body: "The team runs the practice in its regular meetings and adjusts it as it learns. Samuh coaches the ritual keepers every two weeks, with a check-in at the midpoint." },
+        { verb: "Ritualize", when: "Day 90: closing workshop", body: "The team retakes TeamQ, sees what improved and where the next gains are, and can choose its next practice to co-create and ritualize." },
       ],
-      keepers: "Two ritual keepers from the team are coached by Samuh to maintain and strengthen the practice, with a call every two weeks and a midpoint check-in.",
+      keepers: "Samuh coaches two ritual keepers from the team so the practice keeps running after the sprint.",
     },
     // the three-pager of Oct 2026, page 3, word for word. Behind SHOW_CASES
     // in site.ts, off until Rahul clears them
@@ -341,11 +375,34 @@ export const DEFAULTS = {
         { who: "Global professional services firm", span: "6-month engagement", n1: "+1.1 (up 23%)", l1: "days gained per month across the firm", n2: "", l2: "Managing to Succeeding", quote: "The Learning Gym: a weekly rhythm the team owns, kept by a ritual keeper Samuh coached, where feedback and growth conversations happen inside live client work.", by: "The practice the team built after headcount doubled in a year" },
       ],
     },
+    // Jake's Keynotes and Workshops page (16 Nov 2026). No price line: the
+    // button is the way in
     workshops: {
-      kicker: "Shorter formats",
-      title: "Workshops and Keynotes",
-      // a placeholder, on the page until Jake's copy lands (Wilfred, 11 Nov 2026)
-      body: "TODO(content): placeholder. A short paragraph on Workshops and Keynotes goes here, from Jake: what each format is, who it is for, and how to book one.",
+      kicker: "In person or virtual",
+      title: "Keynotes and Workshops",
+      lead: "Insights on high-performing teams, grounded in Sapien Labs research.",
+      body: "A keynote brings the research to a large audience: what shapes a team’s capacity to perform, and what it costs when the environment works against people. A workshop puts it to work: leaders and managers learn practical tools and design a practice for their own team. Either is a good way to experience the Samuh method before committing to a sprint.",
+      formats: [
+        { name: "Keynote", line: "60 to 90 minutes, for offsites, summits and all-hands meetings." },
+        { name: "Virtual workshop", line: "90 minutes, for a leadership team or a group of managers." },
+        { name: "In-person workshop", line: "A full day, for a leadership team that wants to go deeper." },
+      ],
+      button: "Discuss your event",
+    },
+    // the FAQ SAMUH supplied, 16 Nov 2026, in its words, with Self-guided
+    // and Supported where it said Team Performance Platform (Wilfred, the
+    // same day), so the names match the tiers above
+    faq: {
+      kicker: "FAQ",
+      title: "Questions about working with Samuh",
+      items: [
+        { q: "How is TeamQ different from an engagement survey?", a: "Engagement surveys report how individuals feel across a company. TeamQ looks at one intact team: the environment it works in and the practices it uses. It compares the team with Sapien Labs benchmarks, estimates productive days gained or lost each month, and ranks the possible changes by expected gain." },
+        { q: "How much of our time does it take?", a: "TeamQ takes about five minutes per person. In a Self-guided or Supported sprint, a team spends about 5 to 6 hours together, spread over three to four months. An Executive Team Sprint adds a 45-minute conversation with each leader, a full-day opening workshop and a closing workshop. In both, the practice itself runs inside meetings you already hold." },
+        { q: "What is a ritual keeper?", a: "A ritual keeper is one of two team members who own the new practice. They make sure it happens, notice what needs adjusting, and keep it going after Samuh steps back." },
+        { q: "What happens when people join or leave the team?", a: "Most teams change during the work, sometimes within the first 90 days. Each new member gets a one-on-one call with Samuh to get up to speed. Samuh also uses these moments to bring in practices that help the team reset, such as revisiting the team’s history together with the people arriving and leaving." },
+        { q: "What if nothing moves at day 90?", a: "If nothing moves at day 90, you’ll see it in the TeamQ re-measure, and so will Samuh. The closing workshop looks at why: whether the practice was the right one, whether it held, and what the data suggests next. You keep the data either way." },
+        { q: "What if some of our leaders are still developing?", a: "Many teams start there. The work is designed to sit with the team rather than with one person: the team chooses the practice, two ritual keepers run it, and TeamQ gives everyone the same picture. If you’re unsure a manager is ready to lead it, an Executive Team Sprint puts Samuh in the room instead." },
+      ],
     },
   },
 

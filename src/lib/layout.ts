@@ -24,7 +24,8 @@ import {
 // x1.25, unblur in, glow on hover. The background is the one thing left
 // open, so it is a dial here.
 export const LOCKED_HASH =
-  "#modern.void.pink-magenta.cyan-steel.marcellus.caption-gilda.heavy.scale-125.unblur.glow";
+  // captions in the eyebrow's face, IBM Plex Mono, not Gilda Display (Wilfred, 16 Nov 2026)
+  "#modern.void.pink-magenta.cyan-steel.marcellus.heavy.scale-125.unblur.glow";
 
 export function lockedCombo(bg: BackdropId): Combo {
   const c = parseComboHash(LOCKED_HASH);
@@ -139,7 +140,7 @@ export interface PageDef {
 export const PAGES: PageDef[] = [
   { id: "home", name: "Home", nav: true, note: "The argument, then conversion." },
   { id: "solutions", name: "Solutions", nav: true, note: "One page in sections: team sprints and how one runs, the assessments, keynotes and workshops." },
-  { id: "process", name: "Methodology", nav: true, note: "Research first: the science, then the path of three sprints. /methodology." },
+  { id: "process", name: "The Science", nav: true, note: "The science, with Sapien Labs. Was Methodology; /science." },
   { id: "insights", name: "Insights", nav: true, note: "Foundations, articles, video and research in one filterable feed. Research gets its own weight." },
   { id: "about", name: "About", nav: true, note: "About SAMUH, the team, Sapien Labs in the body. Partners TBA." },
   { id: "contact", name: "Contact", nav: true, note: "Form plus calendar booking, contact details." },
@@ -200,10 +201,10 @@ export const SECTIONS: SectionDef[] = [
     ],
   },
   {
-    id: "who", n: 15, kicker: "Who we work with", title: "Leaders, Teams, and entire Organizations", optIn: true,
-    intent: "Leaders, teams, organizations on the org chart, ahead of the circles. On the home since the sitemap of 11 November 2026.",
+    id: "who", n: 15, kicker: "Who we work with", title: "Leaders, then teams and organizations", optIn: true,
+    intent: "Leaders, then teams and organizations, ahead of the circles. On the home since the sitemap of 11 November 2026; two beats since 16 November.",
     variants: [
-      { id: "who-morph", name: "People, then the dot", note: "Pinned: one person, the team, several teams, then they fall into the dot the circles grow from." },
+      { id: "who-morph", name: "People, then the dot", note: "Pinned: one person, then the whole organization, then they fall into the dot the circles grow from." },
     ],
   },
   {

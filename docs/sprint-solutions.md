@@ -384,3 +384,26 @@ org structure, the nav dropdowns,
 the email box on the home handing off after posting the lead, Jake's bio
 in, `/careers` live with a posting made from the admin, no "DIY" anywhere,
 and `npm run build` passes. The graphs follow when Jake sends them.
+
+## 16 Nov 2026: Solutions, after Wilfred's review
+
+These replace what is above where they differ.
+
+- **Executive Team Sprints.** The lead paragraph over the stages is off the
+  page. Who it is for and What you get are labelled in the eyebrow's cyan.
+  At desktop width the figure under the title waits until Pre-work is level
+  with it, each stage's words hold beside the figure, and only the stage
+  the figure shows is seen. Every stage has a line over its verb: Pre-work,
+  Day 1: opening workshop, Weeks 2 to 12, Day 90: closing workshop. The
+  words are from Jake's Executive Team Sprints page. The length of the
+  pre-work stays off the page.
+- **Sprints on the platform.** Two tabs, Self-guided and Supported, the
+  same rows under each. No price on the page.
+- **Assessments.** Three tabs, LeadQ, TeamQ, OrgQ. `#leadq`, `#teamq` and
+  `#orgq` open their tab. The prices stay.
+- **Keynotes and Workshops.** Jake's copy: the lead line, the paragraph,
+  three formats, and a Discuss your event button to Contact. No price line.
+- **Section heads.** Every section on Solutions has its head beside, at one
+  width. The full-width head is no longer used there.
+- **The small caption label, site-wide** (`.L-cap`): 13px in a stronger
+  colour, it was hard to read at 10.5px muted.

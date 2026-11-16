@@ -20,6 +20,8 @@ import { PERSON, Person, bust } from "./people";
 // the head becomes "Where we focus" and the key keeps the team alone.
 // The third move, the four-set Venn of capacities, was cut by the client on
 // 2 November 2026; its geometry stays only so the shapes still interpolate.
+// Between the circles and that beat a call-out holds the stage alone
+// (Wilfred, 16 Nov 2026): how Samuh finds the tax, and with whom.
 // In its place (Wilfred, 6 Nov 2026) a fourth beat in three steps: the
 // circles give way to three hollow people, the team, and water rises
 // through all three as one level, a struggling team environment, then a
@@ -90,18 +92,26 @@ const GROW = { from: 0.2, to: 0.95 };
 /** three beats on the pinned scroll (Wilfred, 2 Nov 2026): the enterprise
  *  alone, then the individual appears at its centre, then the team arrives
  *  between them */
-const INDIVIDUAL = { from: 0.05, to: 0.18 };
-const ARRIVE = { from: 0.26, to: 0.42 };
+const INDIVIDUAL = { from: 0.03, to: 0.105 };
+const ARRIVE = { from: 0.15, to: 0.2325 };
+/** the call-out between the circles and the people (Wilfred, 16 Nov 2026):
+ *  the circles and the side column go (AWAY), one statement holds the
+ *  stage alone (SAY in, SAID out), then the people come where it was */
+const AWAY = { from: 0.27, to: 0.3075 };
+const SAY = { from: 0.2925, to: 0.33 };
+const SAID = { from: 0.3825, to: 0.4125 };
 /** the fourth beat (6 Nov 2026): the circles cross to three people (PEOPLE),
  *  then three steps, each the water rising to the next level and the
  *  meter and readout moving with it; the CTA last. The Venn never comes */
-const PEOPLE = { from: 0.46, to: 0.56 };
+const PEOPLE = { from: 0.39, to: 0.465 };
+/** each step is a short move and a long hold, most of a screen of scroll,
+ *  so a step is not scrolled past by accident (Wilfred, 16 Nov 2026) */
 const STEPS = [
-  { from: 0.58, to: 0.66 },
-  { from: 0.71, to: 0.79 },
-  { from: 0.84, to: 0.92 },
+  { from: 0.49, to: 0.54 },
+  { from: 0.63, to: 0.68 },
+  { from: 0.77, to: 0.82 },
 ];
-const CTA = { from: 0.94, to: 0.99 };
+const CTA = { from: 0.93, to: 0.98 };
 
 /** the three people, hollow, in a row where the team circle was. Each is a
  *  head and a bust with round shoulders. One water level fills all three,
@@ -115,6 +125,10 @@ const WATER = { x0: 100, x1: 540, top: PERSON.headCy - PERSON.headR, bottom: PER
 const LEVELS = TAX_STEPS.map((t, j) => (j === TAX_STEPS.length - 1 ? 1 : ((t.from + t.to) / 2 - MHQ_SCALE.min) / (MHQ_SCALE.max - MHQ_SCALE.min)));
 /** where the needle points at each step: the window's middle, inside its band */
 const SCORES = TAX_STEPS.map((t) => (t.from + t.to) / 2);
+/** where each step's needle sits along the meter's gradient, 0 at the pink
+ *  end and 1 at the cyan: the gradient runs across the arc, left to right.
+ *  The step's figures take that colour (Wilfred, 16 Nov 2026) */
+const TINTS = SCORES.map((sc) => (1 - Math.cos(((sc - MHQ_SCALE.min) / (MHQ_SCALE.max - MHQ_SCALE.min)) * Math.PI)) / 2);
 /** the water's outline at a level, its surface at time t (seconds) */
 function waterPath(level: number, t: number): string {
   const surface = WATER.bottom - (WATER.bottom - WATER.top + 6) * level;
@@ -222,6 +236,7 @@ export function FocusMorph({ words = DEFAULTS.home.focus, cta }: { /** the heads
     off: Object.fromEntries(KEYS.map((k) => [k, { x: 0, y: 0 }])) as Record<Key, Pt>, // where each circle is drawn, tether plus float
     star: { x: 0, y: 0 } as Pt,
     e: 0,
+    away: 0, // the circles gone, for the call-out
     q: 0,
     i: 0,
     g: 0,
@@ -258,6 +273,7 @@ export function FocusMorph({ words = DEFAULTS.home.focus, cta }: { /** the heads
       m.current.i = over(next, INDIVIDUAL);
       m.current.q = over(next, ARRIVE);
       m.current.e = over(next, PEOPLE);
+      m.current.away = over(next, AWAY);
       m.current.level = levelAt(STEPS.map((sp) => over(next, sp)));
       stage.style.setProperty("--h", over(enter, HEAD).toFixed(4));
       stage.style.setProperty("--c", over(next, CTA).toFixed(4));
@@ -265,6 +281,8 @@ export function FocusMorph({ words = DEFAULTS.home.focus, cta }: { /** the heads
       stage.style.setProperty("--i", m.current.i.toFixed(4));
       stage.style.setProperty("--q", m.current.q.toFixed(4));
       stage.style.setProperty("--p", m.current.e.toFixed(4));
+      stage.style.setProperty("--a", m.current.away.toFixed(4));
+      stage.style.setProperty("--k", (over(next, SAY) * (1 - over(next, SAID))).toFixed(4));
       setP(next);
       setG(m.current.g);
     };
@@ -281,6 +299,8 @@ export function FocusMorph({ words = DEFAULTS.home.focus, cta }: { /** the heads
       stage.style.removeProperty("--i");
       stage.style.removeProperty("--q");
       stage.style.removeProperty("--p");
+      stage.style.removeProperty("--a");
+      stage.style.removeProperty("--k");
       stage.style.removeProperty("--c");
     };
   }, []);
@@ -292,6 +312,9 @@ export function FocusMorph({ words = DEFAULTS.home.focus, cta }: { /** the heads
   const joined = i > 0.5;
   const arrived = q > 0.5;
   const people = e > 0.5;
+  // the call-out: the circles are away, and the statement is up
+  const away = over(p, AWAY) > 0.5;
+  const saying = over(p, SAY) > 0.5 && over(p, SAID) < 0.5;
   // the circles hold their nested shape while they fade (no Venn)
   const shapes = shapesAt(0, q, g, i);
   const level = levelAt(steps);
@@ -311,7 +334,7 @@ export function FocusMorph({ words = DEFAULTS.home.focus, cta }: { /** the heads
   const hit = (pt: Pt | null): Key[] => {
     if (!pt) return [];
     const s = m.current;
-    if (s.e > 0.5) return [];
+    if (s.e > 0.5 || s.away > 0.5) return [];
     const live = shapesAt(0, s.q, s.g, s.i);
     const x = pt.x + FRAME.w / 2;
     const y = pt.y + FRAME.h / 2;
@@ -402,6 +425,29 @@ export function FocusMorph({ words = DEFAULTS.home.focus, cta }: { /** the heads
     return () => { stop(); io.disconnect(); };
   }, []);
 
+  // the meter's bands are a way through the steps (Wilfred, 16 Nov 2026):
+  // a band takes the page to the step nearest it on the scale, by
+  // scrolling, since the scroll is the clock. Three steps have figures
+  // (src/lib/performance-tax.ts), so two bands share each
+  const stepOf = (b: { min: number; max: number }) => {
+    const mid = (b.min + b.max) / 2;
+    return SCORES.reduce((best, sc, j) => (Math.abs(sc - mid) < Math.abs(SCORES[best] - mid) ? j : best), 0);
+  };
+  const goStep = (j: number) => {
+    const track = root.current?.closest<HTMLElement>(".L-sec");
+    const stage = root.current?.closest<HTMLElement>(".L-wrap");
+    if (!track || !stage) return;
+    const rect = track.getBoundingClientRect();
+    const cs = getComputedStyle(track);
+    const padTop = parseFloat(cs.paddingTop) || 0;
+    const navH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--nav-h")) || 0;
+    const travel = rect.height - padTop - (parseFloat(cs.paddingBottom) || 0) - stage.offsetHeight;
+    // the step at rest: after its own move, before the next begins
+    const at = (STEPS[j].to + (STEPS[j + 1]?.from ?? CTA.from)) / 2;
+    const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    window.scrollTo({ top: window.scrollY + rect.top + padTop - navH + travel * at, behavior: still ? "auto" : "smooth" });
+  };
+
   const keyHover = (k: Key) => (ev: React.PointerEvent) => { if (ev.pointerType !== "touch") setHotIfChanged([k]); };
   const on = (k: Key) => hot.includes(k) || undefined;
 
@@ -418,7 +464,7 @@ export function FocusMorph({ words = DEFAULTS.home.focus, cta }: { /** the heads
             <p className="eyebrow L-eyebrow">{words.eyebrow}</p>
             <div className="L-fm-titles">
               <h2 className="sec L-fm-title L-fm-h0" aria-hidden={arrived || undefined}>{mark(words.titleOthers, "L-hl")}</h2>
-              <h2 className="sec L-fm-title L-fm-h1" aria-hidden={!arrived || people || undefined}>{mark(words.titleWe, "L-hl")}</h2>
+              <h2 className="sec L-fm-title L-fm-h1" aria-hidden={!arrived || away || undefined}>{mark(words.titleWe, "L-hl")}</h2>
               <h2 className="sec L-fm-title L-fm-h2 L-fm-in" aria-hidden={!people || undefined}>{mark(words.titleHow ?? "", "L-hl")}</h2>
             </div>
           </div>
@@ -429,7 +475,7 @@ export function FocusMorph({ words = DEFAULTS.home.focus, cta }: { /** the heads
             column never moves */}
         <div className="L-fm-key">
           {(["others", "team"] as const).map((which) => (
-            <dl className={`L-fm-legend L-fm-legend-3 L-fm-legend-${which} L-fm-out`} key={which} aria-hidden={(which === "team" ? !arrived : arrived) || undefined}>
+            <dl className={`L-fm-legend L-fm-legend-3 L-fm-legend-${which} L-fm-out`} key={which} aria-hidden={(which === "team" ? !arrived || away : arrived) || undefined}>
               {FOCUS.filter(({ key: k }) => (which === "team") === (k === "team")).map(({ key: k, name, label, note }) => (
                 <div className={`L-fm-item L-fm-item-${k}`} key={k} data-on={on(k)} data-off={(k === "team" ? !arrived : k === "ind" ? !joined || arrived : arrived) || undefined} onPointerEnter={keyHover(k)} onPointerLeave={onLeave}>
                   <dt>{name}</dt>
@@ -444,7 +490,7 @@ export function FocusMorph({ words = DEFAULTS.home.focus, cta }: { /** the heads
               across the section; the three share one cell and take turns */}
           <div className="L-fm-legend L-fm-meter L-fm-in" aria-hidden={!people || undefined}>
             <span className="L-cap">{words.howLabel}</span>
-            <svg className="capacity-gauge L-fm-gauge" viewBox="0 0 200 116" role="img" aria-label={`A meter at ${meterBand.name}, stepping from ${mhqBand(SCORES[0]).name} to ${mhqBand(SCORES[SCORES.length - 1]).name}`}>
+            <svg className="capacity-gauge L-fm-gauge" viewBox="0 0 200 116" role="group" aria-label={`A meter at ${meterBand.name}, stepping from ${mhqBand(SCORES[0]).name} to ${mhqBand(SCORES[SCORES.length - 1]).name}`}>
               {/* the brand's two colours along the arc (Wilfred, 6 Nov 2026): pink
                   at the left end, cyan at the right, blended between */}
               <defs>
@@ -454,7 +500,17 @@ export function FocusMorph({ words = DEFAULTS.home.focus, cta }: { /** the heads
                 </linearGradient>
               </defs>
               {[...MHQ_BANDS].reverse().map((b) => (
-                <path key={b.id} d={gArc(b.min, b.max)} className="gauge-band" data-on={b.id === meterBand.id || undefined} />
+                <path
+                  key={b.id}
+                  d={gArc(b.min, b.max)}
+                  className="gauge-band L-fm-band"
+                  data-on={b.id === meterBand.id || undefined}
+                  role="button"
+                  tabIndex={people ? 0 : -1}
+                  aria-label={`${b.name}: show a ${(words.steps?.[stepOf(b)]?.label ?? "").replace(/^A /, "")}`}
+                  onClick={() => goStep(stepOf(b))}
+                  onKeyDown={(ev) => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); goStep(stepOf(b)); } }}
+                />
               ))}
               <line className="gauge-needle L-fm-needle" x1={GAUGE.cx - GAUGE.r + 18} y1={GAUGE.cy} x2={GAUGE.cx - GAUGE.r - 14} y2={GAUGE.cy} style={{ transform: `rotate(${meterTurn.toFixed(2)}deg)` }} />
               <text className="L-fm-gauge-word" x={GAUGE.cx} y={GAUGE.cy - 4}>{meterBand.name}</text>
@@ -464,13 +520,20 @@ export function FocusMorph({ words = DEFAULTS.home.focus, cta }: { /** the heads
         </div>
       </div>
 
+      {/* the call-out, alone on the stage between the circles and the people */}
+      {words.callout ? (
+        <div className="L-fm-callout" aria-hidden={!saying || undefined}>
+          <p className="L-fm-callout-text">{mark(words.callout, "L-hl", "L-hl-2")}</p>
+        </div>
+      ) : null}
+
       <div className="L-circ L-fm" ref={root} data-people={people || undefined} data-hot={hot.join(" ") || undefined}>
         <svg
           ref={svgRef}
           className="L-c-svg"
           viewBox={`0 0 ${FRAME.w} ${FRAME.h}`}
           role="img"
-          aria-label={people ? "Three people, filling with water as the capacity meter steps up" : arrived ? "Three nested circles: enterprise, team, individual" : joined ? "Two nested circles: enterprise and individual" : "One circle: the enterprise"}
+          aria-label={saying ? "" : people ? "Three people, filling with water as the capacity meter steps up" : arrived ? "Three nested circles: enterprise, team, individual" : joined ? "Two nested circles: enterprise and individual" : "One circle: the enterprise"}
           onPointerMove={onMove}
           onPointerLeave={onLeave}
           onClick={(ev) => { const ks = hit(toFrame(ev)); setHotIfChanged(same(ks, m.current.hot) ? [] : ks); }}
@@ -528,7 +591,7 @@ export function FocusMorph({ words = DEFAULTS.home.focus, cta }: { /** the heads
           const last = j === TAX_STEPS.length - 1;
           const w = words.steps?.[j];
           return (
-            <div className="L-fm-readout" key={t.row} style={{ "--r": readouts[j].toFixed(3) } as React.CSSProperties} aria-hidden={stepNow !== j + 1 || undefined}>
+            <div className="L-fm-readout" key={t.row} style={{ "--r": readouts[j].toFixed(3), "--at": `${(TINTS[j] * 100).toFixed(1)}%` } as React.CSSProperties} aria-hidden={stepNow !== j + 1 || undefined}>
               <span className="L-cap">{w?.label} · MHQ {t.window}</span>
               {last ? (
                 <>

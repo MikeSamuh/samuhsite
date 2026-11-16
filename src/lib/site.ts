@@ -59,7 +59,8 @@ export const SITE: Site = {
       ["Bottom of the mountain", "The summit is agreed. The route is not.", "/metaphor/mountain.png"],
     ],
     revealIntro: true,
-    revealSections: ["tool", "faq"],
+    // every section after the pinned ones fades up the same way (16 Nov 2026)
+    revealSections: ["tool", "voices", "case", "faq"],
     startSub: null,
     // TODO(content): the tool asks for the assessment, draft words
     tool: {
@@ -83,9 +84,10 @@ export const SITE: Site = {
 export const ROUTES: Record<PageId, string> = {
   home: "/",
   solutions: "/solutions",
-  // Methodology since the call of 6 Nov 2026; /process redirects here.
+  // The Science since 16 Nov 2026 (was Methodology, 6 Nov); /process and
+  // /methodology redirect here.
   // The page id stays "process", see PageId in layout.ts
-  process: "/methodology",
+  process: "/science",
   insights: "/insights",
   about: "/about",
   contact: "/contact",
@@ -118,10 +120,7 @@ export const NAV_MENUS: Partial<Record<PageId, NavItem[]>> = {
     { label: "Assessments", page: "solutions", hash: "assess" },
     { label: "Workshops & Keynotes", page: "solutions", hash: "workshops" },
   ],
-  process: [
-    { label: "The science", page: "process", hash: "science" },
-    { label: "The path", page: "process", hash: "path" },
-  ],
+  // The Science has no list either (16 Nov 2026): it is one section now
   // About has no list (Wilfred, 11 Nov 2026): a plain link. Careers stays
   // in the footer
 };

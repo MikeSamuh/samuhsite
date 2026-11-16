@@ -239,12 +239,14 @@
 .L-hl { font-style: normal; color: var(--accent); }
 .L-hl-2 { font-style: normal; color: var(--accent-2); }
 
+/* the small label, site-wide: a step up in size and strength, at 10.5px
+   in the muted colour it was hard to read (Wilfred, 16 Nov 2026) */
 .L-cap {
   font-family: var(--font-caption);
-  font-size: 10.5px;
-  letter-spacing: 0.12em;
+  font-size: 13px;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--muted);
+  color: color-mix(in srgb, var(--text) 78%, transparent);
 }
 
 .L-big {
@@ -504,11 +506,21 @@
 /* long enough that each state holds under the hand. Four beats since
    6 Nov 2026, the fourth in three steps with the CTA after (--c), so the
    track is long */
-.L-s-circles[data-v="morph"] { min-height: 600vh; }
+/* nine screens since the steps hold longer (16 Nov 2026) */
+.L-s-circles[data-v="morph"] { min-height: 900vh; }
+/* the call-out between the circles and the people (16 Nov 2026): the
+   circles' side of the old crossfade reads --a, the call-out's own clock,
+   in place of --p, so they are gone before it speaks; the head goes with
+   them and comes back with the people (--k, the call-out's presence) */
+.L-s-circles[data-v="morph"] :is(.L-fm-out, .L-fm-h1) { --p: var(--a, 0); }
+.L-page .L-sec.L-s-circles[data-v="morph"] > .L-wrap > .L-fm-callout:not(.L-head) { grid-column: 1 / -1; grid-row: auto; }
+.L-fm-callout { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; opacity: var(--k, 0); transform: translateY(calc((1 - var(--k, 0)) * 16px)); }
+.L-fm-callout-text { margin: 0; max-width: 27ch; font-family: var(--font-display); font-weight: var(--display-weight); font-style: var(--display-style, normal); letter-spacing: var(--display-tracking); font-size: clamp(24px, 3.7cqw, 50px); line-height: 1.18; color: var(--text); text-wrap: balance; }
 /* the people: they cross in where the circles cross out (--p, the Venn's
    old crossfade), growing a little from the team circle's size as they
    come; hollow, the text colour, and the water the same colour */
-.L-fm-people { transform-box: view-box; transform-origin: 320px 200px; transform: scale(calc(0.72 + 0.28 * var(--p, 0))); }
+/* at the ask (--c) they shrink and rise, and the ask takes the room */
+.L-fm-people { transform-box: view-box; transform-origin: 320px 200px; transform: translateY(calc(var(--c, 0) * -62px)) scale(calc((0.72 + 0.28 * var(--p, 0)) * (1 - 0.45 * var(--c, 0)))); }
 .L-fm-person-line { fill: none; stroke: var(--text); stroke-width: var(--c-stroke); vector-effect: non-scaling-stroke; }
 .L-fm-water { fill: var(--text); opacity: 0.92; }
 /* the meter on the left, in the key's cell, with the third head; the
@@ -517,6 +529,13 @@
 .L-fm-meter .L-fm-gauge { width: 100%; max-width: 220px; margin: 0; }
 .L-fm-gauge .gauge-band { stroke: url(#fm-gauge-grad); opacity: 0.55; }
 .L-fm-gauge .gauge-band[data-on] { opacity: 1; }
+/* the bands are buttons: each goes to its step (16 Nov 2026) */
+.L-fm-band { cursor: pointer; outline: none; }
+.L-fm-gauge .L-fm-band:is(:hover, :focus-visible) { opacity: 0.85; }
+.L-fm-gauge .L-fm-band:focus-visible { stroke: var(--text); }
+.L-fm-meter[aria-hidden="true"] .L-fm-band { pointer-events: none; }
+/* the eyebrow on one line in the side column */
+.L-fm-head .L-eyebrow { white-space: nowrap; font-size: 14px; letter-spacing: 0.12em; }
 .L-fm-gauge-word { font-family: var(--font-display); font-size: 15px; font-weight: 600; text-anchor: middle; letter-spacing: 0.02em; fill: var(--text); }
 .L-fm-needle { transition: none; }
 /* the readouts run the width of the section under the picture, the two
@@ -527,22 +546,25 @@
 .L-fm-readout :is(.L-cap, .L-fm-readout-small, .L-fm-readout-wide) { grid-column: 1 / -1; }
 .L-fm-readout .L-cap { font-size: 13px; }
 .L-fm-readout-big { margin: 0; font-size: clamp(18px, 2cqw, 26px); line-height: 1.35; color: var(--muted); }
-.L-fm-readout-big strong { font-family: var(--font-display); font-weight: var(--display-weight); font-size: clamp(30px, 3.8cqw, 52px); color: var(--text); }
+.L-fm-readout-big strong { font-family: var(--font-display); font-weight: var(--display-weight); font-size: clamp(30px, 3.8cqw, 52px); color: color-mix(in srgb, var(--accent-2) var(--at, 0%), var(--accent)); }
 .L-fm-readout-wide { font-size: clamp(22px, 2.8cqw, 38px); line-height: 1.25; color: var(--text); }
 .L-fm-readout-small { margin: 0; font-size: clamp(15px, 1.5cqw, 19px); line-height: 1.5; color: var(--muted); }
 /* the ask under the people, in with the last step (--c) */
 /* it sits in the foot of the picture's frame, which the people leave
    empty (they end 69% of the way down it), so it adds no height to the
    pinned stage. A percentage margin reads the picture's width */
-.L-fm-cta { display: grid; gap: 16px; justify-items: center; text-align: center; margin-top: -17%; opacity: var(--c, 0); transform: translateY(calc((1 - var(--c, 0)) * 12px)); }
+.L-fm-cta { display: grid; gap: 22px; justify-items: center; text-align: center; margin-top: -35%; opacity: var(--c, 0); transform: translateY(calc((1 - var(--c, 0)) * 12px)); }
 .L-fm-cta[aria-hidden="true"] { pointer-events: none; }
 /* the email box, opened in place by the ask (6 Nov 2026) */
 .L-fm-cta-box { width: min(100%, 480px); text-align: left; }
-.L-fm-cta-title { margin: 0; font-family: var(--font-display); font-weight: var(--display-weight); font-size: 28px; line-height: 1.2; color: var(--text); }
+/* the ask is the loud thing on the last frame (16 Nov 2026): the title
+   at a headline's size, the button solid */
+.L-fm-cta-title { margin: 0; font-family: var(--font-display); font-weight: var(--display-weight); font-size: clamp(28px, 4cqw, 54px); line-height: 1.12; color: var(--text); text-wrap: balance; }
+.L-page .L-fm-cta .btn { background: var(--accent); color: var(--on-accent); border-color: var(--accent); font-size: 17px; padding: 16px 36px; }
 .L-fm-meter-line { margin: 0; font-size: 13px; line-height: 1.5; color: var(--muted); }
 /* the head arrives first as the section climbs into view (--h), the key
    and the circles close behind it (--g) */
-.L-s-circles[data-v="morph"] .L-fm-head { opacity: var(--h, var(--g, 0)); transform: translateY(calc((1 - var(--h, var(--g, 0))) * 20px)); }
+.L-s-circles[data-v="morph"] .L-fm-head { opacity: calc(var(--h, var(--g, 0)) * (1 - var(--a, 0) * (1 - clamp(0, (var(--p, 0) - 0.3) / 0.3, 1)))); transform: translateY(calc((1 - var(--h, var(--g, 0))) * 20px)); }
 .L-s-circles[data-v="morph"] .L-fm-key { opacity: clamp(0, (var(--g, 0) - 0.1) / 0.5, 1); transform: translateY(calc((1 - clamp(0, (var(--g, 0) - 0.1) / 0.5, 1)) * 20px)); }
 /* the pinned stage fills the view under the nav, its content centred in
    it, so the picture is not left sitting over a blank half-screen */
@@ -706,14 +728,27 @@
   /* wider than the picture over it, to the stage's gutters */
   .L-fm-cta { grid-template-columns: 1fr auto; align-items: center; justify-items: start; gap: 12px; text-align: left; width: max-content; max-width: calc(100cqw - 48px); }
   .L-fm-cta:has(.L-fm-cta-box) { grid-template-columns: 1fr; }
-  .L-fm-cta-title { font-size: 18px; }
+  .L-fm-cta-title { font-size: 20px; }
+  .L-page .L-fm-cta .btn { font-size: 15px; padding: 12px 20px; }
+}
+/* side by side: the meter runs the column's width, in line with the rule
+   over the title, and its label sits under it, centred (Wilfred, 16 Nov 2026) */
+@container page (min-width: 901px) {
+  /* the arc's own ends on the column's edges: the drawing has 13 of its
+     200 units clear on each side of the arc */
+  .L-fm-meter .L-fm-gauge { max-width: none; width: calc(100% * 200 / 174); margin-left: calc(-100% * 13 / 174); }
+  .L-fm-meter { justify-items: stretch; }
+  /* the label close under the arc (the drawing leaves room below its
+     foot), larger, and the source line centred under it */
+  .L-fm-meter .L-cap { order: 1; justify-self: center; text-align: center; font-size: 16px; margin-top: -30px; }
+  .L-fm-meter .L-fm-meter-line { order: 2; justify-self: center; text-align: center; margin-top: -4px; }
 }
 /* a short laptop screen: the side column tightens so the readouts stay on */
 @container page (min-width: 901px) {
   @media (max-height: 700px) {
     .L-s-circles[data-v="morph"] > .L-wrap { padding-top: 16px; padding-bottom: 16px; }
     .L-fm-side { gap: 16px; }
-    .L-fm-meter .L-fm-gauge { max-width: 170px; }
+    .L-fm-meter .L-fm-gauge { width: 100%; max-width: 170px; margin-left: 0; justify-self: center; }
   }
 }
 
@@ -877,15 +912,68 @@
 .L-stat { display: grid; gap: 4px; }
 .L-stat-n { font-family: var(--font-display); font-weight: var(--display-weight); font-size: clamp(26px, 3cqw, 40px); line-height: 1; color: var(--accent); }
 .L-stat dd { margin: 0; max-width: 16ch; }
-/* the science's three figures (11 Nov 2026): equal columns across the
-   section, a hairline over each, the number then its line in sentence
-   type. The labels are sentences, too long for the tracked caption */
-.L-case-stats.L-sci-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px 40px; max-width: 880px; margin: calc(40px * var(--space, 1)) 0 calc(56px * var(--space, 1)); }
-.L-sci-stats .L-stat { align-content: start; gap: 12px; padding-top: 18px; border-top: var(--rule-thin) solid var(--border); }
-.L-sci-stats .L-stat-n { font-size: clamp(30px, 3.6cqw, 46px); white-space: nowrap; }
-.L-sci-stats .L-stat dd { max-width: 26ch; font-family: inherit; font-size: 14px; line-height: 1.5; letter-spacing: 0; text-transform: none; }
+/* the science's three figures (16 Nov 2026): bullets under the
+   paragraphs, in the paragraph's type, the number in the accent */
+/* the markers hang in the margin so the bullets' words share the
+   paragraphs' left edge */
+.L-sci-list { list-style: disc outside; margin: 0; padding-left: 0; max-width: 52ch; display: grid; gap: 8px; font-size: 16px; line-height: 1.65; color: var(--muted); }
+.L-sci-list li::marker { color: var(--accent); }
+.L-sci-n { color: var(--accent); font-weight: 600; }
+/* The Science: the paragraphs and the bullets run the width of the
+   grids and graphs under them, one right edge down the page (Wilfred,
+   16 Nov 2026) */
+.L-sci :is(.L-mid, .L-sci-list) { max-width: 960px; }
+/* the head spans the rows beside it, so a tall title does not stretch
+   the first paragraph's row and open a gap under it */
+@container page (min-width: 901px) { .L-page[data-comp="comp-editorial"] .L-sci > .L-wrap > .L-head { grid-row: 1 / span 12; } }
+/* the six dimensions of the MHQ: three across, a hairline over each */
+.L-dims { margin: calc(32px * var(--space, 1)) 0 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px 40px; max-width: 960px; }
+.L-dim { display: grid; gap: 10px; align-content: start; padding-top: 18px; border-top: var(--rule-thin) solid var(--border); }
+.L-dim dt { font-family: var(--font-display); font-weight: var(--display-weight); font-size: clamp(20px, 2.1cqw, 26px); line-height: 1.15; color: var(--text); }
+.L-dim dd { margin: 0; font-size: 15px; line-height: 1.55; color: var(--muted); max-width: 30ch; }
+/* under the pointer a dimension lights: its rule and name in the accent,
+   its line in full white, the other five stepping back */
+.L-dim, .L-dim dt, .L-dim dd { transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease), opacity var(--dur) var(--ease); }
+@media (hover: hover) {
+  .L-dim:hover { border-top-color: var(--accent); }
+  .L-dim:hover dt { color: var(--accent); }
+  .L-dim:hover dd { color: var(--text); }
+  .L-dims:hover .L-dim:not(:hover) { opacity: 0.45; }
+}
+@media (prefers-reduced-motion: reduce) { .L-dim, .L-dim dt, .L-dim dd { transition: none; } }
+/* the Sapien Labs graphs in the brand: bars in the accent on hairline
+   gridlines every 20, the comparison series in grey, no printed figures */
+.L-charts { display: grid; gap: calc(64px * var(--space, 1)); max-width: 960px; margin: calc(48px * var(--space, 1)) 0 calc(64px * var(--space, 1)); }
+.L-chart { margin: 0; padding-top: 22px; border-top: var(--rule-thin) solid var(--border); --chart-label: clamp(200px, 30cqw, 300px); }
+.L-chart-head { display: grid; gap: 10px; margin-bottom: 20px; }
+.L-chart-title { margin: 0; font-family: var(--font-display); font-weight: var(--display-weight); font-size: clamp(24px, 2.8cqw, 34px); line-height: 1.12; color: var(--text); }
+.L-chart-note { margin: 0; font-size: 15px; line-height: 1.55; color: var(--muted); max-width: 60ch; }
+.L-chart-legend { list-style: none; margin: 0 0 22px; padding: 0; display: flex; flex-wrap: wrap; gap: 8px 24px; font-size: 13px; color: var(--muted); }
+.L-chart-legend li { display: flex; align-items: center; gap: 8px; }
+.L-chart-key { width: 10px; height: 10px; border-radius: 2px; background: var(--accent); }
+.L-chart-key[data-tone="quiet"], .L-chart-bar[data-tone="quiet"] { background: color-mix(in srgb, var(--muted) 62%, var(--base)); }
+.L-chart-rows { list-style: none; margin: 0; padding: 0; }
+.L-chart-row { display: grid; grid-template-columns: var(--chart-label) minmax(0, 1fr); align-items: stretch; gap: 0 20px; }
+.L-chart-label { align-self: center; font-size: 14px; line-height: 1.3; color: var(--text); text-align: right; padding: 4px 0; }
+.L-chart-track { position: relative; display: flex; align-items: center; min-height: 34px; border-right: var(--rule-thin) solid var(--border); background-image: linear-gradient(to right, var(--border) var(--rule-thin), transparent var(--rule-thin)); background-size: 20% 100%; }
+.L-chart-bar { display: block; height: 14px; border-radius: 0 2px 2px 0; background: var(--accent); }
+.L-chart-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.L-chart-ticks { position: relative; height: 26px; border-top: var(--rule-thin) solid var(--border); }
+.L-chart-ticks span { position: absolute; top: 8px; transform: translateX(-50%); font-family: var(--font-caption); font-size: 12px; color: var(--muted); }
+.L-chart-ticks span:first-child { transform: none; }
+.L-chart-ticks span:last-child { transform: translateX(-100%); }
+.L-chart-axis { margin: 8px 0 0; padding-left: calc(var(--chart-label) + 20px); }
+.L-chart-source { margin: calc(-32px * var(--space, 1)) 0 0; }
+@container page (max-width: 900px) { .L-dims { grid-template-columns: 1fr 1fr; } }
+@container page (max-width: 620px) {
+  .L-dims { grid-template-columns: 1fr; gap: 24px; }
+  .L-chart-row { grid-template-columns: 1fr; padding-top: 8px; }
+  .L-chart-label { align-self: start; text-align: left; padding: 0 0 2px; }
+  .L-chart-track { min-height: 22px; }
+  .L-chart-scale > span:first-child { display: none; }
+  .L-chart-axis { padding-left: 0; }
+}
 .L-report + .L-stages-cta { margin-top: calc(48px * var(--space, 1)); }
-@container page (max-width: 720px) { .L-case-stats.L-sci-stats { grid-template-columns: 1fr; gap: 20px; } }
 .L-sec[data-v="split"] .ph { min-height: 300px; }
 .L-sec[data-v="inline"] .ph { display: none; }
 .L-sec[data-v="inline"].L-sec { padding: calc(40px * var(--space, 1)) 0; }
@@ -1175,13 +1263,14 @@
 /* the traced figure: the text colour, flat. Mid-morph it is at full strength */
 .process-figure { display: block; fill: var(--text); overflow: visible; }
 .L-stage-art .process-figure.is-moving { opacity: 1; }
+/* where there is no pointer to hover, or the page is narrow, the figure is at
+   full strength and does not scale: dimmed, it read as switched off (Wilfred, 16 Nov 2026) */
+@media (hover: none) { .L-stage-art :is(img, .process-figure), .L-stage:hover .L-stage-art :is(img, .process-figure) { opacity: 0.9; transform: none; } }
+@container page (max-width: 900px) { .L-stage-art :is(img, .process-figure), .L-stage:hover .L-stage-art :is(img, .process-figure) { opacity: 0.9; transform: none; } }
 @keyframes L-stage-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 .L-stages-cta { margin-top: calc(24px * var(--space, 1)); }
 .L-stages-keepers { margin-top: calc(40px * var(--space, 1)); color: var(--text); }
 /* the three sprints after the first: the tag, then the line in the display type */
-.L-path { list-style: none; padding: 0; margin: 0 0 20px; }
-.L-path .L-step { align-content: start; }
-.L-path-line { font-family: var(--font-display); font-weight: var(--display-weight); font-size: 20px; line-height: 1.2; }
 /* the home's closing block (6 Nov 2026): three lines, each a link into a
    Solutions section. The name in the display type, the line beside it */
 .L-offer { list-style: none; margin: 0; padding: 0; }
@@ -1282,7 +1371,8 @@
   .L-person-photo { width: 120px; height: 120px; }
   .L-person-name { font-size: 22px; }
   .L-stage, .L-stage:nth-child(even) { --stage-art: 144px; grid-template-columns: 1fr; gap: 16px; }
-  .L-stage-art, .L-stage:nth-child(even) .L-stage-art { order: -1; justify-self: start; }
+  /* the figure leads its stage, over the line and the verb, so the words read as one block (16 Nov 2026) */
+  .L-stage-art, .L-stage:nth-child(even) .L-stage-art { order: -4; justify-self: start; }
   /* the morph on a short screen: the key's type a step down and the
      picture capped by the view's height, so the pinned stage fits */
   .L-fm-item dt { font-size: 17px; }
@@ -1908,9 +1998,20 @@
 /* who we work with (11 Nov 2026), on the home ahead of the circles: a tall
    track whose content pins, as the circles' does. The head and the lines
    on the left, the picture on the right; narrow, the picture first. The
-   three lines share one cell and take turns */
-/* three screens of scroll at most, the pinned one included (Wilfred, 11 Nov 2026) */
-.L-s-who[data-v="morph"] { min-height: 300vh; }
+   two beats' titles share one cell and take turns */
+/* two beats since 16 Nov 2026, so a shorter track */
+.L-s-who[data-v="morph"] { min-height: 260vh; }
+/* after the dictionary entry (16 Nov 2026): the entry comes up close
+   under the hero, stops in the middle of the view and holds for half a
+   screen (its track, the ::after), then scrolls out, and this section
+   comes up behind it, its words fading up as it climbs (--who-in, written by
+   Who.tsx with the entry's height, --entry-h, on the page) */
+.L-s-meaning:has(+ .L-s-who[data-v="morph"]) { padding-top: calc(40px * var(--space, 1)); padding-bottom: 0; }
+.L-s-meaning:has(+ .L-s-who[data-v="morph"])::after { content: ""; display: block; height: 50vh; }
+.L-s-meaning:has(+ .L-s-who[data-v="morph"]) > .L-wrap { position: sticky; top: calc(var(--nav-h, 0px) + (100vh - var(--nav-h, 0px) - var(--entry-h, 140px)) / 2); }
+.L-s-meaning + .L-s-who[data-v="morph"] { padding-top: 0; border-top: 0; }
+/* the words, not the picture: it has its own motion */
+.L-s-meaning + .L-s-who[data-v="morph"] .L-ws-side { opacity: var(--who-in, 1); translate: 0 calc((1 - var(--who-in, 1)) * 36px); }
 .L-s-who[data-v="morph"] > .L-wrap { position: sticky; top: var(--nav-h, 0px); min-height: calc(100vh - var(--nav-h, 0px)); padding-top: calc(32px * var(--space, 1)); padding-bottom: calc(32px * var(--space, 1)); align-content: center; }
 .L-page[data-comp="comp-editorial"] .L-s-who[data-v="morph"] > .L-wrap { grid-template-columns: minmax(220px, 320px) 1fr; align-items: center; }
 .L-page[data-comp="comp-editorial"] .L-s-who[data-v="morph"] > .L-wrap > .L-ws-side { grid-column: 1; grid-row: 1; align-self: start; align-content: start; padding-top: clamp(24px, 12vh, 140px); }
@@ -1921,7 +2022,13 @@
    Who.tsx), so the rule holds still as one head's words give way to the
    next and the head sits as high as the heads after it (11 Nov 2026) */
 .L-s-who[data-v="morph"] .L-ws-side { transform: translateY(var(--who-up, 0px)); }
-.L-ws-head h2.sec > span { display: block; }
+/* the two beats' titles in one cell, the one on show lit; a sentence
+   each, so set under a headline's size */
+.L-ws-titles { display: grid; }
+.L-ws-title { grid-area: 1 / 1; opacity: 0; transform: translateY(8px); transition: opacity calc(var(--dur) * 2) var(--ease), transform calc(var(--dur) * 2) var(--ease); }
+.L-ws-title[data-on] { opacity: 1; transform: none; }
+.L-ws-title-line { display: block; }
+.L-s-who[data-v="morph"] .L-ws-head h2.sec { font-size: clamp(24px, 2.5cqw, 32px); line-height: 1.2; }
 .L-ws-pic { width: 100%; }
 /* the handover: the circles section is pulled up under this one, so it
    pins a fifth of a screen before this one lets go (BEHIND in Who.tsx),
@@ -1931,25 +2038,13 @@
 .L-s-who[data-v="morph"] + .L-s-circles[data-v="morph"] > .L-wrap { opacity: var(--who-x, 1); }
 .L-s-who[data-v="morph"] + .L-s-circles[data-v="morph"][data-who-wait] > .L-wrap { pointer-events: none; }
 .L-ws-ring { fill: none; stroke: var(--accent-2); stroke-width: var(--rule-thin); vector-effect: non-scaling-stroke; }
-.L-ws-levels { display: grid; width: 100%; }
-.L-ws-level { grid-area: 1 / 1; display: grid; gap: 10px; align-content: start; justify-items: start; opacity: 0; transform: translateY(8px); pointer-events: none; transition: opacity calc(var(--dur) * 2) var(--ease), transform calc(var(--dur) * 2) var(--ease); }
-.L-ws-level[data-on] { opacity: 1; transform: none; pointer-events: auto; }
-/* the three in the title: the one the picture is on takes the accent */
-.L-ws-name { transition: color calc(var(--dur) * 2) var(--ease); }
-.L-ws-name[data-on] { color: var(--accent); }
-.L-ws-line { margin: 0; font-size: 18px; line-height: 1.4; color: var(--muted); }
-/* the open word follows the line's first words on the same line; what
-   comes after it starts the next, so the shifting word never reflows it */
-.L-ws-after { display: block; }
-.L-ws-slot { font-family: var(--font-display); font-weight: var(--display-weight); font-size: 26px; line-height: 1.3; }
-.L-ws-word { display: inline-block; animation: L-stage-in calc(var(--dur) * 2) var(--ease) both; }
 .L-ws-coaches { margin: 0; font-size: 13px; line-height: 1.5; color: var(--muted); }
 @container page (max-width: 900px) {
   .L-page[data-comp="comp-editorial"] .L-s-who[data-v="morph"] > .L-wrap { grid-template-columns: 1fr; row-gap: 24px; padding-top: 16px; padding-bottom: 16px; }
   .L-page[data-comp="comp-editorial"] .L-s-who[data-v="morph"] > .L-wrap > .L-ws-pic { grid-column: 1; grid-row: 1; }
   .L-page[data-comp="comp-editorial"] .L-s-who[data-v="morph"] > .L-wrap > .L-ws-side { grid-column: 1; grid-row: 2; gap: 20px; padding-top: 0; align-self: auto; }
 }
-@media (prefers-reduced-motion: reduce) { .L-ws-level, .L-ws-name { transition: none; } .L-ws-word { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .L-ws-title { transition: none; } }
 /* Executive Team Sprints, first on Solutions (11 Nov 2026): set as the
    stages under it are, the words in the column at the stages' size, in
    the text colour so who it is for and what you get read */
@@ -1958,7 +2053,7 @@
    face is off here (Wilfred, 11 Nov 2026) */
 .L-exec-meta { display: grid; gap: 32px; margin: 0; }
 .L-exec-meta div { display: grid; gap: 8px; }
-.L-exec-meta dt { font-size: 15px; line-height: 1.4; color: var(--muted); }
+.L-exec-meta dt { font-size: 15px; line-height: 1.4; color: var(--accent-2); }
 .L-exec-meta dd { margin: 0; font-size: clamp(20px, 2cqw, 26px); line-height: 1.4; max-width: 36ch; color: var(--text); }
 /* the stages run on under the call-outs, in the same section: what the
    sprint is leads them (Wilfred, 11 Nov 2026) */
@@ -1969,11 +2064,19 @@
    stage's own art goes. A stage takes most of a screen there, so the
    swap has room */
 .L-stage-fig { display: none; }
+.L-stage-text { display: contents; }
 @container page (min-width: 901px) {
   .L-page[data-comp="comp-editorial"] .L-sec-h .L-head .L-stage-fig { display: block; order: 5; width: 100%; max-width: 240px; aspect-ratio: 1; margin-top: 14px; opacity: 0; transition: opacity calc(var(--dur) * 2) var(--ease); }
   .L-page[data-comp="comp-editorial"] .L-sec-h .L-head .L-stage-fig[data-on] { opacity: 0.9; }
   .L-stage-fig :is(img, .process-figure) { width: 100%; height: 100%; object-fit: contain; }
-  .L-page[data-comp="comp-editorial"] .L-exec-stages .L-stage, .L-page[data-comp="comp-editorial"] .L-exec-stages .L-stage:nth-child(even) { grid-template-columns: minmax(0, 1fr); min-height: 56vh; align-content: start; }
+  /* a stage is a tall block and its words stick level with the figure;
+     once the script is in, only the stage the figure shows is seen, so a
+     figure is never beside another stage's words (Wilfred, 16 Nov 2026) */
+  .L-page[data-comp="comp-editorial"] .L-exec-stages .L-stage, .L-page[data-comp="comp-editorial"] .L-exec-stages .L-stage:nth-child(even) { display: block; min-height: 64vh; border-top: 0; }
+  .L-page[data-comp="comp-editorial"] .L-exec-stages .L-stage-text { display: grid; gap: 10px; position: sticky; top: calc(var(--nav-h, 0px) + 28px + var(--fig-y, 120px)); transition: opacity calc(var(--dur) * 1.5) var(--ease); }
+  .L-page[data-comp="comp-editorial"] .L-exec-stages[data-live] .L-stage:not([data-on]) .L-stage-text { opacity: 0; }
+  /* the last stage is only as tall as its words, so the keepers line follows it with no gap */
+  .L-page[data-comp="comp-editorial"] .L-exec-stages .L-stage:last-child { min-height: 0; }
   .L-page[data-comp="comp-editorial"] .L-exec-stages .L-stage-art { display: none; }
 }
 .L-stages-lead { margin: 0 0 calc(40px * var(--space, 1)); font-size: 17px; max-width: 48ch; color: var(--text); }
@@ -1993,3 +2096,27 @@
 
 /* the email box under the three measures on Solutions (3 Nov 2026) */
 .L-assess-box { display: grid; gap: 10px; margin: 8px 0 24px; padding: 24px 0 0; border-top: var(--rule-thin) solid var(--border); scroll-margin-top: calc(var(--nav-h, 0px) + 24px); }
+
+/* Solutions, 16 Nov 2026: the tiers and the assessments as tabs over one
+   panel, in the column beside the head as every other section is. The
+   labels are the cyan of the eyebrow in the body face, the answers in the
+   text colour, the same rows under every tab */
+.L-tabs { display: flex; gap: 0; margin: 0 0 calc(16px * var(--space, 1)); border-bottom: var(--rule-thin) solid var(--border); }
+.L-tab { flex: 1 1 0; min-width: 0; display: grid; gap: 6px; align-content: end; text-align: left; padding: 0 16px 14px 0; margin: 0 0 calc(var(--rule-thin) * -1); background: none; border: 0; border-bottom: var(--rule-fat) solid transparent; border-radius: 0; color: var(--muted); font: inherit; cursor: pointer; transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease); }
+.L-tab-tag { font-size: 13px; line-height: 1.3; color: var(--accent-2); }
+.L-tab-name { font-family: var(--font-display); font-weight: var(--display-weight); font-size: clamp(20px, 2.2cqw, 28px); line-height: 1.1; }
+.L-tab:hover { color: var(--text); }
+.L-tab[aria-selected="true"] { color: var(--text); border-bottom-color: var(--accent); }
+.L-panel { animation: L-stage-in calc(var(--dur) * 1.5) var(--ease) both; }
+.L-panel[hidden] { display: none; }
+.L-panel-price { margin: 0 0 12px; font-size: 15px; color: var(--accent); }
+.L-panel-what { margin: 0 0 calc(32px * var(--space, 1)); font-size: clamp(20px, 2cqw, 26px); line-height: 1.4; max-width: 36ch; color: var(--text); }
+.L-rows { display: grid; gap: 24px; margin: 0 0 calc(32px * var(--space, 1)); }
+.L-rows div { display: grid; gap: 6px; }
+.L-rows dt { font-size: 15px; line-height: 1.4; color: var(--accent-2); }
+.L-rows dd { margin: 0; font-size: 17px; line-height: 1.6; max-width: 52ch; color: var(--text); }
+.L-panel-note { margin-top: calc(40px * var(--space, 1)); }
+.L-workshops-body { color: var(--text); font-size: 17px; }
+.L-page .L-sec-h > .L-wrap > .btn { justify-self: start; }
+.L-workshops-body { margin-bottom: calc(16px * var(--space, 1)); }
+@media (prefers-reduced-motion: reduce) { .L-panel { animation: none; } .L-tab { transition: none; } }

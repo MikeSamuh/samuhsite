@@ -661,3 +661,23 @@ the tiers, Executive Team Sprints and workshops are gone: the nav carries
 it. OrgQ's card keeps its button, as the other two cards have theirs. Who
 it is for and what you get are in the text colour at body size. — Wilfred
 
+
+**2026-11-16 — Home: who we work with in two beats, a call-out before the capacity beat, the ask made loud.**
+Who we work with is two beats: one person, "Leaders seeking to accelerate
+their performance." with "and…" under it in cyan, then the whole org,
+"Teams and organizations looking for scaled solutions for
+high-performance organizations." The dictionary entry comes up close
+under the hero, holds in the middle of the view, then scrolls out as who
+we work with comes up. Section words fade up with the scroll and do not
+latch. Between the circles and "How teams reach their best" a call-out
+holds the stage alone: the data-driven approach, LeadQ, TeamQ and OrgQ,
+with Sapien Labs, key words in cyan. In the capacity beat the meter runs
+the column's width with its label under it, its bands go to their step
+on a click, each step's figures take the meter's colour, and the steps
+hold longer. At the end the people shrink and the ask is headline size
+with a solid button. Captions are in the eyebrow's face, IBM Plex Mono;
+Gilda Display (Mike's link, 25 Sep) is off the site. — Wilfred
+
+**2026-11-16 — Methodology is The Science, at /science.**
+The page is about the science and the research, not a methodology;
+Solutions is where the methods are. /methodology and /process redirect. — Wilfred

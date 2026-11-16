@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { ROUTES } from "@/lib/site";
 import type { HomeContent } from "@/lib/content/defaults";
+import { mark } from "@/lib/content/shared";
 import { PERSON, Person } from "./people";
 
 const HEAD_TOP = 28; // the sticky head's offset below the nav, as in layout.css
@@ -42,11 +43,10 @@ export function useActiveItem(ref: React.RefObject<HTMLElement | null>, selector
 
 // Who we work with, on the home ahead of the circles (Wilfred, 11 Nov 2026).
 // The section is a tall track and its content pins, as the circles' does;
-// the scroll is the picture's clock. On the left the head stays, its
-// title naming the three with the one on show lit, and three lines take
-// turns on a timer of their own, one for each level, the open word in
-// each shifting through the people it stands for. On the right the picture: one person, then
-// three, the team, then several teams, each in its ring. At the end the
+// the scroll is the picture's clock. Two beats since 16 Nov 2026: leaders,
+// one person, then teams and organizations, the whole org, several teams
+// each in its ring. On the left the head stays and its title is the beat's
+// own line, the two taking turns under the one rule. At the end the
 // people go and the rings come together as one circle, the first circle
 // of the circles section below. That section is pulled up under this one
 // (layout.css) so it is already pinned behind, unseen; its circle sits
@@ -71,11 +71,11 @@ const ONE = { cx: 320, cy: 220, r: 190 };
  *  this one lets go: layout.css pulls it up by as much. Its own first
  *  beat starts later than that, so it is still on its first frame */
 const BEHIND = 0.2;
-
 /** the beats, as shares of the pinned scroll */
-const TEAM = { from: 0.16, to: 0.26 };
-const ORGS = { from: 0.42, to: 0.54 };
-const MERGE = { from: 0.7, to: 0.86 };
+const ORGS = { from: 0.3, to: 0.48 };
+/** the one person becomes a team of three in the first half of that */
+const TEAM = { from: ORGS.from, to: (ORGS.from + ORGS.to) / 2 };
+const MERGE = { from: 0.72, to: 0.88 };
 /** the handover, as shares of the stretch the next section is pinned
  *  behind: this head's words go, the next section comes in, then this
  *  picture and this rule go, so neither the circle nor the accent rule
@@ -84,8 +84,8 @@ const MERGE = { from: 0.7, to: 0.86 };
 const WORDS_OUT = { from: 0, to: 0.3 };
 const NEXT_IN = { from: 0.3, to: 0.65 };
 const GONE = { from: 0.65, to: 0.98 };
-/** the name lit in the title changes halfway through each arrival */
-const TURN = [(TEAM.from + TEAM.to) / 2, (ORGS.from + ORGS.to) / 2];
+/** the title changes halfway through the org's arrival */
+const TURN = (ORGS.from + ORGS.to) / 2;
 
 const clamp = (v: number) => Math.max(0, Math.min(1, v));
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
@@ -122,6 +122,18 @@ function usePinned(root: React.RefObject<HTMLElement | null>) {
       const navH = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--nav-h")) || 0;
       const travel = rect.height - padTop - padBottom - stage.offsetHeight;
       setP(travel > 0 ? clamp((navH - rect.top - padTop) / travel) : 0);
+      if (prev) {
+        // the entry's own height, for where it stops
+        const entry = prev.querySelector<HTMLElement>(":scope > .L-wrap");
+        if (entry && track.parentElement) track.parentElement.style.setProperty("--entry-h", `${entry.offsetHeight}px`);
+        // the words fade up with the scroll, as every section's do
+        // (useScrollReveal in sections.tsx): from their own top at the
+        // foot of the view to a third of the way up it, which they have
+        // passed wherever they pin
+        const vh = window.innerHeight;
+        const sideTop = side ? side.getBoundingClientRect().top : rect.top;
+        track.style.setProperty("--who-in", clamp((vh - sideTop) / (vh * 0.35)).toFixed(3));
+      }
       if (!next || !nextStage || !nextPic || !pic) return;
       // this head's rule sits where the next head's does, so the rule holds
       // still through the handover and the head is as high as the heads
@@ -143,6 +155,9 @@ function usePinned(root: React.RefObject<HTMLElement | null>) {
       const dy = ((b.top - nextStage.getBoundingClientRect().top) - (a.top - stage.getBoundingClientRect().top)) * unit;
       setHand({ t, dy, k: b.width / (a.width || 1) });
     };
+    // the dictionary entry, when this follows it
+    const before = track.previousElementSibling as HTMLElement | null;
+    const prev = before?.matches(".L-s-meaning") ? before : null;
     // the circles section, when it follows this one
     const sib = track.nextElementSibling as HTMLElement | null;
     const next = sib?.matches('.L-s-circles[data-v="morph"]') ? sib : null;
@@ -150,6 +165,7 @@ function usePinned(root: React.RefObject<HTMLElement | null>) {
     const nextPic = next?.querySelector<SVGSVGElement>(".L-c-svg");
     const pic = el?.querySelector<SVGSVGElement>(".L-c-svg");
     const rule = stage.querySelector<HTMLElement>(".L-ws-head h2.sec");
+    const side = stage.querySelector<HTMLElement>(".L-ws-side");
     const nextRule = next?.querySelector<HTMLElement>(".L-fm-titles");
     const on = () => { if (!raf) raf = requestAnimationFrame(read); };
     read();
@@ -160,40 +176,13 @@ function usePinned(root: React.RefObject<HTMLElement | null>) {
       window.removeEventListener("resize", on);
       cancelAnimationFrame(raf);
       stage.style.removeProperty("--who-up");
+      track.parentElement?.style.removeProperty("--entry-h");
+      track.style.removeProperty("--who-in");
       next?.style.removeProperty("--who-x");
       next?.removeAttribute("data-who-wait");
     };
   }, [root]);
   return { p, hand };
-}
-
-const SHIFT_MS = 2200; // how long each word holds
-
-/** The line under the title is on a clock of its own, not the scroll's
- *  (Wilfred, 11 Nov 2026): it goes through every line's words in turn and
- *  starts over. `turn` counts the words shown so far. With reduced motion
- *  nothing shifts: `still`, and the line follows the picture with its
- *  whole list set out */
-function useTurns(total: number) {
-  const [turn, setTurn] = useState(0);
-  const [still, setStill] = useState(false);
-  useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) { setStill(true); return; }
-    if (total < 2) return;
-    const id = window.setInterval(() => setTurn((n) => n + 1), SHIFT_MS);
-    return () => window.clearInterval(id);
-  }, [total]);
-  return { turn, still };
-}
-
-/** the open word in a line */
-function Shift({ words, at, still }: { words: string[]; at: number; still: boolean }) {
-  if (!words.length) return null;
-  return (
-    <span className="L-ws-slot L-hl">
-      {still ? words.join(", ") : <span className="L-ws-word" key={at}>{words[at % words.length]}</span>}
-    </span>
-  );
 }
 
 /** three people in a row inside their ring, drawn about the row's middle */
@@ -213,9 +202,7 @@ function Row({ x, y, s, spread = 1, ring, one = 0, people }: { x: number; y: num
   );
 }
 
-const words = (list: string) => list.split(",").map((w) => w.trim()).filter(Boolean);
-
-const PICTURE = ["One person", "Three people: a team", "Several teams, each in its ring"];
+const PICTURE = ["One person", "An organization: several teams, each in its ring"];
 
 export function Who({ c }: { c: HomeContent["who"] }) {
   const root = useRef<HTMLDivElement>(null);
@@ -226,13 +213,7 @@ export function Who({ c }: { c: HomeContent["who"] }) {
   // with the circles section behind, this picture goes once that one is
   // in; alone, it stays
   const gone = hand ? over(hand.t, GONE) : 0;
-  const active = p < TURN[0] ? 0 : p < TURN[1] ? 1 : 2;
-  // every line's words, one after the other: which line is up, and which
-  // of its words
-  const lists = c.items.map((it) => words(it.words));
-  const turns = lists.flatMap((list, i) => (list.length ? list : [""]).map((_, j) => ({ line: i, word: j })));
-  const { turn, still } = useTurns(turns.length);
-  const now = still ? { line: active, word: 0 } : turns[turn % turns.length] ?? { line: 0, word: 0 };
+  const active = p < TURN ? 0 : 1;
   // the first team: the row at full size in the middle, then small at the
   // top; the other two come out from the middle as it goes. At the end
   // all three come together as one circle, the size and the place of the
@@ -252,17 +233,16 @@ export function Who({ c }: { c: HomeContent["who"] }) {
         <div className="L-head L-ws-head">
           <div>
             <p className="eyebrow L-eyebrow" style={{ opacity: said }}>{c.kicker}</p>
-            {/* the title names the three; the one the picture is on is lit.
-                The rule over it is the h2's, and outlasts its words */}
-            <h2 className="sec" style={{ opacity: 1 - gone }}><span style={{ opacity: said }}>{c.title.split("*").map((part, j) => (j % 2 ? <span className="L-ws-name" key={j} data-on={(j - 1) / 2 === active ? "" : undefined}>{part}</span> : part))}</span></h2>
+            {/* one title for each beat, in one cell; the one the picture is
+                on shows. The rule over them is the h2's, and outlasts its words */}
+            <h2 className="sec" style={{ opacity: 1 - gone }}>
+              <span className="L-ws-titles" style={{ opacity: said }}>
+                {c.items.slice(0, 2).map((it, i) => (
+                  <span className="L-ws-title" key={i} data-on={i === active ? "" : undefined} aria-hidden={i !== active || undefined}>{(it.title ?? "").split("\n").map((line, k) => <span className="L-ws-title-line" key={k}>{mark(line, "L-hl", "L-hl-2")}</span>)}</span>
+                ))}
+              </span>
+            </h2>
           </div>
-        </div>
-        <div className="L-ws-levels" style={{ opacity: said }}>
-          {c.items.map((it, i) => (
-            <div className="L-ws-level" key={it.name} data-on={i === now.line ? "" : undefined} aria-hidden={i !== now.line || undefined}>
-              <p className="L-ws-line">{it.before} <Shift words={lists[i]} at={i === now.line ? now.word : 0} still={still} />{it.after ? <span className="L-ws-after">{it.after}</span> : null}</p>
-            </div>
-          ))}
         </div>
         {c.coaches ? <p className="L-ws-coaches" style={{ opacity: said }}>{c.coaches} <Link className="inline-link" href={ROUTES.contact}>{c.coachesLink}</Link></p> : null}
       </div>

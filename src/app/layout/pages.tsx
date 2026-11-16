@@ -8,9 +8,9 @@ import type { PageId } from "@/lib/layout";
 import { ROUTES, SHOW_CASES } from "@/lib/site";
 import "@/components/contact/contact.css";
 import { StartEmail } from "@/components/start/StartEmail";
-import { useActiveItem } from "@/components/focus-morph/Who";
 import { ContactForm } from "@/components/contact/ContactForm";
-import { ReportCard } from "@/app/layout/sections";
+import { ReportCard, rich, useScrollReveal } from "@/app/layout/sections";
+import { BarChart, CHART_FACTORS, CHART_RELATIONSHIPS } from "@/components/science/BarChart";
 import { ProcessFigure, StageFigure } from "@/components/process-figure/ProcessFigure";
 import type { PoseId } from "@/components/process-figure/figures";
 import { DEFAULTS, type AboutContent, type ContactContent, type GlobalContent, type ProcessContent, type SolutionsContent, type StartContent } from "@/lib/content/defaults";
@@ -58,10 +58,13 @@ function PageHead({ n, kicker, title, lede }: { n: string; kicker: string; title
   );
 }
 
-function Sec({ n, kicker, title, children, id, cls, extra, h1 }: { n: string; kicker: string; title: string; children: React.ReactNode; id?: string; cls?: string; /** under the title, in the head */ extra?: React.ReactNode; /** the page's own title: an h1 */ h1?: boolean }) {
+function Sec({ n, kicker, title, children, id, cls, extra, h1, reveal }: { /** fades up as it scrolls into view, as the home's sections do */ reveal?: boolean; n: string; kicker: string; title: string; children: React.ReactNode; id?: string; cls?: string; /** under the title, in the head */ extra?: React.ReactNode; /** the page's own title: an h1 */ h1?: boolean }) {
   const H = h1 ? "h1" : "h2";
+  const secRef = useRef<HTMLElement>(null);
+  const noRef = useRef<HTMLElement>(null);
+  useScrollReveal(reveal ? secRef : noRef);
   return (
-    <section className={`L-sec L-sec-h${cls ? ` ${cls}` : ""}`} id={id} data-n={n}>
+    <section className={`L-sec L-sec-h${cls ? ` ${cls}` : ""}`} id={id} data-n={n} ref={secRef} data-reveal={reveal || undefined}>
       <div className="L-wrap">
         <div className="L-head">
           <span className="L-n">{n}</span>
@@ -74,6 +77,28 @@ function Sec({ n, kicker, title, children, id, cls, extra, h1 }: { n: string; ki
         {children}
       </div>
     </section>
+  );
+}
+
+/** A page's own questions, at its foot: the home FAQ's list, one open at
+ *  a time. Every answer is in the HTML whether open or not, and the route
+ *  carries the same items as FAQPage structured data (16 Nov 2026). */
+function Faq({ n, c, reveal }: { reveal?: boolean; n: string; c: { kicker: string; title: string; items: { q: string; a: string }[] } }) {
+  if (!c.items.length) return null;
+  return (
+    <Sec n={n} kicker={c.kicker} title={c.title} id="faq" reveal={reveal}>
+      <div className="L-faq">
+        {c.items.map(({ q, a }, i) => (
+          <details className="L-faq-item" key={q} name="faq" open={i === 0 || undefined}>
+            <summary className="L-faq-q">
+              <span>{rich(q)}</span>
+              <span className="L-faq-mark" aria-hidden>+</span>
+            </summary>
+            <p className="L-faq-a">{rich(a)}</p>
+          </details>
+        ))}
+      </div>
+    </Sec>
   );
 }
 
@@ -91,45 +116,68 @@ const STAGE_ART: [string, PoseId | null][] = [
   [STAR, null],
 ];
 
-const STAGE_LINE = 96; // a stage takes over once its top is this far below the nav
+const STAGE_SLACK = 72; // a stage takes over this far before its top meets the figure's
 
-/** The stage the reader is on, and whether the stages have come up the
- *  page yet: the figure under the section's title waits for Pre-work. */
-function useStages(ref: React.RefObject<HTMLElement | null>) {
-  const active = useActiveItem(ref, ".L-stage", STAGE_LINE);
-  const [started, setStarted] = useState(false);
+/** The stage the reader is on. On the editorial columns at desktop width
+ *  the figure under the section's title waits for Pre-work to come level
+ *  with it, each stage's words hold beside the figure, and only the stage
+ *  the figure shows is seen (Wilfred, 16 Nov 2026). `live` is off where the
+ *  figure is not shown: every stage is seen there, with its own art. */
+function useStages(listRef: React.RefObject<HTMLElement | null>, figRef: React.RefObject<HTMLElement | null>) {
+  const [st, setSt] = useState({ active: 0, started: false, live: false });
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const tick = () => setStarted(el.getBoundingClientRect().top <= window.innerHeight * 0.7);
-    tick();
-    window.addEventListener("scroll", tick, { passive: true });
-    window.addEventListener("resize", tick);
-    return () => { window.removeEventListener("scroll", tick); window.removeEventListener("resize", tick); };
-  }, [ref]);
-  return { active, started };
+    const root = listRef.current, fig = figRef.current;
+    if (!root || !fig) return;
+    const items = Array.from(root.querySelectorAll<HTMLElement>(".L-stage"));
+    let raf = 0;
+    const tick = () => {
+      raf = 0;
+      const head = fig.parentElement;
+      if (!head || fig.offsetParent === null) {
+        setSt((p) => (p.live ? { active: 0, started: false, live: false } : p));
+        return;
+      }
+      const top = fig.getBoundingClientRect().top;
+      // where the figure sits under the head, so the words stick level with it
+      root.style.setProperty("--fig-y", `${Math.round(top - head.getBoundingClientRect().top)}px`);
+      const line = top + STAGE_SLACK;
+      let active = 0;
+      items.forEach((el, j) => { if (el.getBoundingClientRect().top <= line) active = j; });
+      const started = items.length > 0 && items[0].getBoundingClientRect().top <= line;
+      setSt((p) => (p.active === active && p.started === started && p.live ? p : { active, started, live: true }));
+    };
+    const kick = () => { if (!raf) raf = requestAnimationFrame(tick); };
+    const ro = new ResizeObserver(kick);
+    ro.observe(root);
+    kick();
+    window.addEventListener("scroll", kick, { passive: true });
+    window.addEventListener("resize", kick);
+    return () => { ro.disconnect(); cancelAnimationFrame(raf); window.removeEventListener("scroll", kick); window.removeEventListener("resize", kick); };
+  }, [listRef, figRef]);
+  return st;
 }
 
 /** The four stages of an Executive Team Sprint, in the body of its section
  *  (Wilfred, 11 Nov 2026): the section keeps its own head, The main
- *  offering. Pre-work is the one stage with a line over its verb. On the
- *  editorial columns at desktop width the stage's figure is under the
- *  section's title (StageHeadFigure) and swaps as the stages scroll past;
- *  narrower, each stage carries its own. `how` is still the nav's anchor. */
-function Stages({ figures, c, lead, listRef }: { figures?: boolean; c: SolutionsContent["stages"]; /** what the sprint is, over the stages */ lead?: string; listRef: React.RefObject<HTMLDivElement | null> }) {
+ *  offering. On the editorial columns at desktop width the stage's figure
+ *  is under the section's title (StageHeadFigure) and the stages come in
+ *  one at a time beside it; narrower, each stage carries its own figure.
+ *  `how` is still the nav's anchor. */
+function Stages({ figures, c, listRef, stage }: { figures?: boolean; c: SolutionsContent["stages"]; listRef: React.RefObject<HTMLDivElement | null>; stage: { active: number; live: boolean } }) {
   return (
-    <div className="L-exec-stages L-assess-anchor" id="how">
-      {lead ? <p className="L-mid L-stages-lead">{lead}</p> : null}
+    <div className="L-exec-stages L-assess-anchor" id="how" data-live={stage.live ? "" : undefined}>
       <div ref={listRef}>
         <ol className="L-stage-list">
           {c.items.slice(0, STAGE_ART.length).map((st, i) => {
             const [icon, pose] = STAGE_ART[i];
             return (
-              <li key={st.verb} className="L-stage">
-                {st.when ? <p className="eyebrow L-eyebrow L-stage-line">{st.when}</p> : null}
-                <h3 className="sec L-stage-verb">{st.verb}</h3>
-                <div className="L-stage-copy">
-                  <p className="L-mid">{st.body}</p>
+              <li key={st.verb} className="L-stage" data-on={i === stage.active ? "" : undefined}>
+                <div className="L-stage-text">
+                  {st.when ? <p className="eyebrow L-eyebrow L-stage-line">{st.when}</p> : null}
+                  <h3 className="sec L-stage-verb">{st.verb}</h3>
+                  <div className="L-stage-copy">
+                    <p className="L-mid">{st.body}</p>
+                  </div>
                 </div>
                 <span className="L-stage-art" aria-hidden>
                   {figures && pose ? (
@@ -148,49 +196,94 @@ function Stages({ figures, c, lead, listRef }: { figures?: boolean; c: Solutions
   );
 }
 
-/** The active stage's figure, under the section's title: unseen until the
- *  stages come up, then one figure that morphs from stage to stage. */
-function StageHeadFigure({ figures, active, started }: { figures?: boolean; active: number; started: boolean }) {
+/** The active stage's figure, under the section's title: unseen until
+ *  Pre-work is level with it, then one figure that morphs from stage to stage. */
+function StageHeadFigure({ figures, active, started, figRef }: { figures?: boolean; active: number; started: boolean; figRef: React.RefObject<HTMLSpanElement | null> }) {
   const [icon, pose] = STAGE_ART[Math.min(active, STAGE_ART.length - 1)];
   return (
-    <span className="L-stage-fig" data-on={started ? "" : undefined} aria-hidden>
+    <span className="L-stage-fig" ref={figRef} data-on={started ? "" : undefined} aria-hidden>
       {figures && pose ? <StageFigure pose={pose} /> : <Image src={icon} alt="" width={240} height={240} sizes="240px" />}
     </span>
   );
 }
 
+/** A row of tabs over one panel at a time (Wilfred, 16 Nov 2026): the two
+ *  tiers, the three assessments. Every panel is in the HTML; the ones not
+ *  picked are hidden. Arrow keys move along the row. */
+function Tabs({ base, label, items, active, onPick }: { base: string; label: string; items: { tag: string; name: string; id?: string }[]; active: number; onPick: (i: number) => void }) {
+  const row = useRef<HTMLDivElement>(null);
+  const key = (e: React.KeyboardEvent) => {
+    const d = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+    if (!d) return;
+    e.preventDefault();
+    const n = (active + d + items.length) % items.length;
+    onPick(n);
+    row.current?.querySelectorAll<HTMLElement>('[role="tab"]')[n]?.focus();
+  };
+  return (
+    <div className="L-tabs" role="tablist" aria-label={label} ref={row} onKeyDown={key}>
+      {items.map((it, i) => (
+        <button key={it.name} type="button" role="tab" id={it.id ?? `${base}-tab-${i}`} className="L-tab L-assess-anchor" aria-selected={i === active} aria-controls={`${base}-panel-${i}`} tabIndex={i === active ? 0 : -1} onClick={() => onPick(i)}>
+          <span className="L-tab-tag">{it.tag}</span>
+          <span className="L-tab-name">{it.name}</span>
+        </button>
+      ))}
+    </div>
+  );
+}
+
 /** Solutions (sitemap of 11 Nov 2026, docs/sprint-solutions.md): one page
  *  in sections, each with an id the nav dropdown lands on. Team sprints
- *  first: Executive Team Sprints, then how a sprint runs, the four stages
- *  that were on Methodology, then the two tiers on the platform. Then the
- *  assessments as three cards, then keynotes and workshops. Who we work
- *  with went to the home; the form and the quotes at the foot are off,
- *  and no section ends on a Talk to us button (Wilfred, 11 Nov 2026): the
- *  nav carries it. All of it is in the HTML from the start. */
+ *  first: Executive Team Sprints with the four stages of a sprint, then
+ *  the two tiers on the platform, then the assessments, then keynotes and
+ *  workshops. The tiers and the assessments are tabs, one panel at a time,
+ *  under the same head beside as every other section (Wilfred, 16 Nov
+ *  2026). All of it is in the HTML from the start. */
 function Solutions({ figures, c = DEFAULTS.solutions, s = DEFAULTS.start }: { figures?: boolean; c?: SolutionsContent; /** the email box's words */ s?: StartContent }) {
   const TIERS = c.tiers.items;
-  // the email box in an assessment's row: LeadQ or TeamQ, opened by the row's button (3 Nov 2026)
+  const ASSESS = c.assess.items;
+  const [tier, setTier] = useState(0);
+  const [measure, setMeasure] = useState(0);
+  // the email box under an assessment: LeadQ or TeamQ, opened by its button (3 Nov 2026)
   const [box, setBox] = useState<"leadq" | "teamq" | null>(null);
   const boxRef = useRef<HTMLDivElement>(null);
   const stagesRef = useRef<HTMLDivElement>(null);
-  const stage = useStages(stagesRef);
+  const figRef = useRef<HTMLSpanElement>(null);
+  const stage = useStages(stagesRef, figRef);
   useEffect(() => {
     if (box) boxRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
   }, [box]);
+  // a link to #leadq, #teamq or #orgq opens that assessment's tab
+  useEffect(() => {
+    const pick = (hash: string) => {
+      const i = ASSESS.findIndex((it) => `#${it.door}` === hash);
+      if (i >= 0) setMeasure(i);
+    };
+    pick(window.location.hash);
+    const onHash = () => pick(window.location.hash);
+    const onClick = (e: MouseEvent) => {
+      const a = (e.target as Element | null)?.closest?.<HTMLAnchorElement>('a[href*="#"]');
+      if (a) pick(new URL(a.href, window.location.href).hash);
+    };
+    window.addEventListener("hashchange", onHash);
+    document.addEventListener("click", onClick);
+    return () => { window.removeEventListener("hashchange", onHash); document.removeEventListener("click", onClick); };
+  }, [ASSESS]);
+  const pickMeasure = (i: number) => { setMeasure(i); setBox(null); };
   return (
     <>
       <PageHead n="01" kicker={c.head.kicker} title={c.head.title} lede={c.head.lede} />
       {/* the main offering leads (Wilfred, 11 Nov 2026), set as the stages
           under it are: the head beside, the words in the column. A sales
           conversation: no checkout, no price, and no button, the nav has it */}
-      <Sec n="02" kicker={c.exec.tag} title={c.exec.name} id="sprints" extra={<StageHeadFigure figures={figures} active={stage.active} started={stage.started} />}>
+      <Sec n="02" kicker={c.exec.tag} title={c.exec.name} id="sprints" extra={<StageHeadFigure figures={figures} active={stage.active} started={stage.started} figRef={figRef} />}>
         <div className="L-exec-copy" id="executive-sprints">
           <dl className="L-exec-meta">
             <div><dt>{c.tiers.rowWho}</dt><dd>{c.exec.who}</dd></div>
             <div><dt>{c.tiers.rowGet}</dt><dd>{c.exec.get}</dd></div>
           </dl>
         </div>
-        <Stages figures={figures} c={c.stages} lead={c.exec.what} listRef={stagesRef} />
+        <Stages figures={figures} c={c.stages} listRef={stagesRef} stage={stage} />
         {SHOW_CASES ? (
           <div className="L-cases">
             <p className="L-big">{c.cases.title}</p>
@@ -211,102 +304,115 @@ function Solutions({ figures, c = DEFAULTS.solutions, s = DEFAULTS.start }: { fi
           </div>
         ) : null}
       </Sec>
-      <Sec n="02" kicker={c.tiers.kicker} title={c.tiers.title} cls="L-sec-full" id="platform">
-        <ul className="L-assess L-tiers">
-          {TIERS.map((t, i) => (
-            <li className="card L-assess-card" key={t.name}>
-              <span className="card-tag">{t.tag}</span>
-              <h3 className="L-assess-name">{t.name}</h3>
-              <p className="L-assess-what">{t.what}</p>
-              <dl className="L-assess-meta">
-                <div><dt className="L-cap">{c.tiers.rowWho}</dt><dd>{t.who}</dd></div>
-                <div><dt className="L-cap">{c.tiers.rowGet}</dt><dd>{t.get}</dd></div>
-                {c.tiers.rows.map((r) => (
-                  <div key={r.label}><dt className="L-cap">{r.label}</dt><dd>{[r.a, r.b][i]}</dd></div>
-                ))}
-              </dl>
-            </li>
-          ))}
-        </ul>
-        <p className="L-mid">{c.tiers.note}</p>
+      <Sec n="02" kicker={c.tiers.kicker} title={c.tiers.title} id="platform">
+        <Tabs base="tier" label={c.tiers.title} items={TIERS} active={tier} onPick={setTier} />
+        {TIERS.map((t, i) => (
+          <div className="L-panel" role="tabpanel" id={`tier-panel-${i}`} aria-labelledby={`tier-tab-${i}`} hidden={i !== tier} key={t.name}>
+            <p className="L-panel-what">{t.what}</p>
+            <dl className="L-rows">
+              <div><dt>{c.tiers.rowWho}</dt><dd>{t.who}</dd></div>
+              <div><dt>{c.tiers.rowGet}</dt><dd>{t.get}</dd></div>
+              {c.tiers.rows.map((r) => (
+                <div key={r.label}><dt>{r.label}</dt><dd>{[r.a, r.b][i]}</dd></div>
+              ))}
+            </dl>
+          </div>
+        ))}
+        <p className="L-mid L-panel-note">{c.tiers.note}</p>
       </Sec>
-      <Sec n="03" kicker={c.assess.kicker} title={c.assess.title} cls="L-sec-full" id="assess">
+      <Sec n="03" kicker={c.assess.kicker} title={c.assess.title} id="assess">
         {c.assess.lede ? <p className="L-mid">{c.assess.lede}</p> : null}
-        <ul className="L-assess">
-          {c.assess.items.map((it, i) => (
-            <li className="card L-assess-card L-assess-anchor" key={it.name} id={it.door}>
-              <span className="card-tag">{it.tag}</span>
-              <h3 className="L-assess-name">{it.name}</h3>
-              <span className="L-assess-price">{it.price}</span>
-              <p className="L-assess-what">{it.what}</p>
-              {it.more ? <p className="L-assess-what L-org-more">{it.more}</p> : null}
-              <dl className="L-assess-meta">
-                <div><dt className="L-cap">{c.assess.rowWho}</dt><dd>{it.who}</dd></div>
-                <div><dt className="L-cap">{c.assess.rowGet}</dt><dd>{it.get}</dd></div>
-              </dl>
-              {it.door === "orgq" ? (
-                <Link className="btn btn-secondary" href={ROUTES.contact}>{it.button}</Link>
-              ) : (
-                <button type="button" className={`btn${i === 1 ? "" : " btn-secondary"}`} onClick={() => setBox(it.door === "teamq" ? "teamq" : "leadq")} aria-pressed={box === it.door} aria-controls="assess-box">{it.button}</button>
-              )}
-            </li>
-          ))}
-        </ul>
+        <Tabs base="assess" label={c.assess.kicker} items={ASSESS.map((it) => ({ tag: it.tag, name: it.name, id: it.door }))} active={measure} onPick={pickMeasure} />
+        {ASSESS.map((it, i) => (
+          <div className="L-panel" role="tabpanel" id={`assess-panel-${i}`} aria-labelledby={it.door} hidden={i !== measure} key={it.name}>
+            <p className="L-panel-price">{it.price}</p>
+            <p className="L-panel-what">{it.what}</p>
+            {it.more ? <p className="L-mid">{it.more}</p> : null}
+            <dl className="L-rows">
+              <div><dt>{c.assess.rowWho}</dt><dd>{it.who}</dd></div>
+              <div><dt>{c.assess.rowGet}</dt><dd>{it.get}</dd></div>
+            </dl>
+            {it.door === "orgq" ? (
+              <Link className="btn btn-secondary" href={ROUTES.contact}>{it.button}</Link>
+            ) : (
+              <button type="button" className={`btn${it.door === "teamq" ? "" : " btn-secondary"}`} onClick={() => setBox(it.door === "teamq" ? "teamq" : "leadq")} aria-pressed={box === it.door} aria-controls="assess-box">{it.button}</button>
+            )}
+          </div>
+        ))}
         {box ? (
           <div className="L-assess-box" id="assess-box" ref={boxRef}>
             <p className="eyebrow L-eyebrow">{box === "teamq" ? "TeamQ" : "LeadQ"}</p>
             <StartEmail c={s.form} intent={box} talk={false} key={box} />
           </div>
         ) : null}
-        {c.assess.note ? <p className="L-mid">{c.assess.note}</p> : null}
+        {c.assess.note ? <p className="L-mid L-panel-note">{c.assess.note}</p> : null}
       </Sec>
       <Sec n="04" kicker={c.workshops.kicker} title={c.workshops.title} id="workshops">
-        {c.workshops.body ? <p className="L-mid">{c.workshops.body}</p> : null}
+        {c.workshops.lead ? <p className="L-panel-what">{c.workshops.lead}</p> : null}
+        {c.workshops.body ? <p className="L-mid L-workshops-body">{c.workshops.body}</p> : null}
+        <dl className="L-rows">
+          {c.workshops.formats.map((f) => (
+            <div key={f.name}><dt>{f.name}</dt><dd>{f.line}</dd></div>
+          ))}
+        </dl>
+        {c.workshops.button ? <Link className="btn" href={ROUTES.contact}>{c.workshops.button}</Link> : null}
       </Sec>
+      <Faq n="05" c={c.faq} />
     </>
   );
 }
 
 /* ------------------------------------------------------------------ */
 
-/** Methodology (the page id is still "process"), research first
- *  (sitemap of 11 Nov 2026): the science, then the path of three sprints,
- *  and the ask. The four stages of a sprint are on Solutions (Stages). */
+/** The Science, was Methodology (Wilfred, 16 Nov 2026; the page id is
+ *  still "process", the route is /science): the science alone, then
+ *  the ask. The path of three sprints is off the page. The four stages of
+ *  a sprint are on Solutions (Stages). */
 function Process({ c = DEFAULTS.process, g = DEFAULTS.global }: { c?: ProcessContent; g?: GlobalContent }) {
   return (
     <>
       <PageHead n="01" kicker={c.head.kicker} title={c.head.title} lede={c.head.lede} />
-      <Sec n="02" kicker={c.science.kicker} title={c.science.title} id="science">
+      <Sec n="02" kicker={c.science.kicker} title={c.science.title} id="science" cls="L-sci" reveal>
         <p className="L-mid">{c.science.p1}</p>
         <p className="L-mid">{c.science.p2}</p>
-        <dl className="L-case-stats L-sci-stats">
+        {/* the three figures as bullets under the paragraphs, the number
+            in the accent (16 Nov 2026) */}
+        <ul className="L-sci-list">
           {c.science.stats.map((st) => (
-            <div className="L-stat" key={st.n}>
-              <dt className="L-stat-n">{st.n}</dt>
-              <dd className="L-cap">{st.label}</dd>
+            <li key={st.n}><strong className="L-sci-n">{st.n}</strong> {st.label}</li>
+          ))}
+        </ul>
+      </Sec>
+      <Sec n="03" kicker={c.mhq.kicker} title={c.mhq.title} id="mhq" cls="L-sci" reveal>
+        <p className="L-mid">{c.mhq.lede}</p>
+        <dl className="L-dims">
+          {c.mhq.items.map((it) => (
+            <div className="L-dim" key={it.name}>
+              <dt>{it.name}</dt>
+              <dd>{it.line}</dd>
             </div>
           ))}
         </dl>
-        <ReportCard report={g.report} />
-        {/* the Sapien Labs graphs, redrawn, as a carousel: step 9 of the
-            runbook, once Jake sends which graphs and their numbers.
-            Nothing renders until then (docs/sprint-solutions.md, section 8) */}
       </Sec>
-      <Sec n="03" kicker={c.path.kicker} title={c.path.title} id="path">
-        <ol className="L-steps L-path">
-          {c.path.items.map((it) => (
-            <li className="L-step" key={it.tag}>
-              <span className="card-tag">{it.tag}</span>
-              <span className="L-path-line">{it.line}</span>
-            </li>
-          ))}
-        </ol>
-        <p className="L-mid">{c.path.note}</p>
+      {/* the two Sapien Labs graphs Jake chose, redrawn in the brand, one
+          under the other (16 Nov 2026), then the report they come from */}
+      <Sec n="04" kicker={c.env.kicker} title={c.env.title} id="research" cls="L-sci" reveal>
+        <p className="L-mid">{c.env.p1}</p>
+        {c.env.p2 ? <p className="L-mid">{c.env.p2}</p> : null}
+        <div className="L-charts">
+          <BarChart n="Figure 1" title={c.env.chart1Title} note={c.env.chart1Note} chart={CHART_FACTORS} />
+          <BarChart n="Figure 2" title={c.env.chart2Title} note={c.env.chart2Note} chart={CHART_RELATIONSHIPS} />
+          <p className="L-cap L-chart-source">{c.env.source}</p>
+        </div>
+        {/* no tag on the card here: the section's eyebrow already says
+            the research */}
+        <ReportCard report={g.report} noTag />
         <div className="cta-row L-stages-cta">
           <Link className="btn" href={ROUTES.start}>{c.science.ctaPrimary} <span className="arrow">&rarr;</span></Link>
           <Link className="btn btn-secondary" href={ROUTES.solutions}>{c.science.ctaSecondary}</Link>
         </div>
       </Sec>
+      <Faq n="05" c={c.faq} reveal />
     </>
   );
 }

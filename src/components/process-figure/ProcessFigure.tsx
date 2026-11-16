@@ -103,7 +103,7 @@ export function ProcessFigure({ pose, from }: { pose: PoseId; from?: PoseId }) {
     let armed = false;
     const io = new IntersectionObserver(
       ([e]) => {
-        if (e.intersectionRatio >= 0.5) { if (armed) { armed = false; pl.play(); } }
+        if (e.intersectionRatio >= 0.5) { if (armed) { armed = false; pl.play(); io.disconnect(); } } // once: re-arming on every pass made the scroll on a phone jumpy (16 Nov 2026)
         else if (!e.isIntersecting) { pl.arm(); armed = true; }
       },
       { threshold: [0, 0.5] },

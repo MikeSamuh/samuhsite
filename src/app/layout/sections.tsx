@@ -452,24 +452,23 @@ export function Circles() {
 }
 
 /** Scroll-linked arrival: --r goes from 0, the element's top at the foot of
- *  the view, to 1, its top at the middle, and stays at 1 once there. The
- *  fade and the rise read --r (layout.css, "reveal"), so they move with the
- *  hand, not on a timer. Reduced motion shows the element in place. */
-function useScrollReveal<T extends HTMLElement>(ref: React.RefObject<T | null>) {
+ *  the view, to 1, its top at the middle. The fade and the rise read --r
+ *  (layout.css, "reveal"), so they move with the hand, not on a timer, and
+ *  back again on the way up: nothing latches, so a section never sits
+ *  whole at the foot of the view (Wilfred, 16 Nov 2026). Reduced motion
+ *  shows the element in place. */
+export function useScrollReveal<T extends HTMLElement>(ref: React.RefObject<T | null>) {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) { el.style.setProperty("--r", "1"); el.dataset.in = "true"; return; }
     let raf = 0;
-    let done = false;
     const read = () => {
       raf = 0;
-      if (done) return;
       const vh = window.innerHeight;
       const top = el.getBoundingClientRect().top;
       const r = Math.max(0, Math.min(1, (vh - top) / (vh * 0.5)));
       el.style.setProperty("--r", r.toFixed(3));
-      if (r >= 1) { done = true; el.dataset.in = "true"; }
     };
     const on = () => { if (!raf) raf = requestAnimationFrame(read); };
     read();
@@ -816,18 +815,18 @@ export function CardDeck({ cards = ARCHETYPES }: { cards?: [string, string, stri
 /** The Sapien Labs report: its cover, the one-line claim, and the download.
  *  The research spine of the site, so it shows on the home page and again
  *  at the top of Insights. */
-export function ReportCard({ cls, onlyDownload, report: r = DEFAULTS.global.report }: { cls?: string; /** the download alone, no link to the page on sapienlabs.org */ onlyDownload?: boolean; /** the words and links, from the admin */ report?: GlobalContent["report"] }) {
+export function ReportCard({ cls, onlyDownload, noTag, report: r = DEFAULTS.global.report }: { cls?: string; /** no tag over the line, where the section already says it */ noTag?: boolean; /** the download alone, no link to the page on sapienlabs.org */ onlyDownload?: boolean; /** the words and links, from the admin */ report?: GlobalContent["report"] }) {
   return (
     <blockquote className={`L-research L-report${cls ? ` ${cls}` : ""}`}>
       <a className="L-report-cover" href={r.pdf} target="_blank" rel="noopener noreferrer" aria-label={`${REPORT.title}, PDF`}>
         <Image src={REPORT.cover} alt="" width={REPORT.coverWidth} height={REPORT.coverHeight} sizes="(max-width: 900px) 60vw, 220px" />
       </a>
       <div className="L-report-copy">
-        <span className="card-tag">{r.tag}</span>
+        {noTag ? null : <span className="card-tag">{r.tag}</span>}
         <p className="L-big">{r.line}</p>
         <span className="L-cap">{r.kicker}</span>
         <p className="L-report-links">
-          <a href={r.pdf} className="inline-link" target="_blank" rel="noopener noreferrer">{r.download} <span className="arrow">&rarr;</span></a>
+          <a href={r.pdf} className="inline-link" target="_blank" rel="noopener noreferrer">{r.download}</a>
           {onlyDownload ? null : <a href={r.page} className="inline-link" target="_blank" rel="noopener noreferrer">{r.onSite}</a>}
         </p>
       </div>
@@ -854,7 +853,7 @@ export function Footer({ content }: { /** site-wide words from the admin; the de
         <nav className="L-foot-col" aria-label="Company">
           <span className="L-cap L-foot-h">Company</span>
           <Link className="L-foot-link" href={ROUTES.about}>About</Link>
-          <Link className="L-foot-link" href={ROUTES.process}>Methodology</Link>
+          <Link className="L-foot-link" href={ROUTES.process}>The Science</Link>
           <Link className="L-foot-link" href={ROUTES.solutions}>Solutions</Link>
           {CAREERS_LIVE ? <Link className="L-foot-link" href={CAREERS_PATH}>Careers</Link> : null}
           <Link className="L-foot-link" href={ROUTES.contact}>Contact</Link>
