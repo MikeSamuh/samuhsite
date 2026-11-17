@@ -96,11 +96,13 @@ async function notify(lead: Lead): Promise<SinkResult> {
   }
 
   try {
-    const cc = process.env.LEAD_NOTIFY_CC;
+    // either may hold several addresses, comma separated (17 Nov 2026)
+    const list = (value: string | undefined) => (value ?? "").split(",").map((part) => part.trim()).filter(Boolean);
+    const cc = list(process.env.LEAD_NOTIFY_CC);
     const { error } = await new Resend(key).emails.send({
       from: process.env.RESEND_FROM || RESEND_ONBOARDING_FROM,
-      to,
-      ...(cc ? { cc } : {}),
+      to: list(to),
+      ...(cc.length ? { cc } : {}),
       replyTo: lead.email,
       subject: subject(lead),
       text: body(lead),
