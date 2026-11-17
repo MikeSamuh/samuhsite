@@ -41,9 +41,9 @@ export function Frame({ label, tall }: { label: string; tall?: boolean }) {
   return <div className={`ph${tall ? " ph-tall" : ""}`}>{label}</div>;
 }
 
-function PageHead({ n, kicker, title, lede }: { n: string; kicker: string; title: string; lede?: string }) {
+function PageHead({ n, kicker, title, lede, art }: { n: string; kicker: string; title: string; lede?: string; /** a drawing behind the head (The Science's sketch, Wilfred, 17 Nov 2026) */ art?: string }) {
   return (
-    <section className="L-sec L-page-head" data-n={n}>
+    <section className="L-sec L-page-head" data-n={n} data-art={art ? "" : undefined} style={art ? ({ "--head-art": `url(${art})` } as React.CSSProperties) : undefined}>
       <div className="L-wrap">
         <div className="L-head">
           <span className="L-n">{n}</span>
@@ -58,7 +58,7 @@ function PageHead({ n, kicker, title, lede }: { n: string; kicker: string; title
   );
 }
 
-function Sec({ n, kicker, title, children, id, cls, extra, h1, reveal }: { /** fades up as it scrolls into view, as the home's sections do */ reveal?: boolean; n: string; kicker: string; title: string; children: React.ReactNode; id?: string; cls?: string; /** under the title, in the head */ extra?: React.ReactNode; /** the page's own title: an h1 */ h1?: boolean }) {
+function Sec({ n, kicker, title, children, id, cls, extra, h1, reveal }: { /** fades up as it scrolls into view, as the home's sections do */ reveal?: boolean; n: string; kicker: React.ReactNode; title: string; children: React.ReactNode; id?: string; cls?: string; /** under the title, in the head */ extra?: React.ReactNode; /** the page's own title: an h1 */ h1?: boolean }) {
   const H = h1 ? "h1" : "h2";
   const secRef = useRef<HTMLElement>(null);
   const noRef = useRef<HTMLElement>(null);
@@ -105,45 +105,53 @@ function Faq({ n, c, reveal }: { reveal?: boolean; n: string; c: { kicker: strin
 /* ------------------------------------------------------------------ */
 
 // the traced pose the page morphs between (scripts/figures), one per stage,
-// in the order of the words in the content layer. Ritualize has no traced
-// pose: the star at rest stands in.
-// TODO(asset): a traced figure for Ritualize
-const STAR = "/samuh-star.png";
+// in the order of the words in the content layer (the icons of 17 Nov 2026)
 const STAGE_ART: [string, PoseId | null][] = [
-  ["/icons/Discover%202.png", "discover"],
-  ["/icons/Align%202.png", "align"],
-  ["/icons/Belonging%202.png", "cocreate"],
-  [STAR, null],
+  ["/icons/discover-icon-samuh.png", "discover"],
+  ["/icons/align-icon-samuh.png", "align"],
+  ["/icons/co-create-icon-samuh.png", "cocreate"],
+  ["/icons/ritualize-icon-samuh.png", "ritualize"],
 ];
 
-const STAGE_SLACK = 72; // a stage takes over this far before its top meets the figure's
+const STAGE_STEP = 0.5; // of the view's height: the scroll each stage holds for (the track's tail in layout.css is 4 x STEP)
 
 /** The stage the reader is on. On the editorial columns at desktop width
- *  the figure under the section's title waits for Pre-work to come level
- *  with it, each stage's words hold beside the figure, and only the stage
- *  the figure shows is seen (Wilfred, 16 Nov 2026). `live` is off where the
+ *  the section is pinned under the nav: who it is for and what you get stay
+ *  put, the scroll steps through the four stages in place under them, with
+ *  the stage's figure under the section's title, and only then does the
+ *  section scroll away (Wilfred, 17 Nov 2026). `live` is off where the
  *  figure is not shown: every stage is seen there, with its own art. */
 function useStages(listRef: React.RefObject<HTMLElement | null>, figRef: React.RefObject<HTMLElement | null>) {
   const [st, setSt] = useState({ active: 0, started: false, live: false });
   useEffect(() => {
     const root = listRef.current, fig = figRef.current;
     if (!root || !fig) return;
-    const items = Array.from(root.querySelectorAll<HTMLElement>(".L-stage"));
+    const n = root.querySelectorAll(".L-stage").length;
+    const pin = root.closest<HTMLElement>(".L-exec-pin"), track = pin?.parentElement;
     let raf = 0;
     const tick = () => {
       raf = 0;
-      const head = fig.parentElement;
-      if (!head || fig.offsetParent === null) {
-        setSt((p) => (p.live ? { active: 0, started: false, live: false } : p));
+      if (!pin || !track || fig.offsetParent === null) {
+        // not pinned (a phone): the stages are a column, and the timeline that
+        // sticks over them follows the one the reader has reached
+        let active = 0;
+        root.querySelectorAll<HTMLElement>(".L-stage").forEach((el, j) => { if (el.getBoundingClientRect().top <= window.innerHeight * 0.45) active = j; });
+        setSt((p) => (p.active === active && !p.started && !p.live ? p : { active, started: false, live: false }));
         return;
       }
-      const top = fig.getBoundingClientRect().top;
-      // where the figure sits under the head, so the words stick level with it
-      root.style.setProperty("--fig-y", `${Math.round(top - head.getBoundingClientRect().top)}px`);
-      const line = top + STAGE_SLACK;
-      let active = 0;
-      items.forEach((el, j) => { if (el.getBoundingClientRect().top <= line) active = j; });
-      const started = items.length > 0 && items[0].getBoundingClientRect().top <= line;
+      // the stage's line and verb under the title sit level with the timeline (Wilfred, 17 Nov 2026)
+      const rail = pin.querySelector<HTMLElement>(".L-stage-rail"), now = pin.closest("section")?.querySelector<HTMLElement>(".L-stage-now");
+      const head = now?.parentElement;
+      if (rail && now && head) {
+        const natural = now.getBoundingClientRect().top - head.getBoundingClientRect().top - parseFloat(getComputedStyle(now).marginTop);
+        const want = rail.getBoundingClientRect().top - pin.getBoundingClientRect().top;
+        now.style.setProperty("--now-gap", `${Math.max(28, Math.round(want - natural))}px`);
+      }
+      // how far the pinned block has travelled down its track
+      const gone = pin.getBoundingClientRect().top - track.getBoundingClientRect().top;
+      const step = window.innerHeight * STAGE_STEP;
+      const started = n > 0 && gone > 4; // pinned: the eyebrow turns to Our process
+      const active = Math.max(0, Math.min(n - 1, Math.floor(gone / step)));
       setSt((p) => (p.active === active && p.started === started && p.live ? p : { active, started, live: true }));
     };
     const kick = () => { if (!raf) raf = requestAnimationFrame(tick); };
@@ -163,12 +171,40 @@ function useStages(listRef: React.RefObject<HTMLElement | null>, figRef: React.R
  *  is under the section's title (StageHeadFigure) and the stages come in
  *  one at a time beside it; narrower, each stage carries its own figure.
  *  `how` is still the nav's anchor. */
-function Stages({ figures, c, listRef, stage }: { figures?: boolean; c: SolutionsContent["stages"]; listRef: React.RefObject<HTMLDivElement | null>; stage: { active: number; live: boolean } }) {
+function Stages({ figures, c, tag, listRef, figRef, stage }: { figures?: boolean; /** over the timeline where the section's eyebrow does not say it (a phone) */ tag?: string; c: SolutionsContent["stages"]; listRef: React.RefObject<HTMLDivElement | null>; figRef: React.RefObject<HTMLSpanElement | null>; stage: { active: number; started: boolean; live: boolean } }) {
+  const items = c.items.slice(0, STAGE_ART.length);
+  const last = items.length - 1;
+  const [icon, pose] = STAGE_ART[Math.min(stage.active, STAGE_ART.length - 1)];
+  // a step on the timeline: scroll to where its stage holds on the track
+  const pick = (i: number) => {
+    const pin = listRef.current?.closest<HTMLElement>(".L-exec-pin"), track = pin?.parentElement;
+    if (!pin || !track) return;
+    if (getComputedStyle(pin).position !== "sticky") { listRef.current?.querySelectorAll<HTMLElement>(".L-stage")[i]?.scrollIntoView({ behavior: "smooth", block: "start" }); return; }
+    // the scroll at which the pin starts to hold, then the stage's share of the track
+    const hold = track.getBoundingClientRect().top + window.scrollY - parseFloat(getComputedStyle(pin).top);
+    window.scrollTo({ top: hold + (i + 0.4) * window.innerHeight * STAGE_STEP, behavior: "smooth" });
+  };
   return (
     <div className="L-exec-stages L-assess-anchor" id="how" data-live={stage.live ? "" : undefined}>
-      <div ref={listRef}>
+      {/* the four steps on a line (Wilfred, 17 Nov 2026): shown where the stages
+          swap in place; the stages themselves are the list under it */}
+      <div className="L-stage-bar">
+        {tag ? <p className="eyebrow L-eyebrow L-stage-tag">{tag}</p> : null}
+        <ol className="L-stage-rail" aria-hidden>
+          {items.map((st, i) => (
+            <li key={st.verb} data-on={i === stage.active ? "" : undefined} data-done={i < stage.active ? "" : undefined}>
+              <button type="button" tabIndex={-1} onClick={() => pick(i)}>{st.verb}</button>
+            </li>
+          ))}
+        </ol>
+      </div>
+      <div className="L-stage-row" ref={listRef}>
+        {/* the active stage's figure, beside its words: one figure that morphs from stage to stage */}
+        <span className="L-stage-fig" ref={figRef} aria-hidden>
+          {figures && pose ? <StageFigure pose={pose} /> : <Image src={icon} alt="" width={240} height={240} sizes="240px" />}
+        </span>
         <ol className="L-stage-list">
-          {c.items.slice(0, STAGE_ART.length).map((st, i) => {
+          {items.map((st, i) => {
             const [icon, pose] = STAGE_ART[i];
             return (
               <li key={st.verb} className="L-stage" data-on={i === stage.active ? "" : undefined}>
@@ -177,6 +213,9 @@ function Stages({ figures, c, listRef, stage }: { figures?: boolean; c: Solution
                   <h3 className="sec L-stage-verb">{st.verb}</h3>
                   <div className="L-stage-copy">
                     <p className="L-mid">{st.body}</p>
+                    {/* the keepers line closes the last stage, in its block, so it
+                        comes and goes with Ritualize (Wilfred, 16 Nov 2026) */}
+                    {i === last && c.keepers ? <p className="L-mid L-stages-keepers">{c.keepers}</p> : null}
                   </div>
                 </div>
                 <span className="L-stage-art" aria-hidden>
@@ -191,18 +230,28 @@ function Stages({ figures, c, listRef, stage }: { figures?: boolean; c: Solution
           })}
         </ol>
       </div>
-      <p className="L-mid L-stages-keepers">{c.keepers}</p>
     </div>
   );
 }
 
-/** The active stage's figure, under the section's title: unseen until
- *  Pre-work is level with it, then one figure that morphs from stage to stage. */
-function StageHeadFigure({ figures, active, started, figRef }: { figures?: boolean; active: number; started: boolean; figRef: React.RefObject<HTMLSpanElement | null> }) {
-  const [icon, pose] = STAGE_ART[Math.min(active, STAGE_ART.length - 1)];
+/** Contact, with the form's dropdown opened on what the button was under
+ *  (Wilfred, 17 Nov 2026). The keys are the form's interests in the content layer. */
+const talkAbout = (key: "executive-sprints" | "self-guided" | "supported" | "orgq" | "workshops") => `${ROUTES.contact}?interest=${key}`;
+const TIER_KEYS = ["self-guided", "supported"] as const;
+
+/** The active stage's line and verb, under the section's title (Wilfred,
+ *  17 Nov 2026): a copy for the eye, where the stages swap in place. The
+ *  stage's own line and verb stay in the list for a screen reader. */
+function StageHeadLabel({ c, active, button }: { c: SolutionsContent["stages"]; active: number; /** the sprint's button, under the stage's name where the section is pinned */ button?: string }) {
+  const st = c.items[Math.min(active, c.items.length - 1)];
+  if (!st) return null;
   return (
-    <span className="L-stage-fig" ref={figRef} data-on={started ? "" : undefined} aria-hidden>
-      {figures && pose ? <StageFigure pose={pose} /> : <Image src={icon} alt="" width={240} height={240} sizes="240px" />}
+    <span className="L-stage-now">
+      <span className="L-kick-swap" key={st.verb} aria-hidden>
+        {st.when ? <span className="eyebrow L-eyebrow L-stage-line">{st.when}</span> : null}
+        <span className="L-stage-verb">{st.verb}</span>
+      </span>
+      {button ? <Link className="btn L-stage-cta" href={talkAbout("executive-sprints")}>{button}</Link> : null}
     </span>
   );
 }
@@ -272,18 +321,25 @@ function Solutions({ figures, c = DEFAULTS.solutions, s = DEFAULTS.start }: { fi
   const pickMeasure = (i: number) => { setMeasure(i); setBox(null); };
   return (
     <>
-      <PageHead n="01" kicker={c.head.kicker} title={c.head.title} lede={c.head.lede} />
+      <PageHead n="01" kicker={c.head.kicker} title={c.head.title} lede={c.head.lede} art="/solutions-hero-sketch.png" />
       {/* the main offering leads (Wilfred, 11 Nov 2026), set as the stages
           under it are: the head beside, the words in the column. A sales
           conversation: no checkout, no price, and no button, the nav has it */}
-      <Sec n="02" kicker={c.exec.tag} title={c.exec.name} id="sprints" extra={<StageHeadFigure figures={figures} active={stage.active} started={stage.started} figRef={figRef} />}>
-        <div className="L-exec-copy" id="executive-sprints">
-          <dl className="L-exec-meta">
-            <div><dt>{c.tiers.rowWho}</dt><dd>{c.exec.who}</dd></div>
-            <div><dt>{c.tiers.rowGet}</dt><dd>{c.exec.get}</dd></div>
-          </dl>
+      <Sec n="02" kicker={<span className="L-kick-swap" key={stage.started ? "p" : "o"}>{stage.started && c.exec.processTag ? c.exec.processTag : c.exec.tag}</span>} title={c.exec.name} id="sprints" extra={<StageHeadLabel c={c.stages} active={stage.active} button={c.exec.button} />}>
+        {/* pinned under the nav while the scroll steps through the stages (Wilfred, 17 Nov 2026) */}
+        <div className="L-exec-track">
+          <div className="L-exec-pin">
+            <div className="L-exec-copy" id="executive-sprints">
+              <dl className="L-exec-meta">
+                <div><dt>{c.tiers.rowWho}</dt><dd>{c.exec.who}</dd></div>
+                <div><dt>{c.tiers.rowGet}</dt><dd>{c.exec.get}</dd></div>
+              </dl>
+            </div>
+            <Stages figures={figures} c={c.stages} tag={c.exec.processTag} listRef={stagesRef} figRef={figRef} stage={stage} />
+          </div>
         </div>
-        <Stages figures={figures} c={c.stages} listRef={stagesRef} stage={stage} />
+        {/* the sprint's button under the stages where they are a column (a phone); pinned, it is under the stage's name */}
+        {c.exec.button ? <Link className="btn L-exec-cta" href={talkAbout("executive-sprints")}>{c.exec.button}</Link> : null}
         {SHOW_CASES ? (
           <div className="L-cases">
             <p className="L-big">{c.cases.title}</p>
@@ -304,7 +360,8 @@ function Solutions({ figures, c = DEFAULTS.solutions, s = DEFAULTS.start }: { fi
           </div>
         ) : null}
       </Sec>
-      <Sec n="02" kicker={c.tiers.kicker} title={c.tiers.title} id="platform">
+      <Sec n="02" kicker={c.tiers.kicker} title={c.tiers.title} id="platform" extra={c.tiers.note ? <p className="L-sub L-head-note">{c.tiers.note}</p> : null}>
+        <div className="L-tabbed">
         <Tabs base="tier" label={c.tiers.title} items={TIERS} active={tier} onPick={setTier} />
         {TIERS.map((t, i) => (
           <div className="L-panel" role="tabpanel" id={`tier-panel-${i}`} aria-labelledby={`tier-tab-${i}`} hidden={i !== tier} key={t.name}>
@@ -316,11 +373,13 @@ function Solutions({ figures, c = DEFAULTS.solutions, s = DEFAULTS.start }: { fi
                 <div key={r.label}><dt>{r.label}</dt><dd>{[r.a, r.b][i]}</dd></div>
               ))}
             </dl>
+            {c.tiers.button && TIER_KEYS[i] ? <Link className="btn" href={talkAbout(TIER_KEYS[i])}>{c.tiers.button}</Link> : null}
           </div>
         ))}
-        <p className="L-mid L-panel-note">{c.tiers.note}</p>
+        </div>
       </Sec>
-      <Sec n="03" kicker={c.assess.kicker} title={c.assess.title} id="assess">
+      <Sec n="03" kicker={c.assess.kicker} title={c.assess.title} id="assess" extra={c.assess.note ? <p className="L-sub L-head-note">{c.assess.note}</p> : null}>
+        <div className="L-tabbed">
         {c.assess.lede ? <p className="L-mid">{c.assess.lede}</p> : null}
         <Tabs base="assess" label={c.assess.kicker} items={ASSESS.map((it) => ({ tag: it.tag, name: it.name, id: it.door }))} active={measure} onPick={pickMeasure} />
         {ASSESS.map((it, i) => (
@@ -333,9 +392,9 @@ function Solutions({ figures, c = DEFAULTS.solutions, s = DEFAULTS.start }: { fi
               <div><dt>{c.assess.rowGet}</dt><dd>{it.get}</dd></div>
             </dl>
             {it.door === "orgq" ? (
-              <Link className="btn btn-secondary" href={ROUTES.contact}>{it.button}</Link>
+              <Link className="btn" href={talkAbout("orgq")}>{it.button}</Link>
             ) : (
-              <button type="button" className={`btn${it.door === "teamq" ? "" : " btn-secondary"}`} onClick={() => setBox(it.door === "teamq" ? "teamq" : "leadq")} aria-pressed={box === it.door} aria-controls="assess-box">{it.button}</button>
+              <button type="button" className="btn" onClick={() => setBox(it.door === "teamq" ? "teamq" : "leadq")} aria-pressed={box === it.door} aria-controls="assess-box">{it.button}</button>
             )}
           </div>
         ))}
@@ -345,7 +404,7 @@ function Solutions({ figures, c = DEFAULTS.solutions, s = DEFAULTS.start }: { fi
             <StartEmail c={s.form} intent={box} talk={false} key={box} />
           </div>
         ) : null}
-        {c.assess.note ? <p className="L-mid L-panel-note">{c.assess.note}</p> : null}
+        </div>
       </Sec>
       <Sec n="04" kicker={c.workshops.kicker} title={c.workshops.title} id="workshops">
         {c.workshops.lead ? <p className="L-panel-what">{c.workshops.lead}</p> : null}
@@ -355,7 +414,7 @@ function Solutions({ figures, c = DEFAULTS.solutions, s = DEFAULTS.start }: { fi
             <div key={f.name}><dt>{f.name}</dt><dd>{f.line}</dd></div>
           ))}
         </dl>
-        {c.workshops.button ? <Link className="btn" href={ROUTES.contact}>{c.workshops.button}</Link> : null}
+        {c.workshops.button ? <Link className="btn" href={talkAbout("workshops")}>{c.workshops.button}</Link> : null}
       </Sec>
       <Faq n="05" c={c.faq} />
     </>
@@ -371,7 +430,7 @@ function Solutions({ figures, c = DEFAULTS.solutions, s = DEFAULTS.start }: { fi
 function Process({ c = DEFAULTS.process, g = DEFAULTS.global }: { c?: ProcessContent; g?: GlobalContent }) {
   return (
     <>
-      <PageHead n="01" kicker={c.head.kicker} title={c.head.title} lede={c.head.lede} />
+      <PageHead n="01" kicker={c.head.kicker} title={c.head.title} lede={c.head.lede} art="/science-hero-sketch.png" />
       <Sec n="02" kicker={c.science.kicker} title={c.science.title} id="science" cls="L-sci" reveal>
         <p className="L-mid">{c.science.p1}</p>
         <p className="L-mid">{c.science.p2}</p>

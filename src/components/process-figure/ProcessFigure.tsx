@@ -48,12 +48,12 @@ function makePlayer(svg: SVGSVGElement, rest: SVGGElement, live: SVGGElement) {
     let m = morphs[`${from}>${to}`];
     if (!m) {
       const back = morphs[`${to}>${from}`];
-      if (back) m = back.map((x) => ({ head: x.head, from: x.to, to: x.from }));
+      if (back) m = back.map((x) => ({ head: x.head, hole: x.hole, from: x.to, to: x.from }));
     }
     if (!m) return false;
     parts = m;
     const ns = "http://www.w3.org/2000/svg";
-    paths = parts.map(() => document.createElementNS(ns, "path"));
+    paths = parts.map((part) => { const el = document.createElementNS(ns, "path"); if (part.hole) el.setAttribute("class", "process-hole"); return el; });
     live.replaceChildren(...paths);
     return true;
   };

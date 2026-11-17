@@ -5,7 +5,7 @@ import Link from "next/link";
 import { ROUTES } from "@/lib/site";
 import type { HomeContent } from "@/lib/content/defaults";
 import { mark } from "@/lib/content/shared";
-import { PERSON, Person } from "./people";
+import { PERSON, Person, PersonDefs } from "./people";
 
 const HEAD_TOP = 28; // the sticky head's offset below the nav, as in layout.css
 
@@ -248,6 +248,7 @@ export function Who({ c }: { c: HomeContent["who"] }) {
       </div>
       <div className="L-ws-pic" ref={root}>
         <svg className="L-c-svg" viewBox={`0 0 ${FRAME.w} ${FRAME.h}`} role="img" aria-label={PICTURE[active]} style={{ opacity: 1 - gone }}>
+          <PersonDefs />
           {[1, 2].map((k) => (
             <g key={k} style={{ opacity: orgs * (1 - merge) }}><Row {...at(k)} s={size} ring={1} people={people} /></g>
           ))}

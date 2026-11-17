@@ -24,6 +24,8 @@ const schema = z
     organization: optional(short),
     role: optional(short),
     need: optional(short),
+    interest: optional(short),
+    consent: z.boolean().optional(),
     stage: z.enum(["email", "complete"]).optional(),
     message: optional(long),
     reason: z.enum(["general", "solutions", "partnership", "other"]).optional(),
@@ -40,8 +42,15 @@ const schema = z
     turnstileToken: z.string().max(4096).optional(),
   })
   .superRefine((data, ctx) => {
-    // booking a call takes a name; the contact form takes no name, and its
-    // phone is optional (Wilfred, 11 Nov 2026); the rest take an email alone
+    // booking a call takes a name; the contact form's phone is optional
+    // (Wilfred, 11 Nov 2026); the rest take an email alone
+    // the contact form takes a name and the consent box since 17 Nov 2026
+    if (data.flow === "contact" && !data.name) {
+      ctx.addIssue({ code: "custom", path: ["name"], message: "Name is required" });
+    }
+    if (data.flow === "contact" && data.consent !== true) {
+      ctx.addIssue({ code: "custom", path: ["consent"], message: "Consent is required" });
+    }
     if (data.flow === "talk" && !data.name) {
       ctx.addIssue({ code: "custom", path: ["name"], message: "Name is required" });
     }

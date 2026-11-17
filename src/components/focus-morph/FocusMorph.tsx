@@ -6,7 +6,6 @@ import { StartEmail } from "@/components/start/StartEmail";
 import { mark } from "@/lib/content/shared";
 import { MHQ_BANDS, MHQ_SCALE, mhqBand } from "@/lib/tokens";
 import { TAX_STEPS, days as fmtDays, money } from "@/lib/performance-tax";
-import { PERSON, Person, bust } from "./people";
 
 // Where others focus, where we focus, then what we aspire to, in one
 // picture. The section is a tall track; its content pins while the visitor
@@ -22,7 +21,8 @@ import { PERSON, Person, bust } from "./people";
 // 2 November 2026; its geometry stays only so the shapes still interpolate.
 // Between the circles and that beat a call-out holds the stage alone
 // (Wilfred, 16 Nov 2026): how Samuh finds the tax, and with whom.
-// In its place (Wilfred, 6 Nov 2026) a fourth beat in three steps: the
+// In its place (Wilfred, 6 Nov 2026) a fourth beat in steps (three then,
+// six since 17 Nov 2026, one for each band, Distressed first): the
 // circles give way to three hollow people, the team, and water rises
 // through all three as one level, a struggling team environment, then a
 // managing one, then thriving, when the team is full. Beside them the
@@ -92,35 +92,44 @@ const GROW = { from: 0.2, to: 0.95 };
 /** three beats on the pinned scroll (Wilfred, 2 Nov 2026): the enterprise
  *  alone, then the individual appears at its centre, then the team arrives
  *  between them */
-const INDIVIDUAL = { from: 0.03, to: 0.105 };
-const ARRIVE = { from: 0.15, to: 0.2325 };
+/** the track grew when the steps went from three to six (17 Nov 2026):
+ *  the beats keep the shares they were tuned at and TRACK, the old travel
+ *  over the new (layout.css, the section's min-height), puts them on the
+ *  longer track, so each still takes the scroll it took */
+const TRACK = 0.647;
+const span = (from: number, to: number) => ({ from: from * TRACK, to: to * TRACK });
+const INDIVIDUAL = span(0.03, 0.105);
+const ARRIVE = span(0.15, 0.2325);
 /** the call-out between the circles and the people (Wilfred, 16 Nov 2026):
  *  the circles and the side column go (AWAY), one statement holds the
  *  stage alone (SAY in, SAID out), then the people come where it was */
-const AWAY = { from: 0.27, to: 0.3075 };
-const SAY = { from: 0.2925, to: 0.33 };
-const SAID = { from: 0.3825, to: 0.4125 };
+const AWAY = span(0.27, 0.3075);
+const SAY = span(0.2925, 0.33);
+const SAID = span(0.3825, 0.4125);
 /** the fourth beat (6 Nov 2026): the circles cross to three people (PEOPLE),
- *  then three steps, each the water rising to the next level and the
+ *  then the steps, each the water rising to the next level and the
  *  meter and readout moving with it; the CTA last. The Venn never comes */
-const PEOPLE = { from: 0.39, to: 0.465 };
+const PEOPLE = span(0.39, 0.465);
 /** each step is a short move and a long hold, most of a screen of scroll,
  *  so a step is not scrolled past by accident (Wilfred, 16 Nov 2026) */
-const STEPS = [
-  { from: 0.49, to: 0.54 },
-  { from: 0.63, to: 0.68 },
-  { from: 0.77, to: 0.82 },
-];
-const CTA = { from: 0.93, to: 0.98 };
+const STEP = { first: 0.49, move: 0.05, every: 0.14 };
+const STEPS = TAX_STEPS.map((_, j) => span(STEP.first + j * STEP.every, STEP.first + j * STEP.every + STEP.move));
+/** the ask comes in, then holds the stage alone for a screen of scroll,
+ *  a section of its own (Wilfred, 17 Nov 2026): the track's last tenth */
+const CTA = span(STEP.first + TAX_STEPS.length * STEP.every + 0.02, STEP.first + TAX_STEPS.length * STEP.every + 0.07);
 
-/** the three people, hollow, in a row where the team circle was. Each is a
- *  head and a bust with round shoulders. One water level fills all three,
- *  clipped to their shapes; the level is the step's place on the MHQ
+/** the three people, hollow, in a row where the team circle was. One
+ *  water level fills all three, held to their insides; the level is the step's place on the MHQ
  *  scale, and the last step fills them. The surface is two slow waves,
  *  calming as the team fills */
-// the drawing itself is in ./people, shared with the Solutions page
-const PEOPLE_X = [172, 320, 468];
-const WATER = { x0: 100, x1: 540, top: PERSON.headCy - PERSON.headR, bottom: PERSON.footY, amp: 4, step: 16 };
+// the drawing is the client's own (17 Nov 2026), placed and never redrawn:
+// two masks cut from it by scripts/figures/team.py, its lines and the
+// inside of each figure, 1280 by 772. The masks say where; the colours
+// are the tokens'. Solutions keeps the plain figure in ./people
+const TEAM_H = 250;
+const TEAM_W = (TEAM_H * 1280) / 772;
+const TEAM = { x: FRAME.w / 2 - TEAM_W / 2, y: 56, w: TEAM_W, h: TEAM_H, lines: "/icons/home-team-lines.png", fill: "/icons/home-team-fill.png" };
+const WATER = { x0: 100, x1: 540, top: TEAM.y, bottom: TEAM.y + TEAM.h, amp: 4, step: 16 };
 /** how full the team is at each step: the window's middle on the scale, the last step full */
 const LEVELS = TAX_STEPS.map((t, j) => (j === TAX_STEPS.length - 1 ? 1 : ((t.from + t.to) / 2 - MHQ_SCALE.min) / (MHQ_SCALE.max - MHQ_SCALE.min)));
 /** where the needle points at each step: the window's middle, inside its band */
@@ -143,7 +152,7 @@ function waterPath(level: number, t: number): string {
 
 /** the meter: the TeamQ section's half circle, from -100 on the left to
  *  200 on the right, the bands along it and a needle that steps through
- *  the three windows, resting in the middle of each */
+ *  the steps' windows, resting in the middle of each */
 const GAUGE = { cx: 100, cy: 100, r: 78, gap: 1.6 };
 const gAngle = (score: number) => 180 - ((score - MHQ_SCALE.min) / (MHQ_SCALE.max - MHQ_SCALE.min)) * 180;
 const gPoint = (deg: number) => {
@@ -191,7 +200,7 @@ const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 const ease = (t: number) => t * t * (3 - 2 * t);
 /** where a stretch of the track has got to, eased, 0 before it and 1 after */
 const over = (p: number, span: { from: number; to: number }) => ease(clamp((p - span.from) / (span.to - span.from)));
-/** how full the team is, from the three steps' progress: each step lifts
+/** how full the team is, from the steps' progress: each step lifts
  *  the water from the last level to its own */
 const levelAt = (steps: number[]) => steps.reduce((acc, t, j) => lerp(acc, LEVELS[j], t), 0);
 
@@ -277,6 +286,11 @@ export function FocusMorph({ words = DEFAULTS.home.focus, cta }: { /** the heads
       m.current.level = levelAt(STEPS.map((sp) => over(next, sp)));
       stage.style.setProperty("--h", over(enter, HEAD).toFixed(4));
       stage.style.setProperty("--c", over(next, CTA).toFixed(4));
+      // the ask takes the whole stage (Wilfred, 17 Nov 2026): how far the
+      // picture is from the stage's middle, by layout alone, so the CSS
+      // can carry it there as the head, the meter and the readout go
+      stage.style.setProperty("--fm-dx", `${(stage.clientWidth / 2 - (el.offsetLeft + el.offsetWidth / 2)).toFixed(1)}px`);
+      stage.style.setProperty("--fm-dy", `${(stage.clientHeight / 2 - (el.offsetTop + el.offsetHeight / 2)).toFixed(1)}px`);
       stage.style.setProperty("--g", m.current.g.toFixed(4));
       stage.style.setProperty("--i", m.current.i.toFixed(4));
       stage.style.setProperty("--q", m.current.q.toFixed(4));
@@ -302,6 +316,8 @@ export function FocusMorph({ words = DEFAULTS.home.focus, cta }: { /** the heads
       stage.style.removeProperty("--a");
       stage.style.removeProperty("--k");
       stage.style.removeProperty("--c");
+      stage.style.removeProperty("--fm-dx");
+      stage.style.removeProperty("--fm-dy");
     };
   }, []);
 
@@ -319,13 +335,18 @@ export function FocusMorph({ words = DEFAULTS.home.focus, cta }: { /** the heads
   const shapes = shapesAt(0, q, g, i);
   const level = levelAt(steps);
   // the needle: before the first step it waits a little below the first
-  // window, then steps through the three; the band under it lights
-  const meter = steps.reduce((acc, t, j) => lerp(acc, SCORES[j], t), SCORES[0] - 30);
+  // window (the foot of the scale, now the first is Distressed), then
+  // steps through them; the band under it lights
+  const meter = steps.reduce((acc, t, j) => lerp(acc, SCORES[j], t), Math.max(MHQ_SCALE.min, SCORES[0] - 30));
   const meterBand = mhqBand(meter);
   const meterTurn = 180 - gAngle(meter);
-  /** each readout's presence: in with its step, out with the next */
-  const readouts = steps.map((t, j) => t * (1 - (steps[j + 1] ?? 0)));
+  /** each readout's presence: in over the second half of its step's move,
+   *  out over the first half of the next, so two are never on screen
+   *  together (Wilfred, 17 Nov 2026: they crossed and read as a muddle) */
+  const readouts = steps.map((t, j) => clamp(t * 2 - 1) * (1 - clamp((steps[j + 1] ?? 0) * 2)));
   const stepNow = steps.reduce((acc, t) => (t > 0.5 ? acc + 1 : acc), 0);
+  // the ask has the stage: the head, the meter and the readout are gone
+  const asking = over(p, CTA) > 0.5;
 
   /** which circles the pointer is in, against the live positions. Nested:
    *  the innermost only, so the individual wins over the team, the team
@@ -427,8 +448,8 @@ export function FocusMorph({ words = DEFAULTS.home.focus, cta }: { /** the heads
 
   // the meter's bands are a way through the steps (Wilfred, 16 Nov 2026):
   // a band takes the page to the step nearest it on the scale, by
-  // scrolling, since the scroll is the clock. Three steps have figures
-  // (src/lib/performance-tax.ts), so two bands share each
+  // scrolling, since the scroll is the clock. Every band has its own
+  // step (src/lib/performance-tax.ts)
   const stepOf = (b: { min: number; max: number }) => {
     const mid = (b.min + b.max) / 2;
     return SCORES.reduce((best, sc, j) => (Math.abs(sc - mid) < Math.abs(SCORES[best] - mid) ? j : best), 0);
@@ -465,7 +486,7 @@ export function FocusMorph({ words = DEFAULTS.home.focus, cta }: { /** the heads
             <div className="L-fm-titles">
               <h2 className="sec L-fm-title L-fm-h0" aria-hidden={arrived || undefined}>{mark(words.titleOthers, "L-hl")}</h2>
               <h2 className="sec L-fm-title L-fm-h1" aria-hidden={!arrived || away || undefined}>{mark(words.titleWe, "L-hl")}</h2>
-              <h2 className="sec L-fm-title L-fm-h2 L-fm-in" aria-hidden={!people || undefined}>{mark(words.titleHow ?? "", "L-hl")}</h2>
+              <h2 className="sec L-fm-title L-fm-h2 L-fm-in" aria-hidden={!people || asking || undefined}>{mark(words.titleHow ?? "", "L-hl")}</h2>
             </div>
           </div>
         </div>
@@ -485,10 +506,10 @@ export function FocusMorph({ words = DEFAULTS.home.focus, cta }: { /** the heads
             </dl>
           ))}
           {/* the fourth beat's left side: the meter from the TeamQ section
-              stepping through the three windows. The readout for the
+              stepping through the windows. The readout for the
               step (the window, the days, the money) is under the picture,
-              across the section; the three share one cell and take turns */}
-          <div className="L-fm-legend L-fm-meter L-fm-in" aria-hidden={!people || undefined}>
+              across the section; they share one cell and take turns */}
+          <div className="L-fm-legend L-fm-meter L-fm-in" aria-hidden={!people || asking || undefined}>
             <span className="L-cap">{words.howLabel}</span>
             <svg className="capacity-gauge L-fm-gauge" viewBox="0 0 200 116" role="group" aria-label={`A meter at ${meterBand.name}, stepping from ${mhqBand(SCORES[0]).name} to ${mhqBand(SCORES[SCORES.length - 1]).name}`}>
               {/* the brand's two colours along the arc (Wilfred, 6 Nov 2026): pink
@@ -506,7 +527,7 @@ export function FocusMorph({ words = DEFAULTS.home.focus, cta }: { /** the heads
                   className="gauge-band L-fm-band"
                   data-on={b.id === meterBand.id || undefined}
                   role="button"
-                  tabIndex={people ? 0 : -1}
+                  tabIndex={people && !asking ? 0 : -1}
                   aria-label={`${b.name}: show a ${(words.steps?.[stepOf(b)]?.label ?? "").replace(/^A /, "")}`}
                   onClick={() => goStep(stepOf(b))}
                   onKeyDown={(ev) => { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); goStep(stepOf(b)); } }}
@@ -555,19 +576,20 @@ export function FocusMorph({ words = DEFAULTS.home.focus, cta }: { /** the heads
             );
           })}
 
-          {/* the fourth beat: three hollow people where the team was, and one
-              water level through all three, clipped to their shapes */}
+          {/* the fourth beat: the client's three people where the team was,
+              and one water level through all three, held to their insides */}
           <g className="L-fm-people L-fm-in" aria-hidden={!people || undefined}>
             <defs>
-              {/* shapes only: a group inside a clipPath is ignored */}
-              <clipPath id="fm-team-clip">
-                {PEOPLE_X.map((x, j) => <circle key={`h${j}`} cx={x} cy={PERSON.headCy} r={PERSON.headR} />)}
-                {PEOPLE_X.map((x, j) => <path key={`b${j}`} d={bust(x)} />)}
-              </clipPath>
+              <mask id="fm-team-fill" maskUnits="userSpaceOnUse" x={TEAM.x} y={TEAM.y} width={TEAM.w} height={TEAM.h}>
+                <image href={TEAM.fill} x={TEAM.x} y={TEAM.y} width={TEAM.w} height={TEAM.h} />
+              </mask>
+              <mask id="fm-team-lines" maskUnits="userSpaceOnUse" x={TEAM.x} y={TEAM.y} width={TEAM.w} height={TEAM.h}>
+                <image href={TEAM.lines} x={TEAM.x} y={TEAM.y} width={TEAM.w} height={TEAM.h} />
+              </mask>
             </defs>
             {/* a still surface from the scroll; the motion loop moves it */}
-            <path ref={waterRef} className="L-fm-water" d={waterPath(level, 0)} clipPath="url(#fm-team-clip)" />
-            {PEOPLE_X.map((x, j) => <Person x={x} key={j} />)}
+            <path ref={waterRef} className="L-fm-water" d={waterPath(level, 0)} mask="url(#fm-team-fill)" />
+            <rect className="L-fm-team-lines" x={TEAM.x} y={TEAM.y} width={TEAM.w} height={TEAM.h} mask="url(#fm-team-lines)" />
           </g>
         </svg>
 
@@ -586,18 +608,16 @@ export function FocusMorph({ words = DEFAULTS.home.focus, cta }: { /** the heads
       </div>
       {/* the step's readout, out of the side column and across the whole
           section under the picture, larger (Wilfred, 11 Nov 2026) */}
-      <div className="L-fm-readouts L-fm-in" aria-live="polite" aria-hidden={!people || undefined}>
+      <div className="L-fm-readouts L-fm-in" aria-live="polite" aria-hidden={!people || asking || undefined}>
         {TAX_STEPS.map((t, j) => {
           const last = j === TAX_STEPS.length - 1;
           const w = words.steps?.[j];
           return (
-            <div className="L-fm-readout" key={t.row} style={{ "--r": readouts[j].toFixed(3), "--at": `${(TINTS[j] * 100).toFixed(1)}%` } as React.CSSProperties} aria-hidden={stepNow !== j + 1 || undefined}>
+            <div className="L-fm-readout" key={t.row} style={{ "--r": readouts[j].toFixed(3), "--at": `${(TINTS[j] * 100).toFixed(1)}%` } as React.CSSProperties} aria-hidden={stepNow !== j + 1 || asking || undefined}>
               <span className="L-cap">{w?.label} · MHQ {t.window}</span>
               {last ? (
-                <>
-                  <p className="L-fm-readout-big L-fm-readout-wide">{w?.line}</p>
-                  <p className="L-fm-readout-small">{fmtDays(t.days)} days a month. {money(t.perPerson)} a year.</p>
-                </>
+                // the residual figures under it went on 17 Nov 2026 (Wilfred)
+                <p className="L-fm-readout-big L-fm-readout-wide">{w?.line}</p>
               ) : (
                 <>
                   <p className="L-fm-readout-big"><strong>{fmtDays(t.days)} days</strong> {words.daysLine}</p>

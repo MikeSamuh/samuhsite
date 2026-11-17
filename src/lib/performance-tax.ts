@@ -1,6 +1,9 @@
-// The performance tax at three team environments, for the home page's
-// fourth beat. From the client's sheet "Copy of Samuh Graph Base File",
-// MHQ Raw Data Graph, rows 4, 8 and 13 (Wilfred, 6 Nov 2026): the MHQ
+// The performance tax at six team environments, for the home page's
+// fourth beat, one for each band, Distressed first, so the meter's word
+// and the readout always agree (Wilfred, 17 Nov 2026; three until then).
+// From the client's sheet "Copy of Samuh Graph Base File", MHQ Raw Data
+// Graph, rows 2, 4, 6, 8, 10 and 13 (the lower window of each band, the
+// top window for Thriving): the MHQ
 // score window, the total days lost plus unproductive per person per
 // month (absenteeism plus presenteeism at 0.3), and the annual loss per
 // person, which is that month's share of a $115,000 fully loaded payroll
@@ -25,8 +28,11 @@ export interface TaxStep {
 export const FULLY_LOADED_COST = 115000;
 
 export const TAX_STEPS: TaxStep[] = [
+  { row: 2, window: "-100 to -75", from: -100, to: -75, days: 19.3, perPerson: 73983 },
   { row: 4, window: "-50 to -25", from: -50, to: -25, days: 12.69, perPerson: 48645 },
+  { row: 6, window: "0 to 25", from: 0, to: 25, days: 7.67, perPerson: 29402 },
   { row: 8, window: "50 to 75", from: 50, to: 75, days: 5.61, perPerson: 21505 },
+  { row: 10, window: "100 to 125", from: 100, to: 125, days: 2.94, perPerson: 11270 },
   { row: 13, window: "175 to 200", from: 175, to: 200, days: 1.17, perPerson: 4485 },
 ];
 

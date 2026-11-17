@@ -92,6 +92,8 @@ function noteLines(lead: Lead): string[] {
   if (lead.phone) lines.push(`Phone: ${lead.phone}`);
   if (lead.reason) lines.push(`Reason: ${lead.reason}`);
   if (lead.need) lines.push(`Looking for: ${lead.need}`);
+  if (lead.interest) lines.push(`Interested in: ${lead.interest}`);
+  if (lead.consent) lines.push("Agreed to be contacted by email and phone.");
   if (lead.teamSize) lines.push(`Team size: ${lead.teamSize}`);
   if (lead.tier) lines.push(`Tier: ${lead.tier}`);
   if (lead.intent) lines.push(`Door: ${lead.intent}`);

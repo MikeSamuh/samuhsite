@@ -86,12 +86,15 @@ export const DEFAULTS = {
             titleHow: "How teams reach their *best*",
       howLabel: "Capacity to perform",
       howLine: "Measure the team environment, choose one practice, run it for ninety days, measure again. Capacity rises, and performance with it.",
-      // the three steps' words; the numbers are in src/lib/performance-tax.ts
+      // the six steps' words, one for each band, Distressed first (17 Nov 2026); the numbers are in src/lib/performance-tax.ts
       daysLine: "lost or unproductive, per person, each month",
       moneyLine: "performance tax, per person, each year",
       steps: [
+        { label: "A distressed team environment", line: "Close to two thirds of the team's capacity is gone. A business cannot last like this." /* TODO(content): draft; the share is the sheet's 64.33% */ },
         { label: "A struggling team environment", line: "The environment drains capacity. The team pays for it in days, and the organization in money." },
+        { label: "An enduring team environment", line: "Getting by. The days still go, and the cost with them." /* TODO(content): draft */ },
         { label: "A managing team environment", line: "Better, and still paying. Most teams live here without knowing." },
+        { label: "A succeeding team environment", line: "Most of the capacity is back. A smaller tax is still a tax." /* TODO(content): draft */ },
         { label: "A thriving team environment", line: "No performance tax left to carry. The team's capacity goes to the work." },
       ],
       source: "Per person, at a $115,000 fully loaded cost." /* TODO(content): the source line for the days */,
@@ -326,6 +329,8 @@ export const DEFAULTS = {
       kicker: "Sprints",
       title: "Then the 90-day sprint.",
       platform: "On the platform",
+      // under each tier, to /contact with that tier picked (17 Nov 2026)
+      button: "Talk to us about this sprint",
       items: [
         { tag: "Option 1", name: "Self-guided", what: "On the platform. The team works through the sprint on its own.", who: "Teams with a strong leader who want the method without the meetings, and organizations rolling it out across many teams.", get: "The team process, two TeamQ measures a year, and the material to run one ritual for ninety days." },
         { tag: "Option 2", name: "Supported", what: "Self-guided plus periodic support calls from the Samuh team.", who: "Teams that want a second pair of eyes at the moments that matter: choosing the practice, and the check-in at day 45.", get: "Everything in Self-guided, with scheduled calls to read the data together and keep the ritual on track." },
@@ -344,7 +349,11 @@ export const DEFAULTS = {
     // only (docs/sprint-solutions.md)
     exec: {
       tag: "The main offering",
+      // the eyebrow once the stages come up beside the figure (Wilfred, 16 Nov 2026)
+      processTag: "Our process",
       name: "Executive Team Sprints",
+      // to /contact, the form opening on Executive Team Sprints (17 Nov 2026)
+      button: "Talk to us about a sprint",
       what: "Pre-work, then ninety days with two ritual keepers from the team, coached by Samuh.",
       who: "Leadership teams and mission-critical teams where the stakes justify having us in the room.",
       get: "Confidential interviews, a facilitated day one, coaching for two ritual keepers every two weeks, and the close.",
@@ -437,38 +446,36 @@ export const DEFAULTS = {
       title: "Start a conversation",
     },
     form: {
-      // the article rides with each option, so "an HR Business Partner"
-      // reads as speech (6 Nov 2026); the form drops it from what it posts
-      imA: "I’m",
-      personas: [
-        { label: "a Senior Business Leader" },
-        { label: "an HR Business Partner" },
-        { label: "an HR Talent Lead" },
-        { label: "a Team Lead" },
-        { label: "a Team Coach" },
-        { label: "a Consultant" },
-        { label: "a Team Member" },
-        { label: "a Vendor" },
-        { label: "a Founder" },
-        { label: "a CEO" },
-      ],
-      lookingFor: "and",
-      needs: [
-        { label: "I want to improve my team’s performance" },
-        { label: "I want to improve performance across my organization" },
-        { label: "I want to understand what’s affecting employee performance and wellbeing" },
-        { label: "I want to build stronger leadership and team practices" },
-        { label: "I want support for a specific organizational change or challenge" },
-        { label: "I want to show measurable impact for my coaching" },
+      // 17 Nov 2026 (Wilfred): the intake is two sentences. "My name is [ ]
+      // and I'm interested in [what]. You can reach me at [email], or call
+      // me at [phone]." The dropdown opens on what the reader clicked from:
+      // a button on Solutions links to /contact?interest=<key>. The keys are
+      // what those links name, so they stay as they are; the labels are free
+      // TODO(content): the labels and the consent line are Wilfred's
+      // stand-ins, for SAMUH's sign-off (the consent line wants a legal read)
+      myName: "My name is",
+      name: "Name",
+      nameHint: "your name",
+      interestedIn: "and I’m interested in",
+      interests: [
+        { key: "executive-sprints", label: "Executive Team Sprints" },
+        { key: "self-guided", label: "a Self-guided sprint" },
+        { key: "supported", label: "a Supported sprint" },
+        { key: "leadq", label: "LeadQ" },
+        { key: "teamq", label: "TeamQ" },
+        { key: "orgq", label: "OrgQ" },
+        { key: "workshops", label: "a keynote or workshop" },
+        { key: "other", label: "something else" },
       ],
       choose: "Select one",
-      myEmail: "My email is",
-      myPhone: "and phone is",
+      myEmail: "You can reach me at",
+      myPhone: "or call me at",
       email: "Email",
       emailHint: "you@company.com",
       phone: "Phone",
       phoneHint: "+1 555 000 0000",
       message: "Message",
+      consent: "I agree that SAMUH may contact me by email, and by phone if I have given a number, about this enquiry.",
       button: "Request Call Back",
       sending: "Sending",
       doneTitle: "Thank you.",

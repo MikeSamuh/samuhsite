@@ -27,6 +27,8 @@ const LABELS: Record<keyof Lead, string> = {
   organization: "Organization",
   role: "Role",
   need: "Looking for",
+  interest: "Interested in",
+  consent: "Agreed to be contacted",
   stage: "Stage",
   reason: "Reason",
   teamSize: "Team size",
@@ -75,7 +77,7 @@ function body(lead: Lead): string {
       }
       continue;
     }
-    lines.push(`${LABELS[key]}: ${value}`);
+    lines.push(`${LABELS[key]}: ${value === true ? "yes" : value}`);
   }
   return lines.join("\n");
 }

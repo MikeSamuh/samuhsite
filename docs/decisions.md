@@ -589,7 +589,12 @@ person per year, from the client's sheet ("Copy of Samuh Graph Base
 File", rows 4, 8, 13, in `src/lib/performance-tax.ts`). Per person at a
 $115,000 fully loaded cost, never the sheet's org-wide column. The
 Thriving step says the tax is gone and still shows its residual, since we
-never claim zero. The ask ("Find your team's hidden performance tax",
+never claim zero. (17 Nov 2026: six steps, not three, one for each band,
+Distressed first, rows 2, 4, 6, 8, 10, 13, so the meter's word and the
+readout agree; a readout leaves before the next arrives; the track is
+1335vh, the last screen of it the ask alone, centred. The people are the client's own drawings, placed as masks. The
+Thriving step no longer shows its residual days and dollars, Wilfred's
+call; the ask then takes the whole stage.) The ask ("Find your team's hidden performance tax",
 the tool's words) follows under the people, so the tool section and the
 close came off the page; the way in is `/contact#assess`. The metaphor
 cards came off the home the same day to a landing page of their own,

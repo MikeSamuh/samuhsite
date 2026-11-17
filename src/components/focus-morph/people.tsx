@@ -1,8 +1,11 @@
-// The person the home's fourth beat draws (FocusMorph), lifted here so the
-// Solutions page shows the same figure and nobody draws it twice: a head
-// and a bust with round shoulders, hollow. The home fills three of them
-// with water; Solutions sets them out as Rahul's whiteboard of 6 Nov 2026
-// does: one person, one team (a leader and their people), several teams.
+// The one person, shared so nobody draws it twice: the home's "Who we work
+// with" sets them out as one person, a team, several teams, and OrgFigure
+// as Rahul's whiteboard of 6 Nov 2026 does. Since 17 Nov 2026 the figure
+// is the client's own drawing, placed and never redrawn: a mask cut from
+// it (scripts/figures/team.py) says where the lines are and the token
+// gives them their colour. It sits in the box the old head and bust took,
+// which PERSON still describes. An svg that draws a Person needs one
+// <PersonDefs /> in it.
 
 /** the one drawing, in the home picture's frame units */
 export const PERSON = { headR: 26, headCy: 108, shoulderY: 206, footY: 300, halfW: 56 };
@@ -11,18 +14,32 @@ export const PERSON = { headR: 26, headCy: 108, shoulderY: 206, footY: 300, half
 export const bust = (x: number) =>
   `M ${x - PERSON.halfW} ${PERSON.footY} V ${PERSON.shoulderY} A ${PERSON.halfW} ${PERSON.halfW} 0 0 1 ${x + PERSON.halfW} ${PERSON.shoulderY} V ${PERSON.footY} Z`;
 
-/** one person, hollow, the head centred on x */
-export function Person({ x }: { x: number }) {
+const TOP = PERSON.headCy - PERSON.headR;
+const MID = (TOP + PERSON.footY) / 2;
+
+/** the drawing, 480 by 729, a little inside the old box and about its middle */
+const ART_H = 204;
+const ART = { w: (ART_H * 480) / 729, h: ART_H, y: MID - ART_H / 2, src: "/icons/individual-lines.png", id: "fm-person-lines" };
+
+/** the drawing's mask, once in each svg that draws a Person */
+export function PersonDefs() {
   return (
-    <g className="L-fm-person">
-      <circle cx={x} cy={PERSON.headCy} r={PERSON.headR} className="L-fm-person-line" />
-      <path d={bust(x)} className="L-fm-person-line" />
-    </g>
+    <defs>
+      <mask id={ART.id} maskUnits="userSpaceOnUse" x={-ART.w / 2} y={ART.y} width={ART.w} height={ART.h}>
+        <image href={ART.src} x={-ART.w / 2} y={ART.y} width={ART.w} height={ART.h} />
+      </mask>
+    </defs>
   );
 }
 
-const TOP = PERSON.headCy - PERSON.headR;
-const MID = (TOP + PERSON.footY) / 2;
+/** one person, hollow, centred on x */
+export function Person({ x }: { x: number }) {
+  return (
+    <g className="L-fm-person" transform={`translate(${x.toFixed(2)} 0)`}>
+      <rect className="L-fm-team-lines" x={-ART.w / 2} y={ART.y} width={ART.w} height={ART.h} mask={`url(#${ART.id})`} />
+    </g>
+  );
+}
 
 /** a person centred on (x, y) at scale s, for the small figures */
 function Small({ x, y, s }: { x: number; y: number; s: number }) {
@@ -57,6 +74,7 @@ const LABEL: Record<OrgLevel, string> = {
 export function OrgFigure({ level }: { level: OrgLevel }) {
   return (
     <svg className="L-org-svg" data-level={level} viewBox="0 0 240 240" role="img" aria-label={LABEL[level]}>
+      <PersonDefs />
       {level === "one" ? (
         <g>
           <circle cx={120} cy={120} r={72} className="L-org-ring" />

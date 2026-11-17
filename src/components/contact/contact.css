@@ -101,7 +101,7 @@
    button last */
 /* one block (Wilfred, 11 Nov 2026): the blanks are as wide as their
    words, and the message box is no wider than the sentences run */
-.contact-form { width: 100%; max-width: 640px; gap: 14px; }
+.contact-form { width: 100%; max-width: 960px; gap: 14px; }
 .contact-form .lead-field :is(input, select, textarea) { width: 100%; max-width: none; }
 .contact-form .lead-field textarea { padding: 10px 14px; }
 .contact-form .btn { justify-self: start; }
@@ -110,7 +110,7 @@
 /* the sentences (Wilfred, 6 Nov 2026): "I'm a [who] and [what]. My email
    is [ ], and phone is [ ]." in the display type, each dropdown and each
    blank a word of them */
-.contact-sentences { display: grid; gap: 0.3em; width: 100%; margin-bottom: 8px; font-size: clamp(22px, 2.7cqw, 34px); }
+.contact-sentences { display: grid; gap: 0.35em; width: 100%; margin-bottom: 8px; font-size: clamp(22px, 2.7cqw, 34px); }
 .contact-form .contact-sentence {
   width: 100%;
   max-width: none;
@@ -123,10 +123,13 @@
   /* room under each line for the underline and the focus tint */
   line-height: 1.5;
   color: var(--text);
+  /* its clauses are lines, as far apart as the sentences are */
+  display: grid;
+  gap: 0.35em;
 }
 
 /* a clause that wraps whole: its words stay with its blank */
-.contact-clause { display: inline-block; max-width: 100%; }
+.contact-clause { display: block; max-width: 100%; }
 .contact-optional { font-family: var(--font-body); font-size: 15px; font-weight: 400; letter-spacing: 0; color: var(--muted); white-space: nowrap; }
 
 /* a word that is a dropdown or a blank: the text underlined in the accent,
@@ -148,7 +151,8 @@
 
 .contact-pick-text, .contact-blank-box {
   min-width: 0;
-  padding: 0 0.12em 0.04em;
+  /* no side padding: a blank that wraps to its own line starts on the left edge, its underline under its first letter */
+  padding: 0 0 0.04em;
   border-bottom: var(--rule-fat) solid var(--accent);
   transition: border-color var(--dur) var(--ease), background-color var(--dur) var(--ease);
 }
@@ -200,7 +204,7 @@
 
 .contact-blank input {
   position: absolute;
-  inset: 0 0.12em 0.04em;
+  inset: 0 0 0.04em;
   width: auto;
   min-width: 0;
   margin: 0;
@@ -230,3 +234,14 @@
 @media (prefers-reduced-motion: reduce) {
   .contact-pick, .contact-blank { transition: none; }
 }
+
+/* the box that lets SAMUH contact the person (17 Nov 2026): the form does not send without it */
+.contact-consent { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: start; font-size: 15px; line-height: 1.5; color: var(--muted); cursor: pointer; }
+.contact-consent input { width: 20px; height: 20px; margin: 1px 0 0; accent-color: var(--accent); cursor: pointer; }
+.contact-consent input[aria-invalid="true"] { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* the message: a line in the accent, one row until more is typed, then as tall as the words */
+.contact-message { display: grid; grid-template-columns: minmax(0, 1fr); gap: 6px; width: 100%; justify-self: stretch; margin-top: 6px; }
+.contact-message-label { font-size: 15px; font-weight: 600; color: var(--text); }
+.contact-message textarea { display: block; box-sizing: border-box; width: 100%; min-width: 100%; min-height: 0; margin: 0; padding: 4px 0 8px; border: 0; border-bottom: var(--rule-fat) solid var(--accent); border-radius: 0; background: none; color: var(--text); font: inherit; font-size: 18px; line-height: 1.5; resize: none; overflow: hidden; outline: none; transition: border-color var(--dur) var(--ease), background-color var(--dur) var(--ease); }
+.contact-message textarea:focus-visible { border-bottom-color: var(--text); background: color-mix(in srgb, var(--accent) 16%, transparent); }
