@@ -1320,9 +1320,10 @@
 .L-post h3, .L-post p { margin: 0; }
 
 /* about */
-.L-partner { display: grid; grid-template-columns: 200px 1fr; gap: 28px; align-items: start; }
+.L-partner { display: grid; }
 .L-partner .ph { min-height: 140px; }
-.L-partner-logo { width: 100%; max-width: 200px; height: auto; margin-top: 4px; filter: brightness(0) invert(1); }
+/* in the head, after the title (the head's own order ends at 4) */
+.L-partner-logo { order: 5; width: 100%; max-width: 200px; height: auto; margin-top: calc(20px * var(--space, 1)); filter: brightness(0) invert(1); }
 /* one person to a row: the photo on the left, name, role and bio beside
    it, a hairline between rows. The people are the page's subject */
 .L-team { display: grid; grid-template-columns: 1fr; margin-bottom: 28px; }
@@ -1332,6 +1333,12 @@
 .L-person-photo { width: 140px; height: 140px; border-radius: 50%; object-fit: cover; }
 .L-person-text { display: grid; row-gap: 6px; }
 .L-person p + p { margin-top: 8px; }
+/* shut: the first paragraph's first three lines; the button opens the rest */
+.L-person-bio:not([data-open]) p:not(:first-child) { display: none; }
+.L-person-bio:not([data-open]) p:first-child { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden; }
+.L-person-more { justify-self: start; margin-top: 8px; padding: 6px 0; background: none; border: 0; border-bottom: var(--rule-thin) solid currentColor; font: inherit; font-size: 15px; color: var(--accent); cursor: pointer; transition: color var(--dur) var(--ease); }
+.L-person-more:hover { color: var(--text); }
+.L-person-more:focus-visible { outline: var(--rule-fat) solid var(--accent-2); outline-offset: 4px; }
 .L-person-name { font-family: var(--font-display); font-weight: var(--display-weight); font-size: 26px; line-height: 1.15; transition: color var(--dur) var(--ease); }
 .L-person .L-cap { transition: color var(--dur) var(--ease); }
 .L-person p { margin: 6px 0 0; font-size: 15px; max-width: 68ch; color: var(--muted); line-height: 1.5; transition: color var(--dur) var(--ease); }
@@ -2095,6 +2102,16 @@
 .L-stage-rail li:not(:last-child)::after { content: ""; position: absolute; top: 5px; left: 0; right: 0; height: var(--rule-thin); background: var(--border); transition: background var(--dur) var(--ease); }
 .L-stage-rail li:is([data-on], [data-done])::before { background: var(--accent); border-color: var(--accent); }
 .L-stage-rail li[data-done]::after { background: var(--accent); }
+/* the first step's dot pulses until a step is picked, to say the timeline
+   is for clicking (Wilfred, 18 Nov 2026): a ring in the accent, out from
+   the dot and gone. Not for reduced motion */
+@keyframes L-stage-pulse { from { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 70%, transparent); } to { box-shadow: 0 0 0 12px transparent; } }
+.L-exec-stages:not([data-picked]) .L-stage-rail li[data-on]::before { animation: L-stage-pulse calc(var(--dur) * 6) var(--ease) infinite; }
+@media (prefers-reduced-motion: reduce) { .L-exec-stages .L-stage-rail li[data-on]::before { animation: none; } }
+/* the button takes the dot over its word too, and a finger's width of it */
+.L-stage-rail button::before { content: ""; position: absolute; z-index: 2; top: -10px; left: -10px; width: 64px; height: 40px; }
+.L-stage-rail li:is(:hover, :focus-within):not([data-on]):not([data-done])::before { border-color: var(--accent); }
+.L-stage-rail button:focus-visible { outline: var(--rule-fat) solid var(--accent-2); outline-offset: 4px; }
 .L-stage-rail button { padding: 0; margin: 0; background: none; border: 0; font: inherit; font-size: 13px; line-height: 1.3; color: var(--muted); cursor: pointer; transition: color var(--dur) var(--ease); }
 .L-stage-rail li[data-on] button, .L-stage-rail button:hover { color: var(--text); }
 .L-stage-bar { margin-bottom: calc(28px * var(--space, 1)); }
@@ -2103,24 +2120,24 @@
    the stage's name where the section is pinned (17 Nov 2026) */
 .L-stage-cta { display: none; }
 .L-exec-cta { justify-self: start; margin-top: calc(32px * var(--space, 1)); }
-/* a phone: the stages are a column. Our process and the timeline stick
-   under the nav for the length of them, so it reads as one process and
-   shows the step the reader is on */
+/* a phone: one stage at a time under the timeline, picked on it, with
+   its own art; the others wait. Our process has room over the line
+   (Wilfred, 18 Nov 2026; a sticky bar over a column of four until then) */
 @container page (max-width: 900px) {
-  .L-stage-bar { position: sticky; top: var(--nav-h, 0px); z-index: 2; margin: 0 calc(var(--gutter, 24px) * -1) calc(8px * var(--space, 1)); padding: 16px var(--gutter, 24px) 14px; background: var(--base); border-bottom: var(--rule-thin) solid var(--border); }
-  .L-exec-stages .L-stage { scroll-margin-top: calc(var(--nav-h, 0px) + 112px); }
-  .L-exec-stages .L-stage:first-child { padding-top: calc(24px * var(--space, 1)); }
+  .L-stage-bar { display: grid; gap: 28px; margin: 0 0 calc(8px * var(--space, 1)); padding: 16px 0 18px; border-bottom: var(--rule-thin) solid var(--border); }
+  .L-exec-stages .L-stage:not([data-on]) { display: none; }
+  /* the stage's art in the middle of the column (Wilfred, 18 Nov 2026) */
+  .L-exec-stages .L-stage[data-on] .L-stage-art { justify-self: center; }
+  .L-exec-stages .L-stage[data-on] { padding-top: calc(24px * var(--space, 1)); border-top: 0; animation: L-stage-in calc(var(--dur) * 1.5) var(--ease) both; }
 }
+/* and on a phone, 30% larger than the 144px the stages' art has there */
+@container page (max-width: 560px) { .L-exec-stages .L-stage[data-on] { --stage-art: 187px; } }
 .L-stage-text { display: contents; }
 @container page (min-width: 901px) {
-  /* the section is pinned under the nav, level with its head: who it is
-     for and what you get stay put and the four stages come in one at a
-     time, in place, under them. The track's tail is the scroll that
-     takes: half a view a stage (STAGE_STEP in pages.tsx). Then it scrolls away
-     (Wilfred, 17 Nov 2026) */
-  /* the scroll is a block after the pin, not padding: a sticky box only travels inside its parent's content */
-  .L-page[data-comp="comp-editorial"] .L-exec-track::after { content: ""; display: block; height: 200vh; }
-  .L-page[data-comp="comp-editorial"] .L-exec-pin { position: sticky; top: calc(var(--nav-h, 0px) + var(--head-top, 28px)); }
+  /* who it is for and what you get, then the four stages in one place,
+     one at a time, picked on the timeline */
+  /* the pin and its tail of scroll went on 18 Nov 2026 (Wilfred): the
+     section scrolls like any other and the stages change on the timeline */
   .L-page[data-comp="comp-editorial"] .L-exec-stages { margin-top: calc(36px * var(--space, 1)); }
   .L-page[data-comp="comp-editorial"] .L-exec-cta { display: none; }
   .L-page[data-comp="comp-editorial"] .L-stage-now .L-stage-cta { display: inline-flex; margin-top: calc(24px * var(--space, 1)); }
@@ -2190,4 +2207,20 @@
 .L-kick-swap { display: inline-block; animation: L-stage-in calc(var(--dur) * 1.5) var(--ease) both; }
 @media (prefers-reduced-motion: reduce) { .L-kick-swap { animation: none; } }
 /* a section's note under its title, in the head (the sprint's line, Wilfred, 16 Nov 2026) */
+/* a head that moves with its section and never sticks: where its rule is
+   set level with the tabs' beside it, or it is as tall as what it heads
+   (Wilfred, 18 Nov 2026) */
+.L-page[data-comp="comp-editorial"] .L-sec-h.L-sec-still .L-head { position: static; }
+/* beside tabs, the head's rule sits on the open tab's: down by a tab's
+   tag (13px x 1.3), its gap (6px), its name and its foot (14px), less the
+   eyebrow's line (21px) and the head's gap (10px) */
+@container page (min-width: 901px) {
+  .L-page[data-comp="comp-editorial"] .L-sec-h.L-sec-still:has(.L-tabs) .L-head { padding-top: calc(clamp(20px, 2.2cqw, 28px) * 1.1 + 5.9px); }
+}
 .L-head-note { margin: 0; font-size: 15px; line-height: 1.6; color: var(--muted); max-width: 52ch; }
+/* a tier's button: under the head beside the tabs, under the tier on a phone */
+.L-tier-cta-head { display: none; }
+@container page (min-width: 901px) {
+  .L-page .L-tier-cta-head { display: inline-flex; order: 5; justify-self: start; margin-top: calc(24px * var(--space, 1)); white-space: nowrap; font-size: 15px; padding: 13px 20px; }
+  .L-page .L-tier-cta { display: none; }
+}

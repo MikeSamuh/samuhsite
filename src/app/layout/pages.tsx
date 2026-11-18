@@ -113,48 +113,45 @@ const STAGE_ART: [string, PoseId | null][] = [
   ["/icons/ritualize-icon-samuh.png", "ritualize"],
 ];
 
-const STAGE_STEP = 0.5; // of the view's height: the scroll each stage holds for (the track's tail in layout.css is 4 x STEP)
-
 /** The stage the reader is on. On the editorial columns at desktop width
- *  the section is pinned under the nav: who it is for and what you get stay
- *  put, the scroll steps through the four stages in place under them, with
- *  the stage's figure under the section's title, and only then does the
- *  section scroll away (Wilfred, 17 Nov 2026). `live` is off where the
- *  figure is not shown: every stage is seen there, with its own art. */
+ *  the four stages share one place, with the stage's figure beside its
+ *  words and its name under the section's title, and the reader picks one
+ *  on the timeline. The scroll is theirs: the section was pinned and the
+ *  scroll stepped through the stages (17 Nov 2026) until Wilfred took the
+ *  hold off on 18 Nov 2026. `live` is off where the figure is not shown (a
+ *  phone): the stage is picked the same way there, one at a time, and
+ *  carries its own art under the timeline (Wilfred, 18 Nov 2026). */
 function useStages(listRef: React.RefObject<HTMLElement | null>, figRef: React.RefObject<HTMLElement | null>) {
   const [st, setSt] = useState({ active: 0, started: false, live: false });
+  const picked = useRef<number | null>(null);
+  const kickRef = useRef<() => void>(() => {});
   useEffect(() => {
     const root = listRef.current, fig = figRef.current;
     if (!root || !fig) return;
-    const n = root.querySelectorAll(".L-stage").length;
-    const pin = root.closest<HTMLElement>(".L-exec-pin"), track = pin?.parentElement;
+    const body = root.closest<HTMLElement>(".L-exec-pin");
     let raf = 0;
     const tick = () => {
       raf = 0;
-      if (!pin || !track || fig.offsetParent === null) {
-        // not pinned (a phone): the stages are a column, and the timeline that
-        // sticks over them follows the one the reader has reached
-        let active = 0;
-        root.querySelectorAll<HTMLElement>(".L-stage").forEach((el, j) => { if (el.getBoundingClientRect().top <= window.innerHeight * 0.45) active = j; });
-        setSt((p) => (p.active === active && !p.started && !p.live ? p : { active, started: false, live: false }));
+      // the stage is the one picked on the timeline, the first until then;
+      // once one is picked the eyebrow says Our process
+      const active = picked.current ?? 0, started = picked.current !== null;
+      if (!body || fig.offsetParent === null) {
+        // a phone: no figure beside the words, the stage has its own
+        setSt((p) => (p.active === active && p.started === started && !p.live ? p : { active, started, live: false }));
         return;
       }
       // the stage's line and verb under the title sit level with the timeline (Wilfred, 17 Nov 2026)
-      const rail = pin.querySelector<HTMLElement>(".L-stage-rail"), now = pin.closest("section")?.querySelector<HTMLElement>(".L-stage-now");
+      const rail = body.querySelector<HTMLElement>(".L-stage-rail"), now = body.closest("section")?.querySelector<HTMLElement>(".L-stage-now");
       const head = now?.parentElement;
       if (rail && now && head) {
         const natural = now.getBoundingClientRect().top - head.getBoundingClientRect().top - parseFloat(getComputedStyle(now).marginTop);
-        const want = rail.getBoundingClientRect().top - pin.getBoundingClientRect().top;
+        const want = rail.getBoundingClientRect().top - body.getBoundingClientRect().top;
         now.style.setProperty("--now-gap", `${Math.max(28, Math.round(want - natural))}px`);
       }
-      // how far the pinned block has travelled down its track
-      const gone = pin.getBoundingClientRect().top - track.getBoundingClientRect().top;
-      const step = window.innerHeight * STAGE_STEP;
-      const started = n > 0 && gone > 4; // pinned: the eyebrow turns to Our process
-      const active = Math.max(0, Math.min(n - 1, Math.floor(gone / step)));
       setSt((p) => (p.active === active && p.started === started && p.live ? p : { active, started, live: true }));
     };
     const kick = () => { if (!raf) raf = requestAnimationFrame(tick); };
+    kickRef.current = kick;
     const ro = new ResizeObserver(kick);
     ro.observe(root);
     kick();
@@ -162,7 +159,9 @@ function useStages(listRef: React.RefObject<HTMLElement | null>, figRef: React.R
     window.addEventListener("resize", kick);
     return () => { ro.disconnect(); cancelAnimationFrame(raf); window.removeEventListener("scroll", kick); window.removeEventListener("resize", kick); };
   }, [listRef, figRef]);
-  return st;
+  /** a step on the timeline: its stage is shown in place */
+  const pick = (i: number) => { picked.current = i; kickRef.current(); };
+  return { ...st, pick };
 }
 
 /** The four stages of an Executive Team Sprint, in the body of its section
@@ -171,29 +170,22 @@ function useStages(listRef: React.RefObject<HTMLElement | null>, figRef: React.R
  *  is under the section's title (StageHeadFigure) and the stages come in
  *  one at a time beside it; narrower, each stage carries its own figure.
  *  `how` is still the nav's anchor. */
-function Stages({ figures, c, tag, listRef, figRef, stage }: { figures?: boolean; /** over the timeline where the section's eyebrow does not say it (a phone) */ tag?: string; c: SolutionsContent["stages"]; listRef: React.RefObject<HTMLDivElement | null>; figRef: React.RefObject<HTMLSpanElement | null>; stage: { active: number; started: boolean; live: boolean } }) {
+function Stages({ figures, c, tag, listRef, figRef, stage }: { figures?: boolean; /** over the timeline where the section's eyebrow does not say it (a phone) */ tag?: string; c: SolutionsContent["stages"]; listRef: React.RefObject<HTMLDivElement | null>; figRef: React.RefObject<HTMLSpanElement | null>; stage: { active: number; started: boolean; live: boolean; pick: (i: number) => void } }) {
   const items = c.items.slice(0, STAGE_ART.length);
   const last = items.length - 1;
   const [icon, pose] = STAGE_ART[Math.min(stage.active, STAGE_ART.length - 1)];
-  // a step on the timeline: scroll to where its stage holds on the track
-  const pick = (i: number) => {
-    const pin = listRef.current?.closest<HTMLElement>(".L-exec-pin"), track = pin?.parentElement;
-    if (!pin || !track) return;
-    if (getComputedStyle(pin).position !== "sticky") { listRef.current?.querySelectorAll<HTMLElement>(".L-stage")[i]?.scrollIntoView({ behavior: "smooth", block: "start" }); return; }
-    // the scroll at which the pin starts to hold, then the stage's share of the track
-    const hold = track.getBoundingClientRect().top + window.scrollY - parseFloat(getComputedStyle(pin).top);
-    window.scrollTo({ top: hold + (i + 0.4) * window.innerHeight * STAGE_STEP, behavior: "smooth" });
-  };
+  const pick = stage.pick;
   return (
-    <div className="L-exec-stages L-assess-anchor" id="how" data-live={stage.live ? "" : undefined}>
+    <div className="L-exec-stages L-assess-anchor" id="how" data-live={stage.live ? "" : undefined} data-picked={stage.started ? "" : undefined}>
       {/* the four steps on a line (Wilfred, 17 Nov 2026): shown where the stages
           swap in place; the stages themselves are the list under it */}
       <div className="L-stage-bar">
         {tag ? <p className="eyebrow L-eyebrow L-stage-tag">{tag}</p> : null}
-        <ol className="L-stage-rail" aria-hidden>
+        {/* each step is a button, its dot and its word (Wilfred, 18 Nov 2026) */}
+        <ol className="L-stage-rail">
           {items.map((st, i) => (
             <li key={st.verb} data-on={i === stage.active ? "" : undefined} data-done={i < stage.active ? "" : undefined}>
-              <button type="button" tabIndex={-1} onClick={() => pick(i)}>{st.verb}</button>
+              <button type="button" aria-current={i === stage.active ? "step" : undefined} onClick={() => pick(i)}>{st.verb}</button>
             </li>
           ))}
         </ol>
@@ -325,8 +317,8 @@ function Solutions({ figures, c = DEFAULTS.solutions, s = DEFAULTS.start }: { fi
       {/* the main offering leads (Wilfred, 11 Nov 2026), set as the stages
           under it are: the head beside, the words in the column. A sales
           conversation: no checkout, no price, and no button, the nav has it */}
-      <Sec n="02" kicker={<span className="L-kick-swap" key={stage.started ? "p" : "o"}>{stage.started && c.exec.processTag ? c.exec.processTag : c.exec.tag}</span>} title={c.exec.name} id="sprints" extra={<StageHeadLabel c={c.stages} active={stage.active} button={c.exec.button} />}>
-        {/* pinned under the nav while the scroll steps through the stages (Wilfred, 17 Nov 2026) */}
+      <Sec n="02" kicker={<span className="L-kick-swap" key={stage.started ? "p" : "o"}>{stage.started && c.exec.processTag ? c.exec.processTag : c.exec.tag}</span>} title={c.exec.name} id="sprints" cls="L-sec-still" extra={<StageHeadLabel c={c.stages} active={stage.active} button={c.exec.button} />}>
+        {/* no longer pinned: the reader scrolls on and picks a stage on the timeline (Wilfred, 18 Nov 2026) */}
         <div className="L-exec-track">
           <div className="L-exec-pin">
             <div className="L-exec-copy" id="executive-sprints">
@@ -360,7 +352,11 @@ function Solutions({ figures, c = DEFAULTS.solutions, s = DEFAULTS.start }: { fi
           </div>
         ) : null}
       </Sec>
-      <Sec n="02" kicker={c.tiers.kicker} title={c.tiers.title} id="platform" extra={c.tiers.note ? <p className="L-sub L-head-note">{c.tiers.note}</p> : null}>
+      <Sec n="02" kicker={c.tiers.kicker} title={c.tiers.title} id="platform" cls="L-sec-still" extra={<>
+        {c.tiers.note ? <p className="L-sub L-head-note">{c.tiers.note}</p> : null}
+        {/* the open tier's button, under the head where the columns sit side by side (Wilfred, 18 Nov 2026) */}
+        {c.tiers.button && TIER_KEYS[tier] ? <Link className="btn L-tier-cta-head" href={talkAbout(TIER_KEYS[tier])}>{c.tiers.button}</Link> : null}
+      </>}>
         <div className="L-tabbed">
         <Tabs base="tier" label={c.tiers.title} items={TIERS} active={tier} onPick={setTier} />
         {TIERS.map((t, i) => (
@@ -373,12 +369,20 @@ function Solutions({ figures, c = DEFAULTS.solutions, s = DEFAULTS.start }: { fi
                 <div key={r.label}><dt>{r.label}</dt><dd>{[r.a, r.b][i]}</dd></div>
               ))}
             </dl>
-            {c.tiers.button && TIER_KEYS[i] ? <Link className="btn" href={talkAbout(TIER_KEYS[i])}>{c.tiers.button}</Link> : null}
+            {c.tiers.button && TIER_KEYS[i] ? <Link className="btn L-tier-cta" href={talkAbout(TIER_KEYS[i])}>{c.tiers.button}</Link> : null}
           </div>
         ))}
         </div>
       </Sec>
-      <Sec n="03" kicker={c.assess.kicker} title={c.assess.title} id="assess" extra={c.assess.note ? <p className="L-sub L-head-note">{c.assess.note}</p> : null}>
+      <Sec n="03" kicker={c.assess.kicker} title={c.assess.title} id="assess" cls="L-sec-still" extra={<>
+        {c.assess.note ? <p className="L-sub L-head-note">{c.assess.note}</p> : null}
+        {/* the open assessment's button, under the head as the tiers' is (Wilfred, 18 Nov 2026) */}
+        {ASSESS[measure] ? (ASSESS[measure].door === "orgq" ? (
+          <Link className="btn L-tier-cta-head" href={talkAbout("orgq")}>{ASSESS[measure].button}</Link>
+        ) : (
+          <button type="button" className="btn L-tier-cta-head" onClick={() => setBox(ASSESS[measure].door === "teamq" ? "teamq" : "leadq")} aria-pressed={box === ASSESS[measure].door} aria-controls="assess-box">{ASSESS[measure].button}</button>
+        )) : null}
+      </>}>
         <div className="L-tabbed">
         {c.assess.lede ? <p className="L-mid">{c.assess.lede}</p> : null}
         <Tabs base="assess" label={c.assess.kicker} items={ASSESS.map((it) => ({ tag: it.tag, name: it.name, id: it.door }))} active={measure} onPick={pickMeasure} />
@@ -392,9 +396,9 @@ function Solutions({ figures, c = DEFAULTS.solutions, s = DEFAULTS.start }: { fi
               <div><dt>{c.assess.rowGet}</dt><dd>{it.get}</dd></div>
             </dl>
             {it.door === "orgq" ? (
-              <Link className="btn" href={talkAbout("orgq")}>{it.button}</Link>
+              <Link className="btn L-tier-cta" href={talkAbout("orgq")}>{it.button}</Link>
             ) : (
-              <button type="button" className="btn" onClick={() => setBox(it.door === "teamq" ? "teamq" : "leadq")} aria-pressed={box === it.door} aria-controls="assess-box">{it.button}</button>
+              <button type="button" className="btn L-tier-cta" onClick={() => setBox(it.door === "teamq" ? "teamq" : "leadq")} aria-pressed={box === it.door} aria-controls="assess-box">{it.button}</button>
             )}
           </div>
         ))}
@@ -525,30 +529,46 @@ function Insights() {
 // The team comes first and one person to a row (Wilfred, 5 Nov 2026), so
 // the people are the page's most prominent thing. What we believe closes
 // the page (Wilfred, 6 Nov 2026)
+// A bio opens on its first few lines, and a button under it opens the rest
+// (Jake, 17 Nov 2026: too much shown for each person at first). The whole
+// bio stays in the page, so a crawler and a screen reader's find still
+// reach it; the closed state is CSS's
+function Person({ name, role, bio, about, photo }: AboutContent["team"]["members"][number]) {
+  const [open, setOpen] = useState(false);
+  const paras = (about ?? "").split(/\n\s*\n/).map((x) => x.trim()).filter(Boolean);
+  const id = `bio-${name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
+  return (
+    <article className="L-person">
+      {photo ? <Image className="L-person-photo" src={photo} alt={name} width={141} height={141} /> : <Frame label="Photo" />}
+      <div className="L-person-text">
+        <span className="L-person-name">{name}</span>
+        <span className="L-cap">{role}</span>
+        <div className="L-person-bio" id={id} data-open={open || undefined}>
+          {paras.length ? paras.map((x, i) => <p key={i}>{x}</p>) : <p>{bio}</p>}
+        </div>
+        {paras.length ? (
+          <button type="button" className="L-person-more" aria-expanded={open} aria-controls={id} aria-label={`${open ? "Read less" : "Read more"} about ${name}`} onClick={() => setOpen((v) => !v)}>
+            {open ? "Read less" : "Read more"}
+          </button>
+        ) : null}
+      </div>
+    </article>
+  );
+}
+
 function About({ c = DEFAULTS.about }: { c?: AboutContent }) {
   return (
     <>
       <PageHead n="01" kicker={c.head.kicker} title={c.head.title} lede={c.head.lede} />
       <Sec n="02" kicker={c.team.kicker} title={c.team.title} id="team">
         <div className="L-team">
-          {c.team.members.map(({ name, role, bio, about, photo }) => {
-            const paras = (about ?? "").split(/\n\s*\n/).map((x) => x.trim()).filter(Boolean);
-            return (
-              <article className="L-person" key={name}>
-                {photo ? <Image className="L-person-photo" src={photo} alt={name} width={141} height={141} /> : <Frame label="Photo" />}
-                <div className="L-person-text">
-                  <span className="L-person-name">{name}</span>
-                  <span className="L-cap">{role}</span>
-                  {paras.length ? paras.map((x, i) => <p key={i}>{x}</p>) : <p>{bio}</p>}
-                </div>
-              </article>
-            );
-          })}
+          {c.team.members.map((m) => <Person key={m.name} {...m} />)}
         </div>
       </Sec>
-      <Sec n="03" kicker={c.partner.kicker} title={c.partner.title}>
+      {/* the logo under the head and the words in the content column, at the
+          line the bios keep (Wilfred, 18 Nov 2026) */}
+      <Sec n="03" kicker={c.partner.kicker} title={c.partner.title} cls="L-sec-still" extra={<Image className="L-partner-logo" src="/sapien-labs.png" alt="Sapien Labs" width={820} height={240} sizes="200px" />}>
         <div className="L-partner">
-          <Image className="L-partner-logo" src="/sapien-labs.png" alt="Sapien Labs" width={820} height={240} sizes="200px" />
           <div>
             <p className="L-mid">{c.partner.p1}</p>
             <p className="L-mid">{c.partner.p2}</p>

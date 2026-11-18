@@ -686,3 +686,14 @@ Gilda Display (Mike's link, 25 Sep) is off the site. — Wilfred
 **2026-11-16 — Methodology is The Science, at /science.**
 The page is about the science and the research, not a methodology;
 Solutions is where the methods are. /methodology and /process redirect. — Wilfred
+
+**2026-11-18 — Solutions scrolls freely; heads that sit beside tabs do not stick.**
+The Executive Team Sprints section is no longer pinned: the scroll hold of
+17 November is gone, and the four stages change when the reader clicks a
+step on the timeline, its dot or its word. The heads of that section, the
+sprint tiers, the assessments and About's Sapien Labs section move with
+their content instead of sticking, and beside tabs the head's rule sits on
+the open tab's. The tiers' and the assessments' buttons are under the head
+at desktop width, under the panel on a phone. The sprint's button reads
+"Book an Executive Sprint". About's bios open on three lines with a Read
+more button (Jake, 17 Nov). — Wilfred

@@ -353,7 +353,7 @@ export const DEFAULTS = {
       processTag: "Our process",
       name: "Executive Team Sprints",
       // to /contact, the form opening on Executive Team Sprints (17 Nov 2026)
-      button: "Talk to us about a sprint",
+      button: "Book an Executive Sprint",
       what: "Pre-work, then ninety days with two ritual keepers from the team, coached by Samuh.",
       who: "Leadership teams and mission-critical teams where the stakes justify having us in the room.",
       get: "Confidential interviews, a facilitated day one, coaching for two ritual keepers every two weeks, and the close.",
